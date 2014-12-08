@@ -1,0 +1,200 @@
+<blue.BlueData hash=29336323-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=6767586-0 id=globalOrcSco >
+<java.lang.String hash=0-0 id=globalOrc >
+
+</java.lang.String>
+<java.lang.String hash=1397286979-0 id=globalSco >
+
+f0 7200
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.LiveData hash=26864188-0 id=liveData >
+<java.lang.String hash=-1001887281-0 id=commandLine >
+csound -Wdo devaudio -L stdin
+</java.lang.String>
+<java.util.ArrayList hash=1-2 id=liveSoundObjects >
+</java.util.ArrayList>
+</blue.LiveData>
+<blue.Orchestra hash=28465436-0 id=orchestra >
+<java.util.TreeMap hash=8402103-0 id=orch >
+<[>
+<java.lang.Integer hash=1-3 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=8402102-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-927651006-0 id=instrumentText >
+
+kstatus, kchan, kdata1, kdata2 midiin
+
+if	kchan	!= 1	kgoto done
+if	kstatus	!= 0	kgoto done
+
+
+;
+; use slider for tap 
+;
+if	kdata1	!= 6	kgoto done
+if	kdata2	> 0	kgoto done
+
+
+done:
+
+;idur filelen "pend.pvoc"
+idur filelen "steel_lowE_active.fft"
+ireadur = idur*.5
+iendpt = idur
+itotalbins = 1024
+inumkeys = 61
+ifreq 	cpsmidi
+inotnum	notnum
+ifn = 1
+iamp = 100
+ibinoffset  = (itotalbins/inumkeys)*(inotnum-36)
+ibend	pchbend 0.01
+ibend = ibend + 1
+
+;
+; 
+;
+
+if inotnum < 72 igoto after72
+ibend = ibend *.1
+iamp = iamp * 4
+igoto afterall
+after72:
+
+if inotnum < 60 igoto after60
+ibend = ibend *.2
+iamp = iamp * 4
+igoto afterall
+after60:
+
+afterall:
+;
+; ramp the sound, shutting it OFF after idur*.99 (for an hour!)
+; 
+;kramp	linseg	0, .01, iamp, idur*.99, iamp, idur*.01, 0, 10, 0
+kramp	linenr	iamp, .5, 10, .01
+ktime	line	0, ireadur, iendpt
+;
+; totalbins/61: gives even spread to number of bins/key
+;
+ar	pvadd	ktime, ibend, "steel_lowE_active.fft", ifn, itotalbins/inumkeys , ibinoffset
+print ibinoffset
+print ibend
+acomp	oscili	ksineamp, 220, 1
+ar balance ar, acomp
+out ar*kramp
+</java.lang.String>
+<java.lang.String hash=-976121721-0 id=name >
+pvocer
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=17087715-0 id=pObj >
+<int id=heightIndex >
+2
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-4 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+64
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=843994-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=843963-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=0-0 id=name />
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=1-5 id=soundObjects >
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=24528974-0 id=projectProperties >
+<java.lang.String hash=0-2 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=-1406328437-0 id=author >
+author
+</java.lang.String>
+<java.lang.String hash=49-0 id=channels >
+1
+</java.lang.String>
+<java.lang.String hash=-1598557463-0 id=commandLine >
+csoundav_win  -+K1 -+P36 -d -b2048 
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=controlRate >
+44100
+</java.lang.String>
+<java.lang.String hash=-1270626977-0 id=notes >
+csoundav_win  -+y -b2048 -+P20
+
+csoundav_win  -+K1 -+P18 -d -+* -m0 -+O
+</java.lang.String>
+<java.lang.String hash=49620849-1 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-3 id=title >
+
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-6 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=8715708-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-0 id=scratchText />
+</blue.ScratchPadData>
+<blue.Tables hash=19815572-0 id=tableSet >
+<java.lang.String hash=-1670489766-0 id=tables >
+f1	0	513	10	1
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

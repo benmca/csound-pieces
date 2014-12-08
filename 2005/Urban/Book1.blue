@@ -1,0 +1,251 @@
+<blueData version='0.99.6'>
+  <projectProperties>
+    <author>author</author>
+    <title></title>
+    <sampleRate>44100</sampleRate>
+    <ksmps>1</ksmps>
+    <channels>2</channels>
+    <commandLine>csound5 -+Q4 -+P21</commandLine>
+    <diskSampleRate>44100</diskSampleRate>
+    <diskKsmps>1</diskKsmps>
+    <diskChannels>2</diskChannels>
+    <diskCommandLine>csound</diskCommandLine>
+    <CsOptions></CsOptions>
+    <notes></notes>
+  </projectProperties>
+  <arrangement>
+    <instrumentAssignment arrangementId='1' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>miditranslator</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>idur = p3
+iamp = p4
+ifreq = p5
+if_over_220 = ifreq/220
+i1 = log(if_over_220)
+i2 = log(2.0)
+isolution = ( ( 12 * i1 / i2 ) + 57.01 )
+inotenum = int(isolution)
+
+;convert scalar 0 &gt; 1 to velocity value 0 &gt; 127
+iamp = p4
+
+;ivelocity = int(256*iamp)
+ivelocity = 127
+
+noteondur  1, inotenum, ivelocity, p3-.1</instrumentText>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='3' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>miditranslator</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>; convert incoming freq to midinote
+;int n = (int) ( ( 12 * log(f / 220.0) / log(2.0) ) + 57.01 );
+ifreq = p5
+if_over_220 = ifreq/220
+i1 = log(if_over_220)
+i2 = log(2.0)
+isolution = ( ( 12 * i1 / i2 ) + 57.01 )
+inotenum = int(isolution)
+
+;convert scalar 0 &gt; 1 to velocity value 0 &gt; 127
+iamp = p4
+ivelocity = int(127*iamp)
+
+noteondur2   3, inotenum, ivelocity, p3-.1</instrumentText>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='99' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText></instrumentText>
+      </instrument>
+    </instrumentAssignment>
+  </arrangement>
+  <tables></tables>
+  <soundObjectLibrary/>
+  <globalOrcSco>
+    <globalOrc></globalOrc>
+    <globalSco></globalSco>
+  </globalOrcSco>
+  <opcodeList/>
+  <liveData>
+    <commandLine>csound -Wdo devaudio -L stdin</commandLine>
+  </liveData>
+  <soundObject type='blue.soundObject.PolyObject'>
+    <subjectiveDuration>2.0</subjectiveDuration>
+    <startTime>0.0</startTime>
+    <name>root</name>
+    <backgroundColor>-10066279</backgroundColor>
+    <timeBehavior>0</timeBehavior>
+    <noteProcessorChain/>
+    <isRoot>true</isRoot>
+    <pixelSecond>64</pixelSecond>
+    <heightIndex>2</heightIndex>
+    <snapEnabled>false</snapEnabled>
+    <snapValue>1.0</snapValue>
+    <timeDisplay>0</timeDisplay>
+    <timeUnit>5</timeUnit>
+    <soundLayer name='' muted='false' solo='false'>
+      <soundObject type='blue.soundObject.External'>
+        <subjectiveDuration>2.0</subjectiveDuration>
+        <startTime>0.0</startTime>
+        <name>external</name>
+        <backgroundColor>-12566464</backgroundColor>
+        <timeBehavior>2</timeBehavior>
+        <noteProcessorChain/>
+        <text>(in-package :stella)
+(defparameter *buflen* 0)
+(defobject soundin_indx (csound-note)
+  ((instr :initform &quot;i&quot;) inst mytime dur amp pitch)
+  (:parameters instr inst mytime dur amp pitch))
+
+(defun book1(st len ampsca tem)
+  (algorithm nil soundin_indx (start st length len)
+	(setf inst 1)
+	(setf mytime time)
+	(setf idxdur &apos;( ( 0 .542 q) ( .542 .808 e ) (.808 1.077 e ) (1.077 1.364 e ) (1.364 1.617 e ) (1.617 1.904 e ) ( 1.904 2.134 e ) )); 25 items
+    
+    (setf i 
+	(item 
+	    (items 0 1 2 3 4 5 6 in random)
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i&apos;th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf pitch 1)
+    (setf rhythm 
+        (item 
+            (rhythms q. q. q q tempo(tempo tem)) 
+        ) 
+    )
+    (setf dur rhythm)
+    (setf amp (* ampsca 1))
+))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t &quot;eofeof&quot;))
+        (if (string-equal myline &quot;eofeof&quot;)(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+(defun ms (&amp;key (start-time 1.)(my-scorefile &quot;test.sco&quot;))
+  (let* ((myheader (header &quot;&quot;			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (book1 0 160 0 100)
+            )
+	(setf mystream (make-string-output-stream))
+	    (open-cmd my-scorefile)
+	        (mix-cmd &quot;all 0 play nil&quot;)
+))
+(ms)
+(print-stream  &quot;test.sco&quot;)</text>
+        <commandLine>d:\CSOUND\cm-1.3\clisp\lisp.exe -M d:\Csound\cm-1.3\clisp\cm.mem</commandLine>
+      </soundObject>
+    </soundLayer>
+    <soundLayer name='' muted='true' solo='false'>
+      <soundObject type='blue.soundObject.GenericScore'>
+        <subjectiveDuration>2.0</subjectiveDuration>
+        <startTime>0.0</startTime>
+        <name>genericScore</name>
+        <backgroundColor>-12566464</backgroundColor>
+        <timeBehavior>2</timeBehavior>
+        <noteProcessorChain/>
+        <score>s
+i 1 0 0.1 1 130.812 0 2 0.075
+i 1 0.562 0.1 1 195.997 0 2 0.075
+i 1 1.125 0.1 1 261.625 0 2 0.075
+i 1 1.125 0.1 1 329.627 0 2 0.075
+i 1 1.499 0.1 1 130.812 0 2 0.075
+i 1 2.062 0.1 1 195.997 0 2 0.075
+i 1 2.624 0.1 1 261.625 0 2 0.075
+i 1 2.624 0.1 1 329.627 0 2 0.075
+i 1 2.999 0.1 1 130.812 0 2 0.075
+i 1 3.562 0.1 1 195.997 0 2 0.075
+i 1 4.125 0.1 1 261.625 0 2 0.075
+i 1 4.125 0.1 1 329.627 0 2 0.075
+i 1 4.5 0.1 1 130.812 0 2 0.075
+i 1 5.062 0.1 1 195.997 0 2 0.075
+i 1 5.624 0.1 1 261.625 0 2 0.075
+i 1 5.624 0.1 1 329.627 0 2 0.075
+i 1 5.999 0.1 1 130.812 0 2 0.075
+i 1 6.562 0.1 1 195.997 0 2 0.075
+i 1 7.124 0.1 1 261.625 0 2 0.075
+i 1 7.124 0.1 1 329.627 0 2 0.075
+i 1 7.499 0.1 1 130.812 0 2 0.075
+i 1 8.062 0.1 1 195.997 0 2 0.075
+i 1 8.625 0.1 1 261.625 0 2 0.075
+i 1 8.625 0.1 1 329.627 0 2 0.075
+i 1 9.0 0.1 1 130.812 0 2 0.075
+i 1 9.562 0.1 1 195.997 0 2 0.075
+i 1 10.125 0.1 1 261.625 0 2 0.075
+i 1 10.125 0.1 1 329.627 0 2 0.075
+i 1 10.499 0.1 1 130.812 0 2 0.075
+i 1 11.062 0.1 1 195.997 0 2 0.075
+i 1 11.624 0.1 1 261.625 0 2 0.075
+i 1 11.624 0.1 1 329.627 0 2 0.075
+i 1 11.999 0.1 1 174.614 0 2 0.075
+i 1 12.562 0.1 1 220.0 0 2 0.075
+i 1 13.124 0.1 1 261.625 0 2 0.075
+i 1 13.124 0.1 1 329.627 0 2 0.075
+i 1 13.499 0.1 1 174.614 0 2 0.075
+i 1 14.062 0.1 1 220.0 0 2 0.075
+i 1 14.624 0.1 1 261.625 0 2 0.075
+i 1 14.624 0.1 1 329.627 0 2 0.075
+i 1 14.999 0.1 1 174.614 0 2 0.075
+i 1 15.562 0.1 1 220.0 0 2 0.075
+i 1 16.124 0.1 1 261.625 0 2 0.075
+i 1 16.124 0.1 1 329.627 0 2 0.075
+i 1 16.5 0.1 1 174.614 0 2 0.075
+i 1 17.062 0.1 1 220.0 0 2 0.075
+i 1 17.625 0.1 1 261.625 0 2 0.075
+i 1 17.625 0.1 1 329.627 0 2 0.075
+i 1 18.0 0.1 1 174.614 0 2 0.075
+i 1 18.562 0.1 1 220.0 0 2 0.075
+i 1 19.125 0.1 1 261.625 0 2 0.075
+i 1 19.125 0.1 1 329.627 0 2 0.075
+i 1 19.5 0.1 1 174.614 0 2 0.075
+i 1 20.062 0.1 1 220.0 0 2 0.075
+i 1 20.624 0.1 1 261.625 0 2 0.075
+i 1 20.624 0.1 1 329.627 0 2 0.075
+i 1 20.999 0.1 1 174.614 0 2 0.075
+i 1 21.562 0.1 1 220.0 0 2 0.075
+i 1 22.124 0.1 1 261.625 0 2 0.075
+i 1 22.124 0.1 1 329.627 0 2 0.075
+i 1 22.499 0.1 1 174.614 0 2 0.075
+i 1 23.062 0.1 1 220.0 0 2 0.075
+i 1 23.624 0.1 1 261.625 0 2 0.075
+i 1 23.624 0.1 1 329.627 0 2 0.075
+e</score>
+      </soundObject>
+    </soundLayer>
+  </soundObject>
+  <scratchPadData>
+    <isWordWrapEnabled>true</isWordWrapEnabled>
+    <scratchText></scratchText>
+  </scratchPadData>
+  <noteProcessorChainMap/>
+  <renderStartTime>0.0</renderStartTime>
+  <renderEndTime>-1.0</renderEndTime>
+  <markersList/>
+  <loopRendering>false</loopRendering>
+</blueData>

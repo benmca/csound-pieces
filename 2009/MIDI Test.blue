@@ -1,0 +1,554 @@
+<blueData version='0.125.0'>
+  <projectProperties>
+    <title></title>
+    <author>author</author>
+    <notes></notes>
+    <sampleRate>44100</sampleRate>
+    <ksmps>1</ksmps>
+    <channels>2</channels>
+    <diskSampleRate>44100</diskSampleRate>
+    <diskKsmps>1</diskKsmps>
+    <diskChannels>2</diskChannels>
+    <useAudioOut>true</useAudioOut>
+    <useAudioIn>false</useAudioIn>
+    <useMidiIn>false</useMidiIn>
+    <useMidiOut>false</useMidiOut>
+    <noteAmpsEnabled>true</noteAmpsEnabled>
+    <outOfRangeEnabled>true</outOfRangeEnabled>
+    <warningsEnabled>true</warningsEnabled>
+    <benchmarkEnabled>false</benchmarkEnabled>
+    <advancedSettings>-odac0 -M0</advancedSettings>
+    <completeOverride>false</completeOverride>
+    <fileName></fileName>
+    <askOnRender>false</askOnRender>
+    <diskNoteAmpsEnabled>true</diskNoteAmpsEnabled>
+    <diskOutOfRangeEnabled>true</diskOutOfRangeEnabled>
+    <diskWarningsEnabled>true</diskWarningsEnabled>
+    <diskBenchmarkEnabled>true</diskBenchmarkEnabled>
+    <diskAdvancedSettings></diskAdvancedSettings>
+    <diskCompleteOverride>false</diskCompleteOverride>
+    <diskAlwaysRenderEntireProject>false</diskAlwaysRenderEntireProject>
+    <csladspaSettings>
+      <name/>
+      <maker/>
+      <uniqueId>0</uniqueId>
+      <copyright/>
+      <portDefinitionList/>
+      <enabled>false</enabled>
+    </csladspaSettings>
+  </projectProperties>
+  <arrangement>
+    <instrumentAssignment arrangementId='1' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>; Returns MIDI note number - an integer in range (0-127)
+iNum    notnum
+
+; Convert MIDI note number to Hz
+iHz     = (440.0*exp(log(2.0)*((iNum)-69.0)/12.0))
+
+; Generate audio by indexing a table; fixed amplitude.
+aosc    oscil   10000, iHz, 1
+
+; Since there is no enveloping, there will be clicks.
+        outs    aosc, aosc
+
+prints &quot;Channel 1 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, iHz
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='2' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 2 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='3' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>
+prints &quot;Channel 3 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='4' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 4 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='5' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 5 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='6' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 6 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='7' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 7 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='8' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 8 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='9' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 9 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='10' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 10 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='11' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 11 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='12' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 12 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='13' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 13 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='14' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 14 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='15' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 15 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='16' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>untitled</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>prints &quot;Channel 16 Note received: idur: %d, iamp: %d, %ipitch: %d&quot;, p3, p4, p5
+
+
+
+if	gkcomptime &gt; 0 	kgoto compare
+if	gk_update_tempo_flag == 0 kgoto done
+gkcomptime times
+kgoto done
+compare:
+if	gk_update_tempo_flag == 1 kgoto done
+ktemptime times
+
+kdiff = ktemptime - gkcomptime
+if(kdiff &gt; 0)
+then
+newTempo = int(1/kdiff)
+printf &quot;New tempo is: %d&quot;, newTempo
+if(newTempo &lt; 320 &amp;&amp; newTempo &gt; 40)
+then
+tempo newTempo, 60
+endif
+;gkrate = 
+endif
+gkcomptime = ktemptime
+kgoto done
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+  </arrangement>
+  <mixer>
+    <enabled>false</enabled>
+    <extraRenderTime>0.0</extraRenderTime>
+    <channelList list='channels'>
+      <channel>
+        <name>1</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039738' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>2</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039740' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>3</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039742' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>4</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039744' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>5</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039746' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>6</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039748' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>7</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039750' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>8</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039752' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>9</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039754' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>10</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039756' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>11</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039758' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>12</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039760' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>13</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039762' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>14</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039764' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>15</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039766' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>16</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='292039768' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+    </channelList>
+    <channelList list='subChannels'/>
+    <channel>
+      <name>Master</name>
+      <outChannel>Master</outChannel>
+      <level>0.0</level>
+      <muted>false</muted>
+      <solo>false</solo>
+      <effectsChain bin='pre'/>
+      <effectsChain bin='post'/>
+      <parameter uniqueId='292039735' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+        <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+          <linePoint x='0.0' y='0.0'/>
+        </line>
+      </parameter>
+    </channel>
+  </mixer>
+  <tables>f0 36000
+; Generate a Sine-wave to be indexed at audio rate
+;  by the oscil opcode.
+
+f1      0       16384   10      1
+</tables>
+  <soundObjectLibrary/>
+  <globalOrcSco>
+    <globalOrc>gkcomptime init 0
+gk_update_tempo_flag init 0
+</globalOrc>
+    <globalSco></globalSco>
+  </globalOrcSco>
+  <opcodeList/>
+  <liveData>
+    <commandLine>csound -Wdo devaudio -L stdin</commandLine>
+    <commandLineEnabled>false</commandLineEnabled>
+    <commandLineOverride>false</commandLineOverride>
+  </liveData>
+  <soundObject type='blue.soundObject.PolyObject'>
+    <subjectiveDuration>2.0</subjectiveDuration>
+    <startTime>0.0</startTime>
+    <name>root</name>
+    <backgroundColor>-10066279</backgroundColor>
+    <timeBehavior>0</timeBehavior>
+    <noteProcessorChain/>
+    <isRoot>true</isRoot>
+    <pixelSecond>64</pixelSecond>
+    <defaultHeightIndex>0</defaultHeightIndex>
+    <snapEnabled>false</snapEnabled>
+    <snapValue>1.0</snapValue>
+    <timeDisplay>0</timeDisplay>
+    <timeUnit>5</timeUnit>
+    <soundLayer name='' muted='false' solo='false' heightIndex='0'>
+      <noteProcessorChain/>
+    </soundLayer>
+  </soundObject>
+  <scratchPadData>
+    <isWordWrapEnabled>true</isWordWrapEnabled>
+    <scratchText/>
+  </scratchPadData>
+  <noteProcessorChainMap/>
+  <renderStartTime>0.0</renderStartTime>
+  <renderEndTime>-1.0</renderEndTime>
+  <markersList/>
+  <loopRendering>false</loopRendering>
+  <tempo>
+    <enabled>false</enabled>
+    <visible>false</visible>
+    <line name='' version='2' max='240.0' min='30.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+      <linePoint x='0.0' y='60.0'/>
+    </line>
+  </tempo>
+</blueData>

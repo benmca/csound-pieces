@@ -1,0 +1,460 @@
+<blue.BlueData hash=27256294-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=11438836-0 id=globalOrcSco >
+<java.lang.String hash=-1798121375-0 id=globalOrc >
+ga1 init 0
+ga2 init 0
+
+</java.lang.String>
+<java.lang.String hash=0-0 id=globalSco >
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.LiveData hash=19191044-0 id=liveData >
+<java.lang.String hash=-1001887281-0 id=commandLine >
+csound -Wdo devaudio -L stdin
+</java.lang.String>
+<java.util.ArrayList hash=1-2 id=liveSoundObjects >
+</java.util.ArrayList>
+</blue.LiveData>
+<blue.Orchestra hash=18690717-0 id=orchestra >
+<java.util.TreeMap hash=108531338-0 id=orch >
+<[>
+<java.lang.Integer hash=1-3 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=31854630-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-573874122-0 id=instrumentText >
+idur = p3
+iamp = p4 * 16000
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+
+kamp    linen   iamp, .02, idur, idur*.5
+amod    oscili  1000, ipitch, 1
+acar    oscili  kamp, ipitch+amod, 1
+
+outs	acar, acar
+
+</java.lang.String>
+<java.lang.String hash=3530381-0 id=name >
+sine
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=2-0 >
+<int id=value >
+2
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=19815654-0 >
+<java.lang.String hash=0-2 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-101496341-0 id=instrumentText >
+idur = p3
+iamp = p4 * 32768
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+
+kamp    linen   iamp, .02, idur, idur*.5
+asig    oscili  kamp, ipitch, 3
+
+outs	asig, asig
+
+</java.lang.String>
+<java.lang.String hash=-894674659-0 id=name >
+square
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=3-0 >
+<int id=value >
+3
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=13961171-0 >
+<java.lang.String hash=0-3 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=742975530-0 id=instrumentText >
+idur = p3
+iamp = p4 * 32768
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+
+kamp    linen   iamp, .02, idur, idur*.5
+asig    oscili  kamp, ipitch, 2
+
+outs	asig, asig
+
+</java.lang.String>
+<java.lang.String hash=113641-0 id=name >
+saw
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=4-0 >
+<int id=value >
+4
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=32818339-0 >
+<java.lang.String hash=0-4 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=2039797751-0 id=instrumentText >
+; convert incoming freq to midinote
+;int n = (int) ( ( 12 * log(f / 220.0) / log(2.0) ) + 57.01 );
+ifreq = p5
+if_over_220 = ifreq/220
+i1 = log(if_over_220)
+i2 = log(2.0)
+isolution = ( ( 12 * i1 / i2 ) + 57.01 )
+inotenum = int(isolution)
+
+;convert scalar 0 > 1 to velocity value 0 > 127
+iamp = p4
+ivelocity = int(127*iamp)
+
+noteondur2   1, inotenum, ivelocity, p3-.1
+</java.lang.String>
+<java.lang.String hash=540187687-0 id=name >
+miditrans
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=99-0 >
+<int id=value >
+99
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=10081643-0 >
+<java.lang.String hash=0-5 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=98861842-0 id=instrumentText >
+a1	reverb	ga1, 5
+a2	reverb	ga2, 5
+	outs	a1,a2
+</java.lang.String>
+<java.lang.String hash=-1850485262-0 id=name >
+Reverb
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=746529-0 id=pObj >
+<int id=heightIndex >
+2
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-4 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+64
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=31116106-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=31116075-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=0-6 id=name >
+
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=5022794-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=5022763-0 >
+<java.lang.String hash=53544784-0 id=commandLine >
+lisp.exe -M c:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-0 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-5 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+15.296875
+</float>
+<java.lang.String hash=292650870-0 id=text >
+(in-package :stella)
+
+(defparameter *totaldur* 0)
+(defparameter *buflen* 4096)
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct)
+  (:parameters instr inst mytime dur amp pitch pan dist pct))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun line1(st tem pn len instrnum)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst instrnum )
+	    (setf mytime time)
+
+    
+
+    (setf rhythm (item 
+		(rhythms e tempo(tempo tem))
+		)
+	)
+    (setf dur rhythm)
+
+    (setf pitch (item (items 
+		(pitches c3 e g for 32)
+		(pitches f3 a c for 32)
+		)))
+    (setf amp (item 
+	(items .6 .5 .5 .6 .5 .5 .6 .5)
+	))
+    (setf pan pn)
+    (setf dist 2)
+    (setf pct .075)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun line2(st tem pn len instrnum)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst instrnum)
+	    (setf mytime time)
+
+    
+
+    (setf rhythm (item 
+		(rhythms e tempo(tempo tem))
+		)
+	)
+    (setf dur rhythm)
+
+    (setf pitch (item (items 
+		(pitches c2 c c c c g g g for 32)
+		(pitches f2 f f f f c c c for 32)
+		)))
+    (setf amp (item 
+	(items .6 .5 .5 .6 .5 .5 .6 .5)
+	))
+    (setf pan pn)
+    (setf dist 2)
+    (setf pct .075)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun randommel(st tem pn len instrnum)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst instrnum)
+	    (setf mytime time)
+
+    
+
+    (setf rhythm (item 
+		(rhythms q e e h w in random tempo(tempo tem) )
+		)
+	)
+    (setf dur rhythm)
+
+    (setf pitch (item (items 
+		(pitches c4 d e f g r r in random for 16)
+		(pitches f5 g a bf c r r in random for 16)
+		)))
+    (setf amp (item 
+	(items .6 .5 .5 .6 .5 .5 .6 .5)
+	))
+    (setf pan pn)
+    (setf dist 2)
+    (setf pct .075)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun randomchords(st tem pn len instrnum)
+  (algorithm nil soundin_indx (start st length len)
+    (unless-chording
+        (setf 
+            rhythm (item (rhythms q e h w tempo(tempo tem)))
+        )
+    )
+    (setf inst instrnum)
+    (setf mytime time)
+    (setf pitch (item (items 
+		(pitches [c3 e5 g6] for 16)
+		(pitches [f5 a c] for 16)
+		)))
+    (setf dur rhythm)
+    (setf amp (item 	(items 1)	))
+    (setf pan pn)
+    (setf dist 2)
+    (setf pct .075)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+;
+;(defun slowvoice(st tem pn len)
+;
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (line1 0 160 0 64 4)
+       (line2 0 160 90 64 4)
+;        (randommel 0 160 45 64 3)
+;        (randomchords 0 160 45 64 3)
+		;(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=32380789-0 id=projectProperties >
+<java.lang.String hash=0-7 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=-1406328437-0 id=author >
+author
+</java.lang.String>
+<java.lang.String hash=50-0 id=channels >
+2
+</java.lang.String>
+<java.lang.String hash=-401002892-0 id=commandLine >
+csoundav_win -+Q4 -+P21
+</java.lang.String>
+<java.lang.String hash=49739052-0 id=controlRate >
+48000
+</java.lang.String>
+<java.lang.String hash=1642127458-0 id=notes >
+ -W -o D:\Nuendo\Urban\mel1.wav
+
+consound -W -oD:\Nuendo\Urban\bass_1_ctof.wav
+</java.lang.String>
+<java.lang.String hash=49739052-1 id=sampleRate >
+48000
+</java.lang.String>
+<java.lang.String hash=0-8 id=title >
+
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-6 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=4597297-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-6 id=scratchText />
+</blue.ScratchPadData>
+<blue.Tables hash=24470614-0 id=tableSet >
+<java.lang.String hash=2105720044-0 id=tables >
+;sine
+f 1 0 16384 10 1
+
+;saw
+f 2 0 256 7 0 128 1 0 -1 128 0
+;pulse?
+f 3 0 256 7 1 128 1 0 -1 128 -1
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

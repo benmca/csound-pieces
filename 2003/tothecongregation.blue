@@ -1,0 +1,647 @@
+<blue.BlueData hash=31811005-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=24798854-0 id=globalOrcSco >
+<java.lang.String hash=634732745-0 id=globalOrc >
+ga1 init 0
+ga2 init 0
+</java.lang.String>
+<java.lang.String hash=0-0 id=globalSco >
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.Orchestra hash=14740287-0 id=orchestra >
+<java.util.TreeMap hash=90207910-0 id=orch >
+<[>
+<java.lang.Integer hash=1-2 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=7647499-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-440779567-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+;indx = indx + iorigdur)
+kamp	linseg	0, .01, iamp, iorigdur, iamp, .01, 0, idur - (iorigdur+.02), 0
+ktime   line    indx, idur , iendx
+ 
+al	diskin "STUDIES2003/TOTHECONGREGATION/1_SWSPEECH.AIF", ipitch, indx
+;al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
+  
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=-896071454-0 id=name >
+speech
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=2-0 >
+<int id=value >
+2
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=18053010-0 >
+<java.lang.String hash=0-2 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1566179544-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+;indx = indx + iorigdur)
+;kamp	linseg	0, .01, iamp, iorigdur, iamp, .01, 0, idur - (iorigdur+.02), 0
+kamp	linen	iamp, .01, p3, .01
+ktime   line    indx, idur , iendx
+ 
+;al	diskin "STUDIES2003/TOTHECONGREGATION/1_SWSPEECH.AIF", -ipitch, indx
+al  sndwarp kamp, ktime, 1, 5, 0, 4410, 882, 15, 1, 1
+  
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=-401405103-0 id=name >
+Sndwarp
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=3-0 >
+<int id=value >
+3
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=17769531-0 >
+<java.lang.String hash=0-3 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=371105583-0 id=instrumentText >
+idur = p3
+iamp = p4
+ipitch = 1
+ipan = 45
+idist = 2
+ipct = .075
+indx = .01
+iorigdur = 58
+iendx = indx+iorigdur
+;indx = indx + iorigdur)
+kamp linen iamp, .01, p3, .01
+ktime   line    indx, idur , iendx
+ 
+al	diskin "STUDIES2003/TOTHECONGREGATION/3_SWAMBIENCE.AIF", ipitch, indx
+;al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
+  
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+</java.lang.String>
+<java.lang.String hash=-1886691650-0 id=name >
+ambience
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=4-0 >
+<int id=value >
+4
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=18073623-0 >
+<java.lang.String hash=0-4 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1076854774-0 id=instrumentText >
+;insert instrument text here
+</java.lang.String>
+<java.lang.String hash=109627663-0 id=name >
+sound
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=99-0 >
+<int id=value >
+99
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=28664226-0 >
+<java.lang.String hash=0-5 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1877564460-0 id=instrumentText >
+klin linseg  p4, p3, p4
+kamp	linseg	1, p3, 1
+a1	reverb2	ga1, klin, 1
+a2	reverb2	ga2, klin, 1
+	outs	a1*kamp,a2*kamp
+ga1=0
+ga2=0
+
+</java.lang.String>
+<java.lang.String hash=-934352430-0 id=name >
+reverb
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=18670846-0 id=pObj >
+<int id=heightIndex >
+4
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-3 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+6
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=2131447938-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=33426790-0 >
+<boolean id=muted >
+true
+</boolean>
+<java.lang.String hash=2603186-0 id=name >
+Test
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=32414946-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=32414915-0 >
+<java.lang.String hash=-650873040-0 id=commandLine >
+lisp.exe -M C:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-0 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-4 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+98.0
+</float>
+<java.lang.String hash=-801948745-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *offset* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter endx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+
+
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx origdur)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx origdur))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun speech1_mix_rand(st tem pn len phase)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 2)
+	(setf idxdur '( (2.542 3.836)(3.836 6.070)(6.070 10.752)(10.752 12.338)(12.338 13.249)(13.249 14.071)(14.071 14.717)(14.717 16.833)(16.833 19.095)(19.095 21.063)(21.063 21.944)(21.944 24.529)(24.529 32.021)(32.021 33.754)(33.754 35.017)(35.017 38.337)(38.337 39.747)(39.747 41.803)(41.803 44.418)(44.418 45.123)(45.123 45.652)(45.652 46.592)(46.592 51.909)(51.909 54.553)
+	)) ; 24 items for 1_swspeech.aif
+    (setf i 
+        (item 
+;            (items 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 in heap)
+;            (items 19 20 21 23 in random)
+            (items 19 20 21 23 )
+;		(items 23 in heap)
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+    (setf origdur (- endx indx))
+;    (setf rhythm (item 
+;	  (items 
+;		(rhythms q h e in random for 6 tempo(tempo tem))
+;	  )
+;	)
+;    )
+( if (= phase 1)
+	(progn
+		(setf dur (+ (between .0001 .003) origdur))
+    	)
+	(setf dur origdur)
+)
+    (setf pitch 1)
+    (setf amp .25)
+	(setf pan pn)
+    (setf dist 2)
+    (setf pct .075)
+(setf rhythm dur)
+(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (speech1_mix_rand 0 60 10 60 1)
+        (speech1_mix_rand 0 60 80 60 1)
+        (speech1_mix_rand 0 60 20 60 1)
+        (speech1_mix_rand 0 60 70 60 1)
+        (speech1_mix_rand 0 60 30 60 1)
+        (speech1_mix_rand 0 60 60 60 1)
+        (speech1_mix_rand 0 60 45 60 0)
+        (speech1_mix_rand 0 60 45 60 0)
+        (speech1_mix_rand 0 60 45 60 0)
+
+;        (speech1_mix_rand 0 60 20 60)
+;        (speech1_mix_rand 0 60 70 60)
+;        (speech1_mix_rand 0 60 30 60)
+;        (speech1_mix_rand 0 60 40 60)
+ ;       (speech1_mix_rand 0 60 50 60)
+ ;       (speech1_mix_rand 0 60 60 60)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=2220309-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=1955894702-0 id=name >
+Actual
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=7721363-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=7721332-0 >
+<java.lang.String hash=-650873040-1 id=commandLine >
+lisp.exe -M C:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-1 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-5 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+66.5
+</float>
+<java.lang.String hash=2027932255-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *offset* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter endx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+
+
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx origdur)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx origdur))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+
+
+
+
+
+(defun speech1(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 2)
+	(setf idxdur '( (2.542 3.836)(3.836 6.070)(6.070 10.752)(10.752 12.338)(12.338 13.249)(13.249 14.071)(14.071 14.717)(14.717 16.833)(16.833 19.095)(19.095 21.063)(21.063 21.944)(21.944 24.529)(24.529 32.021)(32.021 33.754)(33.754 35.017)(35.017 38.337)(38.337 39.747)(39.747 41.803)(41.803 44.418)(44.418 45.123)(45.123 45.652)(45.652 46.592)(46.592 51.909)(51.909 54.553)
+	)) ; 24 items for 1_swspeech.aif
+    (setf i 
+        (item 
+            (items 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 in heap)
+;            (items 19 20 21 23 in random)
+;            (items 19 20 21 23 )
+;		(items 23 in heap)
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+    (setf origdur (- endx indx))
+(setf rhythm (item 
+	(items
+	(rhythms w w+w w w+w w tempo (tempo tem))
+	(rhythms e e.+32 q in heap tempo (tempo (* tem 1.5)))
+	(rhythms 16 12 e e. e.. q q. q.. h h. h.. w in random for 8 tempo (tempo (* 4 tem)))
+)))
+(setf dur rhythm)
+	(setf amp (item (items 0 1 0 1 0 (items 1 for 16))))
+	(setf pitch 1)
+	(setf pan pn)
+    (setf dist 2)
+    (setf pct .075)
+(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(defun spawner1 (st len)
+    (mute nil (start st length len)
+        (setf rhythm (item (rhythms w. w w. w w. tempo (tempo 60))))
+                (sprout
+                    (speech1_mix time 60 45 1 rhythm)
+                )
+    )
+)        
+
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+	(speech1 0 30 45 12 ) 
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=4214450-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=-1822047522-0 id=name >
+Ambience
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=550261614-0 id=soundObjects >
+<[>
+<blue.soundObject.GenericScore hash=17451570-0 >
+<java.lang.String hash=-1766244231-0 id=name >
+GEN: sound
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-6 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<java.lang.String hash=-1627427631-0 id=score >
+i3	0.0	58
+
+</java.lang.String>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+58.5
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.GenericScore>
+<blue.soundObject.GenericScore hash=9261983-0 >
+<java.lang.String hash=2022641745-0 id=name >
+GEN: genericScore
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-7 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<java.lang.String hash=-1627427631-1 id=score >
+i3	0.0	58
+
+</java.lang.String>
+<float id=startTime >
+58.666668
+</float>
+<float id=subjectiveDuration >
+19.5
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.GenericScore>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=7143557-0 id=projectProperties >
+<java.lang.String hash=0-6 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=-1406328437-0 id=author >
+author
+</java.lang.String>
+<java.lang.String hash=50-0 id=channels >
+2
+</java.lang.String>
+<java.lang.String hash=1841375146-0 id=commandLine >
+csoundav_win  -+y -b2048 -+P20
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=controlRate >
+44100
+</java.lang.String>
+<java.lang.String hash=178069174-0 id=notes >
+csoundav_win  -+y -b2048 -W -o reich_congregation.wav
+</java.lang.String>
+<java.lang.String hash=49620849-1 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-7 id=title >
+
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-8 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=4016151-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-8 id=scratchText >
+
+</java.lang.String>
+</blue.ScratchPadData>
+<blue.Tables hash=21488974-0 id=tableSet >
+<java.lang.String hash=-1199926360-0 id=tables >
+f1 0 16384 9 .5 1 0
+f2 0 16384 10 1
+;f3 0 2097152 1 "christmasball.wav" 0 0 0
+f4 0 512 5 .001 100 1.0 312 1.0 100 .001
+f5 0 16777216 1 "STUDIES2003/TOTHECONGREGATION/1_SWSPEECH.AIF" 0 0 0 
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

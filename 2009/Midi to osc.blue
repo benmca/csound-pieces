@@ -1,0 +1,145 @@
+<blueData version='0.125.0'>
+  <projectProperties>
+    <title></title>
+    <author>author</author>
+    <notes> -W -o D:\Nuendo\Urban\mel1.wav
+
+consound -W -oD:\Nuendo\Urban\bass_1_ctof.wav</notes>
+    <sampleRate>44100</sampleRate>
+    <ksmps>2</ksmps>
+    <channels>2</channels>
+    <diskSampleRate>44100</diskSampleRate>
+    <diskKsmps>2</diskKsmps>
+    <diskChannels>2</diskChannels>
+    <useAudioOut>true</useAudioOut>
+    <useAudioIn>false</useAudioIn>
+    <useMidiIn>false</useMidiIn>
+    <useMidiOut>false</useMidiOut>
+    <noteAmpsEnabled>true</noteAmpsEnabled>
+    <outOfRangeEnabled>true</outOfRangeEnabled>
+    <warningsEnabled>true</warningsEnabled>
+    <benchmarkEnabled>true</benchmarkEnabled>
+    <advancedSettings>-d -M0 -odac0</advancedSettings>
+    <completeOverride>false</completeOverride>
+    <fileName>c:\test.wav</fileName>
+    <askOnRender>false</askOnRender>
+    <diskNoteAmpsEnabled>true</diskNoteAmpsEnabled>
+    <diskOutOfRangeEnabled>true</diskOutOfRangeEnabled>
+    <diskWarningsEnabled>true</diskWarningsEnabled>
+    <diskBenchmarkEnabled>true</diskBenchmarkEnabled>
+    <diskAdvancedSettings>-W</diskAdvancedSettings>
+    <diskCompleteOverride>false</diskCompleteOverride>
+    <diskAlwaysRenderEntireProject>false</diskAlwaysRenderEntireProject>
+    <csladspaSettings>
+      <name/>
+      <maker/>
+      <uniqueId>0</uniqueId>
+      <copyright/>
+      <portDefinitionList/>
+      <enabled>false</enabled>
+    </csladspaSettings>
+  </projectProperties>
+  <arrangement>
+    <instrumentAssignment arrangementId='1' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>sine</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>inote cpsmidi
+OSCsend     1, &quot;127.0.0.1&quot;,12000, &quot;&quot;, &quot;idddd&quot;, p1, p2, p3, inote
+turnoff</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+  </arrangement>
+  <mixer>
+    <enabled>false</enabled>
+    <extraRenderTime>0.0</extraRenderTime>
+    <channelList list='channels'>
+      <channel>
+        <name>1</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='974355192' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+    </channelList>
+    <channelList list='subChannels'/>
+    <channel>
+      <name>Master</name>
+      <outChannel>Master</outChannel>
+      <level>0.0</level>
+      <muted>false</muted>
+      <solo>false</solo>
+      <effectsChain bin='pre'/>
+      <effectsChain bin='post'/>
+      <parameter uniqueId='974355204' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+        <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+          <linePoint x='0.0' y='0.0'/>
+        </line>
+      </parameter>
+    </channel>
+  </mixer>
+  <tables>f0 36000</tables>
+  <soundObjectLibrary/>
+  <globalOrcSco>
+    <globalOrc>ga1 init 0
+ga2 init 0
+</globalOrc>
+    <globalSco>
+i1 0 1 1 440 45 1 1
+
+;i4 0 77.5</globalSco>
+  </globalOrcSco>
+  <opcodeList/>
+  <liveData>
+    <commandLine>csound -Wdo devaudio -L stdin</commandLine>
+    <commandLineEnabled>true</commandLineEnabled>
+    <commandLineOverride>true</commandLineOverride>
+  </liveData>
+  <soundObject type='blue.soundObject.PolyObject'>
+    <subjectiveDuration>2.0</subjectiveDuration>
+    <startTime>0.0</startTime>
+    <name>root</name>
+    <backgroundColor>-10066279</backgroundColor>
+    <timeBehavior>0</timeBehavior>
+    <noteProcessorChain/>
+    <isRoot>true</isRoot>
+    <pixelSecond>64</pixelSecond>
+    <defaultHeightIndex>1</defaultHeightIndex>
+    <snapEnabled>false</snapEnabled>
+    <snapValue>1.0</snapValue>
+    <timeDisplay>0</timeDisplay>
+    <timeUnit>5</timeUnit>
+    <soundLayer name='' muted='false' solo='false' heightIndex='1'>
+      <noteProcessorChain/>
+    </soundLayer>
+    <soundLayer name='' muted='false' solo='false' heightIndex='1'>
+      <noteProcessorChain/>
+    </soundLayer>
+  </soundObject>
+  <scratchPadData>
+    <isWordWrapEnabled>true</isWordWrapEnabled>
+    <scratchText/>
+  </scratchPadData>
+  <noteProcessorChainMap/>
+  <renderStartTime>0.0</renderStartTime>
+  <renderEndTime>-1.0</renderEndTime>
+  <markersList/>
+  <loopRendering>false</loopRendering>
+  <tempo>
+    <enabled>false</enabled>
+    <visible>false</visible>
+    <line name='' version='2' max='240.0' min='30.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+      <linePoint x='0.0' y='60.0'/>
+    </line>
+  </tempo>
+</blueData>

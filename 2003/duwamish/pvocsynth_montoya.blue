@@ -1,0 +1,239 @@
+<blue.BlueData hash=16985033-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=19910133-0 id=globalOrcSco >
+<java.lang.String hash=0-0 id=globalOrc >
+
+</java.lang.String>
+<java.lang.String hash=1397286979-0 id=globalSco >
+
+f0 7200
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.Orchestra hash=23235469-0 id=orchestra >
+<java.util.TreeMap hash=3745813-0 id=orch >
+<[>
+<java.lang.Integer hash=1-2 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=3745812-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-1432373574-0 id=instrumentText >
+;
+;first, let's figure out which sample
+;
+inotnum	notnum
+inumsamps = 12
+ioctfactor = (inotnum-36)/inumsamps
+ioctfactor = int(ioctfactor)
+isampnum = inotnum % 12
+;based on notnum, goto appropriate sample
+if isampnum == 0 igoto sample1
+if isampnum == 1 igoto sample2
+if isampnum == 2 igoto sample3
+if isampnum == 3 igoto sample4
+if isampnum == 4 igoto sample5
+if isampnum == 5 igoto sample6
+if isampnum == 6 igoto sample7
+if isampnum == 7 igoto sample8
+if isampnum == 8 igoto sample9
+if isampnum == 9 igoto sample10
+if isampnum == 10 igoto sample11
+if isampnum == 11 igoto sample12
+
+sample1:
+ibeg = .236
+iendpt = 8.148
+igoto after
+
+sample2:
+ibeg = 8.148
+iendpt = 9.979
+igoto after
+
+sample3:
+ibeg = 9.979
+iendpt = 14.053
+igoto after
+
+sample4:
+ibeg = 14.053
+iendpt = 15.825
+igoto after
+
+sample5:
+ibeg = 15.825
+iendpt = 17.478
+igoto after
+
+sample6:
+ibeg = 17.478
+iendpt = 19.368
+igoto after
+
+sample7:
+ibeg = 19.368
+iendpt = 22.379
+igoto after
+
+sample8:
+ibeg = 22.379
+iendpt = 26.15
+igoto after
+
+sample9:
+ibeg = 22.379
+iendpt = 26.15
+igoto after
+
+sample10:
+ibeg = 22.379
+iendpt = 26.15
+igoto after
+
+sample11:
+ibeg = 22.379
+iendpt = 26.15
+igoto after
+
+sample12:
+ibeg = 22.379
+iendpt = 26.15
+igoto after
+
+after:
+idur = iendpt-ibeg
+ireadur = idur;*2
+itotalbins = 1024
+inumkeys = 8
+
+ifn = 1
+iamp = 100*((ioctfactor*4)+1)
+ibinoffset  = (itotalbins/inumkeys)*ioctfactor
+ibend	pchbend 0.1 0.2
+ibend = ibend + 1
+
+
+;
+; ramp the sound, shutting it OFF after idur*.99 (for an hour!)
+; 
+kramp	linenr	iamp, .01, 1, .01
+ktime	line	ibeg, ireadur, iendpt
+ar	pvadd	ktime, ibend, "Montoya1.pvoc", ifn, itotalbins/inumkeys, ibinoffset
+print inotnum
+print ibeg
+print iendpt
+print ioctfactor
+print iamp
+print ibend
+out ar*kramp
+</java.lang.String>
+<java.lang.String hash=-976121721-0 id=name >
+pvocer
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=503405-0 id=pObj >
+<int id=heightIndex >
+2
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-3 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+64
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=33110765-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=33110734-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=0-0 id=name />
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=1-4 id=soundObjects >
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=24809582-0 id=projectProperties >
+<java.lang.String hash=0-2 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=-1406328437-0 id=author >
+author
+</java.lang.String>
+<java.lang.String hash=49-0 id=channels >
+1
+</java.lang.String>
+<java.lang.String hash=-1754357471-0 id=commandLine >
+csoundav_win   -+K1 -+P18 
+</java.lang.String>
+<java.lang.String hash=51633-0 id=controlRate >
+441
+</java.lang.String>
+<java.lang.String hash=-1270626977-0 id=notes >
+csoundav_win  -+y -b2048 -+P20
+
+csoundav_win  -+K1 -+P18 -d -+* -m0 -+O
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-3 id=title >
+
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-5 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=27286491-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-0 id=scratchText />
+</blue.ScratchPadData>
+<blue.Tables hash=17274068-0 id=tableSet >
+<java.lang.String hash=-1670489766-0 id=tables >
+f1	0	513	10	1
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

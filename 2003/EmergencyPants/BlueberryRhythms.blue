@@ -1,0 +1,872 @@
+<blue.BlueData hash=17957281-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=19475730-0 id=globalOrcSco >
+<java.lang.String hash=0-0 id=globalOrc >
+
+</java.lang.String>
+<java.lang.String hash=0-1 id=globalSco >
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.LiveData hash=5124808-0 id=liveData >
+<java.lang.String hash=-1001887281-0 id=commandLine >
+csound -Wdo devaudio -L stdin
+</java.lang.String>
+<java.util.ArrayList hash=1-2 id=liveSoundObjects >
+</java.util.ArrayList>
+</blue.LiveData>
+<blue.Orchestra hash=31984775-0 id=orchestra >
+<java.util.TreeMap hash=82068097-0 id=orch >
+<[>
+<java.lang.Integer hash=1-3 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=8320091-0 >
+<java.lang.String hash=-484011780-0 id=comment >
+******************************************
+OLD GUI
+******************************************
+
+
+
+
+	FLpanel	"Sndwarp",450,850 ;***** start of container
+ih1  FLvalue "Overall Amp",75, 25,330,50
+ih2  FLvalue "xdens",75, 25,330,150
+ih3  FLvalue "kgdur",75, 25,330,250
+ih4  FLvalue "Rand Amp",75, 25,330,350
+ih5  FLvalue "Rand Freq",75, 25,330,450
+ih6  FLvalue "Freq Scalar",75, 25,330,550 
+ih7  FLvalue "Grain Amp",75, 25,330,650 
+
+
+gk1,ih11	FLslider	"Overall Amp", 1, 16000, 0 ,5, ih1, 300,15, 20,50
+gk2,ih22	FLslider	"Grain Density", 50, 400, 0 ,5, ih2, 300,15, 20,150
+gk3,ih33	FLslider	"Grain Duration", .005, 1, 0 ,5, ih3, 300,15, 20,250
+gk4,ih44	FLslider	 "Rand Amp",.1,20,0,5,ih4,300,15,20,350
+gk5,ih55	FLslider	 "Rand Freq",.1,20,0,5,ih5,300,15,20,450
+gk6,ih66	FLslider	 "Freq Scalar into drone",.1,2,0,5,ih6,300,15,20,550
+gk7,ih77	FLslider	 "Amp of Grain",1, 16000, 0 ,5,ih7, 300,15, 20,650
+;rewrite inst is #2 - calls instr 2 for 1 sec
+gk8,ih88	FLbutton	"Rewrite table", 1, 0, 1, 300,15, 20,750, 0, 2, 0, 1
+
+FLsetVal_i 5000, ih11
+FLsetVal_i 1, ih22
+FLsetVal_i .005, ih33
+FLsetVal_i .1, ih44
+FLsetVal_i .1, ih55
+FLsetVal_i .1, ih66
+FLsetVal_i 10000, ih77
+FLsetVal_i	 .1, ih88
+	FLpanel_end	;***** end of container
+	FLrun		;***** runs the widget thread, it is always required!
+
+******************************************
+END OLD GUI
+******************************************
+
+
+ifreq	cpsmidi
+;####################################################
+;	Ramp ends for midi note - equiv to linen 1,.01,p3,.01
+;####################################################
+	xtratim .1       ;extra-time, i.e. release dur;
+krel	init    0
+krel	release         ;outputs release-stage flag (0 or 1 values)
+if	(krel > .5) kgoto  rel  ;if in relase-stage goto relase section
+;
+;************ attack and sustain section ***********
+kmp1	linseg  0,.1,1,3600,1 
+	kgoto   done
+;
+;************ release section **********************
+rel:
+kmp1	linseg  1,.1,0
+done:
+kmp     =       kmp1*gk1
+;###################################################
+;grain stuff
+;	uses xdens (gk2) and kgdur (gk3) 
+;	from GUI
+;Bette is f5
+;####################################################
+a1	grain		kmp *.4, ifreq*2, gk2, 0, 10, gk3, 5, 4, 1
+a2	grain		kmp *.4, ifreq*3, gk2, 0, 10, gk3, 5, 4, 1
+agrain =(a1+a2)*.5
+
+;####################################################
+;all together now
+;####################################################
+;a1, a2	locsig	a1, 50, 5, .1
+;ar1, ar2	locsend
+
+;ga1=ga1+(a1*.01)
+;ga1=ga1+ar1
+;ga2=ga2+ar2
+
+;	outs	a1, a2
+	out	agrain
+</java.lang.String>
+<boolean id=enabled >
+false
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-1183773752-0 id=instrumentText >
+
+iinitfreq cpsmidi
+ifreq	= .33 * (iinitfreq / 440)
+;####################################################
+;	Ramp ends for midi note - equiv to linen 1,.01,p3,.01
+;####################################################
+	xtratim .1       ;extra-time, i.e. release dur;
+krel	init    0
+krel	release         ;outputs release-stage flag (0 or 1 values)
+if	(krel > .5) kgoto  rel  ;if in relase-stage goto relase section
+;
+;************ attack and sustain section ***********
+kmp1	linseg  0,.1,1,3600,1 
+	kgoto   done
+;
+;************ release section **********************
+rel:
+kmp1	linseg  1,.1,0
+done:
+kmp     =       kmp1*gk1
+;###################################################
+;grain stuff
+;	uses xdens (gk2) and kgdur (gk3) 
+;	from GUI
+;Bette is f5
+;####################################################
+;a1	grain		kmp *.4, ifreq*2, gk2, 0, 10, gk3, 5, 4, 1
+agrain 	grain		kmp , ifreq, gk2, gk4, gk5, gk3, 5, 6, 1, 1
+;####################################################
+;all together now
+;####################################################
+;a1, a2	locsig	a1, 50, 5, .1
+;ar1, ar2	locsend
+
+;ga1=ga1+(a1*.01)
+;ga1=ga1+ar1
+;ga2=ga2+ar2
+
+;	outs	a1, a2
+	out	agrain
+</java.lang.String>
+<java.lang.String hash=-66844179-0 id=name >
+midi controlled
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=2-0 >
+<int id=value >
+2
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=14456085-0 >
+<java.lang.String hash=0-2 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-2140031512-0 id=instrumentText >
+
+ifreq	= .33
+;####################################################
+;	Ramp ends for midi note - equiv to linen 1,.01,p3,.01
+;####################################################
+kmp     = 10000
+imaxdens = 1
+imaxdur = .3
+;kdens	linen	10, 10, p3, 10
+;kdur	linen	1, 10, p3, 10
+kdens	linseg	1, p3*.3, imaxdens, p3-(p3*.6), imaxdens, p3*.3, 1
+kdur	linseg	.01, p3*.3, imaxdur, p3-(p3*.6), imaxdur, p3*.3, .01
+
+agrain 	grain		kmp , ifreq, kdens, 0, .01, kdur, 5, 6, 1, 1
+
+;####################################################
+;all together now
+;####################################################
+;a1, a2	locsig	a1, 50, 5, .1
+;ar1, ar2	locsend
+
+;ga1=ga1+(a1*.01)
+;ga1=ga1+ar1
+;ga2=ga2+ar2
+
+;	outs	a1, a2
+	out	agrain
+
+</java.lang.String>
+<java.lang.String hash=-506789682-0 id=name >
+orc controlled
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=3-0 >
+<int id=value >
+3
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=29334341-0 >
+<java.lang.String hash=753900646-0 id=comment >
+read a bit from a sound file
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=985898563-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+;indx = indx + iorigdur)
+kamp	linen	1, .0001, p3, .0001
+ 
+al	diskin "EmergencyPants\\BlueberryIntro.aif", ipitch, indx
+;al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
+  
+al=al*kamp
+/*
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+*/
+	out al
+</java.lang.String>
+<java.lang.String hash=-2021994892-0 id=name >
+soundin
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=4-0 >
+<int id=value >
+4
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=7002929-0 >
+<java.lang.String hash=0-3 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-1079804487-0 id=instrumentText >
+idur = p3
+iamp = p4*10
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+isuspoint = p10
+iwinsize = p11
+irandfactor = p12
+itbl = p13
+ioverlap = p14
+isusportion = p15
+iorigdur = p16
+iendx = indx + iorigdur
+
+kamp	linen	iamp, .01, p3, .01
+ktime   linseg    indx, idur*isusportion , indx+(iorigdur*isuspoint), idur*(1-isusportion), iendx
+ 
+al  sndwarp kamp, ktime, ipitch, 5, 0, iwinsize, irandfactor, ioverlap, itbl, 1
+  
+al=al*kamp
+/*
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+*/
+	out al
+</java.lang.String>
+<java.lang.String hash=-2066058383-0 id=name >
+sndwarp
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=5-0 >
+<int id=value >
+5
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=22839460-0 >
+<java.lang.String hash=753900646-1 id=comment >
+read a bit from a sound file
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-341028109-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+;indx = indx + iorigdur)
+kamp	linen	1, .0001, p3, .0001
+ 
+al	diskin "EmergencyPants\\BlueBerryPie\\washer_rhy.aif", ipitch, indx
+;al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
+  
+al=al*kamp
+/*
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+*/
+	out al
+</java.lang.String>
+<java.lang.String hash=-794987636-0 id=name >
+washer
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=6-0 >
+<int id=value >
+6
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=115186-0 >
+<java.lang.String hash=753900646-2 id=comment >
+read a bit from a sound file
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=230071960-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+
+
+kamp	linen	iamp, .01, p3, .01
+ktime   linseg    0, p3, 5.42
+
+;al  sndwarp kamp, ktime, ipitch, 5, 0, iwinsize, irandfactor, ioverlap, itbl, 1
+al pvadd	ktime, 1, "EmergencyPants\\BlueBerryPie\\washer_rhy.pv", 3, 10, 0
+al=al*kamp
+/*
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+*/
+	out al
+</java.lang.String>
+<java.lang.String hash=-1026959590-0 id=name >
+washer pv
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=23338720-0 id=pObj >
+<int id=heightIndex >
+2
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-4 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+64
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=-1425386635-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=2568172-0 >
+<boolean id=muted >
+true
+</boolean>
+<java.lang.String hash=0-4 id=name >
+
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=7838072-0 id=soundObjects >
+<[>
+<blue.soundObject.GenericScore hash=7838041-0 >
+<java.lang.String hash=-274279685-0 id=name >
+genericScore
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-5 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<java.lang.String hash=-521316386-0 id=score >
+
+;bluelayer1
+;i4 0 10 10 1 45 2 .75 0 .9 8820 400 4 8 .5 .3
+;bluelayer2
+;i4 0 10 10 1 45 2 .75 0 .9 8820 4000 6 8 .5 .3
+;bluelayer3
+;i4 0 10 10 1 45 2 .75 0 .9 8820 400 4 8 .9 .3
+;bluelayer4
+;i4 0 20 10 1 45 2 .75 0 .9 16000 400 4 18 .9 .3
+;bluelayer5
+;i4 0 30 10 1 45 2 .75 0 .3 22000 1000 4 16 .1 .16
+;bluelayer6
+;i4 0 30 10 .5 45 2 .75 0 .3 22000 1000 4 16 .1 .16
+;indx = p9
+;isuspoint = p10 -- duration scalar, in sample, to start sustain portion
+;	"where, in the sample, do we start sustaining"
+;1 means no sus
+
+;iwinsize = p11
+;irandfactor = p12
+;itbl = p13
+;ioverlap = p14
+;isusportion = p15 -- actual duration scalar to start sustain portion
+;	"where, in the actual dur of this note, do we start sustaining"
+;1 means no suspoint
+
+;iorigdur = p16
+;	"how much of the ftable do we read"
+
+
+;straight1 
+;straight, 1/2 spd - sustained pie
+;i4 0 20 10 1 45 2 .75 0 .825 22000 1000 4 16 .5 1.2
+;straight2
+;straight, 1/2 spd - sustained pie
+;i4 0 20 10 1 45 2 .75 0 .825 12000 100 4 16 .5 1.25
+;straight3
+;straight, 1/2 spd - sustained pie
+;i4 0 5 10 1 45 2 .75 0 .825 12000 100 4 16 .5 1.25
+;straight4
+;straight, 1/2 spd - sustained pie
+;i4 0 30 10 1 45 2 .75 0 .825 12000 100 4 16 .5 1.3
+;straight 'blue', 1/2 spd 
+;i4 0 10 10 1 45 2 .75 0 1 22000 1000 4 16 1 .3
+
+
+
+</java.lang.String>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+10.0
+</float>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.GenericScore>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=12271473-0 >
+<boolean id=muted >
+true
+</boolean>
+<java.lang.String hash=-136963187-0 id=name >
+Piano Rhythm
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=31485447-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=31485416-0 >
+<java.lang.String hash=-650873040-0 id=commandLine >
+lisp.exe -M C:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-0 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-6 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+15.078125
+</float>
+<java.lang.String hash=-659973598-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *offset* 0)
+(defparameter *buflen* 10000)
+
+
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+;
+;	remix the opening piano notes of blueberry pie
+;
+
+
+(defun pno1(st tem len)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 3)
+(setf idxdur '((0.046000 0.336000 e)(0.336000 0.650000 e)(0.650000 0.986000 e)(0.986000 1.288000 e)(1.288000 1.636000 e)(1.637000 1.938000 e)(1.938000 2.275000 e)(2.275000 2.577000 e)(2.577000 2.902000 e)(2.902000 3.262000 e)(3.262000 3.564000 e)(3.564000 3.877000 e)(3.877000 4.202000 e)(4.202000 4.551000 e)(4.551000 4.841000 e)(4.841000 5.154000 e))
+	); 16 items
+    (setf i 
+        (item 
+            (items 0 1 2 3 4 5 0 0 6 7 8 9 10 11 in random )
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+    (setf origdur (- endx indx))
+    (setf rhythm (item 
+	(items
+	(rhythms e  in heap tempo (tempo tem))
+	)))
+    (setf dur rhythm)
+;    (setf amp (item (items 0 1 0 1 0 (items 1 for 16))))
+    (setf amp 1)
+;95 bpm = .010526316
+;96 = .01041666
+
+    		(setf pitch (* tem .010526316))
+    (setf pan 1)  
+    (setf dist 2)
+    (setf pct .075)
+    (setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+
+
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()		;dens	;graindur	;indx/endx
+	;chaos1
+;	(pno1 0 96 16) 
+;	(pno1 0 192 32) 
+;	(pno1 0 120 20) 
+	;chaos2
+;	(pno1 0 24 8) 
+;	(pno1 0 24 8) 
+	; straightpno1
+;	(pno1 0 95 100)
+	; straightpno3
+	(pno1 0 95 100)
+	; brandonlikes 
+;	(pno1 0 190 100) 
+;	(pno1 0 47.5 100) 
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+
+	
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=21121915-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=156630954-0 id=name >
+Washer Rhythm
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=24804867-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=24804836-0 >
+<java.lang.String hash=-650873040-1 id=commandLine >
+lisp.exe -M C:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-1 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-7 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<java.lang.String hash=758433847-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *offset* 0)
+(defparameter *buflen* 10000)
+
+
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+;
+;	remix the opening piano notes of blueberry pie
+;
+
+
+(defun washer(st tem len endtempo)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 6)
+(setf idxdur '((0.058000 0.551000 e)(0.551000 0.893000 e)(0.893000 1.242000 e)(1.242000 1.587000 e)(1.587000 1.906000 e)(1.906000 2.278000 e)(2.278000 2.618000 e)); 7 items
+
+	)
+    (setf i 
+        (item 
+	(items
+            (items (1 weight 10) (0 weight 1) in random )
+ 	  (items 0 1 2 3 4 5 6 1 2 3 4 5 6 1 2 3 4 5 6 in heap for 2)
+            (items (1 weight 10) (0 weight 1) in random )
+ 	  (items 0 1 2 3 4 5 6 1 2 3 4 5 6 1 2 3 4 5 6 in heap for 2)
+            (items 3 3 4 5 6 for 4)
+    )))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+    (setf origdur (- endx indx))
+    (setf rhythm (item 
+	(items
+	(rhythms e. e. e e. e. e   e e e e  tempo (tempo tem))
+	)))
+    (setf dur rhythm)
+;    (setf amp (item (items 0 1 0 1 0 (items 1 for 16))))
+    (setf amp (between .5 1))
+	(setf newtempo (* tem (interpl count 0 1.0 len endtempo)))
+;86 bpm = .011627927
+;81 bpm = .0123456789
+
+    		(setf pitch (* newtempo .0123456789))
+    (setf pan 1)  
+    (setf dist 2)
+    (setf pct .075)
+    (setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+
+
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()		;dens	;graindur	;indx/endx
+	;chaos1
+;	(pno1 0 96 16) 
+;	(pno1 0 192 32) 
+;	(pno1 0 120 20) 
+	;chaos2
+;	(pno1 0 24 8) 
+;	(pno1 0 24 8) 
+	; straightpno1
+;	(pno1 0 95 100)
+	; straightpno3
+;	(pno1 0 95 100)
+	; brandonlikes 
+;	(pno1 0 190 100) 
+;	(pno1 0 47.5 100) 
+
+	;
+	(washer 0 90 81 1.1)
+	(washer 0 90 81 1.1)
+;	(washer 0 47.5 100)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+
+	
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=23705198-0 id=projectProperties >
+<java.lang.String hash=0-5 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=0-6 id=author >
+
+</java.lang.String>
+<java.lang.String hash=49-0 id=channels >
+1
+</java.lang.String>
+<java.lang.String hash=1033781011-0 id=commandLine >
+ csound32 -d -A -o dac3
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=controlRate >
+44100
+</java.lang.String>
+<java.lang.String hash=-937164006-0 id=notes >
+csound32 -d -A -o Bluetest.aif
+
+csound32 -d -odac1
+csoundav_win  -+K1 -+P18 -d -b32768
+</java.lang.String>
+<java.lang.String hash=49620849-1 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-7 id=title >
+
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-8 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=25212153-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-4 id=scratchText />
+</blue.ScratchPadData>
+<blue.Tables hash=29801427-0 id=tableSet >
+<java.lang.String hash=785481066-0 id=tables >
+; Chel polynomial
+
+f1	0	513	13	1	1	0	2	0	2	2	3	4
+
+				;partials:  ^ on...
+
+f2	0	513	10	1
+
+;sine
+
+f3	0	513	20	9
+
+;half sine/sine window func
+
+f4	0	513	20	6
+
+;blueberry pie sample
+f5 0 131072 1 "C:\CSOUND\snd\EmergencyPants\BlueberryPie.aif" 0 0 0 
+
+;rectangle
+f6   0   8192   -20   8   1
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

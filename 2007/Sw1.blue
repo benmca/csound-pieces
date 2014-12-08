@@ -1,0 +1,223 @@
+<blueData version='0.116.1'>
+  <projectProperties>
+    <title></title>
+    <author>author</author>
+    <notes></notes>
+    <sampleRate>44100</sampleRate>
+    <ksmps>1</ksmps>
+    <channels>2</channels>
+    <diskSampleRate>44100</diskSampleRate>
+    <diskKsmps>1</diskKsmps>
+    <diskChannels>2</diskChannels>
+    <useAudioOut>true</useAudioOut>
+    <useAudioIn>false</useAudioIn>
+    <useMidiIn>false</useMidiIn>
+    <useMidiOut>false</useMidiOut>
+    <noteAmpsEnabled>true</noteAmpsEnabled>
+    <outOfRangeEnabled>true</outOfRangeEnabled>
+    <warningsEnabled>true</warningsEnabled>
+    <benchmarkEnabled>true</benchmarkEnabled>
+    <advancedSettings></advancedSettings>
+    <completeOverride>false</completeOverride>
+    <fileName></fileName>
+    <askOnRender>false</askOnRender>
+    <diskNoteAmpsEnabled>true</diskNoteAmpsEnabled>
+    <diskOutOfRangeEnabled>true</diskOutOfRangeEnabled>
+    <diskWarningsEnabled>true</diskWarningsEnabled>
+    <diskBenchmarkEnabled>true</diskBenchmarkEnabled>
+    <diskAdvancedSettings></diskAdvancedSettings>
+    <diskCompleteOverride>false</diskCompleteOverride>
+  </projectProperties>
+  <arrangement>
+    <instrumentAssignment arrangementId='1' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>Digital Pulse</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>idur = p3
+iamp = p4
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+ilen = .05
+
+kamp    linseg   0, .001, 1*iamp, ilen-.0002, 1*iamp, 0, 0, (idur-ilen)-.0002, 0
+asig soundin &quot;DigitalPulse3_Clean_Clip.wav&quot;
+
+outs asig*kamp, asig*kamp
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='2' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>sine</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>idur = p3
+iamp = p4 * 16000
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+
+kamp  	linen 	iamp, .0001, idur, .0001
+;kamp    linen   iamp, .02, idur, idur*.5
+;amod    oscili  1000, ipitch, 1
+;acar    oscili  kamp, ipitch+amod, 1
+;acar    oscili  kamp, ipitch+amod, 1
+acar	oscili  kamp, ipitch, 1
+
+a1, a2	locsig  acar, ipan, idist, ipct
+ar1, ar2  locsend
+outs a1, a2
+ga1 = ga1+ar1
+ga2 = ga2+ar2
+
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+  </arrangement>
+  <mixer>
+    <enabled>false</enabled>
+    <extraRenderTime>0.0</extraRenderTime>
+    <channelList list='channels'>
+      <channel>
+        <name>1</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='529358741' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>2</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='529358743' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+    </channelList>
+    <channelList list='subChannels'/>
+    <channel>
+      <name>Master</name>
+      <outChannel>Master</outChannel>
+      <level>0.0</level>
+      <muted>false</muted>
+      <solo>false</solo>
+      <effectsChain bin='pre'/>
+      <effectsChain bin='post'/>
+      <parameter uniqueId='529358739' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
+        <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+          <linePoint x='0.0' y='0.0'/>
+        </line>
+      </parameter>
+    </channel>
+  </mixer>
+  <tables>;sine
+f 1 0 16384 10 1
+
+;saw
+f 2 0 256 7 0 128 1 0 -1 128 0
+;pulse?
+f 3 0 256 7 1 128 1 0 -1 128 -1
+</tables>
+  <soundObjectLibrary/>
+  <globalOrcSco>
+    <globalOrc>ga1 init 0
+ga2 init 0</globalOrc>
+    <globalSco></globalSco>
+  </globalOrcSco>
+  <opcodeList/>
+  <liveData>
+    <commandLine>csound -Wdo devaudio -L stdin</commandLine>
+    <commandLineEnabled>false</commandLineEnabled>
+    <commandLineOverride>false</commandLineOverride>
+  </liveData>
+  <soundObject type='blue.soundObject.PolyObject'>
+    <subjectiveDuration>2.0</subjectiveDuration>
+    <startTime>0.0</startTime>
+    <name>root</name>
+    <backgroundColor>-10066279</backgroundColor>
+    <timeBehavior>0</timeBehavior>
+    <noteProcessorChain/>
+    <isRoot>true</isRoot>
+    <pixelSecond>64</pixelSecond>
+    <defaultHeightIndex>0</defaultHeightIndex>
+    <snapEnabled>true</snapEnabled>
+    <snapValue>1.0</snapValue>
+    <timeDisplay>1</timeDisplay>
+    <timeUnit>4</timeUnit>
+    <soundLayer name='' muted='false' solo='false' heightIndex='0'>
+      <noteProcessorChain/>
+      <soundObject type='blue.soundObject.PatternObject'>
+        <subjectiveDuration>4.0</subjectiveDuration>
+        <startTime>0.0</startTime>
+        <name>Pattern</name>
+        <backgroundColor>-12566464</backgroundColor>
+        <timeBehavior>0</timeBehavior>
+        <noteProcessorChain/>
+        <beats>4</beats>
+        <subDivisions>4</subDivisions>
+        <patterns>
+          <pattern>
+            <patternName>pattern0</patternName>
+            <patternScore>i1	0.0	0.5	1	1	45	1	.1
+</patternScore>
+            <muted>false</muted>
+            <solo>false</solo>
+            <values>1111111111111111</values>
+          </pattern>
+        </patterns>
+      </soundObject>
+    </soundLayer>
+    <soundLayer name='' muted='false' solo='false' heightIndex='0'>
+      <noteProcessorChain/>
+      <soundObject type='blue.soundObject.PatternObject'>
+        <subjectiveDuration>2.0</subjectiveDuration>
+        <startTime>0.0</startTime>
+        <name>Pattern</name>
+        <backgroundColor>-12566464</backgroundColor>
+        <timeBehavior>0</timeBehavior>
+        <noteProcessorChain/>
+        <beats>4</beats>
+        <subDivisions>4</subDivisions>
+        <patterns>
+          <pattern>
+            <patternName>pattern0</patternName>
+            <patternScore>i2 0 .1 1 8000 90 1 .1</patternScore>
+            <muted>false</muted>
+            <solo>false</solo>
+            <values>0000000000000000</values>
+          </pattern>
+        </patterns>
+      </soundObject>
+    </soundLayer>
+  </soundObject>
+  <scratchPadData>
+    <isWordWrapEnabled>true</isWordWrapEnabled>
+    <scratchText></scratchText>
+  </scratchPadData>
+  <noteProcessorChainMap/>
+  <renderStartTime>0.0</renderStartTime>
+  <renderEndTime>-1.0</renderEndTime>
+  <markersList/>
+  <loopRendering>false</loopRendering>
+</blueData>

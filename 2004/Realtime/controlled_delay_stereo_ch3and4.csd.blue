@@ -1,0 +1,912 @@
+<blue.BlueData hash=4557291-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=23191280-0 id=globalOrcSco >
+<java.lang.String hash=964956190-0 id=globalOrc >
+#define guideTrackFile	#"D:\\Audio\\Ben\\Guitar Improvs\\Finished\\AcousticScratch.wav"#
+#define overdubFile		#"c:\\overdub.wav"#
+
+#define	totalDelayLineTime	#16#
+
+gkpedalval		init	0
+
+gidelsize init $totalDelayLineTime
+gasig	init 0
+gaout1	init 0
+gaout2	init 0
+
+gaout1_1	init 0
+gaout2_1	init 0
+gaout1_2	init 0
+gaout2_2	init 0
+gaout1_3	init 0
+gaout2_3	init 0
+gaout1_4	init 0
+gaout2_4	init 0
+
+
+gkregen 	init 1.0
+gkrate	init 0
+gkmod	init 1
+gkpitch	init 0
+
+gkdelayflag init 1
+gktapdelayflag init 0
+gksineflag init 0
+
+gkcomptime init 0
+
+gkcomptime1 init 0
+gkcomptime2 init 0
+gkcomptime3 init 0
+gkcomptime4 init 0
+
+
+garegensig init 0
+garegensig2 init 0
+
+;
+; for multitracks
+;
+
+garegensig1_1 init 0
+garegensig2_1 init 0
+
+garegensig1_2 init 0
+garegensig2_2 init 0
+
+garegensig1_3 init 0
+garegensig2_3 init 0
+
+garegensig1_4 init 0
+garegensig2_4 init 0
+
+		FLpanel	"Delay",500,1150 ;***** start of container
+;		FLbutton	"label", ion, ioff, itype, 	iwidth, iheight, ix, iy, 	iopcode [, kp1, kp2, kp3, kp4, kp5, ...., kpN] 
+
+gksineflag,ih1	FLbutton	"Start guide track", 1, 0, 1, 	300, 15, 20, 50, 		0, 5, 0, 1, 2, 0 ; 2 means play the sound..
+gkdelayflag,ih2	FLbutton	"Delay", 1, 0, 3, 		300, 15, 20, 150, 		0, 5, 0, 1, 0, 0
+gktapdelayflag,ih3	FLbutton	"Tap Delay On", 1, 0, 3, 	300, 15, 20, 250, 		0, 5, 0, 1, 0, 0
+
+;controlled by mod wheel and slider on gui
+ihdelsize  	FLvalue 	" asdf",75, 25,330,450
+gkmintap,ih11	FLslider	"Min Delay Time (secs)", 0.000001, 1, 0 ,5, ihdelsize, 300,15, 20, 450
+;controlled by slider on synth and slider on gui
+gihtaptime		FLvalue 	" sasdfasdf",75, 25,330,550
+gkrate,gihtap	FLslider	"Tap Time (secs)", 0, gidelsize, 0 ,5, gihtaptime, 300,15, 20, 550
+
+gihregen		FLvalue 	" sasdfasdf",75, 25,330,650
+gkregen,gihreg	FLslider	"Regeneration Rate", 0, 1, 0 ,5, gihregen, 300,15, 20, 650
+
+FLsetVal_i		1, ih2
+FLsetVal_i	 	1, ih11
+FLsetVal_i	 	$totalDelayLineTime, gihtap
+FLsetVal_i	 	1, gihreg
+
+;
+;	
+;
+gkloop1,ihbut1	FLbutton	"WRITE", 1, 0, 3, 		15, 15, 20, 750, 		0, 5, 0, 1, 0, 1
+gihregen1		FLvalue 	" ",			75, 25, 330,750
+gkrate1,gihtap1	FLslider	"Loop1 Time", 0, gidelsize, 0 ,5, gihregen1, 280,15, 40, 750
+gkloopread1,ihbutread1	FLbutton	"READ", 1, 0, 3, 		15, 15, 450, 750, 		0, 5, 0, 1, 0, 1
+
+gkloop2,ihbut2	FLbutton	" ", 1, 0, 3, 		15, 15, 20, 850, 		0, 5, 0, 1, 0, 2
+gihregen2		FLvalue 	"Loop2 Time",		75, 25,330,850
+gkrate2,gihtap2	FLslider	"Loop2 Time", 0, gidelsize, 0 ,5, gihregen2, 280,15, 40, 850
+gkloopread2,ihbutread2	FLbutton	" ", 1, 0, 3, 		15, 15, 450, 850, 		0, 5, 0, 1, 0, 1
+
+gkloop3,ihbut3	FLbutton	" ", 1, 0, 3, 		15, 15, 20, 950, 		0, 5, 0, 1, 0, 3
+gihregen3		FLvalue 	"Loop3 Time",		75, 25,330, 950
+gkrate3,gihtap3	FLslider	"Loop3 Time", 0, gidelsize, 0 ,5, gihregen3, 280,15, 40, 950
+gkloopread3,ihbutread3	FLbutton	" ", 1, 0, 3, 		15, 15, 450, 950, 		0, 5, 0, 1, 0, 1
+
+gkloop4,ihbut4	FLbutton	" ", 1, 0, 3, 		15, 15, 20, 1050, 		0, 5, 0, 1, 0, 3
+gihregen4		FLvalue 	"Loop4 Time",		75, 25,330, 1050
+gkrate4,gihtap4	FLslider	"Loop4 Time", 0, gidelsize, 0 ,5, gihregen4, 280,15, 40, 1050
+gkloopread4,ihbutread4	FLbutton	" ", 1, 0, 3, 		15, 15, 450, 1050, 		0, 5, 0, 1, 0, 4
+
+;FLsetVal_i		i(gkcomptime1), gihtap1
+;FLsetVal_i	 	i(gkcomptime2), gihtap2
+;FLsetVal_i	 	i(gkcomptime3), gihtap3
+;FLsetVal_i	 	i(gkcomptime4), gihtap4
+FLsetVal_i	 	$totalDelayLineTime, gihtap1
+FLsetVal_i	 	$totalDelayLineTime, gihtap2
+FLsetVal_i	 	$totalDelayLineTime, gihtap3
+FLsetVal_i	 	$totalDelayLineTime, gihtap4
+
+FLsetAlign		6,ihbut1
+FLsetAlign		6,ihbutread1
+
+
+	FLpanel_end	;***** end of container
+	FLrun		;***** runs the widget thread, it is always required!
+
+
+</java.lang.String>
+<java.lang.String hash=1204354626-0 id=globalSco >
+i1 0 3600
+;i2 0 3600
+i3 0 3600
+i4 0 3600
+i6 0 3600
+i7 0 3600
+i8 0 3600
+i9 0 3600
+
+;
+;	Don't turn off - breaks GUI
+;
+i5 0 3600
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.LiveData hash=7561029-0 id=liveData >
+<java.lang.String hash=-1001887281-0 id=commandLine >
+csound -Wdo devaudio -L stdin
+</java.lang.String>
+<java.util.ArrayList hash=1-2 id=liveSoundObjects >
+</java.util.ArrayList>
+</blue.LiveData>
+<blue.Orchestra hash=7588881-0 id=orchestra >
+<java.util.TreeMap hash=144490479-0 id=orch >
+<[>
+<java.lang.Integer hash=1-3 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=5938286-0 >
+<java.lang.String hash=0-0 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+false
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-672725948-0 id=instrumentText >
+;
+;	if delay flag == 0, no delay :)
+;
+if	gkdelayflag = 0 kgoto off
+kchan = 3
+kchanout = 3
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+
+
+
+;
+;	if sus pedal is not pressed, no repeat
+;
+if	gkpedalval = 0	kgoto noadd
+
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = (ainputsig +  garegensig) * gkregen
+asig2 = (ainputsig2 +  garegensig2) * gkregen
+kgoto done
+
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate > gkmintap 	kgoto done
+gkrate = gkmintap
+
+done:
+aout vdelay	asig, gkrate*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate*1000, gidelsize*1000
+
+;
+;	send out to regensig's for optional addition if sus pedal is pressed
+;
+garegensig = aout
+garegensig2 = aout2
+outch	kchanout, aout
+outch	kchanout+1, aout2
+gaout1 = aout
+gaout2 = aout2
+off:
+</java.lang.String>
+<java.lang.String hash=-865546639-0 id=name >
+controlled delay
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=2-0 >
+<int id=value >
+2
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=13902059-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-1852762409-0 id=instrumentText >
+kchan	= 1
+
+fout   $overdubFile,1, gaout1, gaout2
+gaout1 = 0
+gaout2 = 0
+
+
+
+ar1,ar2	diskin		$guideTrackFile, 1
+outch kchan, ar1
+outch kchan+1, ar2
+
+</java.lang.String>
+<java.lang.String hash=228856615-0 id=name >
+guide track
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=3-0 >
+<int id=value >
+3
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=12406210-0 >
+<java.lang.String hash=0-2 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=399609786-0 id=instrumentText >
+;
+;	get midi message
+;
+kstatus, kchan, kdata1, kdata2 midiin
+
+if	kchan	!= 1	kgoto done
+
+if	kstatus	!= 0	kgoto checkkeys
+if	kdata1	!= 61	kgoto checkkeys	
+gkregen = kdata2 * .007874016
+FLsetVal	1, gkregen, gihreg
+kgoto done
+
+
+;
+;	get tap tempo from note on intervals
+;
+checkkeys:
+if	kstatus	!= 128	kgoto checkkeys2
+if	kdata1	!= 60	kgoto checkkeys2	
+;
+;	do tap tempo on line 1
+;
+if	gkcomptime1 > 0 	kgoto compare1
+gkcomptime1 times
+kgoto done
+compare1:
+ktemptime1 times
+gkrate1 = ktemptime1 - gkcomptime1
+FLsetVal	1, gkrate1, gihtap1
+gkcomptime1 = 0
+kgoto done
+
+checkkeys2:
+if	kstatus	!= 128	kgoto checkkeys3
+if	kdata1	!= 62	kgoto checkkeys3	
+
+;
+;	do tap tempo on line 2
+;
+if	gkcomptime2 > 0 	kgoto compare2
+gkcomptime2 times
+kgoto done
+compare2:
+ktemptime2 times
+gkrate2 = ktemptime2 - gkcomptime2
+FLsetVal	1, gkrate2, gihtap2
+gkcomptime2 = 0
+kgoto done
+
+checkkeys3:
+if	kstatus	!= 128	kgoto checkkeys4
+if	kdata1	!= 64	kgoto checkkeys4
+;
+;	do tap tempo on line 3
+;
+if	gkcomptime3 > 0 	kgoto compare3
+gkcomptime3 times
+kgoto done
+compare3:
+ktemptime3 times
+gkrate3 = ktemptime3 - gkcomptime3
+FLsetVal	1, gkrate3, gihtap3
+gkcomptime3 = 0
+kgoto done
+
+checkkeys4:
+if	kstatus	!= 128	kgoto checkslider
+if	kdata1	!= 65	kgoto checkslider	
+;
+;	do tap tempo on line 3
+;
+if	gkcomptime4 > 0 	kgoto compare4
+gkcomptime4 times
+kgoto done
+compare4:
+ktemptime4 times
+gkrate4 = ktemptime4 - gkcomptime4
+FLsetVal	1, gkrate4, gihtap4
+gkcomptime4 = 0
+kgoto done
+
+;checkpedal:
+;
+;	not currently used
+;
+
+;if	kdata1	!= 4	kgoto nopedalchange	
+;printks	\"RegenerationRate: %f\\n\", .1, gkregen
+;kgoto	done
+;
+;
+;
+
+checkslider:
+if	kstatus	!= 176	kgoto done
+if	kdata1	!= 6	kgoto nodatasliderchange
+if	kdata2	> 0	kgoto tapnonzero
+gkrate	= gkmintap
+FLsetVal	1, gkrate, gihtap
+kgoto done
+tapnonzero:
+;here kdata2 * 1/128 makes values range from 1-128
+;gkrate = gidelsize*((1+kdata2)* .0078125)
+gkrate = gidelsize*(kdata2* .00787401)
+FLsetVal	1, gkrate, gihtap
+kgoto	done
+
+nodatasliderchange:
+if	kdata1	!= 64	kgoto done	
+gkpedalval = kdata2
+if	gkpedalval = 127 	kgoto on
+printks	\"Infinite Loop Off\\n\", .25
+kgoto 	done
+
+on:
+printks	\"Infinite Loop On\\n\", .25
+if	gktapdelayflag = 0 kgoto done
+;if the tap flag is on, set gkpedalval = 127
+gkpedalval = 127
+if	gkcomptime > 0 	kgoto compare
+gkcomptime times
+kgoto done
+compare:
+ktemptime times
+knewdelaytime = ktemptime - gkcomptime
+gkcomptime = 0
+printks	\"DelayTime is %f\\n\", .25,knewdelaytime
+if	knewdelaytime > gidelsize kgoto settomax
+if	knewdelaytime  = 0 kgoto settozero
+gkrate = knewdelaytime
+FLsetVal	1, gkrate, gihtap
+kgoto done
+settomax:
+gkrate = gidelsize
+FLsetVal	1, gkrate, gihtap
+kgoto done
+settozero:
+gkrate = .1
+FLsetVal	1, gkrate, gihtap
+;printks	\"Infinite Loop Off\\n\", .25
+;kgoto 	done
+;on:
+;printks	\"Infinite Loop On\\n\", .25
+
+done:
+
+</java.lang.String>
+<java.lang.String hash=2115941227-0 id=name >
+midi messages
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=4-0 >
+<int id=value >
+4
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=3934007-0 >
+<java.lang.String hash=-815624815-0 id=comment >
+Cntrlr num	desc
+
+0	pitch wheel 
+1	modulation wheel
+4	pedal/cv
+6	data entry slider
+64	sus pedal
+</java.lang.String>
+<boolean id=enabled >
+false
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=19750219-0 id=instrumentText >
+
+kstatus, kchan, kdata1, kdata2 midiin
+printks	\"Status: %f Channel: %f Data1: %f Data2: %f\\n\", .25, kstatus, kchan, kdata1, kdata2
+
+</java.lang.String>
+<java.lang.String hash=2042790406-0 id=name >
+midi diagnostic
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=5-0 >
+<int id=value >
+5
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=16638032-0 >
+<java.lang.String hash=0-3 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-1210748072-0 id=instrumentText >
+igotcalled = 0
+;.printks	\"Button Handler Received: %f\\n\", 1,  p4
+;printks	\"Button Handler Global1: %f\\n\", 1,  gk1
+;printks	\"Button Handler Global1: %f\\n\", 1,  gk2
+
+</java.lang.String>
+<java.lang.String hash=865716316-0 id=name >
+button handler
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=6-0 >
+<int id=value >
+6
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=26336541-0 >
+<java.lang.String hash=0-4 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-1586230527-0 id=instrumentText >
+gkrate1	tonek	gkrate1, 2500
+
+;
+;	if delay flag == 0, no delay :)
+;
+
+ainputsig = 0
+ainputsig2 = 0
+if	gkloop1 = 0 kgoto noread
+kchan = 3
+kchanout = 3
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+
+noread:
+
+;
+;	todo: click filter should go here
+;
+
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+
+
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = (ainputsig +  garegensig1_1) * gkregen
+asig2 = (ainputsig2 +  garegensig2_1) * gkregen
+kgoto done
+
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate1 > gkmintap 	kgoto done
+gkrate1 = gkmintap
+
+done:
+aout vdelay	asig, gkrate1*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
+
+;
+;	send out to regensig's for optional addition if sus pedal is pressed
+;
+
+garegensig1_1 = aout
+garegensig2_1 = aout2
+readquery:
+if 	gkloopread1 = 0	kgoto off
+read:
+outch	kchanout, aout
+outch	kchanout+1, aout2
+gaout1_1 = aout
+gaout2_1 = aout2
+off:
+</java.lang.String>
+<java.lang.String hash=-1067397476-0 id=name >
+track 1
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=7-0 >
+<int id=value >
+7
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=21744361-0 >
+<java.lang.String hash=0-5 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-63041379-0 id=instrumentText >
+gkrate2	tonek	gkrate2, 2500
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+ainputsig2 = 0
+if	gkloop2 = 0 kgoto noread
+kchan = 3
+kchanout = 3
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+
+noread:
+
+;
+;	todo: click filter should go here
+;
+
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = (ainputsig +  garegensig1_2) * gkregen
+asig2 = (ainputsig2 +  garegensig2_2) * gkregen
+kgoto done
+
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate2 > gkmintap 	kgoto done
+gkrate2 = gkmintap
+
+done:
+aout vdelay	asig, gkrate2*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate2*1000, gidelsize*1000
+
+;
+;	send out to regensig's for optional addition if sus pedal is pressed
+;
+
+garegensig1_2 = aout
+garegensig2_2 = aout2
+readquery:
+if 	gkloopread2 = 0	kgoto off
+read:
+outch	kchanout, aout
+outch	kchanout+1, aout2
+gaout1_2 = aout
+gaout2_2 = aout2
+off:
+</java.lang.String>
+<java.lang.String hash=-1067397475-0 id=name >
+track 2
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=8-0 >
+<int id=value >
+8
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=16158948-0 >
+<java.lang.String hash=0-6 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1718569785-0 id=instrumentText >
+gkrate3	tonek	gkrate3, 2500
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+ainputsig2 = 0
+if	gkloop3 = 0 kgoto noread
+kchan = 3
+kchanout = 3
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+
+noread:
+
+;
+;	todo: click filter should go here
+;
+
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = (ainputsig +  garegensig1_3) * gkregen
+asig2 = (ainputsig2 +  garegensig2_3) * gkregen
+kgoto done
+
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate3 > gkmintap 	kgoto done
+gkrate3 = gkmintap
+
+done:
+aout vdelay	asig, gkrate3*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate3*1000, gidelsize*1000
+
+;
+;	send out to regensig's for optional addition if sus pedal is pressed
+;
+
+garegensig1_3 = aout
+garegensig2_3 = aout2
+readquery:
+if 	gkloopread3 = 0	kgoto off
+read:
+outch	kchanout, aout
+outch	kchanout+1, aout2
+gaout1_3 = aout
+gaout2_3 = aout2
+off:
+</java.lang.String>
+<java.lang.String hash=-1067397474-0 id=name >
+track 3
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=9-0 >
+<int id=value >
+9
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=27432016-0 >
+<java.lang.String hash=0-7 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1397142098-0 id=instrumentText >
+gkrate4	tonek	gkrate4, 2500
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+ainputsig2 = 0
+if	gkloop4 = 0 kgoto noread
+kchan = 3
+kchanout = 3
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+
+noread:
+
+;
+;	todo: click filter should go here
+;
+
+;
+;	if sus pedal is not pressed, no repeat
+;
+;	gkpedalval = 0	kgoto noadd
+
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = (ainputsig +  garegensig1_4) * gkregen
+asig2 = (ainputsig2 +  garegensig2_4) * gkregen
+kgoto done
+
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate4 > gkmintap 	kgoto done
+gkrate4 = gkmintap
+
+done:
+aout vdelay	asig, gkrate4*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate4*1000, gidelsize*1000
+
+;
+;	send out to regensig's for optional addition if sus pedal is pressed
+;
+
+garegensig1_4 = aout
+garegensig2_4 = aout2
+readquery:
+if 	gkloopread4 = 0	kgoto off
+read:
+outch	kchanout, aout
+outch	kchanout+1, aout2
+gaout1_4 = aout
+gaout2_4 = aout2
+off:
+</java.lang.String>
+<java.lang.String hash=-1067397473-0 id=name >
+track 4
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=11998234-0 id=pObj >
+<int id=heightIndex >
+2
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-4 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+64
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=25745741-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=25745710-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=0-8 id=name >
+
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=1-5 id=soundObjects >
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=23747531-0 id=projectProperties >
+<java.lang.String hash=0-9 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=2146392161-0 id=author >
+Ben McAllister
+</java.lang.String>
+<java.lang.String hash=1567-0 id=channels >
+10
+</java.lang.String>
+<java.lang.String hash=-475979229-0 id=commandLine >
+csoundav_win  -+K1 -+P32 -+I32 
+</java.lang.String>
+<java.lang.String hash=51633-0 id=controlRate >
+441
+</java.lang.String>
+<java.lang.String hash=-1686002230-0 id=notes >
+csoundav_win  -+K1 -+P -+I -+k12 controlled_delay.csd
+(best results from cmdline - P18  I26 )
+
+csoundav_win  -d -+* -+O -+K1 -+S3 -+C4
+
+
+csoundav_win  -+K1 -b2048 -+P18
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-10 id=title >
+
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-6 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=28347635-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-8 id=scratchText />
+</blue.ScratchPadData>
+<blue.Tables hash=32888473-0 id=tableSet >
+<java.lang.String hash=2131733356-0 id=tables >
+f 1 0 16384 9 .5 1 0
+f 2 0 8192 10 1
+;half sine/sine window func
+
+f4	0	513	20	6
+
+;blueberry pie sample
+f5 0 131072 1 "C:\CSOUND\snd\EmergencyPants\BlueberryPie.aif" 0 0 0 
+
+;rectangle
+f6   0   8192   -20   8   1
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

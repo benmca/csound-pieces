@@ -1,0 +1,332 @@
+<blue.BlueData hash=2598044-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=11021970-0 id=globalOrcSco >
+<java.lang.String hash=-1798121375-0 id=globalOrc >
+ga1 init 0
+ga2 init 0
+
+</java.lang.String>
+<java.lang.String hash=0-0 id=globalSco >
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.Orchestra hash=9012615-0 id=orchestra >
+<java.util.TreeMap hash=13008391-0 id=orch >
+<[>
+<java.lang.Integer hash=1-1 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=10329821-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<java.lang.String hash=-1717794905-0 id=instrumentText >
+idur = p3
+iamp = p4 * 32768
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+
+kamp    linen   iamp, .01, idur, idur*.5
+asig    oscili  kamp, ipitch, 2
+
+a1, a2		locsig	asig, ipan, idist, ipct
+ar1, ar2	locsend
+outs	a1,a2
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=993494729-0 id=name >
+oscilator 1
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=99-0 >
+<int id=value >
+99
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=2678600-0 >
+<java.lang.String hash=0-2 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<java.lang.String hash=1450687038-0 id=instrumentText >
+klin linseg  1, p3, p4
+;kamp	linseg	1, p3, 1
+a1	reverb2	ga1, klin, 1
+a2	reverb2	ga2, klin, 1
+	outs	a1,a2
+ga1=0
+ga2=0
+
+</java.lang.String>
+<java.lang.String hash=-175636857-0 id=name >
+ureverb
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=4679956-0 id=pObj >
+<int id=heightIndex >
+2
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-2 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+64
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=142813496-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=4437435-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=3343801-0 id=name >
+main
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=6274066-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=6274035-0 >
+<java.lang.String hash=855410298-0 id=commandLine >
+lisp.exe -M d:\csound\cm\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-0 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-3 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+20.0625
+</float>
+<java.lang.String hash=-1428095462-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *buflen* 10240)
+(defparameter gurglelength 0)
+;
+(defobject quick (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct)
+  (:parameters instr inst mytime dur amp pitch pan dist pct))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun magic (st len tem pn)
+  (algorithm nil quick (start st length len)
+    (setf inst 1)
+	(setf mytime time)
+	
+    (setf rhythm 
+		(item 
+			(items 
+				(rhythms 32 for (- len 4) tempo(tempo tem)) 
+				(rhythms 32 for 4 tempo(tempo tem))
+			)
+		)
+	)
+	(if (< count len)
+	    (setf dur rhythm)
+		(setf dur 2)
+	)
+
+    (setf pitch 
+		(item 
+			(items 
+				(pitches g3  a in random for (- len 4)) 
+				(pitches e4 b5 a6 e7)
+			)
+		)
+	)
+
+    (setf amp 1)
+	(setf pan pn)
+    (setf dist (item 
+                (items 
+                    (items  1 for (- len 4)) 
+                    (items  1 for 4) 
+                )
+            )
+    )
+    (setf pct (item 
+                (items 
+                    (items .001 for (- len 4)) 
+                    (items  .01 for 4) 
+                )
+            )
+    )
+
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+
+;
+;   This function will sprout the bassline function
+;   4 times (due to loop), 3 seconds apart
+;
+(defun spawner (st len)
+    (mute nil (start st length len rhythm .1)
+        (loop for d from 1 to 4 do
+            (with-vars-snapshotted (d)
+                (format t "~%Sprouting algorithm at ~S." time)
+    
+                (sprout
+                    (magic (* 3 d) 32 120 45)
+                )
+            )
+        )
+    )
+)        
+
+;
+;   This function will also sprout the bassline function
+;   4 times (due to loop), 3 seconds apart
+;
+
+(defun spawner2 (st len)
+    (mute nil (start st length len)
+        (setf rhythm 3)
+        (loop for d from 1 to 4 do
+                (sprout
+                    (magic time 25 120 45)
+                )
+         )
+    )
+)        
+
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+
+(defun ms 
+    (&key (start-time 1.)(my-scorefile "..\\..\\CsWork\\thighcream\\magic1.sco"))
+        (let* 
+            (
+                (myheader (header ";;generated by blue"))
+            )
+           (fheader my-scorefile myheader)
+            (merge all ()
+                (spawner2 0 4)
+		        (mrn)
+                )
+             (setf mystream (make-string-output-stream))
+            (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+        ))
+(ms)
+(print-stream  "..\\..\\CsWork\\thighcream\\magic1.sco")
+</java.lang.String>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=5252050-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=113310-0 id=name >
+rvb
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=1-4 id=soundObjects >
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=2905572-0 id=projectProperties >
+<java.lang.String hash=0-3 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=0-4 id=author >
+
+</java.lang.String>
+<java.lang.String hash=50-0 id=channels >
+2
+</java.lang.String>
+<java.lang.String hash=-658435639-0 id=commandLine >
+csound32 -d -odevaudio 
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=controlRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-5 id=notes >
+
+</java.lang.String>
+<java.lang.String hash=49620849-1 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-6 id=title >
+
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-5 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.Tables hash=12256238-0 id=tableSet >
+<java.lang.String hash=742820458-0 id=tables >
+
+f 1 0 16384 9 .5 1 0
+f 2 0 16384 10 1
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

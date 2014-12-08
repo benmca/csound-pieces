@@ -1,0 +1,1306 @@
+<blue.BlueData hash=10232210-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=6303993-0 id=globalOrcSco >
+<java.lang.String hash=634732745-0 id=globalOrc >
+ga1 init 0
+ga2 init 0
+</java.lang.String>
+<java.lang.String hash=0-0 id=globalSco >
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.Orchestra hash=6640765-0 id=orchestra >
+<java.util.TreeMap hash=47850279-0 id=orch >
+<[>
+<java.lang.Integer hash=1-1 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=9730247-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<java.lang.String hash=-1057075670-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+;indx = indx + iorigdur)
+kamp	linen	iamp, .01, idur, .01
+ktime   line    indx, idur , iendx
+ 
+;al	diskin	"sources/christmasball.wav", ipitch, indx
+al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
+  
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=-1254915107-0 id=name >
+christmas ball
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=2-0 >
+<int id=value >
+2
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=10576215-0 >
+<java.lang.String hash=0-2 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<java.lang.String hash=1889758311-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+;indx = indx
+kamp	linen	iamp, .3*idur, idur, .3*idur
+ktime   line    indx, idur , iendx
+ 
+;al	diskin	"sources/christmasball.wav", ipitch, indx
+al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
+  
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=-1254915107-1 id=name >
+christmas ball
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=3-0 >
+<int id=value >
+3
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=9855088-0 >
+<java.lang.String hash=0-3 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<java.lang.String hash=1990621584-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+idecay = p10
+iorigdur = 62
+
+kamp	linen	iamp, .01, idur, idecay
+
+ktime   line    indx, idur , iorigdur 
+
+al,ar  	sndwarpst kamp, ktime, ipitch, 5, 0, 4410, 882, 15, 1, 1
+al=al*kamp
+ar=ar*kamp
+asig = (al+ar)*.5
+al, ar  	locsig	asig, ipan, idist, ipct
+ar1, ar2	locsend
+	outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+</java.lang.String>
+<java.lang.String hash=109858168-0 id=name >
+swmix
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=4-0 >
+<int id=value >
+4
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=4262533-0 >
+<java.lang.String hash=0-4 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<java.lang.String hash=1483918029-0 id=instrumentText >
+idur = p3
+iamp = p4
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = 9.36
+iendx = indx + iorigdur
+kamp	linen	iamp, iorigdur*.5, idur, iorigdur*.5
+ktime   line    indx, idur , iendx
+ 
+al	diskin	"alert.wav", ipitch, indx
+;al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
+  
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=92899676-0 id=name >
+alert
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=5-0 >
+<int id=value >
+5
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=11017173-0 >
+<java.lang.String hash=0-5 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<java.lang.String hash=-693742373-0 id=instrumentText >
+idur = p3
+iamp = p4
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+kamp	linen	iamp, .01, idur, .01
+ 
+al,ar	diskin	"rdath/PoorSolosTrack.aif", ipitch, indx
+  
+al=al*kamp
+
+al, ar  	locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+	outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=107027353-0 id=name >
+pulse
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=99-0 >
+<int id=value >
+99
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=2409003-0 >
+<java.lang.String hash=0-6 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<java.lang.String hash=1877564460-0 id=instrumentText >
+klin linseg  p4, p3, p4
+kamp	linseg	1, p3, 1
+a1	reverb2	ga1, klin, 1
+a2	reverb2	ga2, klin, 1
+	outs	a1*kamp,a2*kamp
+ga1=0
+ga2=0
+
+</java.lang.String>
+<java.lang.String hash=-934352430-0 id=name >
+reverb
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=10202447-0 id=pObj >
+<int id=heightIndex >
+4
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-2 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+16
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=487052600-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=2559940-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=2017435351-0 id=name >
+Chimes
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=37078374-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=1124086-0 >
+<java.lang.String hash=735330354-0 id=commandLine >
+lisp.exe -M E:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-0 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-3 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+104.5
+</float>
+<float id=subjectiveDuration >
+180.0
+</float>
+<java.lang.String hash=1935004136-0 id=text >
+(in-package :stella)
+
+(defparameter *christmasball.wav_total_length* 24.96)
+
+(defparameter *totaldur* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx origdur)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx origdur))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun strum(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 2)
+	    (setf mytime time)
+
+    
+    (setf idxdur '((.808 e) (1.246 e) (1.731 e)(2.170 e) (2.586 e) (3.024 e) (3.509 e) (3.902 e) (4.410 e) (4.918 e) 
+            (5.403 q) (6.234 e) (6.765 e) (7.204 q) (8.081 q) (8.936 e) (9.444 e) (9.859 e) (10.344 e) (10.76 e) (11.198 e) 
+            (11.637 e) (12.122 e) (12.561 e) (13.161 e) (13.6 e) (14.039 e) (14.547 e) (15.078 e) (15.563 e) (16.071 e) 
+            (16.625 e) (17.156 e) (17.641 e) (18.149 e) (18.657 e) (19.095 e) (19.65 e) (20.134 e) (20.666 e) (21.150 e) 
+            (21.682 e) (22.190 e) (22.651 h))); 44 items, for 'christmas_ball.wav
+
+    (setf i 
+        (item 
+            (items 
+                (chord (items 0 1 2 3 4 ))
+                (chord (items 5 6 7 8 9 ))
+                (chord (items 10 11 12 13 14))
+                (chord (items 15 16 17 18 19))
+                (chord (items 20 21 22 23 24 ))
+                (chord (items 25 26 27 28 29))
+                (chord (items 30 31 32 33))
+                (chord (items 34 35 36 ))
+                (chord (items 37 38 ))
+                39 40 41 42 43)
+;            (items 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 
+;            38 39 40 41 42 43 )
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    ;(setf rhythm (rhythm (nth 1 idx) tem))  
+    ;
+    ; improvement in the loop index method - 
+    ;   makes sure there is a distinction between duration in orig sample and 
+    ;   replayed duration.
+    ;   You will hear articulations from the following note if the duration of a given fragment is too long
+    ;   It follows that for fast tempi, orig dur is ok for replayed duration if using soundin, diskin,
+    ;   but for slow tempi you must take care to smooth the end of each fragment.
+    ;
+    (if (< i 43)
+        (setf origdur ( - 
+                     (nth 0 (nth (+ i 1) idxdur))
+                     indx
+                  ))
+        ;if last element, subtract indx point from total length of file 
+        (setf origdur (- *christmasball.wav_total_length*  indx))		;set dur to 2nd element
+    )
+    (setf rhythm 
+		(item 
+            (items 
+		(rhythms w+w+w )
+			)
+		)
+	)
+    (setf dur rhythm)
+
+;    (setf pitch (item (items (pitches [a4 a4 a4 a4 a4] [a4 a4 a4 a4 a4] [a4 a4 a4 a4 a4] [a4 a4 a4 a4 a4] [a4 a4 a4 a4 a4] [a4 a4 a4 a4 a4] [a4 a4 a4 a4] [a4 a4 a4] [a4 a4] a4 a4 a4 a4 a4 in sequence))))
+    (setf pitch 1)
+    (setf amp .8)
+        (setf pan 
+	(item 
+	(items 	(items (items 0 for 5)
+		(items  15 for 5)
+		(items 25 for 5) 
+		(items 35 for 5) 
+		(items 45 for 5) 
+		(items 55 for 5) in heap) 
+		55 55 55 55
+		65 65 65 
+		75 75
+		45 55 65 75 90
+
+	)
+	)
+        )
+    (setf dist 2)
+    (setf pct .075)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "strum.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (strum 0 10 90 14)
+	(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "strum.sco")
+</java.lang.String>
+</blue.soundObject.External>
+<blue.soundObject.External hash=2230747-0 >
+<java.lang.String hash=735330354-1 id=commandLine >
+lisp.exe -M E:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-1 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-4 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+44.75
+</float>
+<float id=subjectiveDuration >
+60.0
+</float>
+<java.lang.String hash=-354011699-0 id=text >
+(in-package :stella)
+
+(defparameter *christmasball.wav_total_length* 24.96)
+
+(defparameter *totaldur* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx origdur)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx origdur))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun randomslowvoice(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 1)
+	    (setf mytime time)
+
+    
+    (setf idxdur '((.808 e) (1.246 e) (1.731 e)(2.170 e) (2.586 e) (3.024 e) (3.509 e) (3.902 e) (4.410 e) (4.918 e) 
+            (5.403 q) (6.234 e) (6.765 e) (7.204 q) (8.081 q) (8.936 e) (9.444 e) (9.859 e) (10.344 e) (10.76 e) (11.198 e) 
+            (11.637 e) (12.122 e) (12.561 e) (13.161 e) (13.6 e) (14.039 e) (14.547 e) (15.078 e) (15.563 e) (16.071 e) 
+            (16.625 e) (17.156 e) (17.641 e) (18.149 e) (18.657 e) (19.095 e) (19.65 e) (20.134 e) (20.666 e) (21.150 e) 
+            (21.682 e) (22.190 e) (22.651 h))); 44 items, for 'christmas_ball.wav
+
+    (setf i 
+        (item 
+            (items 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 
+            38 39 40 41 42 43 in random)
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf rhythm (rhythm (nth 1 idx) tem))  
+    ;
+    ; improvement in the loop index method - 
+    ;   makes sure there is a distinction between duration in orig sample and 
+    ;   replayed duration.
+    ;   You will hear articulations from the following note if the duration of a given fragment is too long
+    ;   It follows that for fast tempi, orig dur is ok for replayed duration if using soundin, diskin,
+    ;   but for slow tempi you must take care to smooth the end of each fragment.
+    ;
+    (if (< i 43)
+        (setf origdur ( - 
+                     (nth 0 (nth (+ i 1) idxdur))
+                     indx
+                  ))
+        ;if last element, subtract indx point from total length of file 
+        (setf origdur (- *christmasball.wav_total_length*  indx))		;set dur to 2nd element
+    )
+    (setf rhythm 
+		(item 
+            (items 
+;               (rhythms e e e e e e e e e e q e e q q e  e e e e e e e e e e e e e e e e e e e e e e e e e e h in random tempo(tempo tem))
+		(rhythms w w+h w+w+w in random for 6)
+		(rhythms h w h. in random for 6)
+		(rhythms q h in random for 6)
+			)
+		)
+	)
+    (setf dur rhythm)
+
+    (setf pitch 1)
+    (setf amp .5)
+	(setf pan pn)
+    (setf dist 2)
+    (setf pct .075)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (randomslowvoice 0 20 15 10)
+        (randomslowvoice 0 20 45 10)
+        (randomslowvoice 0 20 75 10)
+		(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=8896810-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=107027353-1 id=name >
+pulse
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=10744215-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=10744184-0 >
+<java.lang.String hash=735330354-2 id=commandLine >
+lisp.exe -M E:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=107027353-2 id=name >
+pulse
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-5 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+44.6875
+</float>
+<float id=subjectiveDuration >
+239.75
+</float>
+<java.lang.String hash=-586125521-0 id=text >
+(in-package :stella)
+
+(defparameter *christmasball.wav_total_length* 24.96)
+
+(defparameter *totaldur* 0)
+(defparameter *buflen* 4096)
+
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx ))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun pulse(st tem len)
+  (algorithm nil soundin_indx (start st length len)
+	(setf inst 5)
+	(setf mytime time)
+	(setf rhythm (item (rhythms e q h in random tempo(tempo tem) ) ) )
+	(setf dur rhythm)
+	(setf pitch (between 1 1.02))
+	(setf amp (between 0.1 0.6))
+	(setf pan (between 0 90))
+	(setf dist (between 2 5))
+	(setf pct (between 0.1 0.5))
+	(setf indx (item (items .226 34.574 38.893 43.026 47.322 47.322 47.322 51.85 55.843 72.980 in random))) 
+	(setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+	(pulse 0 120 280)
+		(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+	
+
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=6903009-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=2107197893-0 id=name >
+Sw  orig
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=483248134-0 id=soundObjects >
+<[>
+<blue.soundObject.Sound hash=15265482-0 >
+<java.lang.String hash=559140323-0 id=instrument >
+;insert instrument text here
+kamp	linen	1, .01, p3, .01
+al,ar	diskin	"sw_mix_filetered.wav", 1, 0
+outs al*kamp, ar*kamp
+
+</java.lang.String>
+<int id=instrumentNumber >
+0
+</int>
+<java.lang.String hash=109627663-0 id=name >
+sound
+</java.lang.String>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+64.75
+</float>
+</blue.soundObject.Sound>
+<blue.soundObject.External hash=10017231-0 >
+<java.lang.String hash=735330354-3 id=commandLine >
+lisp.exe -M E:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-2 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-6 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+109.7
+</float>
+<float id=subjectiveDuration >
+174.7
+</float>
+<java.lang.String hash=-1927533306-0 id=text >
+(in-package :stella)
+
+(defparameter *christmasball.wav_total_length* 24.96)
+
+(defparameter *totaldur* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx decaytime)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx decaytime))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun swsmear(st len index)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 3)
+	(setf mytime time)
+    (setf indx index)		;set idx to 1st element
+    (setf rhythm (item (items (rhythms e)
+			)
+		)
+	)
+(setf decaytime 10)
+    (setf dur 174.7)
+    (setf pitch 1)
+    (setf amp 1.5)
+
+    (setf pan 45)
+    (setf dist 2)
+    (setf pct .075)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test2.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (swsmear 0 1 40)
+
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test2.sco")
+</java.lang.String>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=14323815-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=92899676-1 id=name >
+alert
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=12505628-0 id=soundObjects >
+<[>
+<blue.soundObject.RepetitionObject hash=12505597-0 >
+<java.lang.String hash=1618650377-0 id=name >
+vcs3 alert
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-7 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+127.5625
+</float>
+<float id=subjectiveDuration >
+156.75
+</float>
+<java.lang.String hash=780387082-0 id=text >
+i4 0 9.36 1 1 80 2 .5 0 
+ 
+</java.lang.String>
+</blue.soundObject.RepetitionObject>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=5082448-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=1676102292-0 id=name >
+sw overlay
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=429928714-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=13609317-0 >
+<java.lang.String hash=735330354-4 id=commandLine >
+lisp.exe -M E:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-3 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-8 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+154.0
+</float>
+<float id=subjectiveDuration >
+50.0625
+</float>
+<java.lang.String hash=912462945-0 id=text >
+(in-package :stella)
+
+(defparameter *christmasball.wav_total_length* 24.96)
+
+(defparameter *totaldur* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx decaytime)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx decaytime))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun swsmear(st len index)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 3)
+	(setf mytime time)
+    (setf indx index)		;set idx to 1st element
+    (setf rhythm (item (items (rhythms e)
+			)
+		)
+	)
+    (setf dur 50.1)
+    (setf pitch 1.25)
+    (setf amp 1.5)
+    (setf pan (between 0 90))
+
+    (setf dist 2)
+    (setf pct .075)
+
+    (setf decaytime 1)
+
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test2.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (swsmear 0 1 40)
+
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test2.sco")
+</java.lang.String>
+</blue.soundObject.External>
+<blue.soundObject.External hash=8038926-0 >
+<java.lang.String hash=735330354-5 id=commandLine >
+lisp.exe -M E:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-4 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-9 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+58.0
+</float>
+<float id=subjectiveDuration >
+61.75
+</float>
+<java.lang.String hash=-1398027958-0 id=text >
+(in-package :stella)
+
+(defparameter *christmasball.wav_total_length* 24.96)
+
+(defparameter *totaldur* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx decaytime )
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx decaytime))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun swsmear(st len index)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 3)
+	(setf mytime time)
+    (setf indx index)		;set idx to 1st element
+    (setf rhythm (item (items (rhythms e)
+			)
+		)
+	)
+    (setf dur rhythm)
+    (setf pitch 1)
+    (setf amp 1.5)
+	(setf decaytime 1)
+    (setf pan 45)
+    (setf dist 2)
+    (setf pct .075)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test2.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (swsmear 0 1 40)
+
+           )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test2.sco")
+</java.lang.String>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=3996331-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=121567654-0 id=name >
+sw overlay 2
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=3695109-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=3695078-0 >
+<java.lang.String hash=735330354-6 id=commandLine >
+lisp.exe -M E:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-5 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-10 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+134.1
+</float>
+<float id=subjectiveDuration >
+70.0
+</float>
+<java.lang.String hash=-632842858-0 id=text >
+(in-package :stella)
+
+(defparameter *christmasball.wav_total_length* 24.96)
+
+(defparameter *totaldur* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx decaytime)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx decaytime))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun swsmear(st len index)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 3)
+	(setf mytime time)
+    (setf indx index)		;set idx to 1st element
+    (setf rhythm (item (items (rhythms e)
+			)
+		)
+	)
+    (setf dur 70.0)
+    (setf pitch .8)
+    (setf amp 1.5)
+
+    (setf pan (between 0 90))
+
+    (setf dist 2)
+    (setf pct .075)
+
+    (setf decaytime 10)
+
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test2.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (swsmear 0 1 40)
+
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test2.sco")
+</java.lang.String>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=10420192-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=121567655-0 id=name >
+sw overlay 3
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=6399027-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=6398996-0 >
+<java.lang.String hash=735330354-7 id=commandLine >
+lisp.exe -M E:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-6 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-11 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+171.5
+</float>
+<float id=subjectiveDuration >
+32.6
+</float>
+<java.lang.String hash=-897871752-0 id=text >
+(in-package :stella)
+
+(defparameter *christmasball.wav_total_length* 24.96)
+
+(defparameter *totaldur* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx decaytime)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx decaytime))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun swsmear(st len index)
+  (algorithm nil soundin_indx (start st length len)
+        (setf inst 3)
+	(setf mytime time)
+    (setf indx index)		;set idx to 1st element
+    (setf rhythm (item (items (rhythms e)
+			)
+		)
+	)
+    (setf dur 32.6)
+    (setf pitch .4)
+    (setf amp 1.5)
+
+    (setf pan (between 0 90))
+    (setf dist 2)
+    (setf pct .075)
+
+    (setf decaytime 10)
+
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test2.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (swsmear 0 1 40)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test2.sco")
+</java.lang.String>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=3101339-0 id=projectProperties >
+<java.lang.String hash=0-7 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=-1406328437-0 id=author >
+author
+</java.lang.String>
+<java.lang.String hash=50-0 id=channels >
+2
+</java.lang.String>
+<java.lang.String hash=488908369-0 id=commandLine >
+csound32 -d -W -N -o test.wav
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=controlRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-8 id=notes >
+
+</java.lang.String>
+<java.lang.String hash=49620849-1 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=0-9 id=title >
+
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-12 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.Tables hash=14179973-0 id=tableSet >
+<java.lang.String hash=259815495-0 id=tables >
+f1 0 16384 9 .5 1 0
+f2 0 16384 10 1
+f3 0 2097152 1 "christmasball.wav" 0 0 0
+f4 0 512 5 .001 100 1.0 312 1.0 100 .001
+f5 0 16777216 1 "sw_mix_filetered.wav" 0 0 0 
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

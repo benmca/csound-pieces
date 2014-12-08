@@ -1,0 +1,118 @@
+<blue.BlueData hash=3485063-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=20980795-0 id=globalOrcSco >
+<java.lang.String hash=-546510870-0 id=globalOrc >
+;asdkfhasdf
+</java.lang.String>
+<java.lang.String hash=-1383842005-0 id=globalSco >
+
+i3 0 3600
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.Orchestra hash=700042-0 id=orchestra >
+<java.util.TreeMap hash=21570719-0 id=orch >
+<[>
+<java.lang.Integer hash=1-2 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=21570718-0 >
+<java.lang.String hash=0-0 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=585641004-0 id=instrumentText >
+asig	in
+
+krate      midictrl   4
+
+krate = krate * .0314
+
+printks	"Delay Time: ", 1, krate
+
+asig	delay	asig, krate
+
+out asig
+</java.lang.String>
+<java.lang.String hash=0-1 id=name >
+
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=27286491-0 id=pObj >
+<int id=heightIndex >
+2
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-3 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+64
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=4431194-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=4431163-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=0-2 id=name >
+
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=1-4 id=soundObjects >
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=17274068-0 id=projectProperties >
+<java.lang.String hash=-1001887281-0 id=commandLine >
+csound -Wdo devaudio -L stdin
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-5 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=10695700-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-2 id=scratchText />
+</blue.ScratchPadData>
+<blue.Tables hash=27835764-0 id=tableSet >
+<java.lang.String hash=0-2 id=tables />
+</blue.Tables>
+</blue.BlueData>

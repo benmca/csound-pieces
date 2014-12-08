@@ -1,0 +1,1796 @@
+<blueData version='0.125.0'>
+  <projectProperties>
+    <title></title>
+    <author></author>
+    <notes>-B value and DMA buffer setting must be equal!</notes>
+    <sampleRate>44100</sampleRate>
+    <ksmps>128</ksmps>
+    <channels>1</channels>
+    <diskSampleRate>44100</diskSampleRate>
+    <diskKsmps>1</diskKsmps>
+    <diskChannels>1</diskChannels>
+    <useAudioOut>true</useAudioOut>
+    <useAudioIn>false</useAudioIn>
+    <useMidiIn>false</useMidiIn>
+    <useMidiOut>false</useMidiOut>
+    <noteAmpsEnabled>true</noteAmpsEnabled>
+    <outOfRangeEnabled>true</outOfRangeEnabled>
+    <warningsEnabled>true</warningsEnabled>
+    <benchmarkEnabled>true</benchmarkEnabled>
+    <advancedSettings>csound -odac1 -iadc2 -M0 -b128 -B256 -d</advancedSettings>
+    <completeOverride>true</completeOverride>
+    <fileName></fileName>
+    <askOnRender>false</askOnRender>
+    <diskNoteAmpsEnabled>true</diskNoteAmpsEnabled>
+    <diskOutOfRangeEnabled>true</diskOutOfRangeEnabled>
+    <diskWarningsEnabled>true</diskWarningsEnabled>
+    <diskBenchmarkEnabled>true</diskBenchmarkEnabled>
+    <diskAdvancedSettings></diskAdvancedSettings>
+    <diskCompleteOverride>false</diskCompleteOverride>
+    <diskAlwaysRenderEntireProject>false</diskAlwaysRenderEntireProject>
+    <csladspaSettings>
+      <name/>
+      <maker/>
+      <uniqueId>0</uniqueId>
+      <copyright/>
+      <portDefinitionList/>
+      <enabled>false</enabled>
+    </csladspaSettings>
+  </projectProperties>
+  <arrangement>
+    <instrumentAssignment arrangementId='3' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>midi messages</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>;
+;	get midi message
+;
+kstatus, kchan, kdata1, kdata2 midiin
+
+printks &quot;kstatus: %f,kchan: %f,kdata1: %f,kdata2: %f\\n&quot;,.1, kstatus, kchan, kdata1, kdata2
+if	kchan	!= 1	kgoto done
+if	kstatus = 0 kgoto done
+if	kstatus	= 144	kgoto checkkeys
+;
+; use slider for tap
+;
+if	kdata1	!= 6	kgoto checkkeys
+if	kdata2	&gt; 0	kgoto tapnonzero
+gkrate	= gkmintap
+kgoto settotrack
+tapnonzero:
+;here kdata2 * 1/128 makes values range from 1-128
+;gkrate = gidelsize*((1+kdata2)* .0078125)
+gkrate = gidelsize*(kdata2* .00787401)
+settotrack:
+printks	&quot;Settotrack\\n&quot;,1
+if	gksliderinst = 1 kgoto track1pedal
+if	gksliderinst = 2 kgoto track2pedal
+if	gksliderinst = 3 kgoto track3pedal
+if	gksliderinst = 4 kgoto track4pedal
+kgoto done
+track1pedal:
+printks	&quot;track1pedal - gkrate = %f\\n&quot;,1,gkrate
+gkrate1 = gkrate
+FLsetVal	1, gkrate1, gihtap1
+gkrate = 0
+kgoto done
+track2pedal:
+printks	&quot;track2pedal\\n&quot;,1
+gkrate2 = gkrate
+FLsetVal	1, gkrate2, gihtap2
+gkrate = 0
+kgoto done
+track3pedal:
+printks	&quot;track3pedal\\n&quot;,1
+gkrate3 = gkrate
+FLsetVal	1, gkrate3, gihtap3
+gkrate = 0
+kgoto done
+track4pedal:
+printks	&quot;track4pedal\\n&quot;,1
+gkrate4 = gkrate
+FLsetVal	1, gkrate4, gihtap4
+gkrate = 0
+kgoto done
+checkkeys:
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='5' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>button handler</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>igotcalled = 0
+iset = p5
+;.printks	&quot;Button Handler Received: %f\\n&quot;, 1,  p4
+;printks	&quot;Button Handler Global1: %f\\n&quot;, 1,  gk1
+;printks	&quot;Button Handler Global1: %f\\n&quot;, 1,  gk2
+if p4 != 1212 kgoto end
+gkguidefilestopflag 	linseg	1, .1, 1, .001, 0, p3-.101, 0
+end:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='6' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>track 1</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks	&quot;track 1 called\\n&quot;, 3600
+;gkrate1	tonek	gkrate1, gkfilter
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+
+if	gkloop1 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+ainputsig 		inch kchan
+ainputsig = ainputsig * gkinput1
+noread:
+;
+;	todo: click filter should go here
+;
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = ainputsig +  (garegensig1_1 * gkregen1)
+kgoto done
+noadd:
+asig = ainputsig
+;printk 	.25,gkrate
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate1 &gt; gkmintap 	kgoto done
+gkrate1 = gkmintap
+done:
+aout vdelay	asig, gkrate1*1000, gidelsize*1000
+;
+;	send out to regensig&apos;s for optional addition if sus pedal is pressed
+;
+garegensig1_1 = aout
+readquery:
+if 	gkloopread1 = 0	kgoto off
+read:
+
+out	aout*gkoutput1
+gaout1_1 = aout
+kgoto out
+off:
+;turnoffk	gkturnoff
+gaout1_1 = 0
+out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='7' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>track 2</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks	&quot;track 2 called\\n&quot;, 3600
+;gkrate2	tonek	gkrate2, gkfilter
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+if	gkloop2 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+ainputsig 		inch kchan
+ainputsig = ainputsig * gkinput2
+noread:
+;
+;	todo: click filter should go here
+;
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = ainputsig +  (garegensig1_2 * gkregen2)
+kgoto done
+noadd:
+asig = ainputsig
+;printk 	.25,gkrate
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate2 &gt; gkmintap 	kgoto done
+gkrate2 = gkmintap
+done:
+aout vdelay	asig, gkrate2*1000, gidelsize*1000
+;
+;	send out to regensig&apos;s for optional addition if sus pedal is pressed
+;
+garegensig1_2 = aout
+readquery:
+if 	gkloopread2 = 0	kgoto off
+read:
+out	aout*gkoutput2
+gaout1_2 = aout
+kgoto out
+off:
+gaout1_2 = 0
+;turnoffk	gkturnoff
+out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='8' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>track 3</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks	&quot;track 3 called\\n&quot;, 3600
+;gkrate3	tonek	gkrate3, gkfilter
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+if	gkloop3 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+ainputsig 		inch kchan
+ainputsig = ainputsig * gkinput3
+noread:
+;
+;	todo: click filter should go here
+;
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = ainputsig +  (garegensig1_3 * gkregen3)
+kgoto done
+noadd:
+asig = ainputsig
+;printk 	.25,gkrate
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate3 &gt; gkmintap 	kgoto done
+gkrate3 = gkmintap
+done:
+aout vdelay	asig, gkrate3*1000, gidelsize*1000
+;
+;	send out to regensig&apos;s for optional addition if sus pedal is pressed
+;
+garegensig1_3 = aout
+readquery:
+if 	gkloopread3 = 0	kgoto off
+read:
+out	aout*gkoutput3
+gaout1_3 = aout
+kgoto out
+off:
+gaout1_3 = 0
+;turnoffk	gkturnoff
+out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='9' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>track 4</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks	&quot;track 4 called\\n&quot;, 3600
+;gkrate4	tonek	gkrate4, gkfilter
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+if	gkloop4 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+ainputsig 		inch kchan
+ainputsig = ainputsig * gkinput4
+noread:
+;
+;	todo: click filter should go here
+;
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = ainputsig + (garegensig1_4 * gkregen4)
+kgoto done
+noadd:
+asig = ainputsig
+;printk 	.25,gkrate
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate4 &gt; gkmintap 	kgoto done
+gkrate4 = gkmintap
+done:
+aout vdelay	asig, gkrate4*1000, gidelsize*1000
+aout = ainputsig+aout
+;
+;	send out to regensig&apos;s for optional addition if sus pedal is pressed
+;
+garegensig1_4 = aout
+readquery:
+if 	gkloopread4 = 0	kgoto off
+read:
+out	aout*gkoutput4
+gaout1_4 = aout
+kgoto out
+off:
+gaout1_4 = 0
+;turnoffk	gkturnoff
+out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='14' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>file output</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>if	gkfileflag = 0 	kgoto done
+
+ainputsig = 0
+ainputsig2 = 0
+;if	gkloop1 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+
+fout &quot;track1.wav&quot;, 1, gaout1_1, gaout2_1
+fout &quot;track2.wav&quot;, 1, gaout1_2, gaout2_2
+fout &quot;track3.wav&quot;, 1, gaout1_3, gaout2_3
+fout &quot;track4.wav&quot;, 1, gaout1_4, gaout2_4
+fout &quot;master.wav&quot;, 1, ainputsig, ainputsig2
+done:</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='15' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 1</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>iwhole = i(gk_w_1)
+ihalf = i(gk_h_1)
+iquarter = i(gk_q_1)
+ieighth = i(gk_e_1)
+isixteenth = i(gk_s_1)
+itempo = i(gk_tempo_1)
+idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
+if idur == 0 kgoto done
+inewlength = (60/itempo) * idur
+gkrate1 = gk_mult_1*inewlength
+FLsetVal	1, gkrate1, gihtap1
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='16' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 2</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>iwhole = i(gk_w_2)
+ihalf = i(gk_h_2)
+iquarter = i(gk_q_2)
+ieighth = i(gk_e_2)
+isixteenth = i(gk_s_2)
+itempo = i(gk_tempo_2)
+idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
+if idur == 0 kgoto done
+inewlength = (60/itempo) * idur
+gkrate2 = gk_mult_2*inewlength
+FLsetVal	1, gkrate2, gihtap2
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='17' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 3</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>iwhole = i(gk_w_3)
+ihalf = i(gk_h_3)
+iquarter = i(gk_q_3)
+ieighth = i(gk_e_3)
+isixteenth = i(gk_s_3)
+itempo = i(gk_tempo_3)
+idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
+if idur == 0 kgoto done
+inewlength = (60/itempo) * idur
+gkrate3 = gk_mult_3*inewlength
+FLsetVal	1, gkrate3, gihtap3
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='18' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 4</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>iwhole = i(gk_w_4)
+ihalf = i(gk_h_4)
+iquarter = i(gk_q_4)
+ieighth = i(gk_e_4)
+isixteenth = i(gk_s_4)
+itempo = i(gk_tempo_4)
+;idur = (iwhole * 1) + (ihalf * .5) + (iquarter *.25) + (ieighth * .125) + (isixteenth * .06125)
+idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
+if idur == 0 kgoto done
+inewlength = (60/itempo) * idur
+gkrate4 = gk_mult_4*inewlength
+FLsetVal	1, gkrate4, gihtap4
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='19' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>track 5</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks	&quot;track 1 called\\n&quot;, 3600
+gkrate1	tonek	gkrate1, gkfilter
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+ainputsig2 = 0
+;if	gkloop1 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+ainputsig = ainputsig * gkinput1
+ainputsig2 = ainputsig2 * gkinput1
+noread:
+;
+;	todo: click filter should go here
+;
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = ainputsig +  (garegensig1_1 * gkregen1)
+asig2 = ainputsig2 +  (garegensig2_1 * gkregen1)
+kgoto done
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate1 &gt; gkmintap 	kgoto done
+gkrate1 = gkmintap
+done:
+aout vdelay	asig, gkrate1*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
+;
+;	send out to regensig&apos;s for optional addition if sus pedal is pressed
+;
+garegensig1_1 = aout
+garegensig2_1 = aout2
+readquery:
+;if 	gkloopread1 = 0	kgoto off
+read:
+outch	kchanout, aout*gkoutput1
+outch	kchanout+1, aout2*gkoutput1
+gaout1_1 = aout
+gaout2_1 = aout2
+kgoto out
+off:
+;turnoffk	gkturnoff
+gaout1_1 = 0
+gaout2_1 = 0
+out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='20' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>track 6</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks	&quot;track 1 called\\n&quot;, 3600
+gkrate1	tonek	gkrate1, gkfilter
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+ainputsig2 = 0
+;if	gkloop1 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+ainputsig = ainputsig * gkinput1
+ainputsig2 = ainputsig2 * gkinput1
+noread:
+;
+;	todo: click filter should go here
+;
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = ainputsig +  (garegensig1_1 * gkregen1)
+asig2 = ainputsig2 +  (garegensig2_1 * gkregen1)
+kgoto done
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate1 &gt; gkmintap 	kgoto done
+gkrate1 = gkmintap
+done:
+aout vdelay	asig, gkrate1*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
+;
+;	send out to regensig&apos;s for optional addition if sus pedal is pressed
+;
+garegensig1_1 = aout
+garegensig2_1 = aout2
+readquery:
+;if 	gkloopread1 = 0	kgoto off
+read:
+outch	kchanout, aout*gkoutput1
+outch	kchanout+1, aout2*gkoutput1
+gaout1_1 = aout
+gaout2_1 = aout2
+kgoto out
+off:
+;turnoffk	gkturnoff
+gaout1_1 = 0
+gaout2_1 = 0
+out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='21' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>track 7</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks	&quot;track 1 called\\n&quot;, 3600
+gkrate1	tonek	gkrate1, gkfilter
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+ainputsig2 = 0
+;if	gkloop1 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+ainputsig = ainputsig * gkinput1
+ainputsig2 = ainputsig2 * gkinput1
+noread:
+;
+;	todo: click filter should go here
+;
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = ainputsig +  (garegensig1_1 * gkregen1)
+asig2 = ainputsig2 +  (garegensig2_1 * gkregen1)
+kgoto done
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate1 &gt; gkmintap 	kgoto done
+gkrate1 = gkmintap
+done:
+aout vdelay	asig, gkrate1*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
+;
+;	send out to regensig&apos;s for optional addition if sus pedal is pressed
+;
+garegensig1_1 = aout
+garegensig2_1 = aout2
+readquery:
+;if 	gkloopread1 = 0	kgoto off
+read:
+outch	kchanout, aout*gkoutput1
+outch	kchanout+1, aout2*gkoutput1
+gaout1_1 = aout
+gaout2_1 = aout2
+kgoto out
+off:
+;turnoffk	gkturnoff
+gaout1_1 = 0
+gaout2_1 = 0
+out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='22' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>track 8</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks	&quot;track 1 called\\n&quot;, 3600
+gkrate1	tonek	gkrate1, gkfilter
+;
+;	if delay flag == 0, no delay :)
+;
+ainputsig = 0
+ainputsig2 = 0
+;if	gkloop1 = 0 kgoto noread
+kchan = $IOBaseChannel
+kchanout = $IOBaseChannel
+ainputsig 		inch kchan
+ainputsig2 	inch kchan+1
+ainputsig = ainputsig * gkinput1
+ainputsig2 = ainputsig2 * gkinput1
+noread:
+;
+;	todo: click filter should go here
+;
+;
+;	if sus pedal is not pressed, no repeat
+;
+;if	gkpedalval = 0	kgoto noadd
+;
+;	repeat and hold - scale repeat with gkregen
+;
+asig = ainputsig +  (garegensig1_1 * gkregen1)
+asig2 = ainputsig2 +  (garegensig2_1 * gkregen1)
+kgoto done
+noadd:
+asig = ainputsig
+asig2 = ainputsig2
+;printk 	.25,gkrate
+;
+;	this binds the lower range of gkrate to gkmintap
+;
+if	gkrate1 &gt; gkmintap 	kgoto done
+gkrate1 = gkmintap
+done:
+aout vdelay	asig, gkrate1*1000, gidelsize*1000
+aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
+;
+;	send out to regensig&apos;s for optional addition if sus pedal is pressed
+;
+garegensig1_1 = aout
+garegensig2_1 = aout2
+readquery:
+;if 	gkloopread1 = 0	kgoto off
+read:
+outch	kchanout, aout*gkoutput1
+outch	kchanout+1, aout2*gkoutput1
+gaout1_1 = aout
+gaout2_1 = aout2
+kgoto out
+off:
+;turnoffk	gkturnoff
+gaout1_1 = 0
+gaout2_1 = 0
+out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='23' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 5</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>iwhole = i(gk_w_1)
+ihalf = i(gk_h_1)
+iquarter = i(gk_q_1)
+ieighth = i(gk_e_1)
+isixteenth = i(gk_s_1)
+itempo = i(gk_tempo_1)
+idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
+if idur == 0 kgoto done
+inewlength = (60/itempo) * idur
+gkrate1 = gk_mult_1*inewlength
+FLsetVal	1, gkrate1, gihtap1
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='24' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 6</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>iwhole = i(gk_w_1)
+ihalf = i(gk_h_1)
+iquarter = i(gk_q_1)
+ieighth = i(gk_e_1)
+isixteenth = i(gk_s_1)
+itempo = i(gk_tempo_1)
+idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
+if idur == 0 kgoto done
+inewlength = (60/itempo) * idur
+gkrate1 = gk_mult_1*inewlength
+FLsetVal	1, gkrate1, gihtap1
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='25' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 7</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>iwhole = i(gk_w_1)
+ihalf = i(gk_h_1)
+iquarter = i(gk_q_1)
+ieighth = i(gk_e_1)
+isixteenth = i(gk_s_1)
+itempo = i(gk_tempo_1)
+idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
+if idur == 0 kgoto done
+inewlength = (60/itempo) * idur
+gkrate1 = gk_mult_1*inewlength
+FLsetVal	1, gkrate1, gihtap1
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='26' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 8</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>iwhole = i(gk_w_1)
+ihalf = i(gk_h_1)
+iquarter = i(gk_q_1)
+ieighth = i(gk_e_1)
+isixteenth = i(gk_s_1)
+itempo = i(gk_tempo_1)
+idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
+if idur == 0 kgoto done
+inewlength = (60/itempo) * idur
+gkrate1 = gk_mult_1*inewlength
+FLsetVal	1, gkrate1, gihtap1
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='27' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 1 button</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>if	gkcomptime1 &gt; 0 	kgoto compare
+if	gk_update_tap_1 == 0 kgoto done
+gkcomptime1 times
+kgoto done
+compare:
+if	gk_update_tap_1 == 1 kgoto done
+ktemptime times
+gkrate1 = ktemptime - gkcomptime1
+FLsetVal	1, gkrate1, gihtap1
+gkcomptime1 = 0
+kgoto done
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='28' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 2 button</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>if	gkcomptime2 &gt; 0 	kgoto compare
+if	gk_update_tap_2 == 0 kgoto done
+gkcomptime2 times
+kgoto done
+compare:
+if	gk_update_tap_2 == 1 kgoto done
+ktemptime times
+gkrate2 = ktemptime - gkcomptime2
+FLsetVal	1, gkrate2, gihtap2
+gkcomptime2 = 0
+kgoto done
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='29' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 3 button</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>if	gkcomptime3 &gt; 0 	kgoto compare
+if	gk_update_tap_3 == 0 kgoto done
+gkcomptime3 times
+kgoto done
+compare:
+if	gk_update_tap_3 == 1 kgoto done
+ktemptime times
+gkrate3 = ktemptime - gkcomptime3
+FLsetVal	1, gkrate3, gihtap3
+gkcomptime3 = 0
+kgoto done
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='30' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>update tempo 4 button</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>if	gkcomptime4 &gt; 0 	kgoto compare
+if	gk_update_tap_4 == 0 kgoto done
+gkcomptime4 times
+kgoto done
+compare:
+if	gk_update_tap_4 == 1 kgoto done
+ktemptime times
+gkrate4 = ktemptime - gkcomptime4
+FLsetVal	1, gkrate4, gihtap4
+gkcomptime4 = 0
+kgoto done
+done:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='31' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>bcontrol midi switchboard</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>kstatus, kchan, kdata1, kdata2 midiin
+;
+; cc msgs from b-control
+;
+;if	kstatus != 176 kgoto end
+inputknobs:
+if	kdata1 != 1 kgoto knob2
+gkinput1 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkinput1, gihinput1
+knob2:
+if	kdata1 != 2 kgoto knob3
+gkinput2 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkinput2, gihinput2
+knob3:
+if	kdata1 != 3 kgoto knob4
+gkinput3 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkinput3, gihinput3
+knob4:
+if	kdata1 != 4 kgoto outputknobs
+gkinput4 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkinput4, gihinput4
+
+outputknobs:
+outknob1:
+if	kdata1 != 81 kgoto outknob2
+gkoutput1 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkoutput1, gihoutput1
+outknob2:
+if	kdata1 != 82 kgoto outknob3
+gkoutput2 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkoutput2, gihoutput2
+outknob3:
+if	kdata1 != 83 kgoto outknob4
+gkoutput3 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkoutput3, gihoutput3
+outknob4:
+if	kdata1 != 84 kgoto delaytimeknobs
+gkoutput4 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkoutput4, gihoutput4
+
+delaytimeknobs:
+delaytimeknob1:
+if	kdata1 != 89 kgoto delaytimeknob2
+gkrate1 = (kdata2 * 0.00787401574) * gkmaxdel
+FLsetVal  1, gkrate1, gihtap1
+delaytimeknob2:
+if	kdata1 != 90 kgoto delaytimeknob3
+gkrate2 = (kdata2 * 0.00787401574) * gkmaxdel
+FLsetVal  1, gkrate2, gihtap2
+delaytimeknob3:
+if	kdata1 != 91 kgoto delaytimeknob4
+gkrate3 = (kdata2 * 0.00787401574) * gkmaxdel
+FLsetVal  1, gkrate3, gihtap3
+delaytimeknob4:
+if	kdata1 != 92 kgoto regenknobs
+gkrate4 = (kdata2 * 0.00787401574) * gkmaxdel
+FLsetVal  1, gkrate4, gihtap4
+
+
+regenknobs:
+regenknob1:
+if	kdata1 != 97 kgoto regenknob2
+gkregen1 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkregen1, gihregknob1
+regenknob2:
+if	kdata1 != 98 kgoto regenknob3
+gkregen2 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkregen2, gihregknob2
+regenknob3:
+if	kdata1 != 99 kgoto regenknob4
+gkregen3 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkregen3, gihregknob3
+regenknob4:
+if	kdata1 != 100 kgoto inputbuttons
+gkregen4 = (kdata2 * 0.00787401574)
+FLsetVal  1, gkregen4, gihregknob4
+
+inputbuttons:
+inputbutton1:
+if	kdata1 != 65 kgoto inputbutton2
+event &quot;i&quot;,32,.001,.01,1
+if kdata2 != 0 kgoto inputnext1
+gkloop1 = 0
+inputnext1:
+if kdata2 != 127 kgoto inputbutton2
+gkloop1 = 1
+
+inputbutton2:
+if	kdata1 != 66 kgoto inputbutton3
+event &quot;i&quot;,32,.001,.01,1
+if kdata2 != 0 kgoto inputnext2
+gkloop2 = 0
+inputnext2:
+if kdata2 != 127 kgoto inputbutton3
+gkloop2 = 1
+
+inputbutton3:
+if	kdata1 != 67 kgoto inputbutton4
+event &quot;i&quot;,32,.001,.01,1
+if kdata2 != 0 kgoto inputnext3
+gkloop3 = 0
+inputnext3:
+if kdata2 != 127 kgoto inputbutton4
+gkloop3 = 1
+
+inputbutton4:
+if	kdata1 != 68 kgoto inputbutton5
+event &quot;i&quot;,32,.001,.01,1
+if kdata2 != 0 kgoto inputnext4
+gkloop4 = 0
+inputnext4:
+if kdata2 != 127 kgoto inputbutton5
+gkloop4 = 1
+
+inputbutton5:
+if	kdata1 != 73 kgoto inputbutton6
+event &quot;i&quot;,32,.001,.01,1
+if kdata2 != 0 kgoto inputnext5
+gkloopread1 = 0
+inputnext5:
+if kdata2 != 127 kgoto inputbutton6
+gkloopread1 = 1
+
+inputbutton6:
+if	kdata1 != 74 kgoto inputbutton7
+event &quot;i&quot;,32,.001,.01,1
+if kdata2 != 0 kgoto inputnext6
+gkloopread2 = 0
+inputnext6:
+if kdata2 != 127 kgoto inputbutton7
+gkloopread2 = 1
+
+inputbutton7:
+if	kdata1 != 75 kgoto inputbutton8
+event &quot;i&quot;,32,.001,.01,1
+if kdata2 != 0 kgoto inputnext7
+gkloopread3 = 0
+inputnext7:
+if kdata2 != 127 kgoto inputbutton8
+gkloopread3 = 1
+
+
+inputbutton8:
+if	kdata1 != 76 kgoto end
+event &quot;i&quot;,32,.001,.01,1
+if kdata2 != 0 kgoto inputnext8
+gkloopread4 = 0
+inputnext8:
+if kdata2 != 127 kgoto end
+gkloopread4 = 1
+end:
+
+
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='32' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>button switcher</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>;printks	&quot;button handler got called\\n&quot;, 1
+
+
+i1 = i(gkloop1)
+i2 = i(gkloop2)
+i3 = i(gkloop3)
+i4 = i(gkloop4)
+i5 = i(gkloopread1)
+i6 = i(gkloopread2)
+i7 = i(gkloopread3)
+i8 = i(gkloopread4)
+iset = p4
+FLsetVal_i i1, gihbut1
+FLsetVal_i i2, gihbut2
+FLsetVal_i i3, gihbut3
+FLsetVal_i i4, gihbut4
+FLsetVal_i i5, gihbutread1
+FLsetVal_i i6, gihbutread2
+FLsetVal_i i7, gihbutread3
+FLsetVal_i i8, gihbutread4
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+  </arrangement>
+  <mixer>
+    <enabled>false</enabled>
+    <extraRenderTime>0.0</extraRenderTime>
+    <channelList list='channels'>
+      <channel>
+        <name>3</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786957' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>5</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786955' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>6</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786953' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>7</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786951' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>8</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786949' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>9</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786947' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>14</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786945' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>15</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786943' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>16</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786941' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>17</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786939' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>18</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786937' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>19</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786935' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>20</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786933' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>21</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786931' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>22</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786929' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>23</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786927' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>24</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786925' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>25</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786923' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>26</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786921' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>27</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786919' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>28</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786917' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>29</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786915' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>30</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786913' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>31</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786911' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>32</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-288786909' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+    </channelList>
+    <channelList list='subChannels'/>
+    <channel>
+      <name>Master</name>
+      <outChannel>Master</outChannel>
+      <level>0.0</level>
+      <muted>false</muted>
+      <solo>false</solo>
+      <effectsChain bin='pre'/>
+      <effectsChain bin='post'/>
+      <parameter uniqueId='-288786907' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+        <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+          <linePoint x='0.0' y='0.0'/>
+        </line>
+      </parameter>
+    </channel>
+  </mixer>
+  <tables>f 1 0 16384 9 .5 1 0
+f 2 0 8192 10 1
+f4	0	513	20	6
+f6   0   8192   -20   8   1
+</tables>
+  <soundObjectLibrary/>
+  <globalOrcSco>
+    <globalOrc>#define guideTrackFile	#&quot;D:\\Audio\\Ben\\Guitar Improvs\\Finished\\AcousticScratch.wav&quot;#
+#define overdubFile		#&quot;c:\\overdub.wav&quot;#
+; this is the y offset caused by the tabs
+#define tabsYoffset	#50#
+;***********************************************************
+;	THIS IS THE MAXIMUM DELAY TIME
+;***********************************************************
+#define	totalDelayLineTime	#32#
+;***********************************************************
+;
+;***********************************************************
+;***********************************************************
+;	THIS IS THE IO Base channel - stereo output 
+;	goes in and out from IOBaseChannel and 
+;	IOBaseChannel+1
+;***********************************************************
+#define	IOBaseChannel	#1#
+;***********************************************************
+;
+;***********************************************************
+;gkpedalval		init	0
+gkmaxdel	init $totalDelayLineTime
+gidelsize init i(gkmaxdel)
+gasig	init 0
+gaout1	init 0
+gaout2	init 0
+gaout1_1	init 0
+gaout2_1	init 0
+gaout1_2	init 0
+gaout2_2	init 0
+gaout1_3	init 0
+gaout2_3	init 0
+gaout1_4	init 0
+gaout2_4	init 0
+gkfileflag init 0
+gkfileopen init 0
+gkguidefilestopflag init 0;
+gkregen 	init 1.0
+gkrate	init 0
+gkmod	init 1
+gkpitch	init 0
+gkdelayflag init 1
+gktapdelayflag init 0
+gksineflag init 0
+gkcomptime init 0
+gkcomptime1 init 0
+gkcomptime2 init 0
+gkcomptime3 init 0
+gkcomptime4 init 0
+gkcomptime1_flag init 0
+gkcomptime2_flag init 0
+gkcomptime3_flag init 0
+gkcomptime4_flag init 0
+garegensig init 0
+garegensig2 init 0
+; this is set to 1 by reset button event
+gkturnoff init 0
+;
+; this turns off midi keys as tap tempos
+;
+gkmiditap init 0
+;
+; for multitracks
+;
+garegensig1_1 init 0
+garegensig2_1 init 0
+garegensig1_2 init 0
+garegensig2_2 init 0
+garegensig1_3 init 0
+garegensig2_3 init 0
+garegensig1_4 init 0
+garegensig2_4 init 0
+;
+;temp values
+;
+;gkregen init 1
+gkmintap init .1
+;gkrate init 16
+;gksineflag init 1
+;gkdelayflag init 1
+;gktapdelayflag init 1
+;iwidth,iheight,ibpp bmopen	&quot;allblack.bmp&quot;,1 ,1
+gkloop1 init 0
+gkloopread1 init 0
+	FLpanel	&quot;Delay&quot;,510, 900;***** start of container
+	FLtabs	510, 900, 0, 0
+;****************************************************
+;	Tracks page	
+;****************************************************
+	FLgroup	&quot;Tracks&quot;,510,900,0,0+$tabsYoffset,0
+ihandle1  FLbox  &quot;Track:&quot;, 1, 1, 20, 100, 100, 0, 0+$tabsYoffset
+ihandle2  FLbox  &quot;1&quot;, 1, 1, 20, 100, 100, 100, 0+$tabsYoffset
+ihandle3  FLbox  &quot;2&quot;, 1, 1, 20, 100, 100, 200, 0+$tabsYoffset
+ihandle4  FLbox  &quot;3&quot;, 1, 1, 20, 100, 100, 300, 0+$tabsYoffset
+ihandle5  FLbox  &quot;4&quot;, 1, 1, 20, 100, 100, 400, 0+$tabsYoffset
+;
+;
+ihandle6  FLbox  &quot;Input&quot;, 1, 1, 16, 100, 50, 0, 125+$tabsYoffset
+ihandle7  FLbox  &quot;Output&quot;, 1, 1, 16, 100, 50, 0, 175+$tabsYoffset
+ihandle8  FLbox  &quot;Delay Time&quot;, 1, 1, 16, 100, 100, 0, 300+$tabsYoffset
+ihandle9  FLbox  &quot;Regeneration&quot;, 1, 1, 16, 100, 100, 0, 450+$tabsYoffset
+gkinput1,gihinput1		FLtext	&quot; &quot;, 0, 1, .05, 1,        80, 20, 110, 135+$tabsYoffset
+gkoutput1,gihoutput1		FLtext	&quot; &quot;, 0, 1, .05, 1,        80, 20, 110, 185+$tabsYoffset
+gkloop1,gihbut1		FLbutton	&quot; &quot;, 1, 0, 3, 		20, 20, 190, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gkloopread1,gihbutread1	FLbutton	&quot; &quot;, 1, 0, 3, 		20, 20, 190, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gihrate1			FLvalue 	&quot; &quot;,			80, 25, 110, 425+$tabsYoffset
+gkrate1,gihtap1		FLslider	&quot; &quot;, 0, gidelsize, 0 ,2, gihrate1, 20,200, 140, 220+$tabsYoffset
+gihregen1			FLvalue 	&quot; &quot;,			80, 25, 110, 525+$tabsYoffset
+gkregen1, gihregknob1	FLknob  	&quot; &quot;, 0.001, 1, 0, 1, gihregen1, 80, 110, 450+$tabsYoffset
+gkinput2,gihinput2		FLtext	&quot; &quot;, 0, 1, .05, 1,        80, 20, 210, 135+$tabsYoffset
+gkoutput2,gihoutput2		FLtext	&quot; &quot;, 0, 1, .05, 1,        80, 20, 210, 185+$tabsYoffset
+gkloop2,gihbut2	FLbutton	&quot; &quot;, 1, 0, 3, 		20, 20, 290, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 2
+gkloopread2,gihbutread2	FLbutton	&quot; &quot;, 1, 0, 3, 		20, 20, 290, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gihrate2		FLvalue 	&quot; &quot;,		80, 25, 210, 425+$tabsYoffset
+gkrate2,gihtap2	FLslider	&quot; &quot;, 0, gidelsize, 0 ,2, gihrate2, 20,200, 240, 220+$tabsYoffset
+gihregen2			FLvalue 	&quot; &quot;,			80, 25, 210, 525+$tabsYoffset
+gkregen2, gihregknob2	FLknob  	&quot; &quot;, 0.001, 1,0, 1, gihregen2, 80, 210, 450+$tabsYoffset
+gkinput3,gihinput3		FLtext	&quot; &quot;, 0, 1, .05, 1,        80, 20, 310, 135+$tabsYoffset
+gkoutput3,gihoutput3		FLtext	&quot; &quot;, 0, 1, .05, 1,        80, 20, 310, 185+$tabsYoffset
+gkloop3,gihbut3	FLbutton	&quot; &quot;, 1, 0, 3, 		20, 20, 390, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 3
+gkloopread3,gihbutread3	FLbutton	&quot; &quot;, 1, 0, 3, 		20, 20, 390, 185+$tabsYoffset,  		0, 5, 0, 1, 0, 1
+gihrate3		FLvalue 	&quot; &quot;,		80, 25, 310, 425+$tabsYoffset
+gkrate3,gihtap3	FLslider	&quot; &quot;, 0, gidelsize, 0 ,2, gihrate3, 20,200, 340, 220+$tabsYoffset
+gihregen3			FLvalue 	&quot; &quot;,			80, 25, 310, 525+$tabsYoffset
+gkregen3, gihregknob3	FLknob  	&quot; &quot;, 0.001, 1, 0, 1, gihregen3, 80, 310, 450+$tabsYoffset
+gkinput4,gihinput4		FLtext	&quot; &quot;, 0, 1, .05, 1,        80, 20, 410, 135+$tabsYoffset
+gkoutput4,gihoutput4		FLtext	&quot; &quot;, 0, 1, .05, 1,        80, 20, 410, 185+$tabsYoffset
+gkloop4,gihbut4	FLbutton	&quot; &quot;, 1, 0, 3, 		20, 20, 490, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 3
+gkloopread4,gihbutread4	FLbutton	&quot; &quot;, 1, 0, 3, 		20, 20, 490, 185+$tabsYoffset,  		0, 5, 0, 1, 0, 4
+gihrate4		FLvalue 	&quot; &quot;,		80, 25, 410, 425+$tabsYoffset
+gkrate4,gihtap4	FLslider	&quot; &quot;, 0, gidelsize, 0,2, gihrate4, 20,200, 440, 220+$tabsYoffset
+gihregen4			FLvalue 	&quot; &quot;,			80, 25, 410, 525+$tabsYoffset
+gkregen4, gihregknob4	FLknob  	&quot; &quot;, 0.001, 1, 0, 1, gihregen4, 80, 410, 450+$tabsYoffset
+; reset button - reinit
+;gkresetbutton,ihresetbutton	FLbutton	&quot;RESET&quot;, 1, 0, 1, 		100, 100, 0, 550+$tabsYoffset,  		0, 12, 0, 1, 1
+gk_tempo_1,ih_tempo_1	FLtext	&quot;tempo&quot;, 20, 400, 1, 1,        80, 20, 110, 570+$tabsYoffset
+gk_w_1,ih_w_1		FLbutton	&quot;w&quot;, 1, 0, 3, 		20, 20, 100, 600+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_h_1,ih_h_1		FLbutton	&quot;h&quot;, 1, 0, 3, 		20, 20, 100, 620+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_q_1,ih_q_1		FLbutton	&quot;q&quot;, 1, 0, 3, 		20, 20, 100, 640+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_e_1,ih_8th_1		FLbutton	&quot;e&quot;, 1, 0, 3, 		20, 20, 100, 660+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_s_1,ih_16th_1		FLbutton	&quot;s&quot;, 1, 0, 3, 		20, 20, 100, 680+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_update_1,ih_update_1	FLbutton	&quot;update&quot;, 1, 0, 1, 		50, 80, 140, 620+$tabsYoffset, 		0, 15, 0, 1
+gk_mult_1,ih_mult_1		FLtext	&quot;multiplier&quot;, 1, 10, 1, 1,   80, 20, 110, 700+$tabsYoffset
+gk_update_tap_1,ih_update_tap_1	FLbutton	&quot;tap&quot;, 1, 0, 2, 	50, 80, 140, 750+$tabsYoffset, 		0, 27, 0, 1
+FLsetVal_i 120, ih_tempo_1
+FLsetVal_i 1, ih_mult_1
+gk_tempo_2,ih_tempo_2	FLtext	&quot;tempo&quot;, 20, 400, 1, 1,        80, 20, 100+110, 570+$tabsYoffset
+gk_w_2,ih_w_2		FLbutton	&quot;w&quot;, 1, 0, 3, 		20, 20, 100+100, 600+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_h_2,ih_h_2		FLbutton	&quot;h&quot;, 1, 0, 3, 		20, 20, 100+100, 620+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_q_2,ih_q_2		FLbutton	&quot;q&quot;, 1, 0, 3, 		20, 20, 100+100, 640+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_e_2,ih_8th_2		FLbutton	&quot;e&quot;, 1, 0, 3, 		20, 20, 100+100, 660+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_s_2,ih_26th_2		FLbutton	&quot;s&quot;, 1, 0, 3, 		20, 20, 100+100, 680+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_update_2,ih_update_2	FLbutton	&quot;update&quot;, 1, 0, 1, 		50, 80, 100+140, 620+$tabsYoffset, 		0, 16, 0, 1
+gk_mult_2,ih_mult_2		FLtext	&quot;multiplier&quot;, 1, 10, 1, 1,   80, 20, 100+110, 700+$tabsYoffset
+gk_update_tap_2,ih_update_tap_2	FLbutton	&quot;tap&quot;, 1, 0, 2, 	50, 80, 100+140, 750+$tabsYoffset, 		0, 28, 0, 1
+FLsetVal_i 120, ih_tempo_2
+FLsetVal_i 1, ih_mult_2
+gk_tempo_3,ih_tempo_3	FLtext	&quot;tempo&quot;, 20, 400, 1, 1,        80, 20, 200+110, 570+$tabsYoffset
+gk_w_3,ih_w_3		FLbutton	&quot;w&quot;, 1, 0, 3, 		20, 20, 200+100, 600+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_h_3,ih_h_3		FLbutton	&quot;h&quot;, 1, 0, 3, 		20, 20, 200+100, 620+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_q_3,ih_q_3		FLbutton	&quot;q&quot;, 1, 0, 3, 		20, 20, 200+100, 640+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_e_3,ih_8th_3		FLbutton	&quot;e&quot;, 1, 0, 3, 		20, 20, 200+100, 660+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_s_3,ih_36th_3		FLbutton	&quot;s&quot;, 1, 0, 3, 		20, 20, 200+100, 680+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_update_3,ih_update_3	FLbutton	&quot;update&quot;, 1, 0, 1, 		50, 80, 200+140, 620+$tabsYoffset, 		0, 17, 0, 1
+gk_mult_3,ih_mult_3		FLtext	&quot;multiplier&quot;, 1, 10, 1, 1,   80, 20, 200+110, 700+$tabsYoffset
+gk_update_tap_3,ih_update_tap_3	FLbutton	&quot;tap&quot;, 1, 0, 2, 	50, 80, 200+140, 750+$tabsYoffset, 		0, 29, 0, 1
+FLsetVal_i 120, ih_tempo_3
+FLsetVal_i 1, ih_mult_3
+gk_tempo_4,ih_tempo_4	FLtext	&quot;tempo&quot;, 20, 400, 1, 1,        80, 20, 300+110, 570+$tabsYoffset
+gk_w_4,ih_w_4		FLbutton	&quot;w&quot;, 1, 0, 3, 		20, 20, 300+100, 600+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_h_4,ih_h_4		FLbutton	&quot;h&quot;, 1, 0, 3, 		20, 20, 300+100, 620+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_q_4,ih_q_4		FLbutton	&quot;q&quot;, 1, 0, 3, 		20, 20, 300+100, 640+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_e_4,ih_8th_4		FLbutton	&quot;e&quot;, 1, 0, 3, 		20, 20, 300+100, 660+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_s_4,ih_46th_4		FLbutton	&quot;s&quot;, 1, 0, 3, 		20, 20, 300+100, 680+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gk_update_4,ih_update_4	FLbutton	&quot;update&quot;, 1, 0, 1, 		50, 80, 300+140, 620+$tabsYoffset, 		0, 18, 0, 1
+gk_mult_4,ih_mult_4		FLtext	&quot;multiplier&quot;, 1, 10, 1, 1,   80, 20, 300+110, 700+$tabsYoffset
+gk_update_tap_4,ih_update_tap_4	FLbutton	&quot;tap&quot;, 1, 0, 2, 	50, 80, 300+140, 750+$tabsYoffset, 		0, 30, 0, 1
+FLsetVal_i 120, ih_tempo_4
+FLsetVal_i 1, ih_mult_4
+FLsetVal_i	 	$totalDelayLineTime, gihtap1
+FLsetVal_i	 	$totalDelayLineTime, gihtap2
+FLsetVal_i	 	$totalDelayLineTime, gihtap3
+FLsetVal_i	 	$totalDelayLineTime, gihtap4
+FLsetVal_i	 	1, gihregknob1
+FLsetVal_i	 	1, gihregknob2
+FLsetVal_i	 	1, gihregknob3
+FLsetVal_i	 	1, gihregknob4
+FLsetTextColor 0, 255, 0, ihandle1
+FLsetTextColor 0, 255, 0, ihandle2
+FLsetTextColor 0, 255, 0, ihandle3
+FLsetTextColor 0, 255, 0, ihandle4
+FLsetTextColor 0, 255, 0, ihandle5
+FLsetTextColor 0, 255, 0, ihandle6
+FLsetTextColor 0, 255, 0, ihandle7
+FLsetTextColor 0, 255, 0, ihandle8
+FLsetTextColor 0, 255, 0, ihandle9
+FLsetColor		0, 0, 0, ihandle1
+FLsetColor		0, 0, 0, ihandle2
+FLsetColor		0, 0, 0, ihandle3
+FLsetColor		0, 0, 0, ihandle4
+FLsetColor		0, 0, 0, ihandle5
+FLsetColor		0, 0, 0, ihandle6
+FLsetColor		0, 0, 0, ihandle7
+FLsetColor		0, 0, 0, ihandle8
+FLsetColor		0, 0, 0, ihandle9
+FLsetColor		128, 0, 0, gihregknob1
+FLsetColor		128, 0, 0, gihregknob2
+FLsetColor		128, 0, 0, gihregknob3
+FLsetColor		128, 0, 0, gihregknob4
+FLsetColor		255, 255, 0, gihtap1
+FLsetColor		255, 255, 0, gihtap2
+FLsetColor		255, 255, 0, gihtap3
+FLsetColor		255, 255, 0, gihtap4
+FLsetVal_i	 	1, gihinput1
+FLsetVal_i	 	1, gihinput2
+FLsetVal_i	 	1, gihinput3
+FLsetVal_i	 	1, gihinput4
+FLsetVal_i	 	1, gihoutput1
+FLsetVal_i	 	1, gihoutput2
+FLsetVal_i	 	1, gihoutput3
+FLsetVal_i	 	1, gihoutput4
+	FLgroup_end
+;****************************************************
+;	Config page	
+;****************************************************
+	FLgroup	&quot;Config&quot;,500,700,0,0+$tabsYoffset,0
+; delay time - hit reset to activate
+;ihdelinitsize 	FLvalue 	&quot; &quot;, 100,50,330,100
+;gkmaxdel,ihmaxdel	FLslider	&quot;Max Delay Time - hit reset to activate&quot;, 1, 100, 0 ,5, ihdelinitsize, 300,15, 20, 100
+gkpedalinst, ihpedalinst	FLcount 	&quot;Sus Pedal = Tap Tempo instrument&quot;, 1, 4, 1, 3, 0, 	200, 50, 20, 100, -1
+gksliderinst, ihsliderinst	FLcount 	&quot;Slider = Tap Point instrument&quot;, 0, 4, 1, 3, 0, 	200, 50, 250, 100, -1
+; min tap slider
+; sus pedal - tap tempo for which track
+; slider - tap point for which track
+ihdelsize  	FLvalue 	&quot;Min Delay Time&quot;,25, 25,330,200
+gkmintap,ihmintap	FLslider	&quot;Min Delay Time (secs)&quot;, 0.000001, 1, 0 ,5, ihdelsize, 300,15, 20, 200
+gkfileflag,ihgkfileflag		FLbutton	&quot;File Output&quot;, 1, 0,2, 		300, 50, 20, 250,	 		0, 5, 0, 1, 0, 1
+gkfilestop,ihgkfilestart		FLbutton	&quot;Start Guide Track&quot;, 1, 0, 1, 		100, 50, 20, 350,	 		0, 2, 0, 3600, 0, 1
+gkfilestop,ihgkfilestop		FLbutton	&quot;Stop Guide Track&quot;, 1, 0, 1, 		100, 50, 200, 350,	 		0, 5, 0, 1, 1212, 1
+gkmiditap,ihgkmiditap		FLbutton	&quot;Midi Tempo Tap off&quot;, 1, 0, 2, 	100, 50, 20, 450,	 		0, 5, 0, 1, 0, 1
+ihfilter	  			FLvalue 	&quot; &quot;,				50, 50,330,500
+gkfilter,ihgkfilter			FLslider	&quot;lopass filter for krate signals&quot;, 1, 2500, 0 ,5, ihfilter, 300,50, 20, 500
+; reset button - reinit
+gkresetbutton2,ihresetbutton2	FLbutton	&quot;RESET&quot;, 1, 0, 1, 		100, 100, 0, 550+$tabsYoffset,  		0, 12, 0, 1, 1
+FLsetVal_i	 	1, ihmintap
+FLsetVal_i	 	1, ihpedalinst
+FLsetVal_i	 	1, ihsliderinst
+FLsetVal_i	 	2500, ihgkfilter
+	FLgroup_end
+	FLtabs_end 
+	FLpanel_end	;***** end of container
+	FLrun		;***** runs the widget thread, it is always required!
+</globalOrc>
+    <globalSco>;i1 0 3600
+i3 0 3600
+i4 0 3600
+i6 0 3600
+i7 0 3600
+i8 0 3600
+i9 0 3600
+i14 0 3600
+i31 0 3600
+i32 0 3600</globalSco>
+  </globalOrcSco>
+  <opcodeList/>
+  <liveData>
+    <commandLine>csound -Wdo devaudio -L stdin</commandLine>
+    <commandLineEnabled>true</commandLineEnabled>
+    <commandLineOverride>true</commandLineOverride>
+  </liveData>
+  <soundObject type='blue.soundObject.PolyObject'>
+    <subjectiveDuration>2.0</subjectiveDuration>
+    <startTime>0.0</startTime>
+    <name>root</name>
+    <backgroundColor>-10066279</backgroundColor>
+    <timeBehavior>0</timeBehavior>
+    <noteProcessorChain/>
+    <isRoot>true</isRoot>
+    <pixelSecond>64</pixelSecond>
+    <defaultHeightIndex>1</defaultHeightIndex>
+    <snapEnabled>false</snapEnabled>
+    <snapValue>1.0</snapValue>
+    <timeDisplay>0</timeDisplay>
+    <timeUnit>5</timeUnit>
+    <soundLayer name='' muted='false' solo='false' heightIndex='1'>
+      <noteProcessorChain/>
+    </soundLayer>
+  </soundObject>
+  <scratchPadData>
+    <isWordWrapEnabled>true</isWordWrapEnabled>
+    <scratchText/>
+  </scratchPadData>
+  <noteProcessorChainMap/>
+  <renderStartTime>0.0</renderStartTime>
+  <renderEndTime>-1.0</renderEndTime>
+  <markersList/>
+  <loopRendering>false</loopRendering>
+  <tempo>
+    <enabled>false</enabled>
+    <visible>false</visible>
+    <line name='' version='2' max='240.0' min='30.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+      <linePoint x='0.0' y='60.0'/>
+    </line>
+  </tempo>
+</blueData>

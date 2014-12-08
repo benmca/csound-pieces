@@ -1,0 +1,306 @@
+<blueData version='0.125.0'>
+  <projectProperties>
+    <title></title>
+    <author>author</author>
+    <notes></notes>
+    <sampleRate>44100</sampleRate>
+    <ksmps>100</ksmps>
+    <channels>1</channels>
+    <diskSampleRate>44100</diskSampleRate>
+    <diskKsmps>1</diskKsmps>
+    <diskChannels>2</diskChannels>
+    <useAudioOut>true</useAudioOut>
+    <useAudioIn>false</useAudioIn>
+    <useMidiIn>false</useMidiIn>
+    <useMidiOut>false</useMidiOut>
+    <noteAmpsEnabled>true</noteAmpsEnabled>
+    <outOfRangeEnabled>true</outOfRangeEnabled>
+    <warningsEnabled>true</warningsEnabled>
+    <benchmarkEnabled>true</benchmarkEnabled>
+    <advancedSettings>-odac3</advancedSettings>
+    <completeOverride>false</completeOverride>
+    <fileName></fileName>
+    <askOnRender>false</askOnRender>
+    <diskNoteAmpsEnabled>true</diskNoteAmpsEnabled>
+    <diskOutOfRangeEnabled>true</diskOutOfRangeEnabled>
+    <diskWarningsEnabled>true</diskWarningsEnabled>
+    <diskBenchmarkEnabled>true</diskBenchmarkEnabled>
+    <diskAdvancedSettings></diskAdvancedSettings>
+    <diskCompleteOverride>false</diskCompleteOverride>
+    <diskAlwaysRenderEntireProject>false</diskAlwaysRenderEntireProject>
+    <csladspaSettings>
+      <name/>
+      <maker/>
+      <uniqueId>0</uniqueId>
+      <copyright/>
+      <portDefinitionList/>
+      <enabled>false</enabled>
+    </csladspaSettings>
+  </projectProperties>
+  <arrangement>
+    <instrumentAssignment arrangementId='1' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>Process File</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>;This instrument processes incoming sound for attacks, writing index and length 
+;	values into a table for later lookup. 
+
+; write value to table if dbamp(rms aSignal, i(5)) is &gt; iThreshold
+iThreshold = -29
+;flags: 
+;kDone says we&apos;re done
+kDone init 0
+
+;kWindow says how long after a write we wait until we consider another write
+; side effect here is that multiple attacks in quick succession may turn Out
+; in a clip. 
+kWindow init 1
+;kLastWrite records last write time 
+kLastWrite init 0
+;kLastDuration records duration of last clip
+kLastDuration init 0
+;iDurOfOriginal is original duration of sample.
+iDurOfOriginal = 20
+;kCurrentTableIndex index of current write
+kCurrentTableIndex init 0
+
+;if we&apos;re done, skip processsing code
+if(kDone == 1) kgoto End
+
+;get current time for this instrument instance
+kCurrentInstrumentTime timeinsts
+;printks &quot;kCurrentInstrumentTime = %f seconds\\n&quot;, 0.001, kCurrentInstrumentTime
+
+;sanity check: if we&apos;re past the duration of file, we&apos;re done
+if(kCurrentInstrumentTime &gt; iDurOfOriginal) kgoto DoneWriting
+
+aSignal soundin &quot;C:\\Documents and Settings\\ben\\My Documents\\csound\\snd\\gtrstrumsM.wav&quot;
+
+;2nd arg: 
+;ihp (optional, default=10) -- half-power point (in Hz) of a special internal low-pass filter. The default value is 10. 
+kRmsValue rms aSignal, 10  ;measures rms of input channel 1
+kRmsValue = dbamp(kRmsValue)
+
+;printks &quot;Read signal.  kRmsValue in db is %f\\n&quot;, 0.001, kRmsValue
+
+;if we&apos;re under threshold, continue
+if (kRmsValue &lt; iThreshold) kgoto WritePending
+;printks &quot;Over Threshold - continuing.  kLastWrite: %f\\n&quot;, 0.001, kLastWrite
+
+;if we&apos;re inside the window of our last write, 
+if (kLastWrite &gt; 0 &amp;&amp; kCurrentInstrumentTime &lt; (kLastWrite + kWindow)) kgoto WritePending
+;printks &quot;Outside of last window - continuing\\n&quot;, 0.001
+
+;write duration of last value if we&apos;re past 0
+if(kLastWrite == 0) kgoto PastDurationWrite
+
+;write the duration
+kLastDuration = kCurrentInstrumentTime - kLastWrite
+printks &quot;Writing duration: %f\\n&quot;, 0.001, kLastDuration
+;writeit
+tablew kLastDuration, kCurrentTableIndex, 1
+kCurrentTableIndex = kCurrentTableIndex+1
+
+PastDurationWrite:
+;write the index 
+printks &quot;Writing cur instrument time: %f\\n&quot;, 0.001, kCurrentInstrumentTime
+tablew kCurrentInstrumentTime, kCurrentTableIndex, 1
+kCurrentTableIndex = kCurrentTableIndex+1
+kLastWrite = kCurrentInstrumentTime
+kgoto WritePending
+
+DoneWriting: 
+; write out the &apos;final&apos; last duration
+;write the duration
+kLastDuration = kCurrentInstrumentTime - kLastWrite
+printks &quot;Writing duration: %f\\n&quot;, 0.001, kLastDuration
+;writeit
+tablew kLastDuration, kCurrentTableIndex, 1
+kCurrentTableIndex = kCurrentTableIndex+1
+
+;call play table function once complete
+; p3: duration of 5 seconds should be sufficient to generate evnets
+; p4: total number of events in table
+kNumberOfEvents = kCurrentTableIndex  * .5
+event &quot;i&quot;, 2, 0, 5,  kNumberOfEvents
+;printks &quot;Called Play Table\\n&quot;, 0.001
+kDone = 1
+kgoto End
+
+WritePending:
+;printks &quot;Write Pending: k1 = %f seconds\\n&quot;, 0.001, kCurrentInstrumentTime
+kgoto Out
+
+End:
+printks &quot;Done&quot;, 1
+
+Out:
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='2' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>Play Table</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>;
+; the number of usable values in the table
+;
+iNumEvents = p4
+kClipIndexFromTable init 0 
+kClipLengthFromTable init 0 
+kTableLookupIndex init 0
+kEventCount init 1
+kGeneratedEventTimePointer init 0
+
+iNoteLength = .4
+
+if(kEventCount &gt; iNumEvents) kgoto Done
+
+ReadValueFromTable:
+kClipIndexFromTable table kTableLookupIndex, 1, 0
+kClipLengthFromTable table kTableLookupIndex+1, 1,0 
+printks &quot;ReadValueFromTable - kTableLookupIndex = %d, kClipIndexFromTable = %f, kClipLengthFromTable = %f\\n&quot;, .00001, kTableLookupIndex,kClipIndexFromTable,kClipLengthFromTable
+kTableLookupIndex = kTableLookupIndex+2
+
+GenerateEvent:
+;printks &quot;kGeneratedEventTimePointer before: %f\\n&quot;, .00001, kGeneratedEventTimePointer
+event &quot;i&quot;, 3, kGeneratedEventTimePointer, iNoteLength, kClipIndexFromTable+.3
+kGeneratedEventTimePointer = kGeneratedEventTimePointer+1
+;printks &quot;kGeneratedEventTimePointer after: %f\\n&quot;, .00001, kGeneratedEventTimePointer
+kEventCount = kEventCount + 1
+Done: </instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+    <instrumentAssignment arrangementId='3' isEnabled='true'>
+      <instrument type='blue.orchestra.GenericInstrument'>
+        <name>Play Frag</name>
+        <comment></comment>
+        <globalOrc></globalOrc>
+        <globalSco></globalSco>
+        <instrumentText>printks  &quot;i3 called: start: %f, dur: %f, index: %f&quot;, p2, p3, p4
+
+kenv	linen	1, .001, p3, .001
+aSignal diskin &quot;C:\\Documents and Settings\\ben\\My Documents\\csound\\snd\\gtrstrumsM.wav&quot;, 1,  p4
+out aSignal*kenv
+</instrumentText>
+        <opcodeList/>
+      </instrument>
+    </instrumentAssignment>
+  </arrangement>
+  <mixer>
+    <enabled>false</enabled>
+    <extraRenderTime>0.0</extraRenderTime>
+    <channelList list='channels'>
+      <channel>
+        <name>1</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-1873154688' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>2</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-1873154686' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>3</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='-1873154684' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+    </channelList>
+    <channelList list='subChannels'/>
+    <channel>
+      <name>Master</name>
+      <outChannel>Master</outChannel>
+      <level>0.0</level>
+      <muted>false</muted>
+      <solo>false</solo>
+      <effectsChain bin='pre'/>
+      <effectsChain bin='post'/>
+      <parameter uniqueId='-1873154691' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+        <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+          <linePoint x='0.0' y='0.0'/>
+        </line>
+      </parameter>
+    </channel>
+  </mixer>
+  <tables>f 1  0  256  -17   0  0  </tables>
+  <soundObjectLibrary/>
+  <globalOrcSco>
+    <globalOrc>0dbfs = 1
+</globalOrc>
+    <globalSco>i1 0 3600</globalSco>
+  </globalOrcSco>
+  <opcodeList/>
+  <liveData>
+    <commandLine>csound -Wdo devaudio -L stdin</commandLine>
+    <commandLineEnabled>false</commandLineEnabled>
+    <commandLineOverride>false</commandLineOverride>
+  </liveData>
+  <soundObject type='blue.soundObject.PolyObject'>
+    <subjectiveDuration>2.0</subjectiveDuration>
+    <startTime>0.0</startTime>
+    <name>root</name>
+    <backgroundColor>-10066279</backgroundColor>
+    <timeBehavior>0</timeBehavior>
+    <noteProcessorChain/>
+    <isRoot>true</isRoot>
+    <pixelSecond>64</pixelSecond>
+    <defaultHeightIndex>0</defaultHeightIndex>
+    <snapEnabled>false</snapEnabled>
+    <snapValue>1.0</snapValue>
+    <timeDisplay>0</timeDisplay>
+    <timeUnit>5</timeUnit>
+    <soundLayer name='' muted='false' solo='false' heightIndex='0'>
+      <noteProcessorChain/>
+    </soundLayer>
+  </soundObject>
+  <scratchPadData>
+    <isWordWrapEnabled>true</isWordWrapEnabled>
+    <scratchText/>
+  </scratchPadData>
+  <noteProcessorChainMap/>
+  <renderStartTime>0.0</renderStartTime>
+  <renderEndTime>-1.0</renderEndTime>
+  <markersList/>
+  <loopRendering>false</loopRendering>
+  <tempo>
+    <enabled>false</enabled>
+    <visible>false</visible>
+    <line name='' version='2' max='240.0' min='30.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+      <linePoint x='0.0' y='60.0'/>
+    </line>
+  </tempo>
+</blueData>

@@ -1,0 +1,1133 @@
+<blue.BlueData hash=12046052-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=24115680-0 id=globalOrcSco >
+<java.lang.String hash=634732745-0 id=globalOrc >
+ga1 init 0
+ga2 init 0
+</java.lang.String>
+<java.lang.String hash=0-0 id=globalSco >
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.Orchestra hash=8259012-0 id=orchestra >
+<java.util.TreeMap hash=150439417-0 id=orch >
+<[>
+<java.lang.Integer hash=1-2 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=15191255-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=949622919-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+;indx = indx + iorigdur)
+;kamp	linseg	0, .01, iamp, iorigdur, iamp, .01, 0, idur - (iorigdur+.02), 0
+kamp	linen	iamp, .01, p3, .01
+ktime   line    indx, idur , iendx
+ 
+asig, acmp  sndwarp kamp, ktime, 1, 3, 0, 4410, 1000, 60, 1, 1
+
+al balance asig, acmp
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=-2066058383-0 id=name >
+sndwarp
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=2-0 >
+<int id=value >
+2
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=3753755-0 >
+<java.lang.String hash=0-2 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=150211951-0 id=instrumentText >
+idur = p3
+iamp = p4
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+;indx = indx + iorigdur)
+;kamp	linseg	0, .01, iamp, iorigdur, iamp, .01, 0, idur - (iorigdur+.02), 0
+kamp	linen	iamp, .01, p3, .01
+ktime   line    indx, idur , iendx
+ 
+al	diskin "tango/Tango4_RepeatingHrnSection3M.aif", ipitch, indx
+  
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=-2021994892-0 id=name >
+soundin
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=3-0 >
+<int id=value >
+3
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=7028679-0 >
+<java.lang.String hash=0-3 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1437015430-0 id=instrumentText >
+idur = p3
+iamp = p4
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+
+kamp	linen	iamp, .01, idur, .01
+ktime	line	indx, idur, iendx
+al	pvadd	ktime, 1, "tango/Tango4_RepeatingHrnSection3.pvc", 2, 300, 300
+;al	pvoc	ktime, 1, "tango/Tango4_RepeatingHrnSection3.pvc"
+al=al*kamp*200
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=3453530-0 id=name >
+pvoc
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=4-0 >
+<int id=value >
+4
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=19417347-0 >
+<java.lang.String hash=0-4 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1563270333-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+iatck = .046
+;indx = indx + iorigdur)
+;kamp	linseg	0, .01, iamp, iorigdur, iamp, .01, 0, idur - (iorigdur+.02), 0
+kamp	linen	iamp,.01, idur, .01
+ktime   	linseg    indx, iatck, indx+iatck, idur , iendx
+ 
+asig, acmp  sndwarp kamp, ktime, ipitch, 5, 0, 4410, 1000, 30, 1, 1
+
+al balance asig, acmp
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=306274120-0 id=name >
+sndwarp-gnawa
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=5-0 >
+<int id=value >
+5
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=30502607-0 >
+<java.lang.String hash=0-5 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-847916087-0 id=instrumentText >
+idur = p3
+iamp = p4*100
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+iendx = indx+iorigdur
+
+;indx = indx + iorigdur)
+;kamp	linseg	0, .01, iamp, iorigdur, iamp, .01, 0, idur - (iorigdur+.02), 0
+kamp	linen	iamp, .01, idur, .01
+ktime   	linseg    indx, idur , iendx
+ 
+asig, acmp  sndwarp kamp, ktime, ipitch, 6, 0, 4410, 1000, 30, 1, 1
+
+al balance asig, acmp
+al=al*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=1297675507-0 id=name >
+sndwarp-curtishhm
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=6-0 >
+<int id=value >
+6
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=12704779-0 >
+<java.lang.String hash=0-6 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1886664914-0 id=instrumentText >
+idur = p3
+iamp = p4*250
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+itable = p11
+iendx = indx+iorigdur
+
+kamp	linen	iamp, .01, idur, .01
+ktime   line    indx, idur , iendx
+ 
+asig, acmp  sndwarp kamp, ktime, 1, itable, 0, 4410, 1000, 60, 1, 1
+
+al balance asig, acmp
+al=al*kamp
+
+
+;double notes with curtis hh
+kamp2	linen	iamp, .01, idur, .01
+ktime2   	linseg    indx, idur , iendx
+ 
+asig2, acmp2  sndwarp kamp2, ktime2, ipitch, 6, 0, 4410, 1000, 15, 1, 1
+
+al2 balance asig2, acmp2
+al2=al2*kamp*.25
+
+
+
+al, ar  locsig	al+al2, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=-1247690989-0 id=name >
+sndwarp-idx_tango4_rpts
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=7-0 >
+<int id=value >
+7
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=22379127-0 >
+<java.lang.String hash=0-7 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-1034507243-0 id=instrumentText >
+idur = p3
+iamp = p4
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+itable = p11
+iendx = indx+iorigdur
+;indx = indx + iorigdur)
+;kamp	linseg	0, .01, iamp, iorigdur, iamp, .01, 0, idur - (iorigdur+.02), 0
+
+kamp	linen	iamp, .01, p3, .01
+
+ktime   line    indx, idur , iendx
+
+
+al	diskin "tango/Tango4_RepeatingHrnSection1M.aif", ipitch, indx
+a2	diskin "CURTISCLHHM.AIF", ipitch, 0
+al=(al+a2)*kamp
+
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=179570160-0 id=name >
+sndin-idx_tango4_rpts
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=8-0 >
+<int id=value >
+8
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=14371981-0 >
+<java.lang.String hash=0-8 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=-1165087316-0 id=instrumentText >
+a1 init 0
+idur = p3
+iamp = p4
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+indx = p9
+iorigdur = p10
+itable = p11
+iendx = indx+iorigdur
+;indx = indx + iorigdur)
+;kamp	linseg	0, .01, iamp, iorigdur, iamp, .01, 0, idur - (iorigdur+.02), 0
+kamp	linen	iamp, .01, p3, .01
+ktime   line    indx, idur , iendx
+
+
+al	diskin "tango/Tango4_RepeatingHrnSection2M.aif", ipitch, indx
+al=al*kamp
+al, ar  locsig	al, ipan, idist, ipct
+ar1, ar2	locsend
+		outs	al, ar
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=179570160-1 id=name >
+sndin-idx_tango4_rpts
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=99-0 >
+<int id=value >
+99
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=25089808-0 >
+<java.lang.String hash=0-9 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=1308931894-0 id=instrumentText >
+klin linseg  p4, p3, p4
+kamp	linseg	1, p3, 1
+a1	nreverb	ga1, klin, .75
+a2	nreverb	ga2, klin, .75
+	outs	a1*kamp,a2*kamp
+ga1=0
+ga2=0
+
+</java.lang.String>
+<java.lang.String hash=-934352430-0 id=name >
+reverb
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=5868125-0 id=pObj >
+<int id=heightIndex >
+2
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-3 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+30
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=-1902672871-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=9114403-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=100361836-0 id=name >
+intro
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=29212604-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=29212573-0 >
+<java.lang.String hash=53544784-0 id=commandLine >
+lisp.exe -M c:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-0 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-4 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+27.733334
+</float>
+<java.lang.String hash=438490199-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *offset* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter endx 0) 
+(defparameter rhy 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+
+
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx origdur)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx origdur))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun tango4_rpt3_pvoc(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+    (setf inst 3)
+(setf idxdur '((0.000000 0.345000 e)(0.345000 0.609000 e)(0.609000 0.917000 e)(0.917000 1.227000 e)(1.227000 1.770000 q)(1.770000 2.429000 w+w+w+w+w+w+w+w))); 6 items
+    (setf i 
+        (item 
+            (items 0 1 2 3 4 5 )
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+	(setf rhythm (rhythm (nth 2 idx) tem))
+    (setf origdur (- endx indx))
+	(setf dur rhythm)
+;1/origtem * curtem give you pitchsca
+    (setf pitch 1)
+;	(setf pitch 1)
+    (setf amp 1)
+	(setf pan pn)
+    (setf dist 1)
+    (setf pct .1)
+	(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun tango4_rpt3_sndin(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+    (setf inst 2)
+(setf idxdur '((0.000000 0.345000 e)(0.345000 0.609000 e)(0.609000 0.917000 e)(0.917000 1.227000 e)(1.227000 1.770000 q)(1.770000 2.429000 w+w+q))); 6 items
+    (setf i 
+        (item 
+            (items 0 1 2 3 4 5 )
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+	(setf rhythm (rhythm (nth 2 idx) tem))
+    (setf origdur (- endx indx))
+	(setf dur rhythm)
+;1/origtem * curtem give you pitchsca
+    (setf pitch (* tem .0102))
+;	(setf pitch 1)
+    (setf amp 1)
+	(setf pan pn)
+    (setf dist 1)
+    (setf pct .1)
+	(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun tango4_rpt3_sndwrp(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+    (setf inst 1)
+(setf idxdur '((0.000000 0.345000 e)(0.345000 0.609000 e)(0.609000 0.917000 e)(0.917000 1.227000 e)(1.227000 1.770000 q)(1.770000 2.429000 w+w+w+w+w+w+w+w))); 6 items
+    (setf i 
+        (item 
+            (items 0 1 2 3 4 5 )
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+	(setf rhythm (rhythm (nth 2 idx) tem))
+    (setf origdur (- endx indx))
+	(setf dur rhythm)
+;1/origtem * curtem give you pitchsca
+;    (setf pitch (* tem .0102))
+	(setf pitch 1)
+    	(setf amp .6)
+	(setf pan pn)
+    (setf dist 1)
+    (setf pct .1)
+	(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun mrn (&key (revtime 30.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+
+;
+;BEGIN post-processing stuff
+;
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (tango4_rpt3_sndwrp 0 98 10 6)
+        (tango4_rpt3_sndwrp 0.01 98 80 6)
+        ;(tango4_rpt3_pvoc 0.01 98 45 6)
+	(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+
+(ms)
+
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=9795777-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=0-10 id=name >
+
+</java.lang.String>
+<boolean id=solo >
+true
+</boolean>
+<java.util.ArrayList hash=4852452-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=4852421-0 >
+<java.lang.String hash=53544784-1 id=commandLine >
+lisp.exe -M c:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-1 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-5 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.033333335
+</float>
+<float id=subjectiveDuration >
+27.733334
+</float>
+<java.lang.String hash=-1788401800-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *offset* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter endx 0) 
+(defparameter rhy 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx origdur table)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx origdur table))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+
+(defun tango4_rpts_sndin(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+(setf idxdur '((0.000000 0.325000 e)(0.325000 0.584000 e)(0.584000 0.936000 e)(0.936000 1.225000 e)(0.000000 0.316000 e)(0.316000 0.580000 e)(0.580000 0.879000 e)(0.879000 1.190000 e)(1.190000 1.839000 e))); 5 items
+	(setf table 0)
+    (setf i 
+        (item 
+            (items 0 1 2 3 4 5 6 7 8 in random)
+    ))	;index into paired stream
+	(if (< i 4)
+		(setf inst 7)
+		(setf inst 8)
+	)
+	(setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+	(setf indx (nth 0 idx))		;set idx to 1st element
+    	(setf endx (nth 1 idx))
+	(setf rhythm (item (rhythms s s s s w tempo(tempo tem))))
+
+	(setf pitch (* tem .0102))
+	(if (= rhythm (rhythm 'w tem))
+		(progn
+			(setf dur 15)
+			(setf rhythm dur)
+			(setf inst 6)
+			(if (< i 4)
+				(setf table 7)
+				(setf table 8)
+			)
+			(setf pitch 1)
+		)
+		(progn 
+			(setf dur rhythm)
+		)
+	)
+    (setf origdur (- endx indx))
+;	(setf dur rhythm)
+;1/origtem * curtem give you pitchsca
+;	(setf pitch 1)
+    (setf amp .5)
+	(setf pan pn)
+    (setf dist 1)
+    (setf pct .1)
+	(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun tango4_rpts_sndwrp(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+    (setf inst 6)
+(setf idxdur '((0.000000 0.325000 e)(0.325000 0.584000 e)(0.584000 0.936000 e)(0.936000 1.225000 e)(0.000000 0.316000 e)(0.316000 0.580000 e)(0.580000 0.879000 e)(0.879000 1.190000 e)(1.190000 1.839000 e))); 9 items
+    (setf i 
+        (item 
+            (items 0 1 2 3 4 5 6 7 8 in random)
+    ))	;index into paired stream
+	(if (< i 4)
+		(setf table 7)
+		(setf table 8)
+	)
+	(setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+	(setf indx (nth 0 idx))		;set idx to 1st element
+    	(setf endx (nth 1 idx))
+	(setf rhythm (item (rhythms s s s s w tempo(tempo tem))))
+	(if (= rhythm (rhythm 'w tem))
+		(progn
+			(setf dur 15)
+			(setf rhythm dur)
+		)
+		(setf dur rhythm)
+	)
+    (setf origdur (- endx indx))
+;1/origtem * curtem give you pitchsca
+;    (setf pitch (* tem .0102))
+	(setf pitch 1)
+    	(setf amp 1)
+	(setf pan pn)
+    (setf dist 1)
+    (setf pct .1)
+	(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun mrn (&key (revtime 30.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+
+;
+;BEGIN post-processing stuff
+;
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+;        (tango4_rpts_sndwrp 0 120 45 20)
+       (tango4_rpts_sndin 0 120 45 20)
+;        (tango4_rpts_sndwrp 0.01 120 80 20)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+
+(ms)
+
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=19590177-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=-1715273497-0 id=name >
+gnawa boom
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=21975104-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=21975073-0 >
+<java.lang.String hash=53544784-2 id=commandLine >
+lisp.exe -M c:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-2 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-6 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+27.733334
+</float>
+<java.lang.String hash=1694846285-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *offset* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter endx 0) 
+(defparameter rhy 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+
+
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx origdur)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx origdur))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun gnawaboom_sndwrp(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+    (setf inst 4)
+(setf idxdur '((0.000000 0.331 w+w+w+w+w+w+w+w))); 6 items
+    (setf i 
+        (item 
+            (items 0)
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+	(setf rhythm (rhythm (nth 2 idx) tem))
+    (setf origdur (- endx indx))
+	(setf dur rhythm)
+;1/origtem * curtem give you pitchsca
+;    (setf pitch (* tem .0102))
+	(setf pitch .61)
+    	(setf amp 1)
+	(setf pan pn)
+    (setf dist 1)
+    (setf pct 1)
+	(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun mrn (&key (revtime 30.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+
+;
+;BEGIN post-processing stuff
+;
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (gnawaboom_sndwrp 0 60 45 1)
+;	(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+
+(ms)
+
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=16028187-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=0-10 id=name />
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=3470436-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=3470405-0 >
+<java.lang.String hash=53544784-3 id=commandLine >
+lisp.exe -M c:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-3 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-7 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+27.733334
+</float>
+<java.lang.String hash=1459653284-0 id=text >
+(in-package :stella)
+(defparameter *totaldur* 0)
+(defparameter *offset* 0)
+(defparameter i 0)
+(defparameter du 0)
+(defparameter idx 0) 
+(defparameter endx 0) 
+(defparameter rhy 0) 
+(defparameter idxdur 0) 
+(defparameter *buflen* 4096)
+
+
+;
+(defobject soundin_indx (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct indx origdur)
+  (:parameters instr inst mytime dur amp pitch pan dist pct indx origdur))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+(defun curtisboom_sndwrp(st tem pn len)
+  (algorithm nil soundin_indx (start st length len)
+    (setf inst 5)
+(setf idxdur '((0.000000 0.469 w+w+w+w+w+w+w+w))); 6 items
+    (setf i 
+        (item 
+            (items 0)
+    ))	;index into paired stream
+    (setf idx (nth i idxdur))	;pick i'th pair out of idxdur
+    (setf indx (nth 0 idx))		;set idx to 1st element
+    (setf endx (nth 1 idx))
+	(setf rhythm (rhythm (nth 2 idx) tem))
+    (setf origdur (- endx indx))
+	(setf dur rhythm)
+;1/origtem * curtem give you pitchsca
+;    (setf pitch (* tem .0102))
+	(setf pitch 1)
+    	(setf amp 1)
+	(setf pan pn)
+    (setf dist 1)
+    (setf pct .1)
+	(setf mytime time)
+    (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun mrn (&key (revtime 30.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+
+;
+;BEGIN post-processing stuff
+;
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (curtisboom_sndwrp 0 60 45 1)
+;	(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+
+(ms)
+
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+2
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=24635060-0 id=projectProperties >
+<java.lang.String hash=0-11 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=2146392161-0 id=author >
+Ben McAllister
+</java.lang.String>
+<java.lang.String hash=50-0 id=channels >
+2
+</java.lang.String>
+<java.lang.String hash=1144471255-0 id=commandLine >
+csound32 -A -o tango4_rpts_test.aif
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=controlRate >
+44100
+</java.lang.String>
+<java.lang.String hash=1243095217-0 id=notes >
+-+P19
+csoundav_win  -+P16 
+
+csound32 -A -o tango4_rpts.aif
+</java.lang.String>
+<java.lang.String hash=49620849-1 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=-1440205181-0 id=title >
+Tango Study 1
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-8 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=13327669-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-0 id=scratchText />
+</blue.ScratchPadData>
+<blue.Tables hash=18733404-0 id=tableSet >
+<java.lang.String hash=1945070319-0 id=tables >
+f1 0 16384 9 .5 1 0
+f2 0 16384 10 1
+f3 0 2097152 1 "tango/Tango4_RepeatingHrnSection3M.aif" 0 0 0
+f4 0 512 5 .001 100 1.0 312 1.0 100 .001
+f5 0 32768 1 "gnawa.aif" 0 0 0 
+f6 0 32768 1 "CURTISCLHHM.AIF" 0 0 0 
+f7 0 131072 1 "C:\CSOUND\snd\tango\Tango4_RepeatingHrnSection1M.aif" 0 0 0 
+f8 0 262144 1 "C:\CSOUND\snd\tango\Tango4_RepeatingHrnSection2M.aif" 0 0 0 
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>

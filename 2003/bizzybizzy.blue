@@ -1,0 +1,571 @@
+<blue.BlueData hash=16889166-0 >
+<blue.ftable.FTableSet hash=1-0 id=ftables >
+</blue.ftable.FTableSet>
+<blue.GlobalOrcSco hash=19275957-0 id=globalOrcSco >
+<java.lang.String hash=-1798121375-0 id=globalOrc >
+ga1 init 0
+ga2 init 0
+
+</java.lang.String>
+<java.lang.String hash=0-0 id=globalSco >
+
+</java.lang.String>
+</blue.GlobalOrcSco>
+<blue.orchestra.InstrumentList hash=1-1 id=instrumentList >
+</blue.orchestra.InstrumentList>
+<blue.LiveData hash=2976630-0 id=liveData >
+<java.lang.String hash=-1001887281-0 id=commandLine >
+csound -Wdo devaudio -L stdin
+</java.lang.String>
+<java.util.ArrayList hash=1-2 id=liveSoundObjects >
+</java.util.ArrayList>
+</blue.LiveData>
+<blue.Orchestra hash=23347240-0 id=orchestra >
+<java.util.TreeMap hash=23500105-0 id=orch >
+<[>
+<java.lang.Integer hash=1-3 >
+<int id=value >
+1
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=7680063-0 >
+<java.lang.String hash=0-1 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=159473990-0 id=instrumentText >
+idur = p3
+iamp = p4 * 32768
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+
+kamp    linen   iamp, .02, idur, idur*.5
+asig    oscili  kamp, ipitch, 2
+
+a1, a2		locsig	asig, ipan, idist, ipct
+ar1, ar2	locsend
+outs	a1,a2
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+
+</java.lang.String>
+<java.lang.String hash=3530381-0 id=name >
+sine
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+<java.lang.Integer hash=99-0 >
+<int id=value >
+99
+</int>
+</java.lang.Integer>
+<blue.orchestra.GenericInstrument hash=15820136-0 >
+<java.lang.String hash=0-2 id=comment >
+
+</java.lang.String>
+<boolean id=enabled >
+true
+</boolean>
+<int id=instrumentNumber >
+1
+</int>
+<java.lang.String hash=168528147-0 id=instrumentText >
+a1	reverb	ga1, 5
+a2	reverb	ga2, 5
+	outs	a1,a2
+ga1=0
+ga2=0
+</java.lang.String>
+<java.lang.String hash=-934352430-0 id=name >
+reverb
+</java.lang.String>
+</blue.orchestra.GenericInstrument>
+</[>
+</java.util.TreeMap>
+</blue.Orchestra>
+<blue.soundObject.PolyObject hash=20735572-0 id=pObj >
+<int id=heightIndex >
+3
+</int>
+<boolean id=isRoot >
+true
+</boolean>
+<java.lang.String hash=3506402-0 id=name >
+root
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-4 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<int id=pixelSecond >
+12
+</int>
+<boolean id=snapEnabled >
+false
+</boolean>
+<float id=snapValue >
+1.0
+</float>
+<java.util.ArrayList hash=831999377-0 id=soundLayers >
+<[>
+<blue.SoundLayer hash=26756861-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=-1077786896-0 id=name >
+melody
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=7237958-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=7237927-0 >
+<java.lang.String hash=53544784-0 id=commandLine >
+lisp.exe -M c:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-0 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-5 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+39.0
+</float>
+<java.lang.String hash=468940369-0 id=text >
+(in-package :stella)
+(defparameter *buflen* 4096)
+(defparameter *totaldur* 0)
+;
+(defobject quick (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct)
+  (:parameters instr inst mytime dur amp pitch pan dist pct))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+
+
+(defun melody_midi(st tem pn)
+  (algorithm nil quick (start st)
+	    (setf mytime time)
+
+
+        (setf rhythm 
+		    (item 
+			        (items 
+                        (rhythms q e q e q e e q e q e q tempo(tempo tem))
+                        (rhythms q e e e e e e tempo(tempo tem))
+                        (rhythms q e q e e e q e e q q e q e q q q tempo(tempo tem)) 
+                        (rhythms q e q e q e e e e q e q e q q q e e q e q e h h h q e e e e e e tempo(tempo tem))
+			        )
+		    :kill t)
+	    )
+	(setf channel 2)
+        (setf note 
+		    (item 
+			    (items 
+				    (pitches gs5 fs gs a b cs6 b5 cs6 b5 a gs cs)
+				    (pitches r fs4 g a b c5 cs)
+                    (pitches ds5 cs cs b4 cs5 cs4 cs cs cs cs ds5 cs cs b4 r r b gs5 fs gs a b cs6 b5 cs6 b5 cs6 b5 a gs 
+                            fs r r r cs5 ds cs cs b4 a gs a r a b cs5 ds e fs)
+			    )
+		    )
+	    )
+
+))
+
+(defun melody(st tem pn)
+  (algorithm nil quick (start st)
+        (setf inst 1)
+	    (setf mytime time)
+
+
+        (setf rhythm 
+		    (item 
+			        (items 
+                        (rhythms q e q e q e e q e q e q tempo(tempo tem))
+                        (rhythms q e e e e e e tempo(tempo tem))
+                        (rhythms q e q e e e q e e q q e q e q q q tempo(tempo tem)) 
+                        (rhythms q e q e q e e e e q e q e q q q e e q e q e h h h q e e e e e e tempo(tempo tem))
+			        )
+		    :kill t)
+	    )
+
+        (setf dur rhythm)
+
+        (setf pitch 
+		    (item 
+			    (items 
+				    (pitches gs5 fs gs a b cs6 b5 cs6 b5 a gs cs)
+				    (pitches r fs4 g a b c5 cs)
+                    (pitches ds5 cs cs b4 cs5 cs4 cs cs cs cs ds5 cs cs b4 r r b gs5 fs gs a b cs6 b5 cs6 b5 cs6 b5 a gs 
+                            fs r r r cs5 ds cs cs b4 a gs a r a b cs5 ds e fs)
+			    )
+		    )
+	    )
+
+        (setf amp .8)
+	    (setf pan pn)
+        (setf dist 2)
+        (setf pct .075)
+        (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+
+;
+;   This function will also sprout the bassline function
+;   4 times (due to loop), 3 seconds apart
+;
+
+(defun spawnerbass (st len tem)
+    (mute nil (start st length len)
+        (setf rhythm (item (rhythms w+w+w+w+w+w+h tempo(tempo tem))))
+                (sprout
+                    (bassline time tem 15)
+                )
+    )
+)        
+
+(defun spawnermel (st len tem)
+    (mute nil (start st length len)
+        (setf rhythm (item (rhythms w+w+w+w+w+w+h+w+w+w+w+w+w+h tempo(tempo tem))))
+                (sprout
+                    (melody time tem 75)
+                )
+    )
+)        
+
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+;        (spawnerbass 0 4 140)
+        (spawnermel 0 1 160)
+		;(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+<blue.SoundLayer hash=2535725-0 >
+<boolean id=muted >
+false
+</boolean>
+<java.lang.String hash=3016415-0 id=name >
+bass
+</java.lang.String>
+<boolean id=solo >
+false
+</boolean>
+<java.util.ArrayList hash=5992505-0 id=soundObjects >
+<[>
+<blue.soundObject.External hash=5992474-0 >
+<java.lang.String hash=53544784-1 id=commandLine >
+lisp.exe -M c:\Csound\cm-1.3\clisp\cm.mem
+</java.lang.String>
+<java.lang.String hash=-1820761141-1 id=name >
+external
+</java.lang.String>
+<blue.noteProcessor.NoteProcessorChain hash=1-6 id=npc >
+</blue.noteProcessor.NoteProcessorChain>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+39.0
+</float>
+<java.lang.String hash=-355523938-0 id=text >
+(in-package :stella)
+(defparameter *buflen* 4096)
+(defparameter *totaldur* 0)
+;
+(defobject quick (csound-note)
+  ((instr :initform "i") inst mytime dur amp pitch pan dist pct)
+  (:parameters instr inst mytime dur amp pitch pan dist pct))
+
+(defobject revnote (csound-note)
+  ((name :initform "i99") mystart dur revtime)
+  (:parameters name mystart dur revtime))
+
+
+(defun bassline(st tem pn)
+  (algorithm nil quick (start st)
+        (setf inst 1)
+	    (setf mytime time)
+
+
+        (setf rhythm 
+		    (item 
+			        (items 
+                        (items (rhythms s s e e e e e s s s s e e e e tempo(tempo tem)) for 2)
+                        (rhythms s tempo(tempo tem) for 4)
+                        (items (rhythms s s e e e e e s s s s e e e e tempo(tempo tem)) for 2)
+                        (rhythms e tempo(tempo tem) for 2)
+			        )
+		    :kill t)
+	    )
+
+        (setf dur rhythm)
+
+        (setf pitch 
+		    (item 
+			    (items 
+				    (items (pitches f3 e ds a2 gs3 a2 gs3 r f3 e ds a2 gs3 a2 gs3) for 2)
+				    (pitches r f3 e ds)
+                    (items (pitches d3 cs g2 g2 fs3 g2 e3 r d3 cs g2 g2 fs3 g2 fs3) for 2)
+                    (pitches g2 gs)
+			    )
+		    )
+	    )
+
+        (setf amp .5)
+	    (setf pan pn)
+        (setf dist 1)
+        (setf pct .01)
+        (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+(defun bassline_midi(st tem pn)
+  (algorithm nil midi-note (start st)
+	    (setf mytime time)
+	(setf channel 1)
+
+        (setf rhythm 
+		    (item 
+			        (items 
+                        (items (rhythms s s e e e e e s s s s e e e e tempo(tempo tem)) for 2)
+                        (rhythms s tempo(tempo tem) for 4)
+                        (items (rhythms s s e e e e e s s s s e e e e tempo(tempo tem)) for 2)
+                        (rhythms e tempo(tempo tem) for 2)
+			        )
+		    :kill t)
+	    )
+
+;        (setf duration rhythm)
+
+        (setf note 
+		    (item 
+			    (items 
+				    (items (pitches f3 e ds a2 gs3 a2 gs3 r f3 e ds a2 gs3 a2 gs3) for 2)
+				    (pitches r f3 e ds)
+                    (items (pitches d3 cs g2 g2 fs3 g2 e3 r d3 cs g2 g2 fs3 g2 fs3) for 2)
+                    (pitches g2 gs)
+			    )
+		    )
+	    )
+
+;        (setf amp .5)
+;	    (setf pan pn)
+;        (setf dist 1)
+;        (setf pct .01)
+;        (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+
+(defun melody(st tem pn)
+  (algorithm nil quick (start st)
+        (setf inst 1)
+	    (setf mytime time)
+
+
+        (setf rhythm 
+		    (item 
+			        (items 
+                        (rhythms q e q e q e e q e q e q tempo(tempo tem))
+                        (rhythms q e e e e e e tempo(tempo tem))
+                        (rhythms q e q e e e q e e q q e q e q q q tempo(tempo tem)) 
+                        (rhythms q e q e q e e e e q e q e q q q e e q e q e h h h q e e e e e e tempo(tempo tem))
+			        )
+		    :kill t)
+	    )
+
+        (setf dur rhythm)
+
+        (setf pitch 
+		    (item 
+			    (items 
+				    (pitches gs5 fs gs a b cs6 b5 cs6 b5 a gs cs)
+				    (pitches r fs4 g a b c5 cs)
+                    (pitches ds5 cs cs b4 cs5 cs4 cs cs cs cs ds5 cs cs b4 r r b gs5 fs gs a b cs6 b5 cs6 b5 cs6 b5 a gs 
+                            fs r r r cs5 ds cs cs b4 a gs a r a b cs5 ds e fs)
+			    )
+		    )
+	    )
+
+        (setf amp .8)
+	    (setf pan pn)
+        (setf dist 2)
+        (setf pct .075)
+        (setf *totaldur* (max (+ mytime dur) *totaldur*))
+))
+
+
+;
+;   This function will also sprout the bassline function
+;   4 times (due to loop), 3 seconds apart
+;
+
+(defun spawnerbass (st len tem)
+    (mute nil (start st length len)
+        (setf rhythm (item (rhythms w+w+w+w+w+w+h tempo(tempo tem))))
+                (sprout
+                    (bassline time tem 45)
+                )
+    )
+)        
+
+(defun spawnermel (st len tem)
+    (mute nil (start st length len)
+        (setf rhythm (item (rhythms w+w+w+w+w+w+h+w+w+w+w+w+w+h tempo(tempo tem))))
+                (sprout
+                    (melody time tem 75)
+                )
+    )
+)        
+
+(defun mrn (&key (revtime 5.))
+  (algorithm nil revnote (start 10000 length 1 revtime revtime rhythm 0)
+	     (setf mystart 0)
+	     (setf dur (+ revtime *totaldur* 5))
+	     ))
+
+(defun print-stream (filename)
+  (let ((buffer (make-array *buflen*
+                            
+                            )))
+   (with-open-file (f filename :direction :input
+                      :if-does-not-exist :error
+                      )
+     (do ((j 0))((= j (file-length f)))
+        (setf myline (read-line f t "eofeof"))
+        (if (string-equal myline "eofeof")(return))
+        (princ myline)
+        (write-char #\Newline)
+        (setf j (+ j ))
+        )
+   ))
+)
+
+	
+(defun ms (&key (start-time 1.)(my-scorefile "test.sco"))
+  (let* ((myheader (header ""			   )))
+    (fheader my-scorefile myheader)
+    (merge all ()
+        (spawnerbass 0 2 160)
+;        (spawnermel 0 2 140)
+		;(mrn)
+            )
+	(setf mystream (make-string-output-stream))
+    (open-cmd my-scorefile)
+	        (mix-cmd "all 0 play nil")
+))
+(ms)
+(print-stream  "test.sco")
+</java.lang.String>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.External>
+</[>
+</java.util.ArrayList>
+</blue.SoundLayer>
+</[>
+</java.util.ArrayList>
+<float id=startTime >
+0.0
+</float>
+<float id=subjectiveDuration >
+2.0
+</float>
+<int id=timeBehavior >
+0
+</int>
+</blue.soundObject.PolyObject>
+<blue.ProjectProperties hash=32129358-0 id=projectProperties >
+<java.lang.String hash=0-3 id=CsOptions >
+
+</java.lang.String>
+<java.lang.String hash=2146392161-0 id=author >
+Ben McAllister
+</java.lang.String>
+<java.lang.String hash=50-0 id=channels >
+2
+</java.lang.String>
+<java.lang.String hash=116953046-0 id=commandLine >
+csoundav_win -+P17
+</java.lang.String>
+<java.lang.String hash=51633-0 id=controlRate >
+441
+</java.lang.String>
+<java.lang.String hash=1326547639-0 id=notes >
+Was 'maintune' for thighcream ad from Andy's Urban Scarecrow
+</java.lang.String>
+<java.lang.String hash=49620849-0 id=sampleRate >
+44100
+</java.lang.String>
+<java.lang.String hash=-96305852-0 id=title >
+Bizzy Bizzy
+</java.lang.String>
+</blue.ProjectProperties>
+<blue.SoundObjectLibrary hash=1-7 id=sObjLib >
+</blue.SoundObjectLibrary>
+<blue.ScratchPadData hash=17287019-0 id=scratchData >
+<boolean id=isWordWrapEnabled >
+true
+</boolean>
+<java.lang.String hash=0-4 id=scratchText >
+
+</java.lang.String>
+</blue.ScratchPadData>
+<blue.Tables hash=28665928-0 id=tableSet >
+<java.lang.String hash=1379721696-0 id=tables >
+f 1 0 16384 9 .5 1 0
+f 2 0 16384 10 1
+
+</java.lang.String>
+</blue.Tables>
+</blue.BlueData>
