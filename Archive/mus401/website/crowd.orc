@@ -1,0 +1,1 @@
+sr=44100kr=2205ksmps=20nchnls=1instr 1 ; crowd noise;change the soundfile to one of your own!a1  soundin "hello.aiff", 0asig1	delay	a1, p3, 0out	asig1endin

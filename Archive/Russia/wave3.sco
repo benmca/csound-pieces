@@ -1,0 +1,1 @@
+; Chel polynomialf1	0	513	13	1	1	0	2	0	2	2	3	4				;partials:  ^ on...f2	0	513	10	1;sinef3	0	513	20	9;half sine/sine window funcf4	0	513	20	6i1	10	30	8000 50	30	50	.25i2	1	40	7000	60	60	5	.1i1	60	30	8000 50	15	50	.25i2	50	40	7000	60	90	5	.1i99	1	100	e

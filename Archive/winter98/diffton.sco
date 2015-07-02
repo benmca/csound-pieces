@@ -1,0 +1,1 @@
+f1 0	16385 	10	1;	p2	p3	p4	p5		p6		p7;		dur   difftone; add to freq1		i1	0	5	220	0i1	4	5	110	.3e

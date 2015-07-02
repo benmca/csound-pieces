@@ -1,0 +1,1 @@
+;Score for abovef1 0 513 9 .5 1 0i100 0 1e

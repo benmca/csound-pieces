@@ -72,7 +72,7 @@ ioverlap = p14
 isusportion = p15
 iorigdur = p16
 iendx = indx + iorigdur
-isamptbl = 7
+isamptbl = 5
 kamp	linen	iamp, .01, p3, .01
 ;ktime   linseg    indx, idur*isusportion , indx+(iorigdur*isuspoint), idur*(1-isusportion), iendx
  
@@ -120,14 +120,14 @@ f 2 0 8192 10 1
 
 f4	0	513	20	6
 
-;blueberry pie sample
-f5 0 131072 1 "C:\CSOUND\snd\EmergencyPants\BlueberryPie.aif" 0 0 0 
+;f5 0 131072 1 "/Users/benmca/Music/Portfolio/snd/1.wav" 0 0 0 
+f5 0 131072 1 "/Users/benmca/Music/aggressive3.wav" 0 0 0 
 
 ;rectangle
 f6   0   8192   -20   8   1
 ;BROWSE_FILE
 ;f7 0 1048576 1 "C:\CSOUND\snd\TrioClip.wav" 0 0 0 
-f7 0  8388608 1 "BROWSE_FILE" 0 0 0 
+;f7 0  8388608 1 "BROWSE_FILE" 0 0 0 
 ;268435456
 
 

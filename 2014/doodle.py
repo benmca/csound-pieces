@@ -34,7 +34,7 @@ s = cs.score(rhythms, [amps, pitches], note_limit=(len(pitches.values) * 4))
 s.gen_lines = [';sine\n', 'f 1 0 16384 10 1\n', ';saw', 'f 2 0 256 7 0 128 1 0 -1 128 0\n', ';pulse\n',
                'f 3 0 256 7 1 128 1 0 -1 128 -1\n']
 s.durstream = ci.itemstream([.1])
-s.instr = 3
+s.instr = 1
 #s.generate_score("/Users/benmca/Documents/src/sandbox/python/test.sco")
 #s.generate_score()
 s.generate_notes()
@@ -60,7 +60,7 @@ s.starttime = 0.0
 s.curtime = s.starttime
 #for x in s.notes:
 #print(x)
-s.instr = 3
+s.instr = 1
 s.generate_notes()
 for x in range(len(s.notes)):
     output += s.notes[x]

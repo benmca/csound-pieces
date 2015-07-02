@@ -1,0 +1,1 @@
+sr=22050kr=2205ksmps=10nchnls=1instr	1iamp = p5ifreq = p4kenv1	oscil1	0, iamp*.5, p3, 2anoise	randi	kenv1, 400aosc1	oscili	anoise, 500, 4kenv2	oscil1	0, iamp/6, p3, 2aosc2	oscili	kenv2, ifreq/10, 3kenv3	oscil1	0, iamp/2.5, p3, 1aosc3	oscili	kenv3, ifreq, 4		out		aosc1+aosc2+aosc3endin

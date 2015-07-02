@@ -1,0 +1,1 @@
+f 1 0 16384 10 1f 2 0 1024 1 "angle.aiff" 0 0 1f 3 0 16385 5 1 16384 .001;add your own notes here or copy the f-statements into;a CommonMusic program

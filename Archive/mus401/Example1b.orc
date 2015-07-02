@@ -1,0 +1,1 @@
+sr=22050kr=2205ksmps=10nchnls=1instr	1aosc	oscili	16000, 440, 1				 out			 aoscendin
