@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/lib/csnd.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/javaosc.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/lib/oscP5.jar!/" />
+    <libelement value="file://lib/processing/core.jar" />
+    <libelement value="file://lib/processing/pde.jar" />
+    <libelement value="file://$MODULE_DIR$/../../CsoundBridge/lib/processing-video/library/gstreamer-java.jar" />
+    <libelement value="file://$MODULE_DIR$/../../CsoundBridge/lib/processing-video/library/jna.jar" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="module-library">
+      <library name="csnd.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/csnd.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="javaosc.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/javaosc.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="oscP5.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/oscP5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="core.jar">
+        <CLASSES>
+          <root url="file://lib/processing/core.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="pde.jar">
+        <CLASSES>
+          <root url="file://lib/processing/pde.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="gstreamer-java.jar">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../CsoundBridge/lib/processing-video/library/gstreamer-java.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jna.jar">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../CsoundBridge/lib/processing-video/library/jna.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="core" level="project" />
+  </component>
+</module>

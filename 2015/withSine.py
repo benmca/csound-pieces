@@ -6,6 +6,8 @@
 import composition
 import composition.itemstream as ci
 import composition.score as cs
+import numpy as np
+
 
 
 #IdMusic1.wav 
@@ -15,9 +17,10 @@ rhythms = ci.itemstream(sum([
     ['e.','e.','e','q.','e','q.','e','h'],
     ['s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s'],
     ],[]
-    ),'sequence', tempo=120)
+    ),'sequence', tempo=60)
 rhythms.notetype = 'rhythm'
-amps = ci.itemstream([.2])
+amps = ci.itemstream(np.linspace(.1,.9,32).tolist(), streammode='sequence')
+
 
 #pitches = ci.itemstream(['c3','e',['c','e','g'],'c4','e',['c','e','g']])
 pitches = ci.itemstream(sum([
@@ -40,13 +43,13 @@ s.instr = 1
 
 s.generate_notes()
 
-s.starttime = 0
-s.curtime = 0;
-s.generate_notes()
+# s.starttime = 0
+# s.curtime = 0;
+# s.generate_notes()
 
-s.starttime = 0
-s.curtime = 0;
-s.generate_notes()
+# s.starttime = 0
+# s.curtime = 0;
+# s.generate_notes()
 
 
 rhythms = ci.itemstream(['q'],'sequence', tempo=60)
