@@ -1,0 +1,35 @@
+======= TABLE 1000 size: 8 values ======
+flen: 8
+lenmask: 7
+lobits: 27
+lomask: 134217727
+lodiv: 0.000000
+cvtbas: 0.000000
+cpscvt: 0.000000
+loopmode1: 0
+loopmode2: 0
+begin1: 0
+end1: 0
+begin2: 0
+end2: 0
+soundend: 0
+flenfrms: 8
+nchnls: 1
+fno: 1000
+gen01args.gen01: 0.000000
+gen01args.ifilno: 0.000000
+gen01args.iskptim: 0.000000
+gen01args.iformat: 0.000000
+gen01args.channel: 0.000000
+gen01args.sample_rate: 0.000000
+---------END OF HEADER--------------
+1.000000
+2.000000
+4.000000
+8.000000
+16.000000
+32.000000
+64.000000
+128.000000
+1.000000
+---------END OF TABLE---------------
