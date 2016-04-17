@@ -11,13 +11,11 @@ import numpy as np
 
 
 #IdMusic1.wav 
-# ['h',.769], ['h',1.95], ['w'], 3.175], ['h',5.54], ['h'], 6.67], ['w'], 8.0]
 
 rhythms = ci.itemstream(sum([
-    ['e.','e.','e','q.','e','q.','e','h'],
-    ['s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s'],
+    ['h',.769], ['h',1.95], ['w'], 3.175], ['h',5.54], ['h'], 6.67], ['w'], 8.0]
     ],[]
-    ),'sequence', tempo=60)
+    ),'random', tempo=120)
 rhythms.notetype = 'rhythm'
 amps = ci.itemstream(np.linspace(.1,.9,32).tolist(), streammode='sequence')
 

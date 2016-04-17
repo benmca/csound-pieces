@@ -1,17 +1,37 @@
-<blueData version='0.99.6'>
+<blueData version='2.5.14'>
   <projectProperties>
-    <author>author</author>
     <title></title>
+    <author>author</author>
+    <notes></notes>
     <sampleRate>44100</sampleRate>
     <ksmps>1</ksmps>
     <channels>2</channels>
-    <commandLine>csound5 -+Q4 -+P21</commandLine>
+    <useZeroDbFS>false</useZeroDbFS>
+    <zeroDbFS>1</zeroDbFS>
     <diskSampleRate>44100</diskSampleRate>
     <diskKsmps>1</diskKsmps>
     <diskChannels>2</diskChannels>
-    <diskCommandLine>csound</diskCommandLine>
-    <CsOptions></CsOptions>
-    <notes></notes>
+    <diskUseZeroDbFS>false</diskUseZeroDbFS>
+    <diskZeroDbFS>1</diskZeroDbFS>
+    <useAudioOut>true</useAudioOut>
+    <useAudioIn>false</useAudioIn>
+    <useMidiIn>false</useMidiIn>
+    <useMidiOut>false</useMidiOut>
+    <noteAmpsEnabled>true</noteAmpsEnabled>
+    <outOfRangeEnabled>true</outOfRangeEnabled>
+    <warningsEnabled>true</warningsEnabled>
+    <benchmarkEnabled>true</benchmarkEnabled>
+    <advancedSettings>csound5 -+Q4 -+P21</advancedSettings>
+    <completeOverride>true</completeOverride>
+    <fileName></fileName>
+    <askOnRender>false</askOnRender>
+    <diskNoteAmpsEnabled>true</diskNoteAmpsEnabled>
+    <diskOutOfRangeEnabled>true</diskOutOfRangeEnabled>
+    <diskWarningsEnabled>true</diskWarningsEnabled>
+    <diskBenchmarkEnabled>true</diskBenchmarkEnabled>
+    <diskAdvancedSettings>csound</diskAdvancedSettings>
+    <diskCompleteOverride>true</diskCompleteOverride>
+    <diskAlwaysRenderEntireProject>false</diskAlwaysRenderEntireProject>
   </projectProperties>
   <arrangement>
     <instrumentAssignment arrangementId='1' isEnabled='true'>
@@ -36,6 +56,7 @@ iamp = p4
 ivelocity = 127
 
 noteondur  1, inotenum, ivelocity, p3-.1</instrumentText>
+        <opcodeList/>
       </instrument>
     </instrumentAssignment>
     <instrumentAssignment arrangementId='3' isEnabled='true'>
@@ -58,6 +79,7 @@ iamp = p4
 ivelocity = int(127*iamp)
 
 noteondur2   3, inotenum, ivelocity, p3-.1</instrumentText>
+        <opcodeList/>
       </instrument>
     </instrumentAssignment>
     <instrumentAssignment arrangementId='99' isEnabled='true'>
@@ -67,9 +89,73 @@ noteondur2   3, inotenum, ivelocity, p3-.1</instrumentText>
         <globalOrc></globalOrc>
         <globalSco></globalSco>
         <instrumentText></instrumentText>
+        <opcodeList/>
       </instrument>
     </instrumentAssignment>
   </arrangement>
+  <mixer>
+    <enabled>false</enabled>
+    <extraRenderTime>0.0</extraRenderTime>
+    <channelList list='channels'>
+      <channel>
+        <name>1</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='1962083833' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>3</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='1962083835' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+      <channel>
+        <name>99</name>
+        <outChannel>Master</outChannel>
+        <level>0.0</level>
+        <muted>false</muted>
+        <solo>false</solo>
+        <effectsChain bin='pre'/>
+        <effectsChain bin='post'/>
+        <parameter uniqueId='1962083837' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+            <linePoint x='0.0' y='0.0'/>
+          </line>
+        </parameter>
+      </channel>
+    </channelList>
+    <channelList list='subChannels'/>
+    <channel>
+      <name>Master</name>
+      <outChannel>Master</outChannel>
+      <level>0.0</level>
+      <muted>false</muted>
+      <solo>false</solo>
+      <effectsChain bin='pre'/>
+      <effectsChain bin='post'/>
+      <parameter uniqueId='1962083829' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+        <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+          <linePoint x='0.0' y='0.0'/>
+        </line>
+      </parameter>
+    </channel>
+  </mixer>
   <tables></tables>
   <soundObjectLibrary/>
   <globalOrcSco>
@@ -79,30 +165,66 @@ noteondur2   3, inotenum, ivelocity, p3-.1</instrumentText>
   <opcodeList/>
   <liveData>
     <commandLine>csound -Wdo devaudio -L stdin</commandLine>
+    <commandLineEnabled>true</commandLineEnabled>
+    <commandLineOverride>true</commandLineOverride>
+    <liveObjectBins columns='1' rows='8'>
+      <bin>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+      </bin>
+    </liveObjectBins>
+    <liveObjectSetList/>
+    <repeat>4</repeat>
+    <tempo>60</tempo>
   </liveData>
-  <soundObject type='blue.soundObject.PolyObject'>
-    <subjectiveDuration>2.0</subjectiveDuration>
-    <startTime>0.0</startTime>
-    <name>root</name>
-    <backgroundColor>-10066279</backgroundColor>
-    <timeBehavior>0</timeBehavior>
+  <score>
+    <tempo>
+      <enabled>false</enabled>
+      <visible>false</visible>
+      <line name='' version='2' max='240.0' min='30.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+        <linePoint x='0.0' y='60.0'/>
+      </line>
+    </tempo>
+    <timeState>
+      <pixelSecond>64</pixelSecond>
+      <snapEnabled>false</snapEnabled>
+      <snapValue>1.0</snapValue>
+      <timeDisplay>0</timeDisplay>
+      <timeUnit>5</timeUnit>
+    </timeState>
     <noteProcessorChain/>
-    <isRoot>true</isRoot>
-    <pixelSecond>64</pixelSecond>
-    <heightIndex>2</heightIndex>
-    <snapEnabled>false</snapEnabled>
-    <snapValue>1.0</snapValue>
-    <timeDisplay>0</timeDisplay>
-    <timeUnit>5</timeUnit>
-    <soundLayer name='' muted='false' solo='false'>
-      <soundObject type='blue.soundObject.External'>
-        <subjectiveDuration>2.0</subjectiveDuration>
-        <startTime>0.0</startTime>
-        <name>external</name>
-        <backgroundColor>-12566464</backgroundColor>
-        <timeBehavior>2</timeBehavior>
+    <soundObject type='blue.soundObject.PolyObject'>
+      <subjectiveDuration>2.0</subjectiveDuration>
+      <startTime>0.0</startTime>
+      <name>root</name>
+      <backgroundColor>-10066279</backgroundColor>
+      <timeBehavior>0</timeBehavior>
+      <noteProcessorChain/>
+      <isRoot>true</isRoot>
+      <defaultHeightIndex>1</defaultHeightIndex>
+      <timeState>
+        <pixelSecond>64</pixelSecond>
+        <snapEnabled>false</snapEnabled>
+        <snapValue>1.0</snapValue>
+        <timeDisplay>0</timeDisplay>
+        <timeUnit>5</timeUnit>
+      </timeState>
+      <soundLayer name='' muted='false' solo='false' heightIndex='1'>
         <noteProcessorChain/>
-        <text>(in-package :stella)
+        <soundObject type='blue.soundObject.External'>
+          <subjectiveDuration>2.0</subjectiveDuration>
+          <startTime>0.0</startTime>
+          <name>external</name>
+          <backgroundColor>-12566464</backgroundColor>
+          <timeBehavior>2</timeBehavior>
+          <noteProcessorChain/>
+          <text>(in-package :stella)
 (defparameter *buflen* 0)
 (defobject soundin_indx (csound-note)
   ((instr :initform &quot;i&quot;) inst mytime dur amp pitch)
@@ -159,18 +281,20 @@ noteondur2   3, inotenum, ivelocity, p3-.1</instrumentText>
 ))
 (ms)
 (print-stream  &quot;test.sco&quot;)</text>
-        <commandLine>d:\CSOUND\cm-1.3\clisp\lisp.exe -M d:\Csound\cm-1.3\clisp\cm.mem</commandLine>
-      </soundObject>
-    </soundLayer>
-    <soundLayer name='' muted='true' solo='false'>
-      <soundObject type='blue.soundObject.GenericScore'>
-        <subjectiveDuration>2.0</subjectiveDuration>
-        <startTime>0.0</startTime>
-        <name>genericScore</name>
-        <backgroundColor>-12566464</backgroundColor>
-        <timeBehavior>2</timeBehavior>
+          <commandLine>d:\CSOUND\cm-1.3\clisp\lisp.exe -M d:\Csound\cm-1.3\clisp\cm.mem</commandLine>
+          <syntaxType>Python</syntaxType>
+        </soundObject>
+      </soundLayer>
+      <soundLayer name='' muted='true' solo='false' heightIndex='1'>
         <noteProcessorChain/>
-        <score>s
+        <soundObject type='blue.soundObject.GenericScore'>
+          <subjectiveDuration>2.0</subjectiveDuration>
+          <startTime>0.0</startTime>
+          <name>genericScore</name>
+          <backgroundColor>-12566464</backgroundColor>
+          <timeBehavior>2</timeBehavior>
+          <noteProcessorChain/>
+          <score>s
 i 1 0 0.1 1 130.812 0 2 0.075
 i 1 0.562 0.1 1 195.997 0 2 0.075
 i 1 1.125 0.1 1 261.625 0 2 0.075
@@ -236,16 +360,42 @@ i 1 23.062 0.1 1 220.0 0 2 0.075
 i 1 23.624 0.1 1 261.625 0 2 0.075
 i 1 23.624 0.1 1 329.627 0 2 0.075
 e</score>
-      </soundObject>
-    </soundLayer>
-  </soundObject>
+        </soundObject>
+      </soundLayer>
+    </soundObject>
+  </score>
   <scratchPadData>
     <isWordWrapEnabled>true</isWordWrapEnabled>
-    <scratchText></scratchText>
+    <scratchText/>
   </scratchPadData>
   <noteProcessorChainMap/>
   <renderStartTime>0.0</renderStartTime>
   <renderEndTime>-1.0</renderEndTime>
   <markersList/>
   <loopRendering>false</loopRendering>
+  <midiInputProcessor>
+    <keyMapping>PCH</keyMapping>
+    <velMapping>MIDI</velMapping>
+    <pitchConstant></pitchConstant>
+    <ampConstant></ampConstant>
+    <scale>
+      <scaleName>12TET</scaleName>
+      <baseFrequency>261.62558</baseFrequency>
+      <octave>2.0</octave>
+      <ratios>
+        <ratio>1.0</ratio>
+        <ratio>1.0594631</ratio>
+        <ratio>1.122462</ratio>
+        <ratio>1.1892071</ratio>
+        <ratio>1.2599211</ratio>
+        <ratio>1.3348398</ratio>
+        <ratio>1.4142135</ratio>
+        <ratio>1.4983071</ratio>
+        <ratio>1.587401</ratio>
+        <ratio>1.6817929</ratio>
+        <ratio>1.7817974</ratio>
+        <ratio>1.8877486</ratio>
+      </ratios>
+    </scale>
+  </midiInputProcessor>
 </blueData>

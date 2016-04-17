@@ -32,7 +32,13 @@ public class CSEvent
         applet.strokeWeight(4);
 //        applet.colorMode(PConstants.RGB,1);
 //        if(this.instr == 2)
-            applet.stroke(255*colorscalar,255*scalar,255*scalar);
+        if(scalar < .33)
+            applet.stroke((int)((255*scalar)*.33),0,0);
+        else if(scalar < .66)
+            applet.stroke(255,(int)((255*(scalar-.33)*.33)),0);
+        else
+            applet.stroke(255,255,(int)((255*(scalar-.66)*.66)));
+
 //        else                
 //            applet.stroke(colorscalar,scalar,0);
         applet.ellipse(xscalar*applet.width, applet.height*0.5f, (applet.height*0.5f)*scalar, (applet.height*0.5f)*scalar);

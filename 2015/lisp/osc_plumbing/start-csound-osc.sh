@@ -1,0 +1,1 @@
+csound -odac0 -+rtaudio=CoreAudio -B512 -b 64 osc_router.csd

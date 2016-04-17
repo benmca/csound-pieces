@@ -1,4 +1,4 @@
-<blueData version='0.119.0'>
+<blueData version='2.5.14'>
   <projectProperties>
     <title></title>
     <author>author</author>
@@ -6,9 +6,13 @@
     <sampleRate>44100</sampleRate>
     <ksmps>2</ksmps>
     <channels>2</channels>
+    <useZeroDbFS>false</useZeroDbFS>
+    <zeroDbFS>1</zeroDbFS>
     <diskSampleRate>44100</diskSampleRate>
     <diskKsmps>2</diskKsmps>
     <diskChannels>2</diskChannels>
+    <diskUseZeroDbFS>false</diskUseZeroDbFS>
+    <diskZeroDbFS>1</diskZeroDbFS>
     <useAudioOut>true</useAudioOut>
     <useAudioIn>false</useAudioIn>
     <useMidiIn>false</useMidiIn>
@@ -25,8 +29,9 @@
     <diskOutOfRangeEnabled>true</diskOutOfRangeEnabled>
     <diskWarningsEnabled>true</diskWarningsEnabled>
     <diskBenchmarkEnabled>true</diskBenchmarkEnabled>
-    <diskAdvancedSettings>csound -o c:\\Progra~1\\Csound\\snd\\2.wav</diskAdvancedSettings>
+    <diskAdvancedSettings>-o c:\\Progra~1\\Csound\\snd\\2.wav</diskAdvancedSettings>
     <diskCompleteOverride>true</diskCompleteOverride>
+    <diskAlwaysRenderEntireProject>false</diskAlwaysRenderEntireProject>
   </projectProperties>
   <arrangement>
     <instrumentAssignment arrangementId='1' isEnabled='true'>
@@ -45,7 +50,7 @@ idist = p7
 ipct = p8
 
 kamp    linen   iamp, .001, idur, .001
-asig    soundin &quot;/media/ListenNotebookDrive/AudioPortfolio/ShortwaveSounds/TimeSignals/CleanClick1.wav&quot;
+asig    soundin &quot;Z:\Portfolio\snd\ShortwaveSounds\TimeSignals\CleanClick1.wav&quot;
 
 a1, a2	locsig  asig * kamp, ipan, idist, ipct
 ar1, ar2  locsend
@@ -70,7 +75,7 @@ idist = p7
 ipct = p8
 
 kamp    linen   iamp, .001, idur, .001
-asig    soundin &quot;/media/ListenNotebookDrive/AudioPortfolio/ShortwaveSounds/TimeSignals/Click2_Swell.wav&quot;
+asig    soundin &quot;Z:\Portfolio\snd\ShortwaveSounds\TimeSignals\Click2_Swell.wav&quot;
 
 a1, a2	locsig  asig * kamp, ipan, idist, ipct
 ar1, ar2  locsend
@@ -96,7 +101,7 @@ idist = p7
 ipct = p8
 
 kamp    linen   iamp, .001, idur, .001
-asig    diskin &quot;/media/ListenNotebookDrive/AudioPortfolio/ShortwaveSounds/TimeSignals/OnTheHour_Distorted.wav&quot;, ipitch
+asig    diskin &quot;Z:\Portfolio\snd\ShortwaveSounds\TimeSignals\OnTheHour_Distorted.wav&quot;, ipitch
 
 a1, a2	locsig  asig * kamp, ipan, idist, ipct
 ar1, ar2  locsend
@@ -171,8 +176,8 @@ ga2 = 0</instrumentText>
         <solo>false</solo>
         <effectsChain bin='pre'/>
         <effectsChain bin='post'/>
-        <parameter uniqueId='-1855072753' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
-          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+        <parameter uniqueId='-1855072753' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
             <linePoint x='0.0' y='0.0'/>
           </line>
         </parameter>
@@ -185,8 +190,8 @@ ga2 = 0</instrumentText>
         <solo>false</solo>
         <effectsChain bin='pre'/>
         <effectsChain bin='post'/>
-        <parameter uniqueId='680597751' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
-          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+        <parameter uniqueId='680597751' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
             <linePoint x='0.0' y='0.0'/>
           </line>
         </parameter>
@@ -199,8 +204,8 @@ ga2 = 0</instrumentText>
         <solo>false</solo>
         <effectsChain bin='pre'/>
         <effectsChain bin='post'/>
-        <parameter uniqueId='680597757' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
-          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+        <parameter uniqueId='680597757' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
             <linePoint x='0.0' y='0.0'/>
           </line>
         </parameter>
@@ -213,8 +218,8 @@ ga2 = 0</instrumentText>
         <solo>false</solo>
         <effectsChain bin='pre'/>
         <effectsChain bin='post'/>
-        <parameter uniqueId='776543176' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
-          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+        <parameter uniqueId='776543176' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
             <linePoint x='0.0' y='0.0'/>
           </line>
         </parameter>
@@ -227,8 +232,8 @@ ga2 = 0</instrumentText>
         <solo>false</solo>
         <effectsChain bin='pre'/>
         <effectsChain bin='post'/>
-        <parameter uniqueId='-1855072739' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
-          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+        <parameter uniqueId='-1855072739' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+          <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
             <linePoint x='0.0' y='0.0'/>
           </line>
         </parameter>
@@ -243,8 +248,8 @@ ga2 = 0</instrumentText>
       <solo>false</solo>
       <effectsChain bin='pre'/>
       <effectsChain bin='post'/>
-      <parameter uniqueId='-1855072737' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false'>
-        <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false'>
+      <parameter uniqueId='-1855072737' name='Volume' label='dB' min='-96.0' max='12.0' resolution='-1.0' automationEnabled='false' value='0.0'>
+        <line name='' version='2' max='12.0' min='-96.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
           <linePoint x='0.0' y='0.0'/>
         </line>
       </parameter>
@@ -258,7 +263,7 @@ f 2 0 256 7 0 128 1 0 -1 128 0
 ;pulse?
 f 3 0 256 7 1 128 1 0 -1 128 -1
 
-f4 0 131072 1 &quot;/media/ListenNotebookDrive/AudioPortfolio/ShortwaveSounds/TimeSignals/OnTheHour_Distorted.wav&quot; 0 0 0 
+f4 0 131072 1 &quot;Z:\Portfolio\snd\ShortwaveSounds\TimeSignals\OnTheHour_Distorted.wav&quot; 0 0 0 
 
 ;half sine
 f5 0 16384 9 .5 1 0</tables>
@@ -274,31 +279,64 @@ ga2 init 0
     <commandLine>csound -Wdo devaudio -L stdin</commandLine>
     <commandLineEnabled>true</commandLineEnabled>
     <commandLineOverride>true</commandLineOverride>
+    <liveObjectBins columns='1' rows='8'>
+      <bin>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+        <null/>
+      </bin>
+    </liveObjectBins>
+    <liveObjectSetList/>
+    <repeat>4</repeat>
+    <tempo>60</tempo>
   </liveData>
-  <soundObject type='blue.soundObject.PolyObject'>
-    <subjectiveDuration>2.0</subjectiveDuration>
-    <startTime>0.0</startTime>
-    <name>root</name>
-    <backgroundColor>-10066279</backgroundColor>
-    <timeBehavior>0</timeBehavior>
+  <score>
+    <tempo>
+      <enabled>false</enabled>
+      <visible>false</visible>
+      <line name='' version='2' max='240.0' min='30.0' resolution='-1.0' color='-8355712' rightBound='false' endPointsLinked='false'>
+        <linePoint x='0.0' y='60.0'/>
+      </line>
+    </tempo>
+    <timeState>
+      <pixelSecond>16</pixelSecond>
+      <snapEnabled>true</snapEnabled>
+      <snapValue>1.0</snapValue>
+      <timeDisplay>1</timeDisplay>
+      <timeUnit>1</timeUnit>
+    </timeState>
     <noteProcessorChain/>
-    <isRoot>true</isRoot>
-    <pixelSecond>16</pixelSecond>
-    <defaultHeightIndex>2</defaultHeightIndex>
-    <snapEnabled>true</snapEnabled>
-    <snapValue>1.0</snapValue>
-    <timeDisplay>1</timeDisplay>
-    <timeUnit>1</timeUnit>
-    <soundLayer name='Basic' muted='false' solo='false' heightIndex='2'>
+    <soundObject type='blue.soundObject.PolyObject'>
+      <subjectiveDuration>2.0</subjectiveDuration>
+      <startTime>0.0</startTime>
+      <name>root</name>
+      <backgroundColor>-10066279</backgroundColor>
+      <timeBehavior>0</timeBehavior>
       <noteProcessorChain/>
-      <soundObject type='blue.soundObject.External'>
-        <subjectiveDuration>14.0</subjectiveDuration>
-        <startTime>0.0</startTime>
-        <name>External</name>
-        <backgroundColor>-12566464</backgroundColor>
-        <timeBehavior>2</timeBehavior>
+      <isRoot>true</isRoot>
+      <defaultHeightIndex>2</defaultHeightIndex>
+      <timeState>
+        <pixelSecond>64</pixelSecond>
+        <snapEnabled>false</snapEnabled>
+        <snapValue>1.0</snapValue>
+        <timeDisplay>0</timeDisplay>
+        <timeUnit>5</timeUnit>
+      </timeState>
+      <soundLayer name='Basic' muted='false' solo='false' heightIndex='2'>
         <noteProcessorChain/>
-        <text>;**************************************************************
+        <soundObject type='blue.soundObject.External'>
+          <subjectiveDuration>14.0</subjectiveDuration>
+          <startTime>0.0</startTime>
+          <name>External</name>
+          <backgroundColor>-12566464</backgroundColor>
+          <timeBehavior>2</timeBehavior>
+          <noteProcessorChain/>
+          <text>;**************************************************************
 ;
 ;**************************************************************
 (in-package :stella)
@@ -410,20 +448,20 @@ ga2 init 0
 ; print result to console.
 ;
 (print-stream  &quot;test.sco&quot;)</text>
-        <commandLine>/usr/local/bin/cm-1.2/lisp.run -M /usr/local/bin/cm-1.2/cm.mem </commandLine>
-        <syntaxType>Python</syntaxType>
-      </soundObject>
-    </soundLayer>
-    <soundLayer name='2nd line' muted='false' solo='false' heightIndex='2'>
-      <noteProcessorChain/>
-      <soundObject type='blue.soundObject.External'>
-        <subjectiveDuration>2.0</subjectiveDuration>
-        <startTime>16.0</startTime>
-        <name>External</name>
-        <backgroundColor>-12566464</backgroundColor>
-        <timeBehavior>2</timeBehavior>
+          <commandLine>C:\Users\ben\cm\clisp\lisp.exe  -M C:\Users\ben\cm\clisp\cm.mem </commandLine>
+          <syntaxType>Python</syntaxType>
+        </soundObject>
+      </soundLayer>
+      <soundLayer name='2nd line' muted='false' solo='false' heightIndex='2'>
         <noteProcessorChain/>
-        <text>;**************************************************************
+        <soundObject type='blue.soundObject.External'>
+          <subjectiveDuration>2.0</subjectiveDuration>
+          <startTime>16.0</startTime>
+          <name>External</name>
+          <backgroundColor>-12566464</backgroundColor>
+          <timeBehavior>2</timeBehavior>
+          <noteProcessorChain/>
+          <text>;**************************************************************
 ;
 ;**************************************************************
 (in-package :stella)
@@ -535,20 +573,20 @@ ga2 init 0
 ; print result to console.
 ;
 (print-stream  &quot;test.sco&quot;)</text>
-        <commandLine>/usr/local/bin/cm-1.2/lisp.run -M /usr/local/bin/cm-1.2/cm.mem </commandLine>
-        <syntaxType>Python</syntaxType>
-      </soundObject>
-    </soundLayer>
-    <soundLayer name='' muted='false' solo='false' heightIndex='2'>
-      <noteProcessorChain/>
-      <soundObject type='blue.soundObject.External'>
-        <subjectiveDuration>2.0</subjectiveDuration>
-        <startTime>24.0</startTime>
-        <name>External</name>
-        <backgroundColor>-12566464</backgroundColor>
-        <timeBehavior>2</timeBehavior>
+          <commandLine>C:\Users\ben\cm\clisp\lisp.exe  -M C:\Users\ben\cm\clisp\cm.mem </commandLine>
+          <syntaxType>Python</syntaxType>
+        </soundObject>
+      </soundLayer>
+      <soundLayer name='' muted='false' solo='false' heightIndex='2'>
         <noteProcessorChain/>
-        <text>;**************************************************************
+        <soundObject type='blue.soundObject.External'>
+          <subjectiveDuration>2.0</subjectiveDuration>
+          <startTime>24.0</startTime>
+          <name>External</name>
+          <backgroundColor>-12566464</backgroundColor>
+          <timeBehavior>2</timeBehavior>
+          <noteProcessorChain/>
+          <text>;**************************************************************
 ;
 ;**************************************************************
 (in-package :stella)
@@ -656,14 +694,15 @@ ga2 init 0
 ; print result to console.
 ;
 (print-stream  &quot;test.sco&quot;)</text>
-        <commandLine>/usr/local/bin/cm-1.2/lisp.run -M /usr/local/bin/cm-1.2/cm.mem </commandLine>
-        <syntaxType>Python</syntaxType>
-      </soundObject>
-    </soundLayer>
-    <soundLayer name='' muted='false' solo='false' heightIndex='2'>
-      <noteProcessorChain/>
-    </soundLayer>
-  </soundObject>
+          <commandLine>C:\Users\ben\cm\clisp\lisp.exe  -M C:\Users\ben\cm\clisp\cm.mem </commandLine>
+          <syntaxType>Python</syntaxType>
+        </soundObject>
+      </soundLayer>
+      <soundLayer name='' muted='false' solo='false' heightIndex='2'>
+        <noteProcessorChain/>
+      </soundLayer>
+    </soundObject>
+  </score>
   <scratchPadData>
     <isWordWrapEnabled>true</isWordWrapEnabled>
     <scratchText/>
@@ -673,4 +712,29 @@ ga2 init 0
   <renderEndTime>-1.0</renderEndTime>
   <markersList/>
   <loopRendering>false</loopRendering>
+  <midiInputProcessor>
+    <keyMapping>PCH</keyMapping>
+    <velMapping>MIDI</velMapping>
+    <pitchConstant></pitchConstant>
+    <ampConstant></ampConstant>
+    <scale>
+      <scaleName>12TET</scaleName>
+      <baseFrequency>261.62558</baseFrequency>
+      <octave>2.0</octave>
+      <ratios>
+        <ratio>1.0</ratio>
+        <ratio>1.0594631</ratio>
+        <ratio>1.122462</ratio>
+        <ratio>1.1892071</ratio>
+        <ratio>1.2599211</ratio>
+        <ratio>1.3348398</ratio>
+        <ratio>1.4142135</ratio>
+        <ratio>1.4983071</ratio>
+        <ratio>1.587401</ratio>
+        <ratio>1.6817929</ratio>
+        <ratio>1.7817974</ratio>
+        <ratio>1.8877486</ratio>
+      </ratios>
+    </scale>
+  </midiInputProcessor>
 </blueData>
