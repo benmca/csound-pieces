@@ -43,7 +43,7 @@
             for a = (+ .5 (- amp (/ tem 210.0)))
             until (> curtime totaldur)
             do
-            (cs:i 3 t d a p pan dist pct indx)
+            (cs:i 1 t d a p pan dist pct indx)
             (set! curtime t)
             (wait r)
             )
@@ -71,7 +71,7 @@
     (remix 180.0 10 1.0 30) 
     (remix 190.0 30 1.0 30) 
     (remix 200.0 60 1.0 30) 
-    ) "remix.sco" :play #t :orchestra "sndwarp.orc" :header "f1 0 262144 1 \"jam.aif\" 0  0 0\nf2 0 16384 9 .5 1 0
+    ) "remix.sco" :play #t :orchestra "jam.orc" :header "f1 0 262144 1 \"jam.aif\" 0  0 0\nf2 0 16384 9 .5 1 0
 \n")
 
 ; A cleaner, less verbose way to generate the same
@@ -82,7 +82,7 @@
     (set! mixes (append mixes (list (remix i 45 1.0 60))))
     )
 
-(sprout mixes "remix.sco" :play #t :orchestra "sndwarp.orc" :header "f1 0 262144 1 \"jam.aif\" 0  0 0\nf2 0 16384 9 .5 1 0
+(sprout mixes "remix.sco" :play #t :orchestra "jam.orc" :header "f1 0 262144 1 \"jam.aif\" 0  0 0\nf2 0 16384 9 .5 1 0
     \n")
 
 ; a single instance of remix, with reverb note
