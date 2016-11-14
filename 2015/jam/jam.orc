@@ -37,7 +37,7 @@ endin
 
 
 instr 99
-klin linseg  p4, p3, p4
+klin 	linseg  p4, p3, p4
 kamp	linseg	1, p3, 1
 a1	reverb2	ga1, klin, 1
 a2	reverb2	ga2, klin, 1

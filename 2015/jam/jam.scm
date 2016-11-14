@@ -57,6 +57,13 @@
   (process repeat 1 do
   (cs:i 99 0.0 dur 5))
 )
+
+(sprout (list 
+    (remix 100.0 10 1.0 30) 
+    ) "remix.sco" :play #t :orchestra "jam.orc" :header "f1 0 262144 1 \"jam.aif\" 0  0 0\nf2 0 16384 9 .5 1 0
+\n")
+
+
 ; A verbose way to sprout this process at multiple tempos.
 ; The result is a Nancarrow-esque tempo canon
 (sprout (list 
