@@ -19,7 +19,7 @@ indx = p9
 iorigdur = p10
 iendx = indx + iorigdur
 
-kamp	linen	iamp, .01, idur, .01
+kamp	linen	iamp, .001, idur, .1
 ktime   line    indx, idur , iendx
  
 al	diskin	"jam.aif", ipitch, indx

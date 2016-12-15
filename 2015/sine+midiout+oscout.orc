@@ -12,11 +12,11 @@ instr 1 ;sine
 
 ; convert incoming freq to midinote
 ;int n = (int) ( ( 12 * log(f / 220.0) / log(2.0) ) + 57.01 );
-ifreq = p5
+ifreq = int(p5)
 if_over_220 = ifreq/220
 i1 = log(if_over_220)
 i2 = log(2.0)
-isolution = ( ( 12 * i1 / i2 ) + 57.01 )
+isolution = ( ( (12 * i1) / i2 ) + 57.01 )
 inotenum = int(isolution)
 
 
