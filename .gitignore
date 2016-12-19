@@ -5,3 +5,5 @@ CsoundBridge/.idea/
 CsoundBridge/.project
 CsoundBridge/bin/
 .idea/
+.project/
+*.sco
