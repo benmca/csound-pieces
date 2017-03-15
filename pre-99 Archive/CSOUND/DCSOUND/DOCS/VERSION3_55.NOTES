@@ -1,0 +1,246 @@
+Release Notes for 3.55
+======================
+
+These are the release notes for version 3.55
+
+Bug Fixes
+---------
+
+only in opcodes (below)
+
+
+Language Changes
+----------------
+
+The environment variable CSSTRNGS is used to identify the string
+database.  If it is not present it looks in SSDIR SADIR etc and
+finally /usr/local/lib
+
+This can be overridden with a -j filename option
+
+
+Opcode Fixes
+------------
+
+linseg, linsegr -- an off-by-one error corrected in all cases
+
+buzz, gbuzz -- error case reported only once per note instead of every
+k-cycle in error. 
+
+loscil3 -- ignored the amplitude leading to usually quiet output
+
+mandolin -- Bug fixed which stop the initial pluck, and also rescaled
+
+
+New Opcodes 
+-----------
+
+svfilter --       Implementation of a resonant second order filter,
+                  with simultaneous lowpass, highpass and bandpass outputs. 
+
+hilbert --        An IIR implementation of a Hilbert transformer. 
+
+resonr, resonz -- Implementations of a second-order, two-pole two-zero
+                  bandpass filter with variable frequency response. 
+
+mac, maca --      Multiply and Accumulate instructions
+
+
+Other Changes:
+-------------
+
+
+
+Windows GUI Changes
+-------------------
+
+devaudio as an output device was incorrectly changed to devaudio.wav
+
+
+
+------------------------------------------------------------------------
+==John ff
+  1999 June 20
+========================================================================
+
+hilbert
+
+        areal, aimag     hilbert        asig
+
+DESCRIPTION
+
+An IIR implementation of a Hilbert transformer. 
+
+PERFORMANCE
+
+hilbert is an IIR filter based implementation of a broad-band 90
+degree phase difference network.  The input to hilbert is an audio
+signal, with a frequency range from 15 Hz to 15 kHz. The outputs of
+hilbert have an identical frequency response to the input (i.e. they
+sound the same), but the two outputs have a constant phase difference
+of 90 degrees, plus or minus some small amount of error, throughout
+the entire frequency range - the outputs are in quadrature. hilbert is
+useful in the implementation of many digital signal processing
+techniques that require a signal in phase quadrature. areal
+corresponds to the cosine output of hilbert, while aimag corresponds
+to the sine output; the two outputs have a constant phase difference
+throughout the audio range that corresponds to the phase relationship
+between cosine and sine waves.
+
+Internally, hilbert is based on two parallel 6th-order allpass
+filters. Each allpass filter implements a phase lag that increases
+with frequency; the difference between the phase lags of the parallel
+allpass filters at any given point is approximately 90 degrees. Unlike
+an FIR-based Hilbert transformer, the output of hilbert does not have
+a linear phase response. However, the IIR structure used in hilbert is
+far more efficient to compute, and the nonlinear phase response can be
+used in the creation of interesting audio effects, as in the second
+example below.
+
+AUTHOR
+
+Sean Costello
+Seattle, Washington
+1999
+
+------------------------------------------------------------------------
+svfilter
+
+        alow, ahigh, aband     svfilter        asig, kcf, kq[, iscl]
+
+DESCRIPTION
+
+Implementation of a resonant second order filter, with simultaneous
+lowpass, highpass and bandpass outputs.
+
+INITIALIZATION
+
+iscl - coded scaling factor, similar to that in reson. A non-zero
+value signifies a peak response factor of 1, i.e. all frequencies
+other than kcf are attenuated in accordance with the (normalized)
+response curve. A zero value signifies no scaling of the signal,
+leaving that to some later adjustment (see balance). The default value
+is 0.
+
+PERFORMANCE
+
+svfilter is a second order state-variable filter, with k-rate controls
+for cutoff frequency and Q.  As Q is increased, a resonant peak forms
+around the cutoff frequency. svfilter has simultaneous lowpass,
+highpass, and bandpass filter outputs; by mixing the outputs together,
+a variety of frequency responses can be generated. The state-variable
+filter, or "multimode" filter was a common feature in early analog
+synthesizers, due to the wide variety of sounds available from the
+interaction between cutoff, resonance, and output mix ratios. svfilter
+is well suited to the emulation of "analog" sounds, as well as other
+applications where resonant filters are called for.
+
+asig - Input signal to be filtered.
+
+kcf - Cutoff or resonant frequency of the filter, measured in cps.
+
+kq - Q of the filter, which is defined (for bandpass filters) as
+bandwidth/cutoff. kq should be in a range between 1 and 500. As kq is
+increased, the resonance of the filter increases, which corresponds to
+an increase in the magnitude and "sharpness" of the resonant
+peak. When using svfilter without any scaling of the signal (where
+iscl is either absent or 0), the volume of the resonant peak increases
+as Q increases. For high values of Q, it is recommended that iscl be
+set to a non-zero value, or that an external scaling function such as
+balance is used.
+
+svfilter is based upon an algorithm in Hal Chamberlin's Musical
+Applications of Microprocessors (Hayden Books, 1985).
+
+AUTHOR
+
+Sean Costello
+Seattle, Washington
+1999
+------------------------------------------------------------------------
+resonr, resonz
+
+        ar     resonr        asig, kcf, kbw[,iscl, istor]
+        ar     resonz        asig, kcf, kbw[,iscl, istor]
+
+DESCRIPTION
+
+Implementations of a second-order, two-pole two-zero bandpass filter
+with variable frequency response.
+
+INITIALIZATION
+
+The optional initialization variables for resonr and resonz are
+identical to the i-time variables for reson.
+
+istor - initial disposition of internal data space. Since filtering
+incorporates a feedback loop of previous output, the initial status of
+the storage space used is significant. A zero value will clear the
+space; a non-zero value will allow previous information to remain. The
+default value is 0.
+
+iscl - coded scaling factor for resonators. A value of 1 signifies a
+peak response factor of 1, i.e.  all frequencies other than kcf are
+attenuated in accordance with the (normalized) response curve. A value
+of 2 raises the response factor so that its overall RMS value equals
+1. (This intended equalization of input and output power assumes all
+frequencies are physically present; hence it is most applicable to
+white noise.) A zero value signifies no scaling of the signal, leaving
+that to some later adjustment ( see balance). The default value is 0.
+
+PERFORMANCE
+
+resonr and resonz are variations of the classic two-pole bandpass
+resonator (reson). Both resonr and resonz have two zeroes in their
+transfer functions, in addition to the two poles. resonz has its
+zeroes located at z = 1 and z = -1. resonr has its zeroes located at
++sqrt(R) and -sqrt(R), where R is the radius of the poles in the
+complex z-plane. The addition of zeroes to resonr and resonz results
+in the improved selectivity of the magnitude response of these filters
+at cutoff frequencies close to 0, at the expense of less selectivity
+of frequencies above the cutoff peak. resonr and resonz have very
+close to constant-gain as the center frequency is swept, resulting in
+a more efficient control of the magnitude response than with
+traditional two-pole resonators such as reson.  resonr and resonz
+produce a sound that is considerably different from reson, especially
+for lower center frequencies; trial and error is the best way of
+determining which resonator is best suited for a particular
+application.
+
+asig - Input signal to be filtered.
+
+kcf - Cutoff or resonant frequency of the filter, measured in cps.
+
+kbw - Bandwidth of the filter (the cps difference between the upper
+and lower half-power points).
+
+AUTHOR
+
+Sean Costello
+Seattle, Washington
+1999
+
+------------------------------------------------------------------------
+
+mac and maca
+
+        ar     mac        ksig1, asig2, ksig3, asig4, ...
+        ar     maca       asig1, asig2, asig3, asig4, ...
+
+DESCRIPTION
+
+Multiplies the arguments in pairs and accumulates their sum
+ar = ksig1*asig2 + ksig3*asig4 + ...
+ar = asig1*asig2 + asig3*asig4 + ...
+
+INITIALIZATION
+
+none
+
+PERFORMANCE
+
+ksign - multipliers (scales) of signals
+
+asign - Audio signals to be summed/scaled  
+
+------------------------------------------------------------------------

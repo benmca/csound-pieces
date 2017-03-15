@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="item.fun">&nbsp;</A>
+<A NAME="in-algorithms">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>item <I>stream</I></B></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+<TD align="left" valign="top">
+<TT><B>item <I>stream</i> &amp;key :kill :chord :rest</B></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE><P>
+
+Returns two values, the next item from the item stream <I>stream</I>
+and the state of the stream after the item was read.  As with all
+multiple values in Lisp, this second value may be ignored.  <P>
+
+<P>Within an <A HREF="algorithm.mcr.html"><TT>algorithm</TT></A> macro,
+<TT>item</TT> supports the additional keyword arguments <TT>:kill</TT>,
+<TT>:chord</TT> and <TT>:rest</TT> which have the following meaning:
+
+<DL>
+
+<DT><TT>:kill {<I>integer</i> | t | nil}</TT>
+
+<DD>Stops (kills) the algorithm after some number of periods have been
+read from <I>stream</I>. If <TT>nil</TT> (the default) the algorithm
+is not killed.  If <TT>t</TT> the algorithm stops after one period of
+items has been read, otherwise it stops after <TT><I>integer</I></TT>
+number of periods have been read.
+
+<DT><TT>:chord {t | nil}</TT>
+
+<DD>Controls whether or not the system checks for chords.  Defaults to
+<TT>t</TT>.
+
+<DT><TT>:rest {t | nil}</TT>
+
+<DD>Controls whether or not the system checks for rests.  Defaults to
+<TT>t</TT>.
+
+</DL>
+
+<P><B>Example:</B></P>
+
+<PRE>? (setf x (items foo bar))
+<I>#&lt;CYCLIC-ITEM-STREAM 133134441&gt;</I>
+
+? (item x)
+<I>FOO
+NIL</I>
+
+? (item x)
+<I>BAR
+:END-OF-PERIOD</I>
+</PRE>
+
+<P><B>See Also:</B></P>
+
+<A HREF="doitems.mcr.html"><TT>doitems</TT></A>,
+<A HREF="item_streams.tpc.html"><TT>Item Streams</TT></A>,
+<A HREF="read-items.fun.html"><TT>read-items</TT></A>
+<P>
+
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

@@ -1,0 +1,616 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="api.tpc">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>Application Program Interface</B></TT>
+<TD align="right" valign="top">
+[Topic]<TR>
+</TABLE>
+<P>
+The Application Program Interface (API) defines the public entry points to 
+Common Music's kernel. The API functions and variables are documented here rather
+than in the main body of the dictionary because they are typically not called
+directly by the user.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="add-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>add-object <I>object container </I>&amp;optional<I> position</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Adds <I>object</I> to <I>container</I> at optional <I>position</I> 
+(zero based). If <I>position</I> is
+not specified it defaults to the end of <I>container</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="add-objects">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>add-objects <I>objects container </I>&amp;optional<I> position</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Adds the list of <I>objects</I> to <I>container</I> at optional <I>position</I>
+(zero based).  If <I>position</I> is
+not specified it defaults to the end of the <I>container</I>.<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="archive-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>archive-object <I>object pathname </I>&amp;key<I> (verbose t)</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Saves <I>object</I> in the file specified by <I>pathname</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="change-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>change-object <I>object new-class slots</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Changes the class of object to <I>new-class</I>. Slots that exist in both
+classes are copied directly.  Otherwise, <I>slots</I> is a list of paired
+<I>old-slot</I> <I>new-slot</I>; each <I>new-slot</I> in the new object receives 
+the value of <I>old-slot</I> in the old object.
+<P>
+<!-- --------------------------------------------------------------- -->
+<A NAME="close-event-stream">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>close-event-stream <I>stream </I>&amp;optional<I> mode</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Closes the event stream <I>stream</I>. If mode is <TT>:error</TT> a hard reset is signaled.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="container-objects">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>container-objects <I>container</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Returns a list of the objects in <I>container</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="copy-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>copy-object <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Copies <I>object</I> to a new object.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="deinitialize-stream-for-processing">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>deinitialize-stream-for-processing <I>stream</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Deinitializes <I>stream</I> after event processing has terminated.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="delete-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>delete-object <I>object </I>&amp;optional<I> recursive</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Marks <I>object</I> as deleted.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="duplicate-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>duplicate-object <I>object </I>&amp;optional <I>newname</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+
+Duplicate <I>object</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="edit-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>edit-object <I>object</I> &amp;key <I>stream</I> <I>prompt</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+
+Interactively edit <I>object</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="expunge-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>expunge-object <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Expunges <I>object</I>. Pointers to <I>object</I> are no longer valid.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="freeze-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>freeze-object <I>generator</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Marks <I>generator</I> as frozen.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="hide-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>hide-object <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Marks <I>object</I> as hidden.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="import-file">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>import-file <I>file </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Imports <I>file</I> if an import mode is defined for the file type.
+Currently supports MIDI (.midi, .MID) and CSound (.sco) files.
+
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="initialize-stream-for-processing">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>initialize-stream-for-processing <I>stream</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Initializes <I>stream</I> before event processing begins.  
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="link-objects">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>link-objects <I>object container</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Adds backpointer from <I>object</I> to <I>container</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="list-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>list-object <I>ref </I>&amp;optional<I> (stream *list-stream*)</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Lists the objects in <I>ref</I> to <I>stream</I>, which defaults to 
+*standard-output*.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="make-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>make-object <I>type/id </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Creates an object of type <I>I</I>,  a class name or a list
+(<I>class name</I>) where name is the name for the new object.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="map-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>map-object <I>function object </I>&amp;key<I> mode level</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Maps <I>function</I> over <I>object</I> recursively.. <I>level</I> controls the
+recursion depth and defaults to *mapping-level*.
+<I>mode</I> controls what type of objects are
+mapped and defaults to *mapping-mode*.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="map-subobjects">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>map-subobjects <I>function container</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Maps <I>function</I> over subobjects in <i>container</I>.
+Recursion is not performed.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="mix-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>mix-object <I>objects </I>&amp;optional<I> (offsets 0.0) </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Causes events in <I>objects</I> to be processed in a single time line to
+<I>stream</I>.
+<I>pairs</I> are optional arguments passed to open-event-stream.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="nth-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>nth-object <I>index container</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Retuns the object at <I>index</I> (zero based) in <I>container</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="object-containers">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>object-containers <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Returns a list of containers of <I>object</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="object-count">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>object-count <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Returns the number of objects in <I>container</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="object-name">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>object-name <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Returns the name of <I>object</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="object-makunbound">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>object-makunbound <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Makes all slots of <I>object</I> unbound.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="object-position">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>object-position <I>object </I>&amp;optional<I> container</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Returns the position (zero based) of <I>object</I> in <I>container</I>,
+which defaults to the single container of <I>object</I> if <I>container</I>
+is not supplied.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="open-event-stream">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>open-event-stream <I>name </I>&amp;optional<I> mode </I>&amp;rest<I> args</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Initializes and optionally opens <I>stream</I>, a stream
+object or a string (file name). If <I>mode</I> is <TT>:open</TT> then
+<I>stream</I> is opened, otherwise it is only initialized according to the slots 
+and values in <I>args</I>.
+
+<P>
+<!-- --------------------------------------------------------------- -->
+<A NAME="play-file">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>play-file <I>file </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Plays <I>file</I> if there is a method defined for its type.
+<P>
+
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="print-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>print-object <I>object stream</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Prints <I>object</I> to <I>stream</I>, which defaults to the standard output.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="remove-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>remove-object <I>object </I>&amp;optional<I> container</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Removes <I>object</I> from <I>container</I>, which defaults to
+the single container of <I>object</I> if not specified.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="remove-all-objects">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>remove-all-objects <I>container</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Removes all objects from <I>container</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="rename-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>rename-object <I>object newname</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Renames <I>object</I> to <I>newname</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="rename-okquestionmark">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>rename-ok? <I>object </I>&amp;optional<I> newname</I>  </TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Returns <TT>t</TT> if <I>object</I> can be renamed <I>newname</I>.
+<P>
+ 
+<!-- --------------------------------------------------------------- -->
+<A NAME="retrograde-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>retrograde-object <I>container </I>&amp;optional<I> (lb 0) ub</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Reverses the order of objects between <I>lb</I> and <I>ub</I> in <I>container</I>.
+<I>ub</I> defaults to the last object in the container.
+
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="run-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>run-object <I>objects </I>&amp;optional<I> (offsets 0.0) </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Causes events in <I>objects</I> to be selected without being sent to an event
+stream.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="script-file">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>script-file <I>file </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Processes input from <I>file</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="sequence-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>seq-object <I>objects </I>&amp;optional<I> (offsets 0.0) </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Sequences events in <I>objects</I> to <I>stream</I>. <I>Pairs</I>
+are initialization arguments  passed to open-event-stream.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="set-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>set-object <I>object </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Sets <I>object</I> according to <I>pairs</I>, a series of slot names and values.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="show-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>show-object <I>object </I>&amp;optional<I> all?</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Prints detailed information about <I>object</I> to <I>stream</I>, which defaults to 
+*standard-output*.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="shuffle-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>shuffle-object <I>object </I>&amp;optional<I> (lb 0) ub</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Randomly orders objects between <I>lb</I> and <I>ub</I> in <I>container</I>.
+<I>ub</I> defaults to the last object in the container.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="tlist-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>tlist-object <I>object </I>&amp;optional<I> (offset 0.0) </I>&amp;rest<I> pairs</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Lists time-lined events in <I>object</I> to <I>stream</I>, which defaults to 
+*standard-output*.
+
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="undelete-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>undelete-object <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Marks <I>object</I> as not deleted.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="unfreeze-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>unfreeze-object <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Marks <I>object</I> not unfrozen.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="unhide-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>unhide-object <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Marks <I>object</I> as not hidden.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="unlink-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>unlink-object <I>object container</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Removes backpointer from <I>object</I> to <I>container</I>.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="unmute-object">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>unmute-object <I>object</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Marks <I>object</I> as not muted.
+<P>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="write-event">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT>write-event <I>object stream</I></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE>
+Writes <I>event</I> to <i>stream</I> during event processing. 
+<P>
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

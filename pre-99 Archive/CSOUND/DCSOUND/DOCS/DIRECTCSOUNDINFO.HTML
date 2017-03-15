@@ -1,0 +1,1355 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+  <META NAME="GENERATOR" CONTENT="Mozilla/4.06 [en] (Win95; I) [Netscape]">
+  <!-- Created with AOLpress/2.0 -->
+  <TITLE>DirectCsound info</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<CENTER>
+  <H1 ALIGN=Left>
+    <FONT COLOR="#804040"><B>Basic information about DirectCsound</B></FONT>
+  </H1>
+</CENTER>
+<CENTER>
+  <P ALIGN=Left>
+  By <A HREF="mailto:g.maldonado@agora.stm.it">Gabriel Maldonado</A><BR>
+  <A HREF="http://web.tiscalinet.it/G-Maldonado">http://web.tiscalinet.it/G-Maldonado</A>
+</CENTER>
+<P>
+  <HR SIZE=15>
+<P>
+<B><A HREF="#general">General</A> (IMPORTANT! Read this first if you are
+trying DirectCsound for the first time!)</B>
+<P>
+<A HREF="#features"><B>History of changes and new features of this version
+of Csound</B></A>
+<P>
+<A HREF="#command"><B>Command line arguments</B></A>
+<P>
+<A HREF="#examples"><B>Examples of command-line calls of DirectCsound</B></A>
+<P>
+<A HREF="#hints"><B>Hints</B></A>
+<P>
+Acknowledgements 
+  <HR SIZE=15>
+<CENTER>
+  <H2>
+    <A NAME="general"></A><!-- --><B>General</B>
+  </H2>
+</CENTER>
+<P>
+To run current version of DirectCsound is sufficient to double-click the
+program icon. See the <A HREF="DirectCsoundGUI.html">GUI section</A> for
+more information. <BR>
+Alternatively you can write a batch file or use a special program to run
+DirectCsound. A realtime-oriented IDE for DirectCsound is my program
+<B>VMCI</B>, available at the url:
+<A HREF="http://web.tiscalinet.it/G-Maldonado">http://web.tiscalinet.it/G-Maldonado</A>).
+<P>
+(Previous versions of Csound didn't have an IDE interface, so, to run them,
+you must type a command-line with several arguments from a DOS window. Note
+that command line arguments were not optional in older versions of Csound,
+whereas now it is possible to type them after running DirectCsound executable).
+<P>
+In version <B>2.5 </B>a unified orc/sco file feature was implemented, so
+you can run DirectCsound simply dragging the <B>.csd </B>file to the executable
+file icon. In this case the command line flags are embedded into the <B>.csd
+</B>file, so the only command line arguments are the executable name (i.e.
+<B>csound.exe</B>) and the <B>.csd</B> file itself.
+<P>
+If you already know standard Csound, let's read all the additional features
+of this version
+<P>
+If you don't know Csound you MUST study the main manual at first. You can
+get it at the following urls:
+<P>
+<A HREF="http://hem.passagen.se/rasmuse/Csound.htm">http://hem.passagen.se/rasmuse/Csound.htm</A>
+(WinHelp format);
+<P>
+<A HREF="http://www.lakewoodsound.com/csound">http://www.lakewoodsound.com/csound</A>
+(PDF format);
+<P>
+<P>
+Furthermore, even if you perfectly know Csound, you have to study the present
+document too, as well as the the DirectCsound manual addendum, because several
+things are different, especially regarding the command-line arguments and
+the new spatialization-related opcode.
+<P>
+  <HR SIZE=15>
+<CENTER>
+  <H2>
+    <A NAME="features"><!-- --></A>History of changes
+  </H2>
+  <P>
+  <B>Here is a list of the features of DirectCsound, following the versions
+  order.</B>
+</CENTER>
+<TABLE BORDER CELLSPACING=4 CELLPADDING=13 >
+  <TR>
+    <TD><CENTER>
+	<H3>
+	  <B>VERSION</B>&nbsp;
+	</H3>
+      </CENTER>
+    </TD>
+    <TD><CENTER>
+	<H3>
+	  <B>FEATURES</B>&nbsp;
+	</H3>
+      </CENTER>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>release 1.0</B></TD>
+    <TD><OL>
+	<LI>
+	  Allows realtime midi input from Windows standard MIDI devices&nbsp;
+	<LI>
+	  Allows to define the number of output WAVE buffers&nbsp;
+	<LI>
+	  Allows to define virtual console of up to 2050 lines of text output (obviously
+	  through a scrolling window)&nbsp;
+	<LI>
+	  Recognizes all installed Windows MIDI input and WAVE output devices and,
+	  if these are more than one, it prompts the user for the device number
+	  desired.&nbsp;
+	<LI>
+	  Includes my <B>"soundin2" </B>new UG allowing interpolated and continuous
+	  pitch-shift reading of a soundfile. This UG also takes care of in/out sr
+	  difference during the processing (see soundin2.txt and soundin2.src
+	  files).&nbsp;
+	<LI>
+	  Includes all official John Fitch et al. 3.46 UGs, upgrades and fixes (see
+	  UG_ver34.txt and UG_ver35.txt files)&nbsp;
+	<LI>
+	  Includes all Robin Whittle's UGRW1 &amp; UGRW2 UGs (see ugrw1.txt and ugrw2.txt
+	  files).&nbsp;
+	<LI>
+	  Allows full 16 bit stereo output up to 44100 Hz in realtime.&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>release 1.5</B></TD>
+    <TD><OL>
+	<LI>
+	  More than 50% improved processing speed (more poliphony!).&nbsp;
+	<LI>
+	  arbitrary sr allowed from 5000 hz to 44100 hz for soundcards that support
+	  it (such as SB16 and AWE32 family).&nbsp;
+	<LI>
+	  drastically reduced realtime latency delay by reducing buffer length and
+	  consequently more interactive realtime operations when using rounded sr and
+	  kr (such as for example sr=32000 or sr=40000 and kr=100)&nbsp;
+	<LI>
+	  executable file length considerably reduced.&nbsp;
+	<LI>
+	  New UGs: midi realtime control with up to 21 bit precision (<B>"midic7",
+	  "midic14" and "midic21" </B>UGs). These new UGs also support optional table
+	  indexing&nbsp;
+	<LI>
+	  New UGs: <B>"mirror" </B>and <B>"wrap"</B> for clipping and modeling krate
+	  or audio signal in several ways.&nbsp;
+	<LI>
+	  new flag for suppressing all console text output for better realtime
+	  performance.&nbsp;
+	<LI>
+	  new flag for not waiting a keypress on exit&nbsp;
+	<LI>
+	  flag <B>"-B"</B> is automatically calculated on <B>"-b"</B> value so it is
+	  now redundant.&nbsp;
+	<LI>
+	  some bug fixing (such as the read-only attribute in output wave files when
+	  processing non-realtime operations).&nbsp;
+	<LI>
+	  new flag for graphic display of tables with Wcshell by Riccardo Bianchini
+	  (graphic of tables is saved in binary format).&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>release 1.71</B></TD>
+    <TD><OL>
+	<LI>
+	  Realtime MIDI OUT UGs: <B>"ion" "ioff" "iondur" "iondur2" "moscil" "kon"
+	  "ioutc" "koutc" "ioutc14" "koutc14" "ioutpb" "koutpb" "ioutat" "koutat" "ioutpc"
+	  "koutpc" "ioutpat" "koutpat" "mclock" "mrtmsg"</B>.&nbsp;
+	  <P>
+	  <BR>
+	  All these UGs can run in parallel with MIDI IN and WAVE OUT&nbsp;
+	<LI>
+	  MIDI-activated note-duration extension capabilities by means of new
+	  <B>"xtratim" </B>opcode. New <B>"release" </B>opcode allows the user to make
+	  complex ADSR envelopes if uses "release" in pair with "xtratim"&nbsp;
+	<LI>
+	  Optional replacing of WAVE OUT operations with a timing function during realtime
+	  performances. This enhances timing precision when using MIDI OUT UGs, but
+	  suppresses AUDIO out. This also hugely reduces program overhead, freeing
+	  the most part of CPU's resources when Csound is running, and enhances
+	  multitasking (flag <B>'-Y'</B>).&nbsp;
+	<LI>
+	  Optional yielding control to Windows during realtime DAC performance. This
+	  reduces program overhead, freeing a big part of CPU's resources when Csound
+	  is running, and enhances multitasking (flag <B>'-*'</B>).&nbsp;
+	<LI>
+	  some bug fixing and code enhancement&nbsp;
+	<LI>
+	  now dialog boxes appear when a WAVE or MIDI device error incurr.&nbsp;
+	<LI>
+	  In realtime operation '-o' and '-M' are now redundant when using <B>'-q'
+	  </B>and <B>'-K' </B>flags.&nbsp;
+	<LI>
+	  <B>'-q' </B>(WAVE OUT)<B> '-K' </B>(MIDI IN) and new <B>'-Q'</B> (MIDI OUT)
+	  flags can handle optional numeric arguments. If these numeric arguments are
+	  not present, console messages appear. These messages ask the user to type
+	  in the corresponding device id.&nbsp;
+	<LI>
+	  Now, when using <B>-O </B>flag, console text output suppression is active
+	  after orchestra and score compilation, allowing to view syntax errors.&nbsp;
+	<LI>
+	  New UGs included in&nbsp; John Fitch version 3.46 (PVOC fixed, HRTF fixed,
+	  FOG, DISKIN and MIDI pitch-bend related).&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>release 1.72</B></TD>
+    <TD><OL>
+	<LI>
+	  Command line can now be included in a file (<B>'-/' </B>flag). Very useful
+	  using Win95 long names, when command line is more long than 138 characters
+	  allowed by DOS.&nbsp;
+	<LI>
+	  <B>ftlen2() </B>function now can return non-power-of-two length of deferred
+	  tables created with GEN1.&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>release 1.731</B></TD>
+    <TD><OL>
+	<LI>
+	  New MIDI IN controller UGs. The same as midicXX opcodes but now they can
+	  be activated by a score i statement without Csound crashes. These UGs are
+	  : <B>ictrl7, ctrl7, ictrl14, ctrl14, ictrl21, ctrl21</B>. A new argument
+	  allow the user to define the MIDI channel apart from the instrument
+	  number.&nbsp;
+	<LI>
+	  Initialization of controllers now can be set to any value (it can different
+	  from the minimum value set in <B>midicXX</B> and <B>ctrlXX</B>. Opcodes<B>
+	  initc7, initc14, initc21</B>).&nbsp;
+	<LI>
+	  <B>loscil2</B> opcode uses 16-bit integer function table (see GEN 22) for
+	  storing samples. Very useful for LONG samples.&nbsp;
+	<LI>
+	  <B>fof3</B> opcode, the same as fof2, but reads 16-bit integer samples from
+	  tables generated by GEN22.&nbsp;
+	<LI>
+	  <B>GEN22</B> is identical to GEN01 except that stores 16-bit samples in RAM
+	  keeping 16-bit integer format. This halves RAM need. Very useful for LONG
+	  samples.&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD>r<B>elease 1.8</B>&nbsp; <BR>
+      (sept. 97)</TD>
+    <TD><OL>
+	<LI>
+	  MME WAVE OUT in parallel with FILE OUT. You can now record directly to hard
+	  disk in digital domain your realtime performance! (You must have a fast hard
+	  disk driver to use this feature).&nbsp;
+	<LI>
+	  Now, when flag '*' (yielding control to system for better multitasking) is
+	  set, Csound Win32 process is set to Realtime priority class. This make Csound
+	  to have precedence over most other concurrent processes, enhaching realtime
+	  performance.&nbsp;
+	<LI>
+	  Resonant lowpass filter (lpres) and layering filters opcodes (tonex, atonex,
+	  lpresx) which can serialize more filters, giving a more sharp cutoff and
+	  increasing performance speed and code readability.&nbsp;
+	<LI>
+	  fof3 opcode now lineary interpolates audio samples to produce a very better
+	  sound quality.&nbsp;
+	<LI>
+	  sample table related functions (GEN1 and GEN22): <B>ftlen2(), nsamp() and
+	  ftsr().&nbsp;</B>
+	<LI>
+	  <B>printk2</B> (for printing realtime sliders changes)&nbsp;
+	<LI>
+	  general purpose physical modeling algorythms are now implemented as opcodes
+	  (<B>"physic1"</B> and <B>"physic2"</B>)&nbsp;
+	<LI>
+	  Plug-in DLL library of Perry Cook toolkit with several physical model algorythms,
+	  plus support for external opcode libraries (coded by Michael Gogins).&nbsp;
+	<LI>
+	  several bug fixes remarkably in midi IN and OUT (for example midi channels
+	  now are 1-16 instead of 0-15; now MIDI OUT timing should be OK)&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>RTsound 1.9&nbsp; </B><BR>
+      (jan. 98)</TD>
+    <TD><OL>
+	<LI>
+	  RTsound now allows realtime WAVE IN operations on Win95 (of course in parallel
+	  with WAVE OUT). Plug your sound card to an external mono or stereo sound
+	  source (for example a couple of microphones), and use the huge Csound power
+	  to transform it!&nbsp;
+	<LI>
+	  All opcodes of standard 3.47 version now implemented.&nbsp;
+	<LI>
+	  Now you can use uppercase letters and <B>"_"</B>&nbsp; (underscore character)
+	  for variable names, hugely improving orchestra readability.&nbsp;
+	<LI>
+	  Character <B>"\" </B>can be used to split an orchestra line, and can be followed
+	  by a comment ";"&nbsp;
+	<LI>
+	  New MIDI OUT opcodes: <B>"midiin", "midiout", "kon2", "nrpn",
+	  "mdelay"</B>&nbsp;
+	<LI>
+	  New filter opcodes: variant resonant lowpass filter <B>"vlpres"&nbsp;</B>
+	<LI>
+	  New oscillator algorithms allow more precise frequency control (<B>"posc"
+	  </B>), and can vary table read margins at k-rate
+	  (<B>"lposc","lposcint"</B>)&nbsp;
+	<LI>
+	  short exponential segments now work well at a-rate with opcode "aexpseg"&nbsp;
+	<LI>
+	  New MIDI IN opcodes (<B>"midiin"</B>) and fast bank-of-sliders management
+	  with <B>"slider8", "slider16", "slider8f", "slider16f", "islider8",
+	  "islider16"</B> opcodes&nbsp;
+	<LI>
+	  fast power of two function <B>"powoftwo( )"</B>&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>RTsound 1.901 </B>(feb.98)</TD>
+    <TD><OL>
+	<LI>
+	  '-L' flag now operates with realtime console keyboard input (only).&nbsp;
+	<LI>
+	  <B>"powoftwo( )" </B>function now allows negative values (see
+	  op_manual.txt)&nbsp;
+	<LI>
+	  <B>"logbtwo()"</B> function (see op_manual.txt) added.&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>RTsound 1.902 </B>(feb.98)</TD>
+    <TD><OL>
+	<LI>
+	  <B>"intrpol" "kntrpol" "antrpol" </B>opcodes&nbsp;
+	<LI>
+	  <B>"GEN 23"</B> function table generator&nbsp;
+	<LI>
+	  midifile timing bug fixed&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>RTsound 1.903 </B>(mar.98)</TD>
+    <TD><OL>
+	<LI>
+	  <B>"Xslider32X" </B>and <B>"Xslider64X"</B> opcodes&nbsp;
+	<LI>
+	  removed all standard MIDI control handling except than sustain pedal (contr.N.64)
+	  so up to 127 controllers for each MIDI channel are avalaible for custom realtime
+	  control.&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound Version 2.0</B> <BR>
+      (June 98)</TD>
+    <TD><OL>
+	<LI>
+	  Implements Win32 DirectSound routines in audio output. This drastically reduces
+	  latency delay!! At last it is possible to play Csound with a piano-like style
+	  as it would be a hardware synthesizer. Fast Pentium II processors are
+	  recommended.&nbsp;
+	<LI>
+	  All opcodes and features of standard 3.482 version now implemented&nbsp;
+	<LI>
+	  Covers all opcodes and features of RTsound 1.9xx&nbsp;
+	<LI>
+	  <B>"flanger"</B> opcode&nbsp;
+	<LI>
+	  <B>"intrpol", "kntrpol" and "antrpol"&nbsp;</B> opcodes interpolate two input
+	  signals&nbsp;
+	<LI>
+	  <B>"logbtwo(x)"</B>&nbsp; the inverse function of powoftwo&nbsp;
+	<LI>
+	  <B>"slider32", "slider64", "slider32f", "slider64f", "slider16b14", "slider32b14"
+	  </B>opcodes&nbsp;
+	<LI>
+	  <B>"GEN23" </B>gen-function reads numeric values from an external ascii
+	  file&nbsp;
+	<LI>
+	  <B>"GEN24"</B> gen-function reads numeric values from another allocated
+	  unction-table and rescales them according to the max and min values given
+	  by the user&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound Version 2.1 </B>(September 98)</TD>
+    <TD><OL>
+	<LI>
+	  Now Csound language allows subroutine calls! (opcodes <B>"icall" "dicall"
+	  "micall" "dmicall" "kargc" "kargt" "argc" "argt" "artrnc" "artrnt" "krtrnc"
+	  "krtrnt"</B>)&nbsp;
+	<LI>
+	  better DirectX realtime audio with flag <B>-+*</B>&nbsp;
+	<LI>
+	  new opcodes: <B>"foscili2" "cpstmid"</B>&nbsp;
+	<LI>
+	  some bugs fixed&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 2.5</B><BR>
+      (January 99)
+      <P>
+    </TD>
+    <TD><OL>
+	<LI>
+	  This version is synchronized with canonical Csound 3.494 (all opcodes, macros,
+	  score math, etc.)
+	<LI>
+	  unified orc/sco&nbsp;files are now enabled (with a little modification with
+	  respect of that of canonical version). These files can contain the execution
+	  flags too. To run an unified file simply drag it to the csound.exe file icon
+	  (the file msut have .csd&nbsp;extension). These files use the M.Gogins syntax:
+	  see test.csd as an example.
+	<LI>
+	  New opcodes: <B>"fout", "vincr", "clear" and "fold"</B>
+	<LI>
+	  Midi Program Change messages and Pitch Bend are now implemented in realtime.
+	<LI>
+	  Operator <B>"^" </B>allows power raising in score macro arithmetic.
+	<LI>
+	  Many bugs fixed.
+	<LI>
+	  Opcodes renamed to stay synchronized with canonical version:<BR>
+	  kon -&gt; midion<BR>
+	  kon2 -&gt; midion2<BR>
+	  physc1 -&gt; wguide1<BR>
+	  physic2 -&gt; wguide2<BR>
+	  iwrap -&gt; wrap<BR>
+	  imirror -&gt; mirror<BR>
+	  trig -&gt; trigger
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 2.6</B><BR>
+      (February 99)</TD>
+    <TD><OL>
+	<LI>
+	  new score opcodes: <B>{ } </B>(nested loops), <B>F </B>(score table creation)
+	<LI>
+	  new score macro arithmetic operators: <B>T</B> (score table access), <B>R</B>
+	  (random numbers), <B>^ </B>(power), <B>% </B>(modulus)
+	<LI>
+	  Nested macros. The syntax of macros with arguments has changed a bit : now
+	  <B>comma</B> character must be used in order to separate arguments instead
+	  of '#' character .
+	<LI>
+	  During each csound session a file named <B>orc.srt</B> containing orchestra
+	  macro expansions is created, in order to find bugs when using macros.
+	<LI>
+	  New orc opcodes: <B>resony</B>
+	<LI>
+	  some bugs fixed
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 2.70</B><BR>
+      (March 99)</TD>
+    <TD><OL>
+	<LI>
+	  syncronized with canonical Csound ver. 3.52
+	<LI>
+	  String p-field allowed in score with reference to the following opcodes:<BR>
+	  adsyn, pvoc, soundin, diskin, lpread, convolve etc. can now receive string
+	  argument by a note in score
+	<LI>
+	  no more noises or repeats of last chunk of samples at the end of a realtime
+	  session.
+	<LI>
+	  some bug fixed
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 2.80</B><BR>
+      (July 99)</TD>
+    <TD><OL>
+	<LI>
+	  New opcodes: <B>foutk, fouti, foutir, fiopen, fin, fink, fini </B>to handle
+	  binary and text files in/out.
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 2.90</B><BR>
+      (September 99)</TD>
+    <TD><OL>
+	<LI>
+	  Synchronized with standard version <B>3.58</B>
+	<LI>
+	  Gen functions now can generate tables having <B>non-power-of-two length</B>,
+	  by giving a negative length value.
+	<LI>
+	  <B>poscil</B> now can accept negative frequency values, and a-rate values
+	  both for amplitude and frequency, so both AM and FM are allowed using poscil.
+	  Also, differently by oscil family, they allow non-power-of-two length tables.
+	<LI>
+	  <B>tab</B> and <B>tabw</B> opcodes, faster than table and tablew, accept
+	  non-power-of-two length tables.
+	<LI>
+	  <B>phasor</B> now supports a much more precise phase generation, as phase
+	  is stored into a double internal variable instad than float (like poscil
+	  family). This removes some imprecision &nbsp;and distorsion when writing
+	  and reading long tables.
+	<LI>
+	  Added latest opcodes of <B>Peter Neubaecker</B> and <B>Jens Groh</B> (though
+	  must be tested).
+	<LI>
+	  <B>wguide1</B> and <B>wguide2</B> now accept both k and a-rate arguments
+	  for frequency, in order to eliminate distorsion in vibratos and glissandos.
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 3.0</B><BR>
+      (October 99)</TD>
+    <TD><OL>
+	<LI>
+	  Windows DirectSoundCapture support (<B>-+C flag</B>). Low latency audio input
+	  (for those audio cards that support it in native mode).<BR>
+	<LI>
+	  Windows <I><B>DirectSound</B></I> support of secondary buffers (<B>-+S
+	  flag</B>. This makes DirectCsound compatible with more Windows platforms).<BR>
+	<LI>
+	  Support <B>realtime three-dimensional audio</B> (surround audio with some
+	  audio cards): Microsoft's <B><I>DirectSound3D</I></B> and Creative's
+	  <I><B>EAX 2.0</B></I><BR>
+	<LI>
+	  Windows <I>DirectSound3D</I> support. &nbsp; New opcodes: <B>Init3dAudio,
+	  Out3d, DsListenerPosition, DsListenerOrientation, DsListenerRolloffFactor,
+	  DsListenerDistanceFactor, DsListenerSetAll, DsMode, DsPosition, DsMinDistance,
+	  DsMaxDistance, DsConeAngles, DsConeOrientation, DsConeOutsideVolume, DsSetAll,
+	  DsEaxSetDeferredFlag, DsCommitDeferredSettings</B>.<BR>
+	<LI>
+	  Creative's <I>EAX 2.0 </I>support: New opocodes: <B>EaxListenerEnvironment,
+	  EaxListenerEnvSize, EaxListenerEnvDiffusion, EaxListenerRoom, EaxListenerRoomHF,
+	  EaxListenerDecayTime, EaxListenerDecayTimeHfRatio, EaxListenerReflections,
+	  EaxListenerReflectionsDelay, EaxListenerReverb, EaxListenerReverbDelay,
+	  EaxListenerRoomRolloff, EaxListenerAirAbsorption, EaxListenerFlags,
+	  EaxListenerAll, EaxSourceDirect, EaxSourceDirectHF, EaxSourceRoom,
+	  EaxSourceRoomHF, EaxSourceObstruction, EaxSourceObstructionRatio,
+	  EaxSourceOcclusion, EaxSourceOcclusionRatio, EaxSourceOcclusionRoomRatio,
+	  EaxSourceRoomRolloff, EaxSourceAirAbsorption, EaxSourceOutsideVolumeHF,
+	  EaxSourceFlags, EaxsourceAll</B>
+	<LI>
+	  Termination action in response of a MIDI <B><I>0xF5</I></B> message (which
+	  at present time is not used for any other purpose). So to terminate a realtime
+	  session of DirectCsound is sufficient to send a 0xF5 byte via MIDI. This
+	  help with shells, and makes useless to focus Csound console and to press
+	  Ctrl-C. VMCI Plus 2.01 supports this feature.
+      </OL>
+      <P>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 3.01</B><BR>
+      (October 99)</TD>
+    <TD><OL>
+	<LI>
+	  Support for orchestra without score (for realtime sessions). When no score
+	  file name is given as command line argument DirectCsound automatically creates
+	  a dummy score containing "f0 86400" that allows 24 hours of realtime performance.
+	<LI>
+	  Rasmus Ekman's <I>schedkwhen</I> and new &nbsp;Jens Groh and Peter
+	  Neub&auml;cker opocodes <I>nalp</I> and <I>phasorbank</I>. (All these opcodes
+	  are not tested).
+	<LI>
+	  .csd file bug fixed
+	<LI>
+	  other minor bugs fixed.
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 3.04</B><BR>
+      (December 99)</TD>
+    <TD><OL>
+	<LI>
+	  Sinchronized to standard version 4.01
+	<LI>
+	  Several bug fixes mainly regarding DirectX, DirectSound3D and EAX 2.0
+	<LI>
+	  Available a version compiled with the ultra-fast INTEL compiler for Pentium
+	  II and faster processors
+	<LI>
+	  New opcodes: <B><I>loopseg</I></B> and <B><I>lpshold</I></B>
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 4.00</B><BR>
+      (January 2000)</TD>
+    <TD><OL>
+	<LI>
+	  DirectCsound 4.0 is a pure Win32 program, while previous versions were
+	  console-based programs
+	<LI>
+	  It now provides a GUI interface
+	<LI>
+	  Display and hard-disk recording can be suppressed/activated during the
+	  performances
+	<LI>
+	  Command line arguments can be typed directly in the corresponding dialog
+	  box when the executable is run without arguments
+	<LI>
+	  Performance sessions can be terminated without exiting from the main program.
+	<LI>
+	  It is possible to drag/drop a .csd file to the&nbsp;main window of DirectCsound
+	  &nbsp;to run it directly.
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 4.5</B><BR>
+      (March 2000)</TD>
+    <TD><OL>
+	<LI>
+	  SoundFont2 support: <B><I>sfload, sfplist, sfilist, sfpassign, sfpreset,
+	  sfplay, sfplaym, sfinstr </I></B>and<B><I> sfinstrm</I></B> opcodes
+	<LI>
+	  Random generators: <I><B>random, randomi </B></I>and<B>
+	  </B><I><B>randomh</B> </I>opcodes
+	<LI>
+	  User-defined random distributions: <B><I>GEN40, GEN41, GEN42</I></B> subroutines,
+	  <I><B>Dusrnd, urd, Cusrnd </B></I>opcodes
+	<LI>
+	  "Natural" and "analog" vibrato generators: <I><B>vibrato, vibr</B></I>
+	<LI>
+	  "Analogizing" opcodes: <I><B>jitter, jitter2</B></I>
+	<LI>
+	  "edit orchestra" and "edit score" buttons on the GUI interface
+	<LI>
+	  many bug fixes
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 4.65</B><BR>
+      (June 2000)</TD>
+    <TD><OL>
+	<LI>
+	  Sequence-related opcodes: <B>seqtime</B> and <B>trigseq</B>
+	<LI>
+	  Random curve opcodes: <B>jspline</B> and <B>rspline</B>
+	<LI>
+	  Tables of vectors read/write access: <B>vtable, vtab, vtablew, vtabw</B>
+	<LI>
+	  Common musical converters: <B>octave( ), semitone( ), cent( ), db( )</B>.
+	<LI>
+	  new version of SoundFont2 support, hugely fixed now it should operate OK
+	  with most sf2 files. Cubic interpolation now available.
+	<LI>
+	  Synchronized to canonical version 4.05
+	<LI>
+	  Many bugs fixed
+	<LI>
+	  Both GUI and console versions now available
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 5.00</B><BR>
+      (January 2001)</TD>
+    <TD><OL>
+	<LI>
+	  BITMAP IMAGES can be used to generate scalar and vectorial control signals:
+	  opcodes <B>bmopen, bmtable, bmtablei, bmoscil, bmoscili, rgb2hsvl, rgb2hsvl_i,
+	  bmscan</B> and <B>bmscani</B>
+	<LI>
+	  FRACTALS: Mandelbrot set can be used to generate control signal, opocde
+	  <B>mandel</B>
+	<LI>
+	  VECTORIAL OPERATORS: now it is possible to apply mathematical operations
+	  to vectorial signals: opcodes <B>vadd, vmult, vpow, vexp, vaddv, vsubv, vmultv,
+	  vdivv, vpowv, vexpv, vcopy, vmap, vlimit, vwrap, vmirror</B>
+	<LI>
+	  VECTORIAL SIGNAL GENERATORS: opcodes <B>vlinseg, vexpseg, vrandh, vrandi</B>
+	<LI>
+	  VECTORIAL MODIFIERS: opcodes <B>vport, vecdelay</B>
+	<LI>
+	  Control rate variable delay: opcode <B>vdelayk</B>
+	<LI>
+	  CELLULAR AUTOMATA: <B>vcella</B> opcode generates a vectorial signal based
+	  on CA algorithms.
+	<LI>
+	  Additive synthesis oscillator bank: <B>adsynt2</B> opcode is designed to
+	  receive vectorial &nbsp;control signals.
+	<LI>
+	  GLISSANDO GENERATORS: opcodes&nbsp;<B>lineto</B> and <B>tlineto</B>
+	<LI>
+	  TRIGGER METRONOME: opcode <B>metro</B>
+	<LI>
+	  MICRO TUNING: opcodes <B>cpstun</B> and <B>cpstuni</B>
+	<LI>
+	  Synchronized with canonical Csound version 4.10
+	<LI>
+	  32 bit and 64 bit floating-point versions provided, both in console and GUI
+	  fashion.
+	<LI>
+	  Many bugs fixed (other ones could arise, however, due to the radical changes
+	  of last canonical versions)
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD><B>DirectCsound<BR>
+      Version 5.10</B><BR>
+      (March 2001)</TD>
+    <TD><OL>
+	<LI>
+	  DirectCsound implements GUI-widget opcodes to control synthesis parameters
+	  in realtime. Such opcodes have been written using the ultra-fast and
+	  multi-platform <B><I>FLTK</I></B> library. Both console and windows version
+	  support such opcodes. The introduction of FLTK (and, in the near future,
+	  of <B><I>OpenGL</I></B>) opens a new era for Csound, that will support both
+	  graphic and sound.
+	<LI>
+	  GUI containers: <B>FLpanel, FLpanel_end, FLscroll, FLscroll_end, FLtabs,
+	  FLtabs_end, FLgroup, FLgroup_end, FLpack, FLpack_end</B>
+	<LI>
+	  GUI valuators: <B>FLslider, FLknob, FLroller, FLtext, FLjoy, FLcount</B>
+	<LI>
+	  GUI widgets: <B>FLbutton, FLbutBank, FLbox, FLvalue, FLprintk, FLprintk2</B>
+	<LI>
+	  Opcodes that modify widget apparence: <B>FLcolor, FLlabel, FLsetVal_i, FLsetVal,
+	  FLsetColor, FLsetColor2, FLsetTextSize, FLsetTextColor, FLsetFont, FLsetTextType,
+	  FLsetText, FLsetSize, FLsetPosition, FLhide, FLshow, FLsetBox, FLsetAlign</B>
+	<LI>
+	  General widget-related opcodes and snaphsot support: <B>FLrun, FLsetsnap,
+	  FLgetsnap, FLsavesnap, FLloadsnap</B>
+	<LI>
+	  Synchronized with canonical Csound version 4.12
+	<LI>
+	  Some bugs fixed
+      </OL>
+    </TD>
+  </TR>
+</TABLE>
+<P>
+  <HR SIZE=15>
+<P>
+  <HR SIZE=15>
+<CENTER>
+  <H2>
+    <A NAME="command"></A><!-- --><B><FONT SIZE=+4>Command line
+    arguments</FONT></B>
+  </H2>
+</CENTER>
+<TABLE BORDER CELLSPACING=4 CELLPADDING=13 >
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <B>FLAG</B>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD><CENTER>
+	<H2>
+	  <B>ARGUM</B>.&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD><CENTER>
+	<H2>
+	  <B>DESCRIPTION</B>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+  </TR>
+  <TR>
+    <TD><H2>
+	<FONT COLOR="#8000FF">-+S</FONT>&nbsp;
+      </H2>
+    </TD>
+    <TD>&lt;num&gt;</TD>
+    <TD><B><FONT COLOR="#800000">Enable DirectSound secondary buffer
+      writing.&nbsp;<BR>
+      </FONT>&lt;num&gt; optional, if you omit it, a list of available DirectX
+      audio devices will be displayed, then you can choose one of them by typing
+      the corresponding number to the console. Don't use this flag&nbsp; together
+      with -+p and -+q flags (which enable old MME WAVE OUT) or -+X flag. Also,
+      don't use the standard flag -odevaudio with this flag. When using '-o
+      &lt;FILENAME&gt;' together with '-+S' flag, both realtime audio and FILE
+      output are enabled in parallel.&nbsp;</B><FONT COLOR="#ff0000"><BR>
+      <B>IMPORTANT</B></FONT><B>! Notice that some audio card (such as old
+      SoundBlasters) automatically convert sound to 8-bit when using secondary
+      buffers, so audio quality can be ugly.</B> <B>Also latency delay can be very
+      high. Use primary buffer in these cases.</B></TD>
+  </TR>
+  <TR>
+    <TD><H2>
+	<FONT COLOR="#8000FF">-+X</FONT>&nbsp;
+      </H2>
+    </TD>
+    <TD>&lt;num&gt;</TD>
+    <TD><B><FONT COLOR="#800000">Enable DirectSound primary buffer writing for
+      low-latency audio output.&nbsp;<BR>
+      </FONT>&lt;num&gt; optional, if you omit it, a list of available DirectX
+      audio devices will be displayed, then you can choose one of them by typing
+      the corresponding number to the console. Don't use this flag&nbsp; together
+      with -+p and -+q flags (which enable old MME WAVE OUT) or -+S flag. Also,
+      don't use the standard flag -odevaudio with this flag. When using '-o
+      &lt;FILENAME&gt;' together with '-+X' flag, both realtime audio and FILE
+      output are enabled in parallel.&nbsp;</B></TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+K</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&lt;num&gt;</TD>
+    <TD><H4>
+	<FONT COLOR="#804040">Enable MIDI IN.<BR>
+	</FONT>&lt;num&gt; = MIDI IN device id number.&nbsp;<BR>
+	&lt;num&gt; is optional, if you omit it, a list of available MIDI IN devices
+	will be displayed, then you can choose one of them by typing the corresponding
+	number to the console. If this flag is used, don't use the standard flag
+	-Msbmidi.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><H2>
+	<FONT COLOR="#8000FF">-+C</FONT>&nbsp;
+      </H2>
+    </TD>
+    <TD>&lt;num&gt;</TD>
+    <TD><B><FONT COLOR="#800000">Enable DirectSoundCapture routines for low-latency
+      audio input.&nbsp;<BR>
+      </FONT>&lt;num&gt; optional, if you omit it, a list of available
+      DirectSoundCaputure audio devices will be displayed, then you can choose
+      one of them by typing the corresponding number to the console. Don't use
+      this flag&nbsp; together with -i flag (which enable old MME WAVE OUT). Also,
+      don't use the standard flag -iadc with this flag.</B></TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+q</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&lt;num&gt;</TD>
+    <TD><H4>
+	<FONT COLOR="#804040">Enable MME WAVE OUT.<BR>
+	</FONT>&lt;num&gt; = WAVE OUT device id number.&nbsp;<BR>
+	&lt;num&gt; optional, if you omit it, a list of available MME WAVE OUTdevices
+	will be displayed, then you can choose one of them by typing the corresponding
+	number to the console. This flag enables the old MME&nbsp; WAVE OUT. Don't
+	use this flag&nbsp; together with -+X (DirectX audio). If this flag is used,
+	don't use the standard flag -odevaudio. When using '-o&lt;FILENAME&gt;' together
+	with '-+q' flag, both realtime audio and FILE output are enabled in
+	parallel.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+p</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&lt;num&gt;</TD>
+    <TD><H4>
+	<FONT COLOR="#804040">Set the buffer number in MME WAVE OUT.<BR>
+	</FONT>&lt;num&gt; is optional. default=4, maximum=40.&nbsp;<BR>
+	The number of buffers, togheter with the buffer length (flag
+	<B>-b</B>&lt;num&gt;), must be choosen accurately, considering that, when
+	increasing the buffer, the latency delay increases too, whereas when decreasing
+	the buffer, the risk of pop and click due to buffer underruns increases.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+O</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&nbsp;</TD>
+    <TD><H4>
+	(uppercase letter) <FONT COLOR="#804040">Suppress all printf for better realtime
+	performance.<BR>
+	</FONT>Using this flag is better than using '-m0' because '-m0' still leaves
+	some message output to the console.&nbsp; I suggest to use both -+O and -m0
+	at the same time for the best realtime performance. Warning! Use '-+O' only
+	when your orc/sco files are fully tested, because the error messages are
+	suppressed too.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+e</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&nbsp;</TD>
+    <TD><H4>
+	<FONT COLOR="#804040">Allow any output sample rate</FONT> (for cards that
+	support this feature).<BR>
+	When you use a non-standard sr in realtime (for example 40000), a message
+	will inform you that this sampling frequency is not allowed by the card.
+	Some cards can handle all the sr frequency (for example the Sound Blaster
+	cards) within a range continuously (for example from 8000 to 44100). So you
+	can use these frequencies without any problem by setting this flag.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+y</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&nbsp;</TD>
+    <TD><H4>
+	<FONT COLOR="#804040">Don't wait for keypress on exit.<BR>
+	</FONT>Useful for batch processing.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+Q</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&lt;num&gt;</TD>
+    <TD><H4>
+	<FONT COLOR="#804040">Enable MIDI OUT.<BR>
+	</FONT>&lt;num&gt; = MIDI OUT device id number. &lt;num&gt; is optional,
+	if you omit it, a list of available MIDI OUT devices will be displayed, then
+	you can choose one of them by typing the corresponding number to the
+	console.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+Y</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&nbsp;</TD>
+    <TD><H4>
+	<FONT COLOR="#804040">Disable WAVE OUT</FONT> (for better MIDI OUT timing
+	performances).<BR>
+	When using MIDI OUT oriented orc/sco pairs, disabling WAVE OUT will improve
+	the timing of MIDI OUT flow.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+*</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&nbsp;</TD>
+    <TD><H4>
+	<FONT COLOR="#804040">Yields control to system until DAC buffer is half-empty,
+	for better multitasking.<BR>
+	</FONT>In some cases this flag enhanches the realtime performance, and, above
+	all, allow to use other graphic programs concurrently with Csound in realtime,
+	without interruptions of the sound flow. This flag will slow all other
+	application, because set Csound process to a higher priority. It can be used
+	both with MME (-+q) and DirectX (-+X) drivers.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+  <TR>
+    <TD><CENTER>
+	<H2>
+	  <FONT COLOR="#8000FF">-+/</FONT>&nbsp;
+	</H2>
+      </CENTER>
+    </TD>
+    <TD>&lt;filename&gt;</TD>
+    <TD><H4>
+	<FONT COLOR="#800000">Csound command line is intended to be included in a
+	text file.<BR>
+	</FONT>The command file must contain the flag as well as the other arguments
+	in the same syntax of csound command line. Carriage returns inside the command
+	file are ignored.&nbsp;
+      </H4>
+    </TD>
+  </TR>
+</TABLE>
+<P>
+  <HR SIZE=15>
+<P>
+  <HR SIZE=15>
+<BR>
+&nbsp; <BR>
+&nbsp;
+<CENTER>
+  <H2>
+    <A NAME="examples"></A><!-- --><FONT SIZE=+4>Examples of command-line calls
+    of DirectCsound</FONT>
+  </H2>
+</CENTER>
+<TABLE BORDER CELLSPACING=4 CELLPADDING=8 >
+  <TR>
+    <TD><FONT COLOR="#8000FF"><B>The following command-line invokes a unified
+      file session. (flags details are set internally to the .csd file</B></FONT>).
+      <P>
+      csound.exe &nbsp; test.csd</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">The following command-line invokes realtime MIDI
+	performance of Csound with the DirectSound routines. The console messages
+	are suppressed (-+O and -m0 flags), it is asked to the user the midi input
+	port number to be used (-K flag) and the DirectSound device number (-X flags).
+	The buffer length is set to 100 samples.&nbsp;</FONT>
+      </H4>
+      <P>
+      csound.exe -+O -m0 -+X -+K -b200 miditest.orc miditest.sco</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">Same as the above, but with -+* flag to enhance realtime
+	DirectX audio multitasking (in some cases this flag can make realtime performance
+	worse. Experiment!).&nbsp;</FONT>
+      </H4>
+      <P>
+      csound.exe -+O -m0 -+X -+K -b100 -+* miditest.orc miditest.sco</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">The following command-line invokes realtime midi
+	performance of Csound with pedal treshold of 99, 12 wave out buffers of 882
+	bytes each, and prompts the user to input the MIDI IN and MME WAVE OUT device
+	numbers. An audible delay is present, due to&nbsp; the latency of the MME
+	driver:</FONT>&nbsp;
+      </H4>
+      <P>
+      csound.exe -P99 -+p12 -b882 -+K -+q miditest.orc miditest.sco</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">same as above but with all displays suppressed ("-O"
+	and "-m0" flags. Use this feature only when your orc and sco are fully
+	tested!):</FONT>&nbsp;
+      </H4>
+      <P>
+      csound.exe -+O -m0 -P99 -+p12 -b882 -+K -+q miditest.orc miditest.sco</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">some as above but with '-+*' flag to enhance Windows
+	multitasking:&nbsp;</FONT>
+      </H4>
+      <P>
+      csound.exe -+* -+K -+q0 -P99 -+p12 -b882 miditest.orc miditest.sco</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">allows arbitrary sample rate (e.g.other than
+	1025/22050/44100) with '-e' flag and MME WAVE OUT (Note the reduced -+p and
+	-b values when using "rounded" sr and kr values; these values are good with
+	my Pentium133 with a sr=40000 and kr=400):</FONT>&nbsp;
+      </H4>
+      <P>
+      csound.exe -+e -+O -m0 -P99 -+p4 -b100 -q -K miditest.orc miditest.sco</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">allows MIDI OUT operations with device num.5 (flag
+	'-Q') in parallel with WAVE OUT:</FONT>&nbsp;
+      </H4>
+      <P>
+      csound.exe -+e -P99 -+j2000 -+Q5 -+q -+p4 -+K4 -b100 midiout.orc midiout.sco</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">allows MIDI OUT operations with device num.5 (flag
+	'-Q') and suppresses WAVE OUT for better MIDI OUT timing (flag
+	'-Y'):</FONT>&nbsp;
+      </H4>
+      <P>
+      csound.exe -+e -+Y -P99 -+j2000 -+Q5 -+q -+K4 midiout.orc midiout.sco</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">calls csound by command line contained in file
+	'cl.txt':</FONT>&nbsp;
+      </H4>
+      <P>
+      csound.exe -+/cl.txt</TD>
+  </TR>
+  <TR>
+    <TD><H4>
+	<FONT COLOR="#8000FF">enables realtime WAVE IN operation (flag '-i'without
+	arguments) in parallel with WAVE OUT (flag '-+q') and asks to the user the
+	number of Multimedia-Windows devices:</FONT>&nbsp;
+      </H4>
+      <P>
+      csound.exe -+p12 -b882 -+q -i</TD>
+  </TR>
+</TABLE>
+<P>
+  <HR SIZE=15>
+<BR>
+&nbsp; <BR>
+&nbsp;
+<CENTER>
+  <H2>
+    <A NAME="hints"></A><!-- --><B><FONT SIZE=+4>Hints</FONT></B>
+  </H2>
+</CENTER>
+<TABLE BORDER CELLSPACING=6 CELLPADDING=20 >
+  <TR>
+    <TD>There are two ways to start realtime audio output sessions: using
+      <B>DirectSound</B> or old <B>MME Wave OUT</B>. Don't use both the flags at
+      the same time!&nbsp;
+      <P>
+      To use DirectSound you have to set the <B>-+X</B> flag together with
+      <B>-b</B> flag. The buffer length determines how quick the response to your
+      realtime actions is. With my Pentium 133 a value of -b100 is the minimum
+      possible value: below that sample-flow interruptions will occurr (i.e. pop
+      and clics will be heard). However, with other computers it should be possible
+      to reduce this value to allow a faster note response (curiosly, sometimes
+      faster computers need a bigger value as in the case of my new Pentium II
+      400 MHz, which needs at least a -b200 value).&nbsp; <BR>
+      DirectSound is very sensitive to everything is happening in your computer,
+      so during realtime performances <B>you MUST SUPPRESS all console messages</B>
+      by means of <B>-+O</B> and <B>-m0</B> flags otherwise sound flow interruption
+      will occurr. You can type the <B>-+X</B> flag with a number identifying the
+      DirectSound device to be activated. If you type it without a number, a list
+      of installed DirectSound devices will be shown in the console window asking
+      the user to type a number.</TD>
+  </TR>
+  <TR>
+    <TD>When DirectSound is not used, finding the optimum values for "<B>-b</B>"
+      and "<B>-+p</B>" flags (which enable the old MME WAVE OUT driver) requires
+      some experimentation: more buffer length means more latency delay but also
+      more safety from dropouts and sound interruptions (flag "<B>-B</B>" is now
+      obsolete, don't use it).&nbsp; <BR>
+      Now it is possible&nbsp; to reduce buffer length and delay by using
+      '<B>-+e</B>' flag and 'rounded' sr and kr.&nbsp; <BR>
+      Notice that sometimes a smaller buffer length can handle sound flow better
+      than a larger. Only experimentation can lead you toward optimal '<B>-b</B>'
+      values.&nbsp;
+      <P>
+      However the minimum latency delay can be allowed only when using DirectX
+      (<B>-+X</B> flag) instead of old MME driver.</TD>
+  </TR>
+  <TR>
+    <TD>When DirectSound is not used (i.e. when using old MME drivers), optimum
+      "<B>-b</B>" and "<B>-+p</B>" flag values need to be changed with different
+      audio and k rates. These changes are not linear and not intuitive. So experiment!</TD>
+  </TR>
+  <TR>
+    <TD>It is suggested to try to set "<B>-b</B>" value to integer multiples
+      or sub-multiples of kr. This tip sometime can help to reduce latency, sometime
+      not. Again, experiment to find optimum values.</TD>
+  </TR>
+  <TR>
+    <TD>When old MME WAVE OUT driver is used (for example, when using audio IN
+      and audio OUT at the same time), "<B>-b</B>" and "<B>-+p</B>" flag values
+      can be reduced considerably by using "rounded" ar and kr values (for example
+      ar=32000 and kr=320; ar=40000 and kr=400 and so on) together with
+      "<B>-+e</B>" flag (until now this feature is tested only with a SB16 ASP
+      and with an AWE32 card. I don't know if other cards support it). <BR>
+      Reducing "<B>-b</B>" and "<B>-+p</B>" flag values means reducing latency
+      delay and so a more interactive realtime playing.</TD>
+  </TR>
+  <TR>
+    <TD>"<B>-+Q</B>" flag allows parallel MIDI OUT and DAC performance. Unfortunately
+      the realtime timing implemented in Csound is completely managed by DAC buffer
+      sample flow. So MIDI OUT operations can present some time irregularities,
+      because the fullness of audio buffer cannot be predicted at each moment.
+      These irregularities are reduced when audio buffer length is very short.
+      At last, irregularities can be fully eliminated when suppressing DAC operations
+      themselves ('<B>-+Y</B>' flag).</TD>
+  </TR>
+  <TR>
+    <TD>"<B>-+Y</B>" flag suppresses <B>DAC operations</B>. This enhances timing
+      of midi out operations when used in conjunction with "<B>-+Q</B>" flag. It
+      is recommended to use "<B>-+Y</B>" with low krates (max. kr=1000). As in
+      Win95 maximum timer resolution is 1/1000 of second, unpredictable results
+      can occurr when using it at krates greater than 1000.&nbsp; <BR>
+      Also it is very important to set only kr values in which the following division:
+      <BR>
+      1000/kr&nbsp; <BR>
+      produces integer results (some example: kr = 10; 20; 50; 100; 125; 200; 250
+      etc.) because Win95 timer only handles integer periods in milliseconds. If
+      you use a kr value that produces a non integer result in the above formula
+      Csound seems to run normally but times will be not reliable. <BR>
+      With my computer I work very well with a value of kr=200. Maybe with slower
+      computers a lower value works better. Experiment!
+      <P>
+      I recommend to use kr=200 or less because with values greater than 200 increases
+      the overhead affecting the entire system and do not give a noticiable precision
+      improvement. A time resoultion of 1/200 of sec is enough precise for almost
+      all MIDI application. You must respect sr/kr/ksmps ratio even if sr value
+      is meaningless when using "<B>-+Y</B>" flag, or an error message will stop
+      the performance.</TD>
+  </TR>
+  <TR>
+    <TD>'<B>-+*</B>' flag compells Csound to <B>yield control to system </B>until
+      audio output buffer content passes a certain threshold. Below this threshold
+      Csound continues processing, while over this threshold Csound yields control
+      to Windows. This gives a big enhanchement in multitasking processes. Enabling
+      this option could reduce polyphony a bit when using short buffer space. &nbsp;In
+      this case, the user should increase the number ('<B>-+p</B>' flag) and the
+      length ('<B>-b</B>' flag) of buffers when setting '-+*' flag. Experiment
+      to find best values.</TD>
+  </TR>
+  <TR>
+    <TD>For best realtime performance, it is (obviously) better:&nbsp;
+      <OL>
+	<LI>
+	  reduce the number of concurrent applications running&nbsp;
+	<LI>
+	  not moving neither resizing or closing windows during all realtime
+	  session.&nbsp;
+      </OL>
+    </TD>
+  </TR>
+  <TR>
+    <TD>'<B>-+O</B>' flag suppresses all text output during the performance time.
+      Using only '<B>-m0</B>' flag, some text messages are still sent to the console.
+      I recommend to use '<B>-m0</B>' and '<B>-+O</B>' flag together for maximum
+      performance speed.</TD>
+  </TR>
+  <TR>
+    <TD>'<B>xtratim</B>' and '<B>release</B>' opcodes (as well as
+      '<B>linenr</B>') don't operate correctly when using <B>-t </B>flag.</TD>
+  </TR>
+  <TR>
+    <TD>When using ctrlXX and midicXX opcodes you must be sure the MIDI IN flag
+      (<B>-K</B> and/or <B>-Msbmidi</B>) is activated, otherwise Csound will crash!</TD>
+  </TR>
+  <TR>
+    <TD>When using realtime <B>AUDIO input </B>you must set the <B>-i</B> flag
+      without argument, or followed by a number which represent the wave-in port
+      number recognized by Win95. (ex. <B>-i0</B>). Notice that DirectX realtime
+      input is not implemented yet, so you must use the old MME driver.</TD>
+  </TR>
+  <TR>
+    <TD>When using <B>WAVE out</B> and <B>FILE out </B>in parallel, you must
+      set <B>-o </B>flag followed by the output file name (which must have a name
+      different than "devaudio" or "dac" obviously), toghether with the <B>-+q</B>
+      flag (when using MME) or <B>-+X</B> flag (when using DirectX).</TD>
+  </TR>
+  <TR>
+    <TD><B>Unified file directive syntax </B>(DirectCsound, as well as the canonical
+      csound version,&nbsp;now partially implements Micael Gogins' AXCsound structured
+      data files)<B>:</B>
+      <P>
+      The following example is a "<B>csd</B>" text file template. The format of
+      <B>.csd</B> files follows the same principles as SGML, XML, or HTML. Each
+      section of data is prefaced by a start (&lt;&gt;) tag and finished with an
+      end (&lt;/&gt;) tag, and sections can be nested hierarchically. The Csound
+      tags (<B>boldface</B>) are as follows, with explanatory comments
+      (<I>italics</I>) and sample data:
+      <PRE><B><TT>&lt;CsoundCsynthesizer&gt;</TT></B>
+<TT><I>; Csound structured data file.</I></TT>
+<TT><B>&lt;CsOptions&gt;</B></TT>
+<TT><I>; Command-line options</I></TT>
+<TT>-W</TT>
+<TT><B>&lt;/CsOptions&gt;</B></TT>
+<TT><B>&lt;CsInstruments&gt;</B></TT>
+<TT><I>; Orchestra statements.</I></TT>
+<TT>sr 44100</TT>
+<TT>kr 441</TT>
+<TT>ksmps 100</TT>
+<TT>nchnls 2</TT>
+<TT><I>; Instrument definitions.</I></TT>
+<TT><I>; The first comment following on the same line as an instrument number is the name of the instrument.</I></TT>
+<TT>instr 1 ;Toot1</TT>
+<TT>endin</TT>
+<TT>instr 2 ;Toot2</TT>
+<TT>endin</TT>
+<TT><B>&lt;/CsInstruments</B></TT>
+<TT><B>&lt;CsScore&gt;</B></TT>
+<TT><I>; Standard Csound function ("f") statements, note ("i") statements, or comments (";").</I></TT>
+<TT>f 1 2 3 </TT>
+<TT>i 1 2 3 4</TT>
+<TT><B>&lt;/CsScore&gt;</B></TT>
+<TT><B>&lt;/CsoundSynthesizer&gt;</B></TT>
+</PRE>
+    </TD>
+  </TR>
+</TABLE>
+<H2>
+  Acknowledgements
+</H2>
+<P>
+Many thanks to all people that is (or has been) invloved in Csound developement:
+<P>
+Barry Vercoe, John Fitch, Rasmus Ekman, Michael Gogins, David Boothe, Hans
+Mikelson, Richard Dobson, Nicola Bernardini, Mike Berry, Matt Ingalls, Eli
+Breder, Richard Karpen, Michael Casey, Victor Lazzarini, Michael Clarke,
+Allan Lee, Perry Cook, David Macintyre, Sean Costello, Mark Dolson, Peter
+Neub&auml;cker, Ville Pulkki, Dan Ellis, Marc Resibois, Tom Erbe, Paris
+Smaragdis, Greg Sullivan, Bill Gardner, Robin Whittle, Jens Groh
+<P>
+<P>
+Many thanks to the authors of &nbsp;the open-source libraries used in
+DirectCsound:
+<P>
+<B>FLTK</B>: Bill Spitzak, Michael Sweet, Craig P. Earls, and all others
+<P>
+<B>Paintlib</B>: Ulrich von Zadow, Meng Bo, Bernard Delm&eacute;e, Andreas
+K&ouml;pf, Martin Skinner, &nbsp;Gilles Vollant, Mario Westphal, Roger Willcocks,
+twosuns GmbH, and others
+<P>
+Many thank also to the developers of <B>Libtiff</B>, <B>Libjpeg</B> and
+<B>Libpng</B>
+<P>
+<P>
+</BODY></HTML>

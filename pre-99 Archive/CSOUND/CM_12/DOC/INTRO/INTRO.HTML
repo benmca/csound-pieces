@@ -1,0 +1,456 @@
+<HTML>
+<HEAD>
+<TITLE>Introduction to Common Music</TITLE>
+<!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<CENTER>
+<H1><FONT size=7>Introduction to Common Music</FONT></H1>
+
+<IMG ALIGN=MIDDLE SRC="../img/cmlogo.gif" ALT="[Logo]">
+<BR>
+<B>Heinrich Taube<BR>
+University of Illinois<BR>
+<tt>taube@uiuc.edu</tt></B><BR>
+
+</CENTER> 
+
+<HR> 
+
+<H2>Overview</H2> 
+
+<P>Common Music is an object-oriented music composition environment. It
+treats musical composition as an experimental process involving the
+description of sound and its higher-order structural relationships.  Common
+Music provides an extensive "compositional toolbox" and a public interface
+through which a composer may modify and extend the system. Sound is rendered
+on demand, by traversing high-level structure, producing sound descriptions,
+and transforming these into a variety of control protocols for sound
+synthesis and display.  Realization targets currently include
+
+<A HREF="../dict/midi.stx.html"><I>MIDI</I></A>,
+<A HREF="../dict/csound.stx.html"><I>Csound</I></A>,
+<A HREF="../dict/clm.stx.html"><I>Common Lisp Music</A></I>,
+<A HREF="../dict/musickit.stx.html"><I>Music Kit</I></A>,
+<A HREF="../dict/cmix.stx.html"><I>C Mix</I></A>,
+<A HREF="../dict/cmusic.stx.html"><I>C Music</I></A>, 
+<A HREF="../dict/m4c.stx.html"><I>M4C</I></A>,
+<A HREF="../dict/rt.stx.html"><I>RT</I></A>,
+<A HREF="../dict/sgimix.stx.html"><I>SGIMix</I></A> and
+<A HREF="../dict/cmn.stx.html"><I>Common Music Notation</I></A>.
+
+
+<P>
+Common Music is implemented in Common Lisp and CLOS and runs on a variety
+of computers, including Macintosh, SGI, NeXT, SUN, and i386.  All ports of
+Common Music provide a terminal-based music composition editor called <A
+HREF="../tutorials/stella/toc.html">Stella</A>.  A graphical interface
+called <A HREF="../tutorials/capella/capella.html">Capella</A> runs on the
+Macintosh.  <A HREF="../install.html">Source code and binary images</A> are
+freely available at several sites on the internet.</P>
+
+
+<H2>The Compositional Model</H2>
+
+<P>
+Common Music views music composition as an activity with three broad
+areas of concentration.  At one level, a composer is concerned with the
+development of musical ideas expressed as structural relationships between
+sounds.  At another level, the composer is concerned not only with ideas,
+but how they are to be realized, or rendered to produce sound.  Although
+muscical ideas and sound realization are linked conceptually there are
+several advantages to modularizing these activities in software design.  The
+primary benefit is that the same high-level model may participate in
+different renderings and this ability increases the utility of the system
+overall.  Once a sound is rendered it is typically previewed so there is an
+aspect of performance in composition as well.  Performance information can
+affecs the compositional process either implicitly, by causing the composer
+to make changes and formulate new ideas, or explicitly if the composer
+captures performance information in order to to produce real-time control
+over concurrent compositional processes.
+</P>
+
+
+<BR><CENTER>
+<IMG ALIGN=MIDDLE SRC="model.gif" ALT="[model.gif]">
+</CENTER><BR>
+
+<I><B>Figure 1:</B> Music composition can be viewed as an activity with
+three broad areas of concentration: structural relations, realization and
+performance.</I>
+
+
+
+
+<H2>System Architecture</H2>
+
+<P>
+Common Music supports three different interaction modes in parallel.
+Composers are free to choose whichever mode is most appropriate to a given
+situation.  The most basic way to interact with the system is through its
+functional interface, via Lisp code.  Although evaluating Lisp expressions
+is very useful for algorithmic control, it is not the most efficient way for
+interacting with many of the features in the system. The second way to work
+with Common Music is through its command interpreter. A command interpreter
+is a program that translates textual input (commands) into appropriate
+internal actions.  Command interpreters are sometimes referred to as
+"Listeners" or "Shells". Common Music's command interpreter is called
+Stella.  Stella connects to Common Music in a manner similar to the way in
+which a UNIX shell connects to its operating system: text is entered by the
+user, the shell interprets the text causing actions to be performed, results
+(if any) are printed to the terminal and the interpreter waits for the more
+input. Stella is text-based for three reasons: many common interactions and
+editing functions can be most succinctly and easily expressed using text; a
+text-based interface can run on any computer regardless of its graphic
+capabilities; text is an convenient "exchange format" between applications,
+and may be input from sources other than the keyboard, for example from
+scripts files stored on the computer's disk or from concurrent programs via
+an inter process communication channel or a "clipboard".  Although command
+interpreters permit powerful editing expressions to be formulated, one major
+deficiency with their model is that pure text displays do not permit the
+inner workings of a complex system to be easily visualized or understood.
+The third mode of interaction with Common Music addresses this problem by
+providing a graphical interface, called Capella.  Capella runs only on the
+Macintosh computer.  Because graphical interfaces are not "portable" across
+computers (or even Lisp implementations), Capella has been designed to
+complement and not replace the two other modes of interaction supported by
+the system.
+</P>
+
+
+<CENTER>
+<IMG ALIGN=MIDDLE SRC="architecture.gif" ALT="[model.gif]">
+</CENTER>
+
+
+<I><B>Figure 2:</B> There are three parallel interaction modes possible in
+Common Music: procedural (Lisp), textual (Stella) and gestural (Capella)</I>
+
+
+
+<H2>Musical Structure</H2>
+
+<P>
+Composition systems such as DMix, MODE or Common Music generally draw a
+distinction between structure representing a unit of sound and structure
+representing a collection, or aggregation, of sound. Individual sound units
+are often referred to as <I>events</I> -- objects whose attributes
+correspond to sound rendering control values. Common Music provides a number
+of fully formed event classes and more importantly, the ability for a
+composer to to redefine these classes or to add new sound events as
+needed. Extending the system is particularly useful when working with
+synthesis languages such as CLM or Csound since these systems allow a
+composer to create new synthesis instruments (patches) with arbitrary
+control values. In the case of CLM, a new sound event description is
+automatically defined for Common Music whenever a CLM instrument definition
+is compiled or loaded.
+</P>
+
+<P>
+Although there is much less agreement between systems on what actually
+constitutes "aggregation", any composition system or program must support
+some sort of higher-order aggregate structure, if only the most basic form
+of "sequences" or "chunks" of sound events.
+</P>
+
+<P>
+Despite the lack of uniformity, aggregation serves two common purposes: to
+provide the building-blocks for defining higher-order aggregate
+compositional structure above the time-line of performance events and to
+provide the composer with different "production modes" for accessing
+time-lined events during performance.  The manner in which a collection
+produces performance events depends on its class, or type.  Before briefly
+presenting the individual types of collections found in Common Music, it is
+useful to note what they share in common:
+</P>
+
+<UL>
+
+<LI>Collections may occupy more than one time period in a single performance
+
+<LI>Collections may contain other collections to any depth level.
+
+<LI>Collections produce time-lined performance events in a "lazy" manner,
+returning only the next event when called upon during a performance.
+
+</UL>
+
+<P>
+Common Music currently defines six types of collections.  Because these are
+declaratively defined it is easy for users to specialize existing classes,
+or to add new types as needed.
+</P>
+
+<UL>
+<DL>
+
+<DT><I>Thread</I>
+
+<DD>A collection that represents sequential aggregation.  A single time-line of
+events is produced by processing substructure in sequential, depth-first order.
+
+<DT><I>Merge</I>
+
+<DD>A collection that represents parallel aggregation, or multiple time-lines.
+A single time-line of events is produced by processing substructure in a
+scheduling queue.
+
+<DT><I>Heap</I>
+
+<DD>A collection that represents random grouping. A single time-line of events
+is produced by randomly "shuffling" substructure and then processing it in
+sequential order as a thread.
+
+<DT><I>Algorithm</I>
+
+<DD>A collection that represents programmatic description.  Instead of
+maintaining explicit substructure, a single-time line of events is produced
+by calling a user-specified program to create new events (or to side-effect a
+single event that is returned multiple times.)
+
+<DT><I>Network</I>
+
+<DD>A collection that represents user-defined ordering.  A single time-line
+of events is produced by calling a <I>chooser</I> to traverse substructure.
+The chooser may be expressed as a <A HREF="../items.html">pattern object</A>
+or a function.
+
+<DT><I>Layout</I>
+
+<DD>A "lightweight" collection that references arbitrary chunks of existing
+structure.
+
+</DL>
+</UL>
+
+<BR><BR><CENTER>
+<IMG ALIGN=MIDDLE SRC="objects.gif" ALT="[model.gif]">
+</CENTER><BR>
+
+
+<I><B>Figure 3:</B> A graph depicting some relationships between different
+events and collections defined in the system.  These relationships can be
+easily expanded or redefined by the composer.  Classes such as
+<TT>clm-note</TT> and <TT>csound-note</TT> represent "base classes" for
+composers working with new synthesis patches in these languages. Subclasses
+will automatically understand how to produce realizations for several
+different types of event streams.</I>
+
+
+     
+<H2>Realization</H2>
+
+<P>
+High-level compositional models are by definition "abstractions" of more
+efficient representations of sound in the computer.  This means that at
+least one -- and possibly a series -- of interpretations must occur in order
+to render sound from such a model.  As a simple example of this process,
+think of a sequencer that represents aggregate structure as tracks of MIDI
+notes with duration.  In order to produce sound, a track must be traversed
+and the notes transformed to produce a "lower-level" representation: the
+actual on/off MIDI bytes sent to the MIDI driver.  In Common Music, this
+interpretation process is called "realization". Despite the fact that a
+realization might entail several levels of interpretation, current hardware
+and compilers make performance overhead of even complex aggregate models
+almost negligible.
+</P>
+
+<P>
+Realization in Common Music can occur in one of two possible time modes: run
+time and real time.  In run time mode, realized events receive their proper
+"performance time stamp" but the performance clock runs as fast as
+possible. In realtime mode, realized events are stamped at their appropriate
+real-world clock time.
+</P>
+
+
+<H2>Event Streams</H2>
+
+<P>
+In Common Music, the results of a realization depend as much upon their
+context as they do upon the type of events realized during the process. This
+context is called an "event stream" in Common Music.  Identical data can
+produce radically different results based solely on what type of event
+stream is used during the realization process. Making results depend on
+<I>both</I> structure and context makes the compositional model itself more
+flexible and general.  There are currently more than a dozen types of event
+streams in Common Music, representing everything from PostScript display to
+sound files to MIDI ports. All of these streams are controlled by a simple,
+generic protocol whose four operators (methods) are specialized to take
+appropriate actions according to the <I>combination</I> of object and stream
+they are passed.
+</P>
+
+
+<BR><BR><CENTER>
+<IMG ALIGN=MIDDLE SRC="streams.gif" ALT="[model.gif]">
+</CENTER><BR>
+
+<I><B>Figure 4:</B> A graph depicting some relationships between different
+events streams defined in the system.</I>
+
+
+
+<H2>The Compositional Toolbox</H2>
+
+<P>
+Common Music provides many different procedures and object classes
+designed to support the exploratory process of composition.  This "tool box"
+includes high-level macros for creating aggregate musical structure,
+alternate representations of musical data (metric time, seconds or
+milliseconds; pitch reference by note name, key number or Hertz values, and
+so on), a mapping language for progrmatically referenceing and editing
+static material, exponential and linear envelopes, graphic envelope editors,
+composer defined musical scales, many differnt types of random selection,
+and a musical pattern language designed to support the definiton of
+recursive and hybrid patterns in parameterized sound information.  The full
+expressive power of the Common Lisp language is also available to the
+composer as well.  Musical algorithms are typically a mixture of Common Lisp
+and Common Music functionality.  For example, a fairily common algorithmic
+technique is to "encapsulate" the definiion of a musical algorithm inside a
+the definition of a Lisp function and then calling the lisp function with
+different data sets to create different "versions" of the algorithm.
+Although conceptually simple, encapsualtion is is a very powerful technique
+because it permits each composer to develop unique "libraries" of
+compositional ideas and processeses that can be reused within a composition
+or over a lifetime.
+</P>
+
+<P>
+<HR width="50%">
+</P>
+
+<P>
+<I><B>Example 1:</B> The definition of a recusive Lisp function that
+sprouts Common Music algorithms to produces a musical analog of Sierpinki's
+Gasket. Each level of the musical algorithm produces three notes, each of
+these notes, in term, serve as the foundation tone for the three tones in
+the next (faster) level. The algorithm happens to produces midi-note events,
+but the musical idea could be used in conjunction with any sound rendering
+system. Midi-notes provide sound parameters such as note, amplitude, rhythm,
+duration, and channel.  The Sierpinski function also provides a set of
+parameters which serve as "windows" for passing different starting
+conditions (such as the start time and first note) to the algorithm. The
+Sierpinksi function parameters are arbitrary; a composer can define whatever
+"windows" are useful to an algorithm.  One obvious revision would be to make
+the algorithm's interval contour and length be Sierpinski parameters so that
+the algorithm is capable of composing different sort of shapes.</I>
+</P>
+
+<PRE>(defun sierpinksi (level beg dur pitch)
+  (algorithm nil midi-note (length 3 start beg channel level)
+    (setf rhythm dur)
+    (setf duration dur)
+    (setf note (item (intervals 0 7 2 from pitch)))
+    (when (> level 1)
+      (sprout (sierpinksi (1- level) time note (/ rhythm length))))))
+</PRE>
+
+<P>
+<HR width="50%">
+</P>
+
+<P>
+The <TT>intervals</TT> is an example of the simplest sort of pattern
+defintion: a cyclci arrangements of intervals added to a traspostion
+offset. An item stream enumerates data according to a specified pattern.
+The behavior of an item stream is controlled by two characteristics, a
+stream type and a pattern type.
+</P>
+
+
+<H2>Visualization</H2>
+
+<P>
+Much of the recent implementation work in Common Music has been concerned
+with the development of graphical displays to make Common Music as easy as
+possible to understand. This work involves both the model itself as well as
+its output. Figure 5 shows an Output Browser, a graphical tool that supports
+compositional sketching.  Music sketching is by its very nature
+experimental, typically involving temporary formulations, alternative
+testing and successive refinement.  Common Music provides a "lightweight"
+collection called a Layout to represent and facilitate the sketching
+process.  A layout differs from other collections in several respects, the
+most important of which is that its substructure is accessed indirectly
+through "references".  A reference is a "handle" that can map to one or more
+objects. A reference may just be the name or position of single object or
+arbitrary, non-adjacent groupings of objects. The Output Browser, developed
+by Tobias Kunze, supports the creation and manipulation of layouts.  The
+interface permits mixtures of sequential and parallel references to be
+graphically manipulated and then performed on selected event streams. Inside
+the browser, Stream and Layout panes permit the user to create, load, save
+and select layouts and performance streams from menus.  Once a layout and
+stream have been selected, the layout references are graphically depicted
+inside a pane as tiled boxes linked along both horizontal and vertical
+dimensions.  A layout is altered by dragging its reference blocks
+horizontally or vertically.  A block "snaps" to its closest horizontal and
+vertical neighbors after it has been released.  All editing actions -- the
+creation or duplication of references, moving, selecting, and changing
+references definition -- can also be performed using standard command key
+combinations.  Layout processing moves from left to right across the pane:
+references within a single column are scheduled relative to one another;
+horizontal movement across columns represents "sectional" (non overlapping)
+units.  Within a column, time shifts relative to other objects in the same
+column may be specified using the @<time> qualifier, and block repetition is
+possible using the repeat qualifier. Figure 6 depicts VRML output from SEE
+(Structured Event Editor) in which the results of an algorithmic process
+have been colored according to each event's pitch class and grouped with a
+vertical line indicating each note's interval in relation to the preceding
+note. To facilitate optical references, a grid of dotted ledger lines, solid
+piano system lines and vertical reference lines have been added.
+</P>
+
+
+<BR><BR>
+<CENTER>
+<IMG ALIGN=MIDDLE SRC="output.gif" ALT="[output.gif]">
+</CENTER>
+<BR>
+
+<I><B>Figure 5:</B> Output Browser facilitates experimenting with structural
+layout.</I>
+
+
+<BR><BR>
+<CENTER>
+<IMG ALIGN=MIDDLE SRC="cubes.gif" ALT="[cubes.gif]">
+</CENTER>
+<BR>
+
+<I><B>Figure 6.</B> VRML output from SEE, (Structured Event Editor).</I>
+
+
+
+<H2>Further Reading</H2>
+
+<P> Taube, Heinrich. "Higher-order Compositional Modeling", <I>Proceedings of
+the International Proceedings of the International Conference on Musical
+Cognition and Perception</I>. 1996, Montreal.
+
+<P> Kunze, Tobias and Taube, Heinrich.  <A
+HREF="http://ccrma-www.stanford.edu/~tkunze/papers.html"> "SEE--A Structured
+Event Editor: Visualizing Compositional Data in Common Music"</A>
+<I>Proceedings of the international Computer Music Conference</I>. 1996, Hong
+Kong.
+
+<P> Taube, Heinrich."An Object-Oriented Representation for Musical Pattern
+Definition", <I>New Music Research</I> 24(2): 121-129.
+
+<P> Kunze, Tobias and Taube, Heinrich. "Capella: A Graphical Interface for
+Algorithmic Composition" <I>Proceedings of the International Computer Music
+Conference</I>. 1995, Banff.
+
+<P> Taube, Heinrich. "Stella: Persistent Score Representation and Score
+Editing in Common Music", <I>Computer Music Journal</I> Vol. 17:4, Cambridge,
+Massachusetts: MIT Press.
+
+<P> Taube, Heinrich. "Common Music: A Music Composition Language in Common
+Lisp and CLOS", <I>Computer Music Journal</I> Vol. 15:2, Cambridge,
+Massachusetts: MIT Press.  <P>
+
+
+			     Last Modified:      5-Mar-1998
+</BODY>
+</HTML>
+

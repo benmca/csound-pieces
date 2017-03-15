@@ -1,0 +1,295 @@
+Release Notes for 4.17
+======================
+
+Lots of small fixes and a couple of new things.  Some code has been
+revised for speed.
+
+
+Bug Fixes
+---------
+
+Various memory leaks fixed
+
+Stopped the system gratuitously changing access modes of files (eg in
+sfont and fout)
+
+Calculation of sr/kr/ksmps corrected when one or more were missing
+
+Bug in parsing of z and x opcodes fixed
+
+
+Language Changes
+----------------
+
+the opcodes tablew and tablewkt were not specified correctly in the
+tables so tended to use k-rate version always, even when a-rate was
+wanted. 
+
+
+Opcode Fixes
+------------
+
+spat3d -- fix in checking for depth
+
+scanu/scans -- interpolation was plain wrong; multiple instances fixed;
+memory problem fixed
+
+schedXX -- simplifications and fixes in initisalisation
+
+ftgen now allows strings in gens 23 and 28 (in addition to gen1)
+
+New Opcodes 
+-----------
+
+event -- insert a score event (an alternative to schedule) (matt)
+
+active -- now have a k-rate version
+
+ftchnls -- opcode to read number of channels in a sound file (cf ftlen
+etc) (Chris McCormick)
+
+xscanu, xscans -- Experimental versions of scanu and scans.  Allow
+much larger matrices, and are faster and smaller, but remove some
+(unused?) flexibility.  If liked they will replace the older opcodes
+as they are syntax compatible, but extended.
+
+New Gens
+--------
+
+GEN32 -- (Istvan) transpose, phase shift, and mix source tables (sorry
+no further documentation)
+
+
+Other Changes:
+-------------
+
+Optimisations in gbuzz and buzz; also in fof/fog, wgbowed, GEN11 and cpsoct
+
+
+Known Bugs
+==========
+
+The following bugs are known but not yet fixed
+
+6: PVOC can glitch (mail of Mon, 19 Jun 2000 00:45:23 +0200)
+8. Spaces in arguments to opcodes can be ignored, giving oddities
+9. Mismatched closing bracket can give crash (mail of Fri, 19 Oct 2001
+   19:00:56 +0100) 
+
+
+Windows GUI Changes
+-------------------
+
+
+-----------------------------------------------------------------------
+==John ff
+  200 Orthodox Christmas
+========================================================================
+   
+                          ftlen, ftlptim, ftsr, nsamp, ftchnls
+                                       
+Name
+
+   ftlen, ftlptim, ftsr, nsamp, ftcnls -- Returns information about a
+   stored function table.
+   
+Description
+
+   Where the argument within the parentheses may be an expression. These
+   value converters return information about a stored function table. The
+   result can be a term in a further expression.
+   
+Syntax
+
+   ftlen(x) (init-rate args only)
+
+   ftlptim(x) (init-rate args only)
+
+   ftsr(x) (init-rate args only)
+
+   nsamp(x) (init-rate args only)
+
+   ftchnls(x) (init-rate args only)
+
+Initialization
+
+   None.
+   
+Performance
+
+   ftlen(x) -- returns the size (number of points, excluding guard point)
+   of stored function table, number x. While most units referencing a
+   stored table will automatically take its size into account (so tables
+   can be of arbitrary length), this function reports the actual size if
+   that is needed. Note that ftlen will always return a power-of-2 value,
+   i.e. the function table guard point (see f Statement) is not
+   included.As of Csound version 3.53, ftlen works with deferred function
+   tables (see GEN01).
+   
+   ftlptim(x) -- returns the loop segment start-time (in seconds) of
+   stored function table number x. This reports the duration of the
+   direct recorded attack and decay parts of a sound sample, prior to its
+   looped segment. Returns zero (and a warning message) if the sample
+   does not contain loop points.
+   
+   ftsr(x) -- returns the sampling-rate of a GEN01 or GEN22 generated
+   table. The sampling-rate is determined from the header of the original
+   file. If the original file has no header, or the table was not created
+   by these two GENs ftsr returns 0. New in Csound version 3.49.
+   
+   nsamp(x) -- returns the number of samples loaded into stored function
+   table number x by GEN01 or GEN22. This is useful when a sample is
+   shorter than the power-of-two function table that holds it. New in
+   Csound version 3.49.
+   
+   ftchnls(x) -- returns the number of channels of a GEN01 or GEN22 generated
+   table, determined from the header of the original file.  If the
+   original file has no header, or the table was not created by these two
+   GENs ftsr returns -1.  (New in 4.17)
+
+Examples
+
+   None.
+   
+Deprecated Names
+
+   None.
+   
+Credits
+
+   Authors: Barry Vercoe
+   
+   MIT
+   
+   Cambridge, Massachussetts
+   
+   1997
+   
+   Gabriel Maldonado (ftsr, nsamp)
+   
+   Italy
+   
+   October, 1998
+
+   Chris McCormick, Perth, Australia, December 2001
+------------------------------------------------------------------------
+   
+                                     xscanu
+                                       
+Name
+
+   xscanu -- Compute the waveform and the wavetable for use in scanned
+   synthesis.
+   
+Description
+
+   Compute the waveform and the wavetable for use in scanned synthesis.
+   
+Syntax
+
+xscanu init, irate, ifnvel, ifnmass, ifnstif, ifncentr, ifndamp, kmass, kstif, k
+centr, kdamp, ileft, iright, kpos, kstrngth, ain, idisp, id
+
+Initialization
+
+   init -- the initial position of the masses. If this is a negative
+   number, then the absolute of init signifies the table to use as a
+   hammer shape. If init > 0, the length of it should be the same as the
+   intended mass number, otherwise it can be anything.
+   
+   ifnvel -- the ftable that contains the initial velocity for each mass.
+   It should have the same size as the intended mass number.
+   
+   ifnmass -- ftable that contains the mass of each mass. It should have
+   the same size as the intended mass number.
+   
+   ifnstif -- EITHER an ftable that contains the spring stiffness of each
+   connection. It should have the same size as the square of the intended
+   mass number. The data ordering is a row after row dump of the
+   connection matrix of the system.
+        OR a string giving the name of a file in the MATRIX format
+   
+   ifncentr -- ftable that contains the centering force of each mass. It
+   should have the same size as the intended mass number.
+   
+   ifndamp -- the ftable that contains the damping factor of each mass.
+   It should have the same size as the intended mass number.
+   
+   ileft -- If init < 0, the position of the left hammer (ileft = 0 is
+   hit at leftmost, ileft = 1 is hit at rightmost).
+   
+   iright -- If init < 0, the position of the right hammer (iright = 0 is
+   hit at leftmost, iright = 1 is hit at rightmost).
+   
+   idisp -- If 0, no display of the masses is provided.
+   
+   id -- If positive, the ID of the opcode. This will be used to point
+   the scanning opcode to the proper waveform maker. If this value is
+   negative, the absolute of this value is the wavetable on which to
+   write the waveshape. That wavetable can be used later from an other
+   opcode to generate sound. The initial contents of this table will be
+   destroyed.
+   
+Performance
+
+   kmass -- scales the masses
+   
+   kstif -- scales the spring stiffness
+   
+   kcentr -- scales the centering force
+   
+   kdamp -- scales the damping
+   
+   kpos -- position of an active hammer along the string (kpos = 0 is
+   leftmost, kpos = 1 is rightmost). The shape of the hammer is
+   determined by init and the power it pushes with is kstrngth.
+   
+   kstrngth -- power that the active hammer uses
+   
+   ain -- audio input that adds to the velocity of the masses. Amplitude
+   should not be too great.
+
+Matrix Format
+
+  The new matrix format is a list of connections, one per line
+  linking point x to point y.   There is no weight given to the link;
+  it is assumed to be unity.  The list is proceeded by the line
+  <MATRIX> and ends with a </MATRIX> line
+
+  For example, a circular string of 8 would be coded as
+<MATRIX>
+0 1
+1 0
+1 2
+2 1
+2 3
+3 2
+3 4
+4 3
+4 5
+5 4
+5 6
+6 5
+6 7
+7 6
+0 7
+</MATRIX>
+
+
+Examples
+
+   For an example, see the documentation on scans.
+   
+Deprecated Names
+
+   None.
+   
+Credits
+
+   March, 2000 (New in Csound version 4.17)
+
+------------------------------------------------------------------------
+event
+
+Examples
+        event   "i"     1, 10, 1, 32000, 440

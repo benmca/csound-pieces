@@ -1,0 +1,350 @@
+Release Notes for 3.56
+======================
+
+These are the release notes for version 3.56
+
+Bug Fixes
+---------
+
+pset opcode was ignored.
+
+The ~ operator within [] in a score was wrong and did not work
+
+
+Language Changes
+----------------
+
+There are two new operators in scores, within arithmetic contexts [].
+@ followed by a number yields the power of two equal or greater than
+the number given.  The operator @@ gives the power-of-two-plus1 equal
+or greater than the number given. 
+
+Opcode Fixes
+------------
+
+follow had an off-by-one error which meant it increased but never
+decreased
+
+
+New Opcodes 
+-----------
+
+clockon
+clockoff
+readclock -- Performance timing opcodes
+
+resony --     A bank of second-order bandpass filters, connected in parallel.  
+
+fold -- Adds artificial foldover to an audio signal
+
+vincr -- incretment an audio variable
+clear -- Clear audio variables [Note: these opcodes have results on
+        right so may lead to incorrect warnings]
+
+fout
+foutk
+fouti
+foutir  -- Outout to audio files
+
+fiopen
+fin
+fink
+fini -- Input from audio files
+
+
+
+Other Changes:
+-------------
+
+Some internal reorganisation.
+
+
+Windows GUI Changes
+-------------------
+
+New button and dialog box to set SSDIR, SADIR and SFDIR.  Also
+csound.txt name cached. 
+Editors are spawned in NOWAIT mode so can exist while setting options
+Playback can be interrupted after "Play at End"
+
+
+
+------------------------------------------------------------------------
+==John ff
+  1999 July 20
+========================================================================
+resony 
+
+ar    resony     asig, kbf, kbw, inum, ksep [, iscl, istor] 
+
+DESCRIPTION 
+
+A bank of second-order bandpass filters, connected in parallel. 
+
+INITIALIZATION 
+
+inum - number of filters.  Defaults to 4 
+iscl - coded scaling factor for resonators. A value of 1 signifies a
+peak response factor of 1, i.e. all frequencies other than kcf are
+attenuated in accordance with the (normalized) response curve. A value
+of 2 raises the response factor so that its overall RMS value equals
+1. (This intended equalization of input and output power assumes all
+frequencies are physically present; hence it is most applicable to
+white noise.) A zero value signifies no scaling of the signal, leaving
+that to some later adjustment (e.g. see balance). The default value is
+0. 
+istor - initial disposition of internal data space. Since filtering
+incorporates a feedback loop of previous output, the initial status of
+the storage space used is significant. A zero value will clear the
+space; a non-zero value will allow previous information to remain. The
+default value is 0. 
+
+PERFORMANCE 
+
+asig - audio input signal
+kbf - base frequency, i.e. center frequency of lowest filter in Hz
+kbw - bandwidth in Hz
+ksep - separation of the center frequency of filters in octaves
+
+resony is a bank of second-order bandpass filters, with k-rate variant
+frequency separation, base frequency and bandwidth, connected in
+parallel (i.e. the resulting signal is a mixing of the output of each
+filter). The center frequency of each filter depends of kbf and ksep
+variables. 
+
+EXAMPLE: 
+
+asig, kbf, kbw, inum, ksep [, iscl, istor] 
+
+In this example the global variable gk1 modifies kbf, gk2 modifies
+kbw, gk3  inum, gk4 ksep and gk5 the main volume.  
+
+        instr   1
+a1      soundin "myfile.aif"
+a2      resony  a1,   gk1 , gk2 ,i(gk3),gk4 ,2  
+        out     a2 * gk5 
+        endin
+------------------------------------------------------------------------
+fold 
+
+ar fold asig, kincr 
+
+DESCRIPTION 
+
+Adds artificial foldover to an audio signal 
+
+PERFORMANCE 
+
+asig - input signal
+kincr - amount of foldover expressed in multiple of sampling
+rate. Must be >= 1  
+
+fold is an opcode which creates artificial foldover.  For example,
+when kincr is equal to 1 with sr=44100, no foldover is added, when
+kincr is set to 2 the foldover is equivalent to a downsampling to
+22050, when it is set to 4 to 11025 etc. Fractional values of kincr
+are possible, allowing a continuous variation of foldover amount. This
+can be used for a wide range of special effects.  
+
+EXAMPLE: 
+
+        instr   1
+kfreq   line    1,p3,200
+a1      oscili  10000, 100, 1
+k1      init    8.5
+a1      fold    a1, kfreq
+        out     a1      
+        endin
+------------------------------------------------------------------------
+
+vincr, clear 
+
+vincr  asig, aincr 
+clear  avar1 [,avar2, avar3,...,avarN] 
+
+DESCRIPTION 
+
+vincr increments an audio variable of another signal, i.e. accumulates output. 
+clear zeroes a list of audio signals. 
+
+PERFORMANCE 
+
+asig - audio variable to be incremented 
+aincr - incrementation signal 
+avar1 [,avar2, avar3,...,avarN] - signals to be zeroed 
+
+vincr (variable increment) and clear are thinked to be used
+togheter. vincr stores the result of the sum of two audio variables
+into the first variable itself (which is thinked to be used as
+accumulator in case of polyphony). The accumulator-variable can be
+used for output signal by means of fout opcode. After the disk writing
+operation, the accumulator-variable should be set to zero by means of
+clear opcode (or it will explode). 
+------------------------------------------------------------------------
+fout, foutk, fouti, foutir, fiopen 
+
+fout   "ifilename", iformat, aout1 [, aout2, aout3,.... ,aoutN]
+foutk   "ifilename", iformat, kout1 [, kout2, kout3,....,koutN]
+fouti   ihandle, iformat, iflag, iout1 [, iout2, iout3,....,ioutN]
+foutir   ihandle, iformat, iflag, iout1 [, iout2, iout3,....,ioutN]
+ihandle  fiopen  "ifilename",imode 
+
+DESCRIPTION 
+
+fout, foutk, fouti and foutir output N audio, k or i-rate signals to a
+specified file of N channels.  
+fiopen can be used to open a file in one of the specified modes. 
+
+INITIALIZATION 
+
+ifilename - a double-quote delimited string file name 
+iformat - a flag to choose output file format: 
+for fout and foutk only:
+0 - 32-bit floating point samples without header (binary PCM multichannel file)
+1 - 16-bit integers without header (binary PCM multichannel file)
+2 - 16-bit integers with type header from -W -A or -J (mono or stereo file) 
+
+for fouti and foutir only:
+0 - floating point in text format
+1 - 32-bit floating point in binary format 
+
+iflag - choose the mode of writing to the ascii file (valid only in
+ascii mode; in binary mode iflag has no meaning, but it must be
+present anyway). 
+
+iflag can be a value choosen among the following:
+0 - line of text without instrument prefix
+1 - line of text with instrument prefix (see below)
+2 - reset the time of instrument prefixes to zero (to be used only in
+some particular cases. See below)  
+
+iout,... ioutN - values to be written to the file. 
+
+imode - choose the mode of opening the file.
+imode can be a value choosen among the following:
+0 - open a text file for writing
+1 - open a text file for reading
+2 - open a binary file for writing
+3 - open a binary file for reading 
+
+PERFORMANCE 
+
+aout1,... aoutN - signals to be written to the file.
+kout1,...koutN - signals to be written to the file.
+
+fout (file output) writes samples of audio signals to a file with any
+number of channels. Channel number depends by the number of aoutN
+variables (i.e. a mono signal with only an a-rate argument, a stereo
+signal with two a-rate arguments etc.) Maximum number of channels is
+fixed to 64. 
+More fout opcodes can be present in the same instrument, referring to
+different files.  
+Notice that, differently by out, outs and outq, fout does not zeroes
+the audio variable, so you must provide a zeroing after calling fout
+if poliphony is used. You can use incr and clear opcodes for this task. 
+
+foutk operates in the same way of fout, but with k-rate
+signals. iformat can be set only to 0 or 1.  
+
+fouti and foutir write i-rate values to a file. The main use of these
+opcodes is to generate a score file during a realtime session. For
+this purpose the user should set iformat to 0 (text file output) and
+iflag to 1, which enable the output of a prefix consisting of the
+following strings:  
+
+i num  actiontime duration 
+
+before the values of iout1...ioutN arguments. Prefix is referring to
+instrument number, action time and duration of current note.  
+
+The difference of fouti and foutir is that,  in the case of fouti,
+when iflag is set to 1, the duration of the first opcode is undefined
+(so it is replaced by a dot ) wheras in the case of foutir is defined
+at the end of note, so the corresponding text line is written only at
+the end of the current note (in order to recognize its duration). The
+corresponding file is linked by the ihandle value generated by fiopen
+opcode (see below). So fouti and foutir can be used to generate a
+Csound score while playing  a realtime session.  
+
+fiopen  opens a file to be used by the foutX opcodes. It must be
+defined externally by any instruments, in the header section.  It
+returns a number ihandle, which is univocally referring to the opened
+file.  
+
+Notice that fout and foutk can use both a string containing a file
+pathname or a handle-number generated by fiopen, wheras in the case of
+fouti and foutir, the target file can be only specified by means of a
+handle-number.  
+
+------------------------------------------------------------------------
+
+fin, fink, fini 
+
+fin  "ifilename", iskipframes, iformat, ain1 [, ain2, ain3,.... ,ainN]
+fink  "ifilename", iskipframes, iformat, kin1 [, kin2, kin3,.... ,kinN]
+fini  "ifilename", iskipframes, iformat, in1 [, in2, in3,.... ,inN] 
+
+DESCRIPTION 
+
+read signals from a file (at a, k, and i-rate) 
+
+INITIALIZATION 
+
+ifilename - input file name (can be a string or a handle number
+generated by fiopen) 
+iskipframes - number of frames to skip at the start (every frame
+contains a sample of each channel) 
+iformat - a number specifying the input file format: for fin and fink:
+0 -  32 bit floating points without header
+1 - 16 bit integers without header 
+
+for fini:
+0 - floating points in text format (loop; see below)
+1 - floating points in text format (no loop; see below)
+2 - 32 bit floating points in binary format (no loop) 
+
+fin (file input) is the complement of fout: it reads a multi channel
+file to generate audio rate signals. At present time no header is
+supported for file format. The user must be sure that the number of
+channel of the input file is the same of the number of ainX arguments  
+
+fink is the same as fin, but operates at k-rate. 
+
+fini is the complement of fouti and foutir, it reads the  values each
+time the corresponding instrument note is activated. When iformat is
+set to 0, if the end of file is reached the file pointer is zeroed,
+restarting the scanning from the beginning. When iformat is set to 1
+or 2 no loop is enabled, so at the end of file the corresponding
+variables will be filled with zeroes.  
+
+------------------------------------------------------------------------
+clockon, clockoff, readclock
+
+        clockon         inum
+        clockoff        inum
+ival    readclock       inum
+
+
+DESCRIPTION
+
+Starts and stops one of a number of internal clocks, and read value of
+a clock. 
+
+
+INITIALIZATION
+
+inum is the number of a clock.  There are 32 clocks numbered 0 through
+31; all other values are mapped to clock number 32.
+[Note: in 3.56 a bug means that xloxk zero is always used -- fixed in
+source!]
+
+PERFORMANCE
+
+Between a clockon and a clockoff the CPU time used is accumulated in
+the clock.  The precision is machine dependent, but is milliseconds on
+UNIX and Windows.
+
+readclock reads the current value of a clock at initialisation time.
+
+Note there is no way to zero a clock.
+------------------------------------------------------------------------

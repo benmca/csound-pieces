@@ -1,0 +1,1256 @@
+<html>
+<head>
+<title>Common LISP Hints (12-Jan-1996)</TITLE>
+<!-- Created by: Heinrich Taube, 12-Jan-1996 -->
+</head>
+<body>
+
+<center>
+<br><br><br>
+<h1><font size=7>Common LISP Hints</font></h1>
+
+
+                          <h4>Geoffrey J. Gordon<br>
+                         <tt>&lt;ggordon@cs.cmu.edu&gt;</tt><br>
+                       Friday, February 5, 1993</h4>
+
+                            <h4>Modified by<br>
+                            Bruno Haible<br>
+                <tt>&lt;haible@ma2s2.mathematik.uni-karlsruhe.de&gt;</tt></h4>
+
+                            <h4>Modified and converted to HTML by<br>
+                            Heinrich Taube<br>
+                       <tt>&lt;hkt@ccrma.stanford.edu&gt;</tt></h4>
+
+</center>
+
+<a name="Table of Contents"></a>
+<hr>
+<h4>Table of Contents</h4>
+<UL>
+<LI><A HREF="#Symbols">Symbols</A>
+<LI><A HREF="#Numbers">Numbers</A>
+<LI><A HREF="#Conses">Conses</A>
+<LI><A HREF="#Lists">Lists</A>
+<LI><A HREF="#Functions">Functions</A>
+<LI><A HREF="#Printing">Printing</A>
+<LI><A HREF="#Forms">Forms and the Top-level Loop</A>
+<LI><A HREF="#Specials">Special Forms</A>
+<LI><A HREF="#Binding">Binding</A>
+<LI><A HREF="#Dynamic Scoping">Dynamic Scoping</A>
+<LI><A HREF="#Arrays">Arrays</A>
+<LI><A HREF="#Strings">Strings</A>
+<LI><A HREF="#Structures">Structures</A>
+<LI><A HREF="#Setf">Setf</A>
+<LI><A HREF="#Booleans and Conditionals">Booleans and Conditionals</A>
+<LI><A HREF="#Iteration">Iteration</A>
+<LI><A HREF="#Non-local Exits">Non-local Exits</A>
+<LI><A HREF="#Funcall, Apply, and Mapcar">Funcall, Apply, and Mapcar</A>
+<LI><A HREF="#Lambda">Lambda</A>
+<LI><A HREF="#Sorting">Sorting</A>
+<LI><A HREF="#Equality">Equality</A>
+<LI><A HREF="#Some Useful List Functions">Some Useful List Functions</A>
+<LI><A HREF="#Getting Started with Emacs">Getting Started with Emacs</A>
+<LI><A HREF="#Further Information">Further Information</A>
+</UL>
+
+<i>Note: This tutorial introduction to Common Lisp was written for the
+CMU environment, so some of the details of running lisp toward the end
+may differ from site to site.</i>
+
+
+<p>
+<a name="Symbols"></a>
+<hr>
+<h4>Symbols</h4>
+
+A symbol is just a string of characters. There are restrictions on what
+you can include in a symbol and what the first character can be, but as
+long as you stick to letters, digits, and hyphens, you'll be safe.
+(Except that if you use only digits and possibly an initial hyphen,
+LISP will think you typed an integer rather than a symbol.) Some
+examples of symbols:
+<PRE>        a
+        b
+        c1
+        foo
+        bar
+        baaz-quux-garply
+</PRE>
+
+Some things you can do with symbols follow. (Things in <b>bold</b> after a <tt>&gt;</tt> prompt
+are what you type to the LISP interpreter, while other things are what
+the LISP interpreter prints back to you. The <tt>;</tt> is LISP's comment
+character: everything from a <tt>;</tt> to the end of line is ignored.)
+
+<pre>&gt; <b>(setq a 5)</b>            ;store a number as the value of a symbol
+5
+&gt; <b>a</b>                      ;take the value of a symbol
+5
+&gt; <b>(let ((a 6)) a)</b>      ;bind the value of a symbol temporarily to 6
+6
+&gt; <b>a</b>                      ;the value returns to 5 once the let is finished
+5
+&gt; <b>(+ a 6)</b>               ;use the value of a symbol as an argument to a function
+11
+&gt; <b>b</b>                      ;try to take the value of a symbol which has no value
+Error: Attempt to take the value of the unbound symbol B
+</pre>
+There are two special symbols, <tt>t</tt> and <tt>nil</tt>. The value of <tt>t</tt> is defined
+always to be <tt>t</tt>, and the value of <tt>nil</tt> is defined always to be <tt>nil</tt>.
+ LISP
+uses <tt>t</tt> and <tt>nil</tt> to represent true and false. An example of this use is
+in the <tt>if</tt> statement, described more fully later:
+
+<pre>&gt; <b>(if t 5 6)</b>
+5
+&gt; <b>(if <tt>nil</tt> 5 6)</b>
+6
+&gt; <b>(if 4 5 6)</b>
+5
+</pre>
+The last example is odd but correct: <tt>nil</tt> means false, and anything else
+means true. (Unless we have a reason to do otherwise, we use <tt>t</tt> to mean
+true, just for the sake of clarity.)
+
+Symbols like <tt>t</tt> and <tt>nil</tt> are called self-evaluating symbols, because
+they evaluate to themselves. There is a whole class of self-evaluating
+symbols called keywords; any symbol whose name starts with a colon is a
+keyword. (See below for some uses for keywords.) Some examples:
+
+<pre>&gt; <b>:this-is-a-keyword</b>
+:THIS-IS-A-KEYWORD
+&gt; <b>:so-is-this</b>
+:SO-IS-THIS
+&gt; <b>:me-too</b>
+:ME-TOO
+</pre>
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Numbers"></a>
+<hr><h4>Numbers</h4>
+
+An integer is a string of digits optionally preceded by <tt>+</tt> or <tt>-</tt>. A real
+number looks like an integer, except that it has a decimal point and
+optionally can be written in scientific notation. A rational looks like
+two integers with a <tt>/</tt> between them. LISP supports complex numbers,
+which are written <tt>#c(r i)</tt> (where r is the real part and i is the
+imaginary part). A number is any of the above. Here are some numbers:
+
+<pre>        5
+        17
+        -34
+        +6
+        3.1415
+        1.722e-15
+        #c(1.722e-15 0.75)
+</pre>
+
+The standard arithmetic functions are all available: <tt>+</tt>, <tt>-</tt>, <tt>*</tt>,
+<tt>/</tt>, <tt>floor</tt>, <tt>ceiling</tt>, <tt>mod</tt>, <tt>sin</tt>, <tt>cos</tt>,
+<tt>tan</tt>, <tt>sqrt</tt>, <tt>exp</tt>, <tt>expt</tt>, and so forth. All of them
+accept any kind of number as an argument. <tt>+</tt>, <tt>-</tt>, <tt>*</tt>,
+and <tt>/</tt> return a
+number according to type contagion: an integer plus a rational is a
+rational, a rational plus a real is a real, and a real plus a complex
+is a complex. Here are some examples:
+
+<pre>&gt; <b>(+ 3 3/4)</b>                ;type contagion
+15/4 
+&gt; <b>(exp 1)</b>                  ;e
+2.7182817 
+&gt; <b>(exp 3)</b>                  ;e*e*e
+20.085537 
+&gt; <b>(expt 3 4.2)</b>            ;exponent with a base other than e
+100.90418
+&gt; <b>(+ 5 6 7 (* 8 9 10))</b>  ;the fns +-*/ all accept multiple arguments
+738
+</pre>
+There is no limit to the absolute value of an integer except the memory
+size of your computer. Be warned that computations with bignums (as
+large integers are called) can be slow. (So can computations with
+rationals, especially compared to the corresponding computations with
+small integers or floats.)
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Conses"></a>
+<hr><h4>Conses</h4>
+
+A cons is just a two-field record. The fields are called "car" and
+"cdr", for historical reasons. (On the first machine where LISP was
+implemented, there were two instructions CAR and CDR which stood for
+"contents of address register" and "contents of decrement register".
+Conses were implemented using these two registers.)
+
+Conses are easy to use:
+
+<pre>&gt; <b>(cons 4 5)</b>            ;Allocate a cons. Set the car to 4 and the cdr to 5.
+(4 . 5)
+&gt; <b>(cons (cons 4 5) 6)</b>
+((4 . 5) . 6)
+&gt; <b>(car (cons 4 5))</b>
+4
+&gt; <b>(cdr (cons 4 5))</b>
+5
+</pre>
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Lists"></a>
+<hr><h4>Lists</h4>
+
+You can build many structures out of conses. Perhaps the simplest is a
+linked list: the car of each cons points to one of the elements of the
+list, and the cdr points either to another cons or to <tt>nil</tt>. You can
+create such a linked list with the <tt>list</tt> function:
+
+<pre>&gt; <b>(list 4 5 6)</b>
+(4 5 6)
+</pre>
+Notice that LISP prints linked lists a special way: it omits some of
+the periods and parentheses. The rule is: if the cdr of a cons is nil,
+LISP doesn't bother to print the period or the <tt>nil</tt>; and if the cdr of
+cons A is cons B, then LISP doesn't bother to print the period for cons
+A or the parentheses for cons B. So:
+
+<pre>&gt; <b>(cons 4 nil)</b>
+(4)
+&gt; <b>(cons 4 (cons 5 6))</b>
+(4 5 . 6)
+&gt; <b>(cons 4 (cons 5 (cons 6 nil)))</b>
+(4 5 6)
+</pre>
+
+The last example is exactly equivalent to the call <tt>(list 4 5 6)</tt>. Note
+that <tt>nil</tt> now means the list with no elements: the cdr of <tt>(a b)</tt>, a list
+with 2 elements, is <tt>(b)</tt>, a list with 1 element; and the cdr of <tt>(b)</tt>, a
+list with 1 element, is <tt>nil</tt>, which therefore must be a list with no
+elements.
+
+The car and cdr of <tt>nil</tt> are defined to be <tt>nil</tt>.
+<p>
+If you store your list in a variable, you can make it act like a stack:
+
+<pre>&gt; <b>(setq a nil)</b>
+NIL
+&gt; <b>(push 4 a)</b>
+(4)
+&gt; <b>(push 5 a)</b>
+(5 4)
+&gt; <b>(pop a)</b>
+5
+&gt; <b>a</b>
+(4)
+&gt; <b>(pop a)</b>
+4
+&gt; <b>(pop a)</b>
+NIL
+&gt; <b>a</b>
+NIL
+</pre>
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Functions"></a>
+<hr><h4>Functions</h4>
+
+You saw one example of a function called <tt>list</tt> above. Here are some more:
+
+<pre>&gt; <b>(+ 3 4 5 6)</b>                   ;this function takes any number of arguments
+18
+&gt; <b>(+ (+ 3 4) (+ (+ 4 5) 6))</b>   ;isn't prefix notation fun?
+22
+&gt; <b>(defun foo (x y) (+ x y 5))</b> ;defining a function
+FOO
+&gt; <b>(foo 5 0)</b>                      ;calling a function
+10
+&gt; <b>(defun fact (x)</b>               ;a recursive function<b>
+    (if (&gt; x 0) 
+      (* x (fact (- x 1)))
+      1))</b>
+FACT
+&gt; <b>(fact 5)</b>
+120
+&gt; <b>(defun a (x) (if (= x 0) t (b (- x))))</b>  ;mutually recursive functions
+A
+&gt; <b>(defun b (x) (if (&gt; x 0) (a (- x 1)) (a (+ x 1))))</b>
+B
+&gt; <b>(a 5)</b>
+T
+&gt; <b>(defun bar (x)</b>                ;a function with multiple statements in
+<b>    (setq x (* x 3))</b>           ;its body -- it will return the value
+<b>    (setq x (/ x 2))</b>           ;returned by its final statement
+<b>    (+ x 4))</b>
+BAR
+&gt; <b>(bar 6)</b>
+13
+</pre>
+
+When we defined foo, we gave it two arguments, x and y. Now when we
+call foo, we are required to provide exactly two arguments: the first
+will become the value of x for the duration of the call to foo, and the
+second will become the value of y for the duration of the call. In
+LISP, most variables are lexically scoped; that is, if foo calls bar
+and bar tries to reference x, bar will not get foo's value for x.
+<p>
+The process of assigning a symbol a value for the duration of some
+lexical scope is called binding.
+<p>
+You can specify optional arguments for your functions. Any argument
+after the symbol <tt>&amp;optional</tt> is optional:
+
+<pre>&gt; <b>(defun bar (x &amp;optional y) (if y x 0))</b>
+BAR
+&gt; <b>(defun baaz (&amp;optional (x 3) (z 10)) (+ x z))</b>
+BAAZ
+&gt; <b>(bar 5)</b>
+0
+&gt; <b>(bar 5 t)</b>
+5
+&gt; <b>(baaz 5)</b>
+15
+&gt; <b>(baaz 5 6)</b>
+11
+&gt; <b>(baaz)</b>
+13
+</pre>
+It is legal to call the function bar with either one or two arguments.
+If it is called with one argument, x will be bound to the value of that
+argument and y will be bound to <tt>nil</tt>; if it is called with two
+arguments, x and y will be bound to the values of the first and second
+argument, respectively.
+<p>
+The function baaz has two optional arguments. It specifies a default
+value for each of them: if the caller specifies only one argument, z
+will be bound to 10 instead of to nil, and if the caller specifies no
+arguments, x will be bound to 3 and z to 10.
+<p>
+You can make your function accept any number of arguments by ending its
+argument list with an &amp;rest parameter. LISP will collect all arguments
+not otherwise accounted for into a list and bind the <tt>&amp;rest</tt> parameter to
+that list. So:
+
+<pre>&gt; <b>(defun foo (x &amp;rest y) y)</b>
+FOO
+&gt; <b>(foo 3)</b>
+NIL
+&gt; <b>(foo 4 5 6)</b>
+(5 6)
+</pre>
+Finally, you can give your function another kind of optional argument
+called a keyword argument. The caller can give these arguments in any
+order, because they're labelled with keywords.
+
+<pre>&gt; <b>(defun foo (&amp;key x y) (cons x y))</b>
+FOO
+&gt; <b>(foo :x 5 :y 3)</b>
+(5 . 3)
+&gt; <b>(foo :y 3 :x 5)</b>
+(5 . 3)
+&gt; <b>(foo :y 3)</b>
+(NIL . 3)
+&gt; <b>(foo)</b>
+(NIL)
+</pre>
+
+An <tt>&amp;key</tt> parameter can have a default value too:
+
+<pre>&gt; <b>(defun foo (&amp;key (x 5)) x)</b>
+FOO
+&gt; <b>(foo :x 7)</b>
+7
+&gt; <b>(foo)</b>
+5
+</pre>
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Printing"></a>
+<hr><h4>Printing</h4>
+
+Some functions can cause output. The simplest one is print, which
+prints its argument and then returns it.
+
+<pre>&gt; <b>(print 3)</b>
+3
+3
+</pre>
+
+The first 3 above was printed, the second was returned.
+
+If you want more complicated output, you will need to use <tt>format</tt>.
+Here's an example:
+
+<pre>&gt; <b>(format t "An atom: ~S~%and a list: ~S~%and an integer: ~D~%"
+          <tt>nil</tt> (list 5) 6)</b>
+An atom: NIL
+and a list: (5)
+and an integer: 6
+NIL
+</pre>
+Note that the NIL appearing as the last line is the value returned by the <tt>format</tt>
+function itself. In contrast, the 3 printed lines are a side effect of calling
+the function.
+<p>
+The first argument to <tt>format</tt> is either <tt>t</tt>, <tt>nil</tt>, or a stream. <tt>T</tt> specifies
+output to the terminal. <tt>Nil</tt> means not to print anything but to return a
+string containing the output instead. Streams are general places for
+output to go: they can specify a file, or the terminal, or another
+program. This handout will not describe streams in any further detail.
+<p>
+The second argument is a formatting template, which is a string
+optionally containing formatting directives.
+<p>
+All remaining arguments may be referred to by the formatting
+directives. LISP will replace the directives with some appropriate
+characters based on the arguments to which they refer and then print
+the resulting string.
+<p>
+<tt>Format</tt> always returns <tt>nil</tt> unless its first argument is <tt>nil</tt>,
+in which case it prints nothing as a side effect and returns a string.
+<p>
+There are three different directives in the above example: ~S, ~D, and
+~%. The first one accepts any LISP object and is replaced by a printed
+representation of that object (the same representation which is
+produced by print). The second one accepts only integers. The third one
+doesn't refer to an argument; it is always replaced by a carriage
+return.
+<p>
+Another useful directive is ~~, which is replaced by a single ~.
+<p>
+Refer to a LISP manual for (many, many) additional formatting
+directives.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+
+<p>
+<a name="Forms"></a>
+<hr><h4>Forms and the Top-Level Loop</h4>
+
+The things which you type to the LISP interpreter are called forms; the
+LISP interpreter repeatedly reads a form, evaluates it, and prints the
+result. This procedure is called the read-eval-print loop.
+<p>
+Some forms will cause errors. After an error, LISP will put you into
+the debugger so you can try to figure out what caused the error. LISP
+debuggers are all different; but most will respond to the command
+"help" or ":help" by giving some form of help.
+<p>
+In general, a form is either an atom (for example, a symbol, an
+integer, or a string) or a list. If the form is an atom, LISP evaluates
+it immediately. Symbols evaluate to their value; integers and strings
+evaluate to themselves. If the form is a list, LISP treats its first
+element as the name of a function; it evaluates the remaining elements
+recursively, and then calls the function with the values of the
+remaining elements as arguments.
+<p>
+For example, if LISP sees the form <tt>(+ 3 4)</tt>, it treats <tt>+</tt> as the name of
+a function. It then evaluates 3 to get 3 and 4 to get 4; finally it
+calls <tt>+</tt> with 3 and 4 as the arguments. The <tt>+</tt> function returns 7, which
+LISP prints.
+
+The top-level loop provides some other conveniences; one particularly
+convenient convenience is the ability to talk about the results of
+previously typed forms. LISP always saves its most recent three
+results; it stores them as the values of the symbols <tt>*</tt>, <tt>**</tt>, and <tt>***</tt>.
+For example:
+
+<pre>&gt; <b>3</b>
+3
+&gt; <b>4</b>
+4
+&gt; <b>5</b>
+5
+&gt; <b>***</b>
+3
+&gt; <b>***</b>
+4
+&gt; <b>***</b>
+5
+&gt; <b>**</b>
+4
+&gt; <b>*</b>
+4
+</pre>
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Specials"></a>
+<hr><h4>Special forms</h4>
+
+
+There are a number of special forms which look like function calls but
+aren't. These include control constructs such as <tt>if</tt> statements and <tt>do</tt>
+loops; assignments like <tt>setq</tt>, <tt>setf</tt>, <tt>push</tt>, and <tt>pop</tt>;
+definitions such as
+<tt>defun</tt> and <tt>defstruct</tt>; and binding constructs such as <tt>let</tt>.
+(Not all of these special forms have been mentioned yet. See below.)
+<p>
+One useful special form is the quote form: quote prevents its argument
+from being evaluated. For example:
+
+<pre>&gt; <b>(setq a 3)</b>
+3
+&gt; <b>a</b>
+3
+&gt; <b>(quote a)</b>
+A
+&gt; <b>'a</b>                   ;'a is an abbreviation for (quote a)
+A
+</pre>
+Another similar special form is the function form: function causes its
+argument to be interpreted as a function rather than being evaluated.
+For example:
+
+<pre>&gt; <b>(setq + 3)</b>
+3
+&gt; <b>+</b>
+3
+&gt; <b>'+</b>
++
+&gt; <b>(function +)</b>
+#&lt;Function + @ #x-fbef9de&gt;
+&gt; <b>#'+</b>                   ;#'+ is an abbreviation for (function +)
+#&lt;Function + @ #x-fbef9de&gt;
+</pre>
+The function special form is useful when you want to pass a function as
+an argument to another function. See below for some examples of
+functions which take functions as arguments.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Binding"></a>
+<hr><h4>Binding</h4>
+
+Binding is lexically scoped assignment. It happens to the variables in
+a function's parameter list whenever the function is called: the formal
+parameters are bound to the actual parameters for the duration of the
+function call. You can bind variables anywhere in a program with the
+let special form, which looks like this:
+<pre>        (let ((<i>var1 val1</i>)
+              (<i>var2 val2</i>)
+              ...
+             )
+          <i>body</i>
+          )
+</pre>
+<tt>Let</tt> binds <i>var1</i> to <i>val1</i>, <i>var2</i> to <i>val2</i>, and so forth; then it executes
+the statements in its <i>body</i>. The body of a let follows exactly the same
+rules that a function body does. Some examples:
+
+<pre>&gt; <b>(let ((a 3)) (+ a 1))</b>
+4
+&gt; <b>(let ((a 2) 
+        (b 3)
+        (c 0))
+    (setq c (+ a b))
+    c)</b>
+5
+&gt; <b>(setq c 4)</b>
+4
+&gt; <b>(let ((c 5)) c)</b>
+5
+&gt; <b>c</b>
+4
+</pre>
+Instead of <tt>(let ((a nil) (b nil)) ...)</tt>, you can write <tt>(let (a b) ...)</tt>.
+<p>
+The <i>val1</i>, <i>val2</i>, etc. inside a <tt>let</tt> cannot reference the variables <i>val1</i>,
+<i>val2</i>, etc. that the <tt>let</tt> is binding. For example,
+
+<pre>&gt; <b>(let ((x 1)
+        (y (+ x 1)))
+    y)</b>
+Error: Attempt to take the value of the unbound symbol X
+</pre>
+If the symbol x already has a global value, stranger happenings will
+result:
+
+<pre>&gt; <b>(setq x 7)</b>
+7
+&gt; <b>(let ((x 1)
+        (y (+ x 1)))
+    y)</b>
+8
+</pre>
+The <tt>let*</tt> special form is just like <tt>let</tt> except that it allows values to
+reference variables defined earlier in the <tt>let*</tt>. For example,
+
+<pre>&gt; <b>(setq x 7)</b>
+7
+&gt; <b>(let* ((x 1)
+         (y (+ x 1)))
+    y)</b>
+2
+</pre>
+The form
+
+<pre>        (let* ((x a)
+               (y b))
+          ...
+          ) 
+</pre>
+is equivalent to
+
+<pre>        (let ((x a))
+          (let ((y b))
+            ...
+          ))
+</pre>
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Dynamic Scoping"></a>
+<hr><h4>Dynamic Scoping</h4>
+
+The <tt>let*</tt> and <tt>let</tt> forms provide lexical scoping, which is what you
+expect if you're used to programming in C or Pascal. Dynamic scoping is
+what you get in BASIC: if you assign a value to a dynamically scoped
+variable, every mention of that variable returns that value until you
+assign another value to the same variable.
+
+In LISP, dynamically scoped variables are called special variables. You
+can declare a special variable with the <tt>defvar</tt> special form. Here are
+some examples of lexically and dynamically scoped variables.
+
+In this example, the function <tt>check-regular</tt> references a regular (ie,
+lexically scoped) variable. Since <tt>check-regular</tt> is lexically outside of
+the let which binds regular, <tt>check-regular</tt> returns the variable's
+global value.
+
+<pre>&gt; <b>(setq regular 5)</b>
+5 
+&gt; <b>(defun check-regular () regular)</b>
+CHECK-REGULAR 
+&gt; <b>(check-regular)</b>
+5 
+&gt; <b>(let ((regular 6)) (check-regular))</b>
+5 
+</pre>
+In this example, the function <tt>check-special</tt> references a special (ie,
+dynamically scoped) variable. Since the call to <tt>check-special</tt> is
+temporally inside of the let which binds special, <tt>check-special</tt> returns
+the variable's local value.
+
+<pre>&gt; <b>(defvar *special* 5)</b>
+*SPECIAL*
+&gt; <b>(defun check-special () *special*)</b>
+CHECK-SPECIAL
+&gt; <b>(check-special)</b>
+5
+&gt; <b>(let ((*special* 6)) (check-special))</b>
+6
+</pre>
+By convention, the name of a special variable begins and ends with a <tt>*</tt>.
+Special variables are chiefly used as global variables, since
+programmers usually expect lexical scoping for local variables and
+dynamic scoping for global variables.
+
+For more information on the difference between lexical and dynamic
+scoping, see <A HREF="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/cltl2.html">
+Common Lisp: the Language (2nd Edition)</A>.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Arrays"></a>
+<hr><h4>Arrays</h4>
+
+The function <tt>make-array</tt> makes an array. The <tt>aref</tt> function accesses its
+elements. All elements of an array are initially set to <tt>nil</tt>. For
+example:
+
+<pre>&gt; <b>(make-array '(3 3))</b>
+#2a((NIL NIL NIL) (NIL NIL NIL) (NIL NIL NIL))
+&gt; <b>(aref * 1 1)</b>
+NIL
+&gt; <b>(make-array 4)</b>        ;1D arrays don't need the extra parens
+#(NIL NIL NIL NIL)
+</pre>
+Array indices always start at 0.
+<p>
+See below for how to set the elements of an array.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Strings"></a>
+<hr><h4>Strings</h4>
+
+A string is a sequence of characters between double quotes. LISP
+represents a string as a variable-length array of characters. You can
+write a string which contains a double quote by preceding the quote
+with a backslash; a double backslash stands for a single backslash. For
+example:
+<pre>
+        "abcd" has 4 characters
+        "\"" has 1 character
+        "\\" has 1 character
+</pre>
+Here are some functions for dealing with strings:
+
+<pre>&gt; <b>(concatenate 'string "abcd" "efg")</b>
+"abcdefg"
+&gt; <b>(char "abc" 1)</b>
+#\b                     ;LISP writes characters preceded by #\
+&gt; <b>(aref "abc" 1)</b>
+#\b                     ;remember, strings are really arrays
+</pre>
+The <tt>concatenate</tt> function can actually work with any type of sequence:
+
+<pre>&gt; <b>(concatenate 'string '(#\a #\b) '(#\c))</b>
+"abc"
+&gt; <b>(concatenate 'list "abc" "de")</b>
+(#\a #\b #\c #\d #\e)
+&gt; <b>(concatenate 'vector '#(3 3 3) '#(3 3 3))</b>
+#(3 3 3 3 3 3)
+</pre>
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Structures"></a>
+<hr><h4>Structures</h4>
+
+LISP structures are analogous to C structs or Pascal records. Here is
+an example:
+
+<pre>&gt; <b>(defstruct foo
+    bar
+    baaz
+    quux)</b>
+FOO
+</pre>
+
+This example defines a data type called <tt>foo</tt> which is a structure
+containing 3 fields. It also defines 4 functions which operate on this
+data type: <tt>make-foo</tt>, <tt>foo-bar</tt>, <tt>foo-baaz</tt>, and <tt>foo-quux</tt>.
+The first one
+makes a new object of type <tt>foo</tt>; the others access the fields of an
+object of type <tt>foo</tt>. Here is how to use these functions:
+
+<pre>&gt; <b>(make-foo)</b>
+#s(FOO :BAR NIL :BAAZ NIL :QUUX NIL) 
+&gt; <b>(make-foo :baaz 3)</b>
+#s(FOO :BAR NIL :BAAZ 3 :QUUX NIL) 
+&gt; <b>(foo-bar *)</b>
+NIL
+&gt; <b>(foo-baaz **)</b>
+3
+</pre>
+The <tt>make-foo</tt> function can take a keyword argument for each of the
+fields a structure of type foo can have. The field access functions
+each take one argument, a structure of type foo, and return the
+appropriate field.
+<p>
+See below for how to set the fields of a structure.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Setf"></a>
+<hr><h4>Setf</h4>
+
+Certain forms in LISP naturally define a memory location. For example,
+if the value of x is a structure of type foo, then <tt>(foo-bar x)</tt> defines
+the bar field of the value of x. Or, if the value of y is a one-
+dimensional array, <tt>(aref y 2)</tt> defines the third element of y.
+
+The <tt>setf</tt> special form uses its first argument to define a place in
+memory, evaluates its second argument, and stores the resulting value
+in the resulting memory location. For example,
+
+<pre>&gt; <b>(setq a (make-array 3))</b>
+#(NIL NIL NIL)
+&gt; <b>(aref a 1)</b>
+NIL
+&gt; <b>(setf (aref a 1) 3)</b>
+3
+&gt; <b>a</b>
+#(NIL 3 NIL)
+&gt; <b>(aref a 1)</b>
+3
+&gt; <b>(defstruct foo bar)</b>
+FOO
+&gt; <b>(setq a (make-foo))</b>
+#s(FOO :BAR NIL)
+&gt; <b>(foo-bar a)</b>
+NIL
+&gt; <b>(setf (foo-bar a) 3)</b>
+3
+&gt; <b>a</b>
+#s(FOO :BAR 3)
+&gt; <b>(foo-bar a)</b>
+3
+</pre>
+
+<tt>Setf</tt> is the only way to set the fields of a structure or the elements
+of an array.
+<p>
+Here are some more examples of <tt>setf</tt> and related functions.
+
+<pre>&gt; <b>(setf a (make-array 1))</b>       ;setf on a variable is equivalent to setq
+#(NIL)
+&gt; <b>(push 5 (aref a 1))</b>            ;push can act like setf
+(5)
+&gt; <b>(pop (aref a 1))</b>                ;so can pop
+5
+&gt; <b>(setf (aref a 1) 5)</b>
+5
+&gt; <b>(incf (aref a 1))</b>              ;incf reads from a place, increments,
+6                                   ;and writes back
+&gt; <b>(aref a 1)</b>
+6
+</pre>
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Booleans and Conditionals"></a>
+<hr><h4>Booleans and Conditionals</h4>
+
+LISP uses the self-evaluating symbol <tt>nil</tt> to mean false. Anything other
+than <tt>nil</tt> means true. Unless we have a reason not to, we usually use the
+self-evaluating symbol <tt>t</tt> to stand for true.
+<p>
+LISP provides a standard set of logical functions, for example and, or,
+and not. The and and or connectives are short-circuiting: and will not
+evaluate any arguments to the right of the first one which evaluates to
+nil, while or will not evaluate any arguments to the right of the first
+one which evaluates to <tt>t</tt>.
+<p>
+LISP also provides several special forms for conditional execution. The
+simplest of these is <tt>if</tt>. The first argument of <tt>if</tt> determines whether
+the second or third argument will be executed:
+
+<pre>&gt; <b>(if t 5 6)</b>
+5
+&gt; <b>(if <tt>nil</tt> 5 6)</b>
+6
+&gt; <b>(if 4 5 6)</b>
+5
+</pre>
+If you need to put more than one statement in the then or else clause
+of an <tt>if</tt> statement, you can use the <tt>progn</tt> special form. 
+<tt>Progn</tt> executes
+each statement in its body, then returns the value of the final one.
+
+<pre>&gt; <b>(setq a 7)</b>
+7
+&gt; <b>(setq b 0)</b>
+0
+&gt; <b>(setq c 5)</b>
+5
+&gt; <b>(if (&gt; a 5)
+    (progn
+      (setq a (+ b 7))
+      (setq b (+ c 8)))
+    (setq b 4))</b>
+13
+</pre>
+An <tt>if</tt> statement which lacks either a then or an else clause can be
+written using the <tt>when</tt> or <tt>unless</tt> special form:
+
+<pre>&gt; <b>(when t 3)</b>
+3
+&gt; <b>(when <tt>nil</tt> 3)</b>
+NIL
+&gt; <b>(unless t 3)</b>
+NIL
+&gt; <b>(unless <tt>nil</tt> 3)</b>
+3
+</pre>
+When and unless, unlike if, allow any number of statements in their
+bodies. (Eg, (when x a b c) is equivalent to (if x (progn a b c)).)
+
+<pre>&gt; <b>(when t
+    (setq a 5)
+    (+ a 6))</b>
+11
+</pre>
+More complicated conditionals can be defined using the cond special
+form, which is equivalent to an if ... else if ... fi construction.
+
+A <tt>cond</tt> consists of the symbol <tt>cond</tt> followed by a number of <tt>cond</tt>
+clauses, each of which is a list. The first element of a <tt>cond</tt> clause is
+the condition; the remaining elements (if any) are the action. The <tt>cond</tt>
+form finds the first clause whose condition evaluates to true (ie,
+doesn't evaluate to <tt>nil</tt>); it then executes the corresponding action and
+returns the resulting value. None of the remaining conditions are
+evaluated; nor are any actions except the one corresponding to the
+selected condition. For example:
+
+<pre>&gt; <b>(setq a 3)</b>
+3
+&gt; <b>(cond
+   ((evenp a) a)</b>        ;if a is even return a<b>
+   ((&gt; a 7) (/ a 2))</b>   ;else if a is bigger than 7 return a/2<b>
+   ((&lt;a 5) (- a 1))</b>   ;else if a is smaller than 5 return a-1<b>
+   (t 17))</b>               ;else return 17
+2
+</pre>
+If the action in the selected <tt>cond</tt> clause is missing, <tt>cond</tt> returns what
+the condition evaluated to:
+<pre>&gt; <b>(cond ((+ 3 4)))</b>
+7
+</pre>
+Here's a clever little recursive function which uses <tt>cond</tt>. You might be
+interested in trying to prove that it terminates for all integers x at
+least 1. (If you succeed, please publish the result.)
+
+<pre>&gt; <b>(defun hotpo (x steps)</b>        ;hotpo stands for Half Or Triple Plus One
+    <b>(cond
+     ((= x 1) steps)
+     ((oddp x) (hotpo (+ 1 (* x 3)) (+ 1 steps)))
+     (t (hotpo (/ x 2) (+ 1 steps)))))</b>
+A
+&gt; <b>(hotpo 7 0)</b>
+16
+</pre>
+The LISP <tt>case</tt> statement is like a C switch statement:
+
+<pre>&gt; <b>(setq x 'b)</b>
+B
+&gt; <b>(case x
+   (a 5)
+   ((d e) 7)
+   ((b f) 3)
+   (otherwise 9))</b>
+3
+</pre>
+The <tt>otherwise</tt> clause at the end means that if x is not a, b, d, e, or
+f, the <tt>case</tt> statement will return 9.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Iteration"></a>
+<hr><h4>Iteration</h4>
+
+The simplest iteration construct in LISP is <tt>loop</tt>: a <tt>loop</tt> construct
+repeatedly executes its body until it hits a return special form. For
+example,
+
+<pre>&gt; <b>(setq a 4)</b>
+4
+&gt; <b>(loop 
+   (setq a (+ a 1))
+   (when (&gt; a 7) (return a)))</b>
+8
+&gt; <b>(loop
+   (setq a (- a 1))
+   (when (&lt; a 3) (return)))
+</b>NIL
+</pre>
+
+The next simplest is <tt>dolist</tt>: <tt>dolist</tt> binds a variable to the elements of
+a list in order and stops when it hits the end of the list.
+
+<pre>&gt; <b>(dolist (x '(a b c)) (print x))</b>
+A 
+B 
+C 
+NIL 
+</pre>
+<tt>Dolist</tt> always returns <tt>nil</tt>. Note that the value of x in the above
+example was never <tt>nil</tt>: the <tt>nil</tt> below the C was the value that
+<tt>dolist</tt>
+returned, printed by the read-eval-print loop.
+<p>
+
+<tt>Dotimes</tt> is like <tt>dolist</tt> except that it iterates over integers.
+
+<pre>&gt; <b>(dotimes (i 4) (print (* i i)))</b>
+0 
+1 
+4 
+9
+16 
+NIL 
+</pre>
+
+The most complicated iteration primitive is called <tt>do</tt>. A <tt>do</tt> statement
+looks like this:
+
+<pre>&gt; <b>(do ((x 1 (+ x 1))
+       (y 1 (* y 2)))
+      ((&gt; x 5) y)
+    (print y)
+    (print 'working))</b>
+1 
+WORKING 
+2 
+WORKING 
+4 
+WORKING 
+8 
+WORKING 
+16 
+WORKING 
+32 
+</pre>
+
+The first part of a <tt>do</tt> specifies what variables to bind, what their
+initial values are, and how to update them. The second part specifies a
+termination condition and a return value. The last part is the body. A
+<tt>do</tt> form binds its variables to their initial values like a <tt>let</tt>, then
+checks the termination condition. As long as the condition is false, it
+executes the body repeatedly; when the condition becomes true, it
+returns the value of the return-value form.
+<p>
+The <tt>do*</tt> form is to <tt>do</tt> as <tt>let*</tt> is to <tt>let</tt>.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Non-local Exits"></a>
+<hr><h4>Non-local Exits</h4>
+
+The <tt>return</tt> special form mentioned in the section on iteration is an
+example of a nonlocal return. Another example is the <tt>return-from</tt> form,
+which returns a value from the surrounding function:
+
+<pre>&gt; <b>(defun foo (x)
+    (return-from foo 3)
+    x)</b>
+FOO
+&gt; <b>(foo 17)</b>
+3
+</pre>
+Actually, the <tt>return-from</tt> form can return from any named block -- it's
+just that functions are the only blocks which are named by default. You
+can create a named block with the <tt>block</tt> special form:
+
+<pre>&gt; <b>(block foo
+    (return-from foo 7)
+    3)</b>
+7
+</pre>
+The <tt>return</tt> special form can return from any <tt>block</tt> named <tt>nil</tt>. Loops are
+by default labelled nil, but you can make your own nil-labelled blocks:
+
+<pre>&gt; <b>(block nil
+    (return 7)
+    3)</b>
+7
+</pre>
+Another form which causes a nonlocal exit is the <tt>error</tt> form:
+
+<pre>&gt; <b>(error "This is an error")</b>
+Error: This is an error
+</pre>
+The <tt>error</tt> form applies <tt>format</tt> to its arguments, then places you in the
+debugger.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Funcall, Apply, and Mapcar"></a>
+<hr><h4>Funcall, Apply, and Mapcar</h4>
+
+Earlier I promised to give some functions which take functions as
+arguments. Here they are:
+
+<pre>&gt; <b>(funcall #'+ 3 4)</b>
+7
+&gt; <b>(apply #'+ 3 4 '(3 4))</b>
+14
+&gt; <b>(mapcar #'not '(t <tt>nil</tt> t <tt>nil</tt> t nil))</b>
+(NIL T NIL T NIL T)
+</pre>
+<tt>Funcall</tt> calls its first argument on its remaining arguments.
+
+<tt>Apply</tt> is just like <tt>funcall</tt>, except that its final argument should be a
+list; the elements of that list are treated as if they were additional
+arguments to a <tt>funcall</tt>.
+
+The first argument to <tt>mapcar</tt> must be a function of one argument; <tt>mapcar</tt>
+applies this function to each element of a list and collects the
+results in another list.
+
+<tt>Funcall</tt> and apply are chiefly useful when their first argument is a
+variable. For instance, a search engine could take a heuristic function
+as a parameter and use funcall or apply to call that function on a
+state description. The sorting functions described later use <tt>funcall</tt>
+to call their comparison functions.
+
+<tt>Mapcar</tt>, along with nameless functions (see below), can replace many
+loops.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Lambda"></a>
+<hr><h4>Lambda</h4>
+If you just want to create a temporary function and don't want to
+bother giving it a name, <tt>lambda</tt> is what you need.
+
+<pre>&gt; <b>#'(lambda (x) (+ x 3))</b>
+(LAMBDA (X) (+ X 3))
+&gt; <b>(funcall * 5)</b>
+8
+</pre>
+The combination of <tt>lambda</tt> and <tt>mapcar</tt> can replace many loops. For
+example, the following two forms are equivalent:
+
+<pre>&gt; <b>(do ((x '(1 2 3 4 5) (cdr x))
+       (y nil))
+      ((null x) (reverse y))
+    (push (+ (car x) 2) y))</b>
+(3 4 5 6 7)
+&gt; <b>(mapcar #'(lambda (x) (+ x 2)) '(1 2 3 4 5))</b>
+(3 4 5 6 7)
+</pre>
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Sorting"></a>
+<hr><h4>Sorting</h4>
+
+LISP provides two primitives for sorting: <tt>sort</tt> and <tt>stable-sort</tt>.
+
+<pre>&gt; <b>(sort '(2 1 5 4 6) #'&lt;)</b>
+(1 2 4 5 6)
+&gt; <b>(sort '(2 1 5 4 6) #'&gt;)</b>
+(6 5 4 2 1)
+</pre>
+The first argument to <tt>sort</tt> is a list; the second is a comparison
+function. The <tt>sort</tt> function does not guarantee stability: if there are
+two elements a and b such that <pre>(and (not (&lt; a b)) (not (&lt; b a)))</pre> is true,
+<tt>sort</tt> may arrange them in either order. The <tt>stable-sort</tt> function is exactly
+like <tt>sort</tt>, except that it guarantees that two equivalent elements
+appear in the sorted list in the same order that they appeared in the
+original list.
+
+Be careful: <tt>sort</tt> is allowed to destroy its argument, so if the original
+sequence is important to you, make a copy with the <tt>copy-list</tt> or <tt>copy-seq</tt>
+function.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Equality"></a>
+<hr><h4>Equality</h4>
+
+
+LISP has many different ideas of equality. Numerical equality is
+denoted by <tt>=</tt>. Two symbols are <tt>eq</tt> if and only if they are identical. Two
+copies of the same list are not <tt>eq</tt>, but they are <tt>equal</tt>.
+
+<pre>&gt; <b>(eq 'a 'a)</b>
+T
+&gt; <b>(eq 'a 'b)</b>
+NIL
+&gt; <b>(= 3 4)</b>
+T
+&gt; <b>(eq '(a b c) '(a b c))</b>
+NIL
+&gt; <b>(equal '(a b c) '(a b c))</b>
+T
+&gt; <b>(eql 'a 'a)</b>
+T
+&gt; <b>(eql 3 3)</b>
+T
+</pre>
+The <tt>eql</tt> predicate is equivalent to <tt>eq</tt> for symbols and to <tt>=</tt> 
+for numbers.
+
+The <tt>equal</tt> predicate is equivalent to <tt>eql</tt> for symbols and numbers. It is
+true for two conses if and only if their cars are <tt>equal</tt> and their cdrs
+are <tt>equal</tt>. It is true for two structures if and only if the structures
+are the same type and their corresponding fields are <tt>equal</tt>.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Some Useful List Functions"></a>
+<hr><h4>Some Useful List Functions</h4>
+
+These functions all manipulate lists.
+
+<pre>&gt; <b>(append '(1 2 3) '(4 5 6))</b>    ;concatenate lists
+(1 2 3 4 5 6)
+&gt; <b>(reverse '(1 2 3))</b>             ;reverse the elements of a list
+(3 2 1)
+&gt; <b>(member 'a '(b d a c))</b>        ;set membership -- returns the first tail
+(A C)                               ;whose car is the desired element
+&gt; <b>(find 'a '(b d a c))</b>          ;another way to do set membership
+A
+&gt; <b>(find '(a b) '((a d) (a d e) (a b d e) ()) :test #'subsetp)</b>
+(A B D E)                           ;find is more flexible though
+&gt; <b>(subsetp '(a b) '(a d e))</b>     ;set containment
+NIL
+&gt; <b>(intersection '(a b c) '(b))</b> ;set intersection
+(B)
+&gt; <b>(union '(a) '(b))</b>              ;set union
+(A B)
+&gt; <b>(set-difference '(a b) '(a))</b> ;set difference
+(B)
+</pre>
+<tt>Subsetp</tt>, <tt>intersection</tt>, <tt>union</tt>, and <tt>set-difference</tt>
+ all assume that each
+argument contains no duplicate elements -- <pre>(subsetp '(a a) '(a b b))</pre> is
+allowed to fail, for example.
+
+<tt>Find</tt>, <tt>subsetp</tt>, <tt>intersection</tt>, <tt>union</tt>,
+ and <tt>set-difference</tt> can all take a
+<tt>:test</tt> keyword argument; by default, they all use <tt>eql</tt>.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+
+<p>
+<a name="Getting Started with Emacs"></a>
+<hr><h4>Getting Started with Emacs</h4>
+
+You can use Emacs to edit LISP code: most Emacses are set up to enter
+LISP mode automatically when they find a file which ends in .lisp, but
+if yours isn't, you can type M-x lisp-mode.
+
+You can run LISP under Emacs, too: make sure that there is a command in
+your path called "lisp" which runs your favorite LISP. For example, you
+could type
+<pre><b>ln -s /usr/local/bin/clisp ~/bin/lisp</b>
+</pre>
+Then in Emacs type M-x run-lisp. You can send LISP code to the LISP you
+just started, and do all sorts of other cool things; for more
+information, type C-h m from any buffer which is in LISP mode.
+
+Actually, you don't even need to make a link. Emacs has a variable
+called inferior-lisp-program; so if you add the line
+
+<pre>(setq inferior-lisp-program "/usr/local/bin/clisp")</pre>
+
+to your .emacs file, Emacs will know where to find CLISP when
+you type M-x run-lisp.
+
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+<p>
+<a name="Further Information"></a>
+<hr><H4>Further Information</H4>
+
+The best LISP textbook I know of is
+<A HREF="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/cltl2.html">
+Common Lisp: the Language (2nd Edition), by Guy Steele (Digital Press, 1990)</A>.
+The first edition is easier to read; the second edition 
+describes the more recent standard. (The differences between the two standards shouldn't affect
+casual programmers.)
+<p>
+A book by Dave Touretsky has also been recommended to me, although I
+haven't read it, so I can't say anything about it.
+<p>
+<a href="#Table of Contents"><i>Table of Contents</i></a>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="csound-score-file.cls">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>csound-score-file</B></TT>
+<TD align="right" valign="top">
+[Class]<TR>
+</TABLE><P>
+
+An event stream class that implements writing and importing CSound
+score files.  This class is automatcally chosen when you specify a
+file with a .sco extension.  <P>
+
+<TT>csound-score-file</TT> declares the following slots: <P>
+
+<DL>
+
+<DT><TT>orchestra {<I>filename</I> | nil}</TT>
+
+<DD>Holds the name (string) of the CSound orchestra file that CSound
+will use to play the score file.  Defaults to nil.
+
+</DL>
+
+Other public slots are inherited from <TT>event-stream</TT>.  <P>
+
+Stella's <TT>import</TT> command supports the following options for
+CSound score files:<P>
+
+<DL>
+
+<DT><TT>start {<I>number</I>}</TT>
+
+<DD>A start time in the score file to start importing.  Defaults to
+the beginning of the file.
+
+<DT><TT>end {<I>number</I>}</TT>
+
+<DD>The end time in .sco file to stop processing. Defaults to the end
+of the file.
+
+<DT><TT>insmap ({<I>ins</I> <I>class</I>}*)</TT>
+
+<DD>A list of <I>ins class</I> pairs where each <I>ins</I> is an
+instrument name found in the .sco file and <I>class</I> is its note
+class in Common Music.  If <TT>insmap</TT> is not provided each
+instrument statement in the file is assumed to have a corresponding
+class with the same name in Common Music.
+
+<DT><TT>container {<I>name</I>}</TT>
+
+<DD>The <I>name</I> of a container to append the imported objects to.
+Defaults to nil, which causes imports to be placed in a newly created
+container.
+
+</DL>
+
+<A HREF="event-stream.cls.html#slots">Additional slots</A> are inherited from
+<TT>event-stream</TT>.  <P>
+
+<P><B>See Also:</B></P>
+
+<A HREF="csound.stx.html"><TT>CSound</TT></A> [Syntax],
+<A HREF="event-stream.cls.html"><TT>event-stream</TT></A>,
+<A HREF="../tutorials/stella/s08.html#importing_recording"
+   TARGET="_parent">Importing</A>
+<P>
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:   5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

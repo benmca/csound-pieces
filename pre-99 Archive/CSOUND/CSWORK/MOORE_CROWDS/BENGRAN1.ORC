@@ -1,0 +1,1 @@
+sr = 44100kr=4410ksmps = 10 nchnls = 1instr 1idur = p3iampoff = p4ipitchoff = p5ipan = p3idist = p3ipct = p3idens = p3    insnd = 10    ibasfrq = 44100 / ftlen(insnd)   ; Use original sample rate of insnd file    imaxgdur =  13.5  ar  grain 1000, ibasfrq, idens, iampoff, ipitchoff, igdur, insnd, 5, imaxgdur, 0.0 out arendinamp kpoff pan dist pct  

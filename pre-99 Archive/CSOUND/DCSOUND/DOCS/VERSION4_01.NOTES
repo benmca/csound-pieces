@@ -1,0 +1,120 @@
+Release Notes for 4.01
+======================
+
+These are the release notes for version 4.01.  This is a set of small
+changes against version 4.00, which was only slightly different from
+the 3.59 (v4.0 beta) release.  These notes incorporate all changes
+since v3.591
+
+
+Bug Fixes
+---------
+
+None
+
+Language Changes
+----------------
+
+Csound no longer creates score.srt as a fixed file unless the option
+-t0 is given.
+
+Opcode Fixes
+------------
+
+wguide1 and wguide2 -- fixed code so both a-rate and k-rate variables
+can be used.
+
+pvinterp and pvread -- now allow small frame sizes
+
+space -- bug fixed which would lead to inconsistent results
+
+schedule and schedwhen -- should now work if the event is in the future
+
+
+New Opcodes 
+-----------
+
+(opcode change)
+
+resony -- now has a new optional argument (not at the end
+***INCOMPATIBLE CHANGE**) which controls logarithmic or linear spread.
+See new documentation below.
+
+Other Changes:
+-------------
+
+Version number now printed in x.xx format
+
+
+Windows GUI Changes
+-------------------
+
+Changes to how often the screen is repainted; should maintain the
+graphs better.
+
+New check box in Extras dialog for keeping score.srt
+
+
+------------------------------------------------------------------------
+==John ff
+  1999 Thanksgiving Week (USA)
+========================================================================
+resony 
+
+ar    resony     asig, kbf, kbw, inum, ksep [,  isepmode, iscl, istor] 
+
+DESCRIPTION 
+
+A bank of second-order bandpass filters, connected in parallel. 
+
+INITIALIZATION 
+
+inum - number of filters. 
+
+isepmode - determines if the separation center frequencies of each
+filter must be generated in logarithmically (using octave as unit of
+measure) or linearly (using Hertz). Default value is 0, corresponding
+to logarithmic mode.
+
+iscl - coded scaling factor for resonators. A value of 1 signifies a
+peak response factor of 1, i.e. all frequencies other than kcf are
+attenuated in accordance with the (normalized) response curve. A value
+of 2 raises the response factor so that its overall RMS value equals
+1. (This intended equalization of input and output power assumes all
+frequencies are physically present; hence it is most applicable to
+white noise.) A zero value signifies no scaling of the signal, leaving
+that to some later adjustment (e.g. see balance). The default value is
+0.
+
+istor - initial disposition of internal data space. Since filtering
+incorporates a feedback loop of previous output, the initial status of
+the storage space used is significant. A zero value will clear the
+space; a non-zero value will allow previous information to remain. The
+default value is 0.
+
+
+PERFORMANCE
+
+asig - audio input signal
+kbf -  base frequency, i.e. center frequency of lowest filter in Hz
+kbw -  bandwidth in Hz
+ksep - separation of the center frequency of filters (in octaves or in
+       Hertz, depending by isepmode flag) 
+
+
+resony is a bank of second-order bandpass filters, with k-rate variant
+frequency separation, base frequency and bandwidth, connected in
+parallel (i.e. the resulting signal is a mixing of the output of each
+filter). The center frequency of each filter depends of kbf and ksep
+variables. The maximum number of filters is set to 100.
+
+EXAMPLE: 
+
+In this example the global variable gk1 modifies kbf, gk2 modifies
+kbw, gk3 inum, gk4 ksep and gk5 the main volume.
+
+	instr	1
+a1	soundin "myfile.aif"
+a2	resony	a1,   gk1 , gk2 ,i(gk3),gk4 
+	out	a2 * gk5 
+	endin

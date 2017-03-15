@@ -1,0 +1,331 @@
+Release Notes for v3.45
+=======================
+
+Version 3.45 is a small collection of corrections and additions
+following the large changes of 3.44
+
+Summary
+=======
+
+a)	An additional optional argument has been added to all the
+	Butterworth filters, vdelay, and reverb2, which if non-zero
+	skips the initialisation stage.
+
+b)	Return code corrected after no graphics
+
+c)	Allow arguments like -m6W
+
+d)	Added new opcodes uniform to complete the random generators
+
+e)	Added fof2 opcode
+
+f)	New command option -z to give a list of opcodes.  -z0 or -z
+	prints a list; -z1 prints a list with answer/argument
+	descriptions. 
+
+g)	Adjust writing of scores to allow longer tables (as described
+	by Richard Karpen).
+
+h)	Adjusted sndwarp to give (optional) stereo, and new opcode
+	sndwarpst (Described below)
+
+DOCUMENTATION ON NEW/REVISED OPCODES
+====================================
+
+_SNDWARP (Written by Richard Karpen, 1992. Most recent revision, 1997)
+
+asig [, acmp] sndwarp xamp, xtimewarp, xresample, ifn1, ibeg, iwsize, irandw,
+	ioverlap, ifn2, itimemode
+
+asig1, asig2 [, acmp1, acmp2] sndwarpst xamp, xtimewarp, xresample, ifn1, ibeg,
+	iwsize, irandw, ioverlap, ifn2, itimemode
+
+DESCRIPTION
+
+sndwarp reads sound samples from a table and applies time-stretching
+and/or pitch modification.  Time and frequency modification are
+indepentant from one another. For example, a sound can be stretched in
+time while raising the pitch! The window size and overlap arguments
+are important to the result and should be experimented with. In
+general they should be as small as possible. For example, start with
+iwsize=sr/10 and ioverlap=15. Try irandw=iwsize*.2. If you can get
+away with less overlaps, the program will be faster. But too few may
+cause an audible flutter in the amplitude. The algorithm reacts
+differently depending upon the input sound and there are no fixed
+rules for the best use in all circumstances. But with proper tuning,
+excellent results can be achieved.
+
+
+OUTPUTS
+asig is the single channel of output from the sndwarp unit generator
+while asig1 and asig2 are the stereo (left and right) outputs from
+sndwarpst. sndwarp assumes that the function table holding the sampled
+signal is a mono one while sndwarpst assumes that it is stereo. This
+simply means that sndwarp will index the table by single-sample frame
+increments and sndwarpst will index the table by a two-sample frame
+increment. The user must be aware then that if a mono signal is used
+with sndwarst or a stereo one with sndwarp, time and pitch will be
+altered accordingly.
+
+acmp in sndwarp and acmp1, acmp2 in sndwarpst, are single layer (no
+overlaps), unwindowed versions of the time and/or pitch altered
+signal. They are supplied in order to be able to balance the amplitude
+of the signal output, which typically contains many overlapping and
+windowed versions of the signal, with a clean version of the
+time-scaled and pitch-shifted signal. The sndwarp process can cause
+noticeable changes in amplitude, (up and down), due to a time
+differential between the overlaps when time-shifting is being
+done. When used with a balance unit, acmp, acmp1, acmp2 can greatly
+enhance the quality of sound. They are optional, but note that in
+sndwarpst they must both be present in the syntax (use both or
+neither). An example of how to use this is given below.
+
+
+INPUT ARGUMENTS
+ifn1 is the number of the table holding the sound samples which will
+be subjected to the sndwarp processing. GEN01 is the appropriate
+function generator to use to store the sound samples from a
+pre-existing soundfile.
+
+xamp is the value by which to scale the amplitude (see note on the use
+of this when using acmp, acmp1, amcp2).
+
+xtimewarp determines how the input signal will be stretched or shrunk
+in time. There are two ways to use this argument depending upon the
+value given for itimemode. When the value of itimemode is 0,
+xitimewarp will scale the time of the sound. For example, a value of 2
+will stretch the sound by 2 times. When itimemode is any non-zero
+value then xtimewarp is used as a time pointer in a similar way in
+which the time pointer works in lpread and pvoc. An example below
+illustrates this. In both cases, the pitch will NOT be altered by this
+process. Pitch shifting is done independently using xresample.
+
+xresample is the factor by which to change the pitch of the sound. For
+example, a value of 2 will produce a sound one octave higher than the
+original. The timing of the sound, however, will NOT be altered.
+
+ibeg is the time in seconds to begin reading in the table (or
+soundfile). When itimemode is non- zero, the value of itimewarp is
+offset by ibeg.
+
+iwsize is the window size in samples used in the time scaling
+algorithm.
+
+irandw is the bandwidth of a random number generator. The random
+numbers will be added to iwsize.
+
+ioverlap determines the density of overlapping windows.
+
+ifn2 is a function used to shape the window. It is usually used to
+create a ramp of some kind from zero at the beginning and back down to
+zero at the end of each window.  Try using a half a sine (ie: f1 0
+16384 9 .5 1 0) which works quite well. Other shapes can also be used.
+
+
+EXAMPLES
+
+The below example shows a slowing down or stretching of the sound
+stored in the stored table (ifn1). Over the duration of the note, the
+stretching will grow from no change from the original to a sound which
+is ten times "slower" than the original.  At the same time the overall
+pitch will move upward over the duration by an octave.
+
+iwindfun=1
+isampfun=2_ibeg=0_iwindsize=2000_iwindrand=400_ioverlap=10
+
+awarp	line	1, p3, 1
+aresamp	line	1, p3, 2
+kenv	line	1, p3, .1
+
+asig  sndwarp kenv,awarp,aresamp,isampfun,ibeg,iwindsize,iwindrand, \
+		ioverlap,iwindfun,0
+
+Now, here's an example using xtimewarp as a time pointer and using
+stereo
+
+itimemode=1
+atime line 0, p3, 10
+asig1, asig2	sndwarpst kenv, atime, aresamp, sampfun, ibeg, \
+	iwindsize, iwindrand, ioverlap, iwindfun, itimemode
+
+In the above, atime advances the time pointer used in the sndwarp from
+0 to 10 over the duration of the note. If p3 is 20 then the sound will
+be two times slower than the original. Of course you can use a more
+complex function than just a single straight line to control the time
+factor.
+
+Now the same as above but using the balance function with the optional
+outputs:
+
+asig,acmp	sndwarp	1,awarp,aresamp,isampfun,ibeg,iwindsize,iwindrand,\
+			ioverlap,iwindfun,itimemode
+
+
+abal balance asig, acmp
+
+asig1,asig2,acmp1,acmp2	sndwarpst	1, atime, aresamp, sampfun,
+					ibeg, iwindsize, iwindrand, \
+					ioverlap, iwindfun, itimemode
+
+abal1 balance asig1, acmp1
+abal2 balance asig2, acmp2
+
+In the above two examples notice the use of the balance unit. The
+output of balance can then be scaled, enveloped, sent to an out or
+outs, and so on. Notice that the amplitude arguments to sndwarp and
+sndwarpst are "1" in these examples. By scaling the signal after the
+sndwarp process, abal, abal1, and abal2 should contain signals that
+have nearly the same amplitude as the original input signal to the
+sndwarp process. This makes it much easier to predict the levels and
+avoid samples out of range or sample values that are too small.
+
+More advice: Only use the stereo version when you really need to be
+processing a stereo file. It is someone slower than the mono version
+and if you use the balance function it is slower again. There is
+nothing wrong with using a mono sndwarp in a stereo orchestra and
+sending the result to one or both channels of the stereo output!
+
+
+------------------------------------------------------------------------
+FOF2
+
+DESCRIPTION:
+
+Get rid of the last argument to fof, "ifmode". Instead we'll have "kgliss",
+internal grain glissandi. (This is certainly not as generally useful as kphs,
+but it does brighten up any fof instrument, allowing more spectral variation.)
+
+Usage:
+kgliss - sets the end pitch of each grain relative to the initial pitch,
+in octaves. Thus kgliss = 2 means that the grain ends two octaves above
+its initial pitch, while kgliss = -5/3 has the grain ending a perfect
+major sixth below.
+
+Rationale:
+The toggle switch "ifmode" always struck me as of rather limited use.
+When zero (default), the initial pitch of a grain (given by kform at
+the inception of a new grain) is kept steady throughout its lifetime,
+if one, every grain's pitch follows kform. This may certainly be
+good for vocal synthesis, but for granular synthesis i'd like more
+control over the internal grain pitch. Eg grain glissandi.
+------------------------------------------------------------------------
+There have been requests for a way of telling what opcodes are
+available in a given version.  To assist with that there is a new
+command line option
+
+-z	Give a list of opcodes and exit
+-z0	The same
+-z1	Give a list of opcodes, together with answer and argument
+	types; then exit
+
+------------------------------------------------------------------------
+Butterworth filters (Revised)
+
+		ar	butterhp	asig, kfreq[, iskip]
+		ar	butterlp	asig, kfreq[, iskip]
+		ar	butterbp	asig, kfreq, kband[, iskip]
+		ar	butterbr	asig, kfreq, kband[, iskip]
+
+Implementations of second-order hipass, lopass, bandpass and
+bandreject Butterworth filters.
+
+PERFORMANCE
+
+These new filters are butterworth second-order IIR filters.  They are
+slightly slower than the original filters in Csound, but they offer an
+almost flat passband and very good precision and stopband attenuation.
+
+asig  - Input signal to be filtered.
+
+kfreq  - Cuttoff or center frequency for each of the filters.
+
+kband  - Bandwidth of the bandpass and bandreject filters.
+
+iskip  - Skip initialisation if present and non zero
+
+EXAMPLE
+
+	asig	rand		10000	      ; White noise signal
+	alpf	butterlp	asig, 1000    ; cutting frequencies above1K
+	ahpf	butterhp	asig, 500     ; passing frequencies above 500Hz
+	abpf	butterbp	asig, 2000, 100 ; passing only 1950 to 2050 Hz
+	abrf	butterbr	asig, 4500, 200 ; cutting only 4400 to 4600 Hz
+
+------------------------------------------------------------------------
+Vdelay (revised)
+
+		ar	vdelay	asig, adel, imaxdel[, iskip]
+
+This is an interpolating variable time delay, it is not very different
+from the existing implementation (deltapi), it is only easier to use.
+
+INITIALIZATION
+
+imaxdel - Maximum value of delay in samples.  If adel gains a value
+greater than imaxdel it is folded around imaxdel.  This should not
+happen.
+
+iskip - Skip initialisation if present and non zero
+
+PERFORMANCE
+
+With this unit generator it is possible to do Doppler effects or
+chorusing and flanging.
+
+asig  - Input signal.
+
+adel - Current value of delay in samples.  Note that linear functions
+have no pitch change effects.  Fast changing values of adel will cause
+discontinuities in the waveform resulting noise.
+
+Example
+
+	f1 0 8192 10 1
+
+	ims = 100			; Maximum delay time in msec
+	a1	oscil	10000, 1737, 1	; Make a signal
+	a2	oscil	ims/2, 1/p3, 1	; Make an LFO
+	a2	=	a2 + ims/2	; Offset the LFO so that it is positive
+	a3	vdelay	a1, a2, ims	; Use the LFO to control delay time
+	out	a3
+
+Two important points here.  First, the delay time must be always
+positive.  And second, even though the delay time can be controlled in
+k-rate, it is not advised to do so, since sudden time changes will
+create clicks.
+
+------------------------------------------------------------------------
+Reverb2 (Revised)
+
+	ar	reverb2	asig, ktime, khdif[, iskip]
+
+This is a reverberator consisting of 6 parallel comb-lowpass filters
+being fed into a series of 5 allpass filters.
+
+
+iskip - Skip initialisation if present and non zero
+
+PERFORMANCE
+
+The input signal asig is reverberated for ktime seconds.  The
+parameter khdif controls the high frequency diffusion amount.  The
+values of khdif should be from 0 to 1.  If khdif is set to 0 the all
+the frequencies decay with the same speed.  If khdif is 1, high
+frequencies decay faster that lower ones.
+
+Example:
+
+	a1	oscil		10000, 100, 1
+	a2	reverb2	a1, 2.5, .3
+	out	a1 + a2 * .2
+
+This results in a 2.5 sec reverb with faster high frequency
+attenuation.
+------------------------------------------------------------------------
+Noise Generator
+
+xuniform krange - Uniform distribution random number generator.  krange
+is the range of the random numbers [0 - krange).
+
+------------------------------------------------------------------------
+

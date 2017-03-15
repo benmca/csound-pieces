@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+
+<A NAME="cl.cmd">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>cl {<I>file</I>} {<I>option value</I>}*</B></TT>
+<TD align="right" valign="top">
+[Command]<TR>
+</TABLE><P><P>
+<P>
+
+Conditionally compiles and loads the binary version
+of {<I>file</I>}. A binary is compiled if:
+<UL><LI>there is currently no binary version.
+<LI>the binary version is out of date.
+<LI><TT>force-recompile</TT> is t
+</UL>
+<P>
+If {<I>file</I>} does not include a filename extension <TT>cl</tt> searches
+for a version of {<I>file</I>} using the following order
+of extensions: .cm, .ins, .lisp
+<P>
+<TT>cl</TT> supports the following {<I>option value</I>} pairs
+<DL>
+<DT><TT>force-recompile {t | nil}</TT>
+    <DD>Compile even if binary is uptodate.
+<DT><TT>output-file {<I>pathname</I>}</TT>
+    <DD>Specify non-default binary location.
+<DT><TT>verbose {t | nil}</TT>
+    <DD>Print compilation/load progress.
+</DL>
+
+<P><B>Example:</B></P>
+
+Compile and load test.lisp from the current working directory:
+<PRE>Stella [Top-Level]: <B>cl test
+</B></PRE>
+
+<P><B>See Also:</B></P>
+<A HREF="import.cmd.html">import</A> [Command],
+<A HREF="load.cmd.html">load</A> [Command],
+<A HREF="script.cmd.html">script</A> [Command]
+<P>
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

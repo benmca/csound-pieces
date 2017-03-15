@@ -1,0 +1,310 @@
+<HTML>
+<HEAD>
+  <!-- Created with AOLpress/2.0 -->
+  <TITLE>Compiling DirectCsound</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<H1 ALIGN=Left>
+  <FONT COLOR="#804040">Compiling DirectCsound</FONT>
+</H1>
+<P>
+<B>(for expert programmers only)</B>
+<P>
+At present time, the executables of DirectCsound are compiled using Microsoft
+Visual C++ Developer Studio version 5.0. The projects, workspaces and makefiles
+provided with the sources are generated with this compiler. A Developer
+Studio&nbsp;workspace can contain several projects (it is the case of
+DirectCsound workspace).
+<P>
+DirectCsound Workspace is provided with three main projects:
+<OL>
+  <LI>
+    <FONT COLOR="#9f9f9f"><B>CsoundVST</B> (an attempt to turn Csound into a
+    VST Plugin. This is a very alpha version, and I don't recommend to attempt
+    to use it, because it is very unreliable and instable)</FONT>
+  <LI>
+    <FONT COLOR="#000080"><B>DirectCsoundCon</B></FONT> is the console-based
+    version of DirectCsound
+  <LI>
+    <FONT COLOR="#000080"><B>DirectCsoundWin</B></FONT> is the GUI version of
+    DirectCsound
+</OL>
+<P>
+Both <B><I>DirectCsoundCon</I></B> and <B><I>DirectCsoundWin</I></B> projects
+are provided with four <I>Configurations</I>:
+<OL>
+  <LI>
+    <B><I>Win32 Debug</I></B>
+  <LI>
+    <B><I>Win32 Release</I></B>
+  <LI>
+    <B><I>Win32 double Debug </I></B>(64-bit floating point version)
+  <LI>
+    <B><I>Win32 double Release </I></B>(64-bit floating point version)
+</OL>
+<P>
+To build one or more targets of DirectCsound you can
+<UL>
+  <LI>
+    use the provided makefiles (<B><I>"DirectCsoundCon.mak"</I></B> &nbsp;and
+    <B><I>"DirectCsoundWin.mak"</I></B>) with <B><I>nmake</I></B> or
+  <LI>
+    open the workspace named <B><I>"DirectCsoundWin.dsw"</I></B> with Microsoft
+    Visual C++ Developer Studio version 5.0
+</UL>
+<P>
+If you are using Developer Studio, be sure to activate the correct project
+and Configuration first.
+<P>
+Even if later version of Visual C++ should be compatible with earlier ones,
+actually, this is not always true, since I noticed that many users run into
+difficulties when attempting to compile DirectCsound with a version of MSVC
+different from the 5.0. In this case you should reconstruct the Project by
+scratch, and &nbsp;I give the following suggestions:
+<OL>
+  <LI>
+    Include all source files contained in the project of old MSVC version.
+  <LI>
+    Set all global macro #defines (for each project you intend to build)
+  <LI>
+    Set the runtime library type to Multithreaded
+  <LI>
+    Provide special libraries and include files (for DirectSound, EAX and Paintlib)
+  <LI>
+    Set alternative include directory paths and library paths (if you put the
+    special libraries in a custom directory)
+  <LI>
+    Set particular compilation directives (different from project defaults) for
+    some special files
+</OL>
+<H3>
+  1. Including source files
+</H3>
+<P>
+You can see the files to include by opening a project file (with extension
+.dsp) with a text editor and by observing included files having C, CPP, and
+CXX extension. For example:
+<P>
+<TT># Begin Source File<BR>
+SOURCE=.\DirectXcapture.c<BR>
+# End Source File</TT>
+<P>
+<TT># Begin Source File<BR>
+SOURCE=.\DirectXout.c<BR>
+# End Source File</TT>
+<P>
+<TT># Begin Source File<BR>
+SOURCE=.\DirectXset.c<BR>
+# ADD CPP /D "INITGUID"<BR>
+# End Source File</TT>
+<P>
+<TT>...... etcetera ......</TT>
+<P>
+You have to include all source files: this can be done by using the IDE interface
+by left-clicking the project name (in the following case "DirectCsoundWin
+files") and by choosing "Add Files to Project".
+<P>
+<IMG SRC="pict7.jpg" ALT="[Image]" WIDTH="335" HEIGHT="385">
+<P>
+A browse-file dialog-box will appear and you can select the files you intend
+to add to the project.
+<IMG SRC="pict8.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="430" HEIGHT="296">
+<P>
+I don't know if later versions of MSVC allow the same procedure.
+<P>
+<H3>
+  2. Setting global #defines macros
+</H3>
+<P>
+Next pass is to provide the correct settings for the project. You can do
+this by selecting the "Project-settings" options. A dialog box will appear,
+and you have to select the "C/C++" tab.
+<P>
+<IMG SRC="pict9.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="577" HEIGHT="369">
+<P>
+In the "Preprocessor definitions" text field you have to put the following
+macro definitions:
+<P>
+For <FONT COLOR="#804040"><B><I>DirectCsoundCon</I></B></FONT> project:
+<DL>
+  <DT>
+    Win32 Debug Configuration:
+  <DD>
+    WIN32, _DEBUG, _CONSOLE, _MBCS, _WINDOWS, SFIRCAM, PIPES, MACROS, RTAUDIO,
+    MSVC, GAB_RT, STRICT, GAB_EAX
+  <DT>
+    Win32 Release Configuration:
+  <DD>
+    WIN32, NDEBUG, _CONSOLE, _MBCS, _WINDOWS, SFIRCAM, PIPES, MACROS, RTAUDIO,
+    MSVC, GAB_RT, STRICT, GAB_EAX
+  <DT>
+    Win32 double Debug Configuration:
+  <DD>
+    WIN32, _DEBUG, _CONSOLE, _MBCS, _WINDOWS, SFIRCAM, PIPES, MACROS, RTAUDIO,
+    MSVC, GAB_RT, STRICT, GAB_EAX, MYFLT=double
+  <DT>
+    Win32 double Release Configuration:
+  <DD>
+    WIN32, NDEBUG, _CONSOLE,_MBCS, _WINDOWS, SFIRCAM, PIPES, MACROS, RTAUDIO,
+    MSVC, GAB_RT, STRICT, GAB_EAX, MYFLT=double
+</DL>
+<P>
+For <FONT COLOR="#804040"><B><I>DirectCsoundWin</I></B></FONT> project:
+<DL>
+  <DT>
+    Win32 Debug Configuration:
+  <DD>
+    WIN32, _DEBUG, _WINDOWS, SFIRCAM, PIPES, MACROS, RTAUDIO, MSVC, GAB_RT, STRICT,
+    GAB_EAX, GAB_WIN, RESET
+  <DT>
+    Win32 Release Configuration:
+  <DD>
+    WIN32, NDEBUG, _WINDOWS, SFIRCAM, PIPES, MACROS, RTAUDIO, MSVC, GAB_RT, STRICT,
+    GAB_EAX, GAB_WIN, RESET
+  <DT>
+    Win32 double Debug Configuration:
+  <DD>
+    WIN32, _DEBUG, _WINDOWS, SFIRCAM, PIPES, MACROS, RTAUDIO, MSVC, GAB_RT, STRICT,
+    GAB_EAX, GAB_WIN, RESET, MYFLT=double
+  <DT>
+    Win32 double Release Configuration:
+  <DD>
+    WIN32, NDEBUG, _WINDOWS, SFIRCAM, PIPES, MACROS, RTAUDIO, MSVC, GAB_RT, STRICT,
+    GAB_EAX, GAB_WIN, RESET, MYFLT=double
+</DL>
+<H3>
+  3. Setting Runtime Library Type
+</H3>
+<P>
+You have to set the runtime library to <B>"Debug Multithreaded"</B> for "Win32
+Debug" and "Win32 double Debug" configurations and <B>"Multithreaded"</B>
+for "Win32 Release" and "Win32 double Release" configurations:
+<P>
+<IMG SRC="pict10.jpg" ALT="[Image]" WIDTH="577" HEIGHT="188">
+<P>
+<H3>
+  4. Providing special libraries
+</H3>
+<P>
+Special libraries are needed to make a full compilation of DirectCsound.
+These libraries (together with their include files) should be put in MSVC
+include directory and lib directory or in a custom user path. In the last
+case you have to provide this path to each project.
+<P>
+The required libraries are:
+<P>
+Microsoft DirectSound libraries:
+<DL>
+  <DT>
+    <B>dsound.h</B> and <B>dsound.lib</B> got from Microsoft DirectX 7.0 SDK
+    (or later version)
+</DL>
+<P>
+<FONT COLOR="#800000"><B><I>EAX 2.0</I></B></FONT>: &nbsp;
+<DL>
+  <DT>
+    <B>eax.h, &nbsp; eax.lib </B>and <B>eaxguid.lib</B>
+  <DT>
+    You can get the EAX 2.0 SDK at the following URL:
+  <DD>
+    <A HREF="http://developer.soundblaster.com/dev-resources/">http://developer.soundblaster.com/dev-resources/</A>
+  <DD>
+    note: you can avoid to provide this library if you don't have a soundblaster
+    Live or you don't intend to use EAX 3D sound extensions in DirectCsound.
+    To do that, simply delete the GAB_EAX macro define in the corresponding project
+</DL>
+<P>
+<FONT COLOR="#800000"><B><I>Paintlib</I></B></FONT>:
+<DL>
+  <DT>
+    all include files of paintlib plus <B>paintlib.lib, libtiff.lib, libjpeg.lib,
+    libpng.lib</B><BR>
+    You can get paintlib sources at the following URL:
+  <DD>
+    <A HREF="http://www.paintlib.de/paintlib/">http://www.paintlib.de/paintlib/</A>
+</DL>
+<P>
+<FONT COLOR="#800000"><B><I>FLTK</I></B></FONT>:
+<DL>
+  <DT>
+    all include files of FLTK (Fast Light Tool Kit) plus <B>fltk.lib </B>(for
+    release version) or <B>fltkd.lib </B>(for debug version). You can download
+    FLTK at the following URL:
+    <A HREF="http://www.fltk.org/">http://www.fltk.org/</A>
+  <DD>
+</DL>
+<P>
+<FONT COLOR="#800000"><B><I>OpenGL</I></B></FONT>:
+<DL>
+  <DT>
+    all include files of OpenGL, GLUT and GLU plus <B>opengl32.lib</B> and
+    <B>glut32.lib</B>. You have to download the GLUT library. There are several
+    internet sites that provide it. Make a web search to find it.
+</DL>
+<P>
+Once you placed the include and lib files in a directory, you have to add
+the library to the link directory options. To do that, you have to select
+"Project-Settings" and the "Link" tab of the Settings dialog box, then filling
+the "Object/library modules" text field with the required libraries:
+<P>
+<IMG SRC="pict11.jpg" ALT="[Image]" WIDTH="577" HEIGHT="219">
+<P>
+...that are
+<P>
+<B>dsound.lib eaxguid.lib winmm.lib wsock32.lib paintlib.lib libtiff.lib
+libjpeg.lib libpng.lib kernel32.lib user32.lib gdi32.lib winspool.lib
+comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib fltk.lib
+opengl32.lib</B>
+<H3>
+  5. Setting additional directory paths for include files and libraries
+</H3>
+<P>
+If you placed the special library in a path different from
+<B>..\DevStudio\VC\lib</B> and corresponding include files in a path different
+from <B>..\DevStudio\VC\include</B>, you have to provide the custom directories
+where you placed these libraries, by setting corresponding path in the
+Project-Setting dialog box:
+<P>
+<IMG SRC="pict12.jpg" ALT="[Image]" WIDTH="577" HEIGHT="292">
+<P>
+... and ...
+<P>
+<IMG SRC="pict13.jpg" ALT="[Image]" WIDTH="577" HEIGHT="252">
+<P>
+<H3>
+  6. Setting particular compilation directives (different from project defaults)
+  for some special files
+</H3>
+<P>
+Some source files have project settings slightly different from project defaults.
+These are:
+<P>
+<B>sfont.c</B>
+<DL>
+  <DT>
+    with this file you have to set "Struct member alignment" to "1 Byte":
+</DL>
+<P>
+<IMG SRC="pict14.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="577" HEIGHT="369">
+<P>
+<B>rtaudio2.c</B>, <B>aops.c </B>and <B>lptrkfns.c</B>
+<DL>
+  <DT>
+    probably due to a bug of MSVC 5.0 with these files you have to remove all
+    speed optimizations except:
+  <DD>
+    Generate Intrinsic Fuctions<BR>
+    Favor Fast Code<BR>
+    Frame Pointer Omission
+</DL>
+<P>
+<IMG SRC="pict15.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="577" HEIGHT="369">
+<P>
+... otherwise some problems will rise during compilation or run-time.
+<P>
+<B>DirectXset.c</B>
+<P>
+you have to add the INIGUID define macro
+<P>
+<IMG SRC="pict16.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="577" HEIGHT="369">
+</BODY></HTML>

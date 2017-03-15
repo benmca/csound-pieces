@@ -1,0 +1,179 @@
+Release Notes for 4.08
+======================
+
+These are the release notes for version 4.08. Note that there are new
+files in the sources, sdif.c, sdif.h, sdif-mem.c, sdif-mem.h and
+sdif2adsyn.c
+
+This release is mainly a number of bug fixes, but there are a couple
+of new opcodes, and a major internal reorganisation to allow creation
+of a double-based Csound.
+
+Bug Fixes
+---------
+
+Bug in score macros fixed
+
+Dithering message was overlaid with a Scansys message
+
+
+Language Changes
+----------------
+
+hetro can generate SDIF files, and a new utility can translate SDIF to
+adsyn
+
+
+Opcode Fixes
+------------
+
+guiro had an argument missing which was dangerous
+
+The damp parameter of guiro was documented as being the damping, but
+it was not in the code.  It is now, and should have a value less than 1.
+
+
+New Opcodes 
+-----------
+
+mpulse -- generate a stream of impulses
+button -- buttonpush control
+checkbox -- checkbox control
+
+
+Other Changes:
+-------------
+
+Internal changes to make FreeBSD build easier
+
+There has been a major source change so it is now possible to build
+Csound using doubles rather than floats internally (*).  This is (in
+general) slower and bigger, but more accurate.  We have only tested on
+Windows and Linux so far.  Could be other on other platforms.  Note
+that this changed nearly every file as the previous attempt fell over
+a Windows/Micro$oft special.
+
+(*) In fact I will distribute 32 and 64 bit builds
+
+Windows GUI Changes
+-------------------
+
+On screen controls for buttons and checks may work.
+
+
+------------------------------------------------------------------------
+==John ff
+  2000 August 
+========================================================================
+SDIF support in Csound.
+
+
+For detailed information on  the Sound Description Interchange Format,
+refer to the CNMAT website: http://cnmat.CNMAT.Berkeley.EDU/SDIF
+
+
+If the filename passed to HETRO has the extension .sdif, data will be
+written in SDIF format as 1TRC frames of additive synthesis data. The
+accompanying utility program "sdif2ads" can be used to convert any
+SDIF file containing a stream of 1TRC data to the Csound 'adsyn'
+format. 'sdif2ads' allows the user to limit the number of partials
+retained, and to apply an amplitude scaling factor. This is often
+necessary, as the SDIF specification does not, to date, require
+amplitudes to be within a particular range. 'sdif2ads' reports
+information about the file to the console, including the frequency
+range.
+
+
+The main advantages of SDIF over the adsyn format, for Csound users,
+is that SDIF files are fully portable across platforms (data is
+'big-endian'), and do not have the duration limit of 32.76 seconds
+imposed by the 16bit adsyn format.This limit is necessarily imposed by
+'sdif2ads'. It is planned to incorporate sdif reading directly into
+adsyn, thus enabling files of any length (currently memory-permitting)
+to be analysed and processed.
+
+It is important to note that the SDIF formats are still under
+development, and that while the 1TRC format is now fairly well
+established, it can still change.
+
+
+Some other SDIF resources (including a viewer) are available via the
+NC_DREAM website:
+
+http://www.bath.ac.uk/~masjpf/NCD/dreamhome.html
+
+
+Richard Dobson 5th August 2000
+rwd@cableinet.co.uk
+------------------------------------------------------------------------
+        aout mpulse kamp, kfreq[, ioffset]
+
+Generate a set of impulses of amplitude kamp at frequency kfreq.  The
+first impulse is after a delay of ioffset seconds (defaulting to
+zero).  The value of kfreq is read only after an impulse, so it is the
+interval to the next impulse at the time of an impulse.
+
+INITIALISATION
+
+ioffset -- defaults to zero, is the delay before the first impulse.
+If it is negative the value is taken as the negation of the number of
+samples; otherwise it is in seconds.
+
+PERFORMANCE
+
+kamp -- amplitude of the impulses generated
+
+kfreq -- frequency of the impulse train
+
+After the initial delay an impulse of kamp amplitude is generated as a
+single sample.  Immediately after generating the impulse the time of
+the next one is calculated.  If kfreq is zero there is an infinite
+wait to the next impulse.  If kfreq is negative the frequency is
+counted in samples rather than seconds.
+
+Example:
+
+Generate a set of impulses at 10 a second, after a delay of 0.05s
+
+instr 1
+        a1 mpulse 32000, 0.1, 0.05
+           out a1
+endin
+
+JPff: 2000 Sept 16
+------------------------------------------------------------------------
+        kans    button          inum
+        kans    checkbox        inum
+
+Sense on-screen controls (cf control opcode) [Needs Windows or TCL/TK]
+
+INITIALISATION
+
+inum -- the number of the button or checkbox.  If it does not exist it
+is made on-screen at initialisation time.
+
+PERFORMANCE
+
+If the button has been pushed since the last k-period then return 1;
+otherwise return 0
+If the checkbox is set (pushed) then return 1; if it is not pushed 
+return 0
+
+Example:
+        increase pitch while a checkbox is set, and extend duration for 
+each push of a button
+
+instr 1
+        kcps    =       cpsoct(p5)
+        k1      check   1
+        if (k1 == 1) kcps = kcps * 1.1
+        a1      oscil   p4, kcps, 1
+                out     a1
+        k2      button  1
+        if (k2 == 1) p3 = p3 + 0.1
+endin
+
+JPff: 2000 Sept 16
+------------------------------------------------------------------------
+
+

@@ -1,0 +1,31 @@
+(in-package :cm)
+(in-syntax :midi)
+
+;;;
+;;; as the algorithm exeutes, the relative weight of the C,A,G,E notes
+;;; change as a function of the algorithm's count, which
+;;; ranges from 0 to length-1 of the algorithm. the variable prob holds 
+;;; a probablility expression returning the relative weights of C,A,G,E.
+;;; As the algorithm runs this expr is automatically evaluated whenever
+;;; it is encountered in the random pattern. since random patterns
+;;; recalculate probabilities once each period, the period length is set
+;;; to 1 so that weights are recalculated on a per note basis. 
+;;; the probabilities are expressed as an interpolation -- experiment
+;;; with different weights  by changing interpolation coordinates.
+;;;
+
+(algorithm cage midi-note (length 200 amplitude .5)
+  (vars (prob (expr (interpl count 0 .5 190 4))))
+  (setf note 
+    (item (notes (g3 weight prob)
+                 (a  weight prob)
+                 bf
+                 (c4 weight prob)
+                 d
+                 (e  weight prob)
+                 f
+                 (r  max 1 weight .25)  ; pause every so often.
+                 in random for 1)))
+  (setf rhythm
+    (item (rhythms 16 8 (rhythms 32 for 2) in random tempo 120)))
+  (setf duration rhythm))

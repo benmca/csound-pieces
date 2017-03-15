@@ -1,0 +1,607 @@
+<HTML>
+<HEAD>
+<TITLE>Capella Tutorial ( 5-Mar-1998)</TITLE>
+<!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<CENTER>
+<H1><FONT size=7>Capella Tutorial</FONT></H1>
+<PRE>
+<IMG ALIGN=MIDDLE SRC="../../img/cmlogo.gif" ALT="[Logo]">
+
+</PRE>
+<B>Heinrich Taube<br>
+School of Music, University of Illinois<BR>
+<TT>taube@uiuc.edu</TT></B>
+<P><BR><BR>
+</CENTER>
+
+<BR>
+<HR>
+
+<h2>INTRODUCTION</h2>
+
+This tutorial steps through a small composition project to point out some of the
+basic features of Capella, a graphical interface to Common Music that
+runs in MCL on the Macintosh. The tutorial assumes that you built Common Music with 
+the <A HREF="../../dict/midi.stx.html"><TT>MIDI</TT> syntax</A>
+enabled, and that you have a MIDI device attached to your Mac.  Select a piano
+sound on your synthesizer for best effect.
+
+The following special marks are used:
+<PRE>
+&lt;Return&gt;        means press the return key.
+&lt;Click&gt;         means select with the mouse.
+APPLE-&lt;Key&gt;     means press &lt;Key&gt; with the Apple command key depressed.
+=...=           marks a window title.
+[...]           marks an icon.
+</PRE>
+
+
+
+<BR><BR><h2>OBJECTS AND BROWSERS</h2>
+
+Capella provides a Common Music menu and two different types of windows.
+Worksheet windows support general activities like editing musical data,
+playing files, etc.  Browser windows are context sensitive views on individual
+musical objects.  One special browser, titled  =Top-Level Listing=, is
+particularily important because it shows all the objects you have defined in
+the current session.
+<p>
+
+<UL>
+
+<LI>Type APPLE-T to activate =Top-Level Listing=.
+
+<BLOCKQUOTE> 
+
+<B>Note:</B> You can also select "Top Level" from the Common Music menu to
+call up =Top-Level Listing= at any time.  Note that the Top-Level
+object already contains two objects -- Tune1 and Algo1.  These objects
+were created as a result of loading this tutorial.  Tune1 is a thread
+(a sequence) of MIDI data.  Algo1 is an algorithm (a program) that
+computes MIDI data on the fly.  As mentioned previously, Top-Level is
+a system thread containing all the named objects currently defined.
+
+</BLOCKQUOTE>
+</UL>
+
+
+<BR><BR><h2>LISTENING TO OBJECTS</h2>
+
+We start by listening to  Tune1.<p>
+
+<UL>
+<LI> Type APPLE-M to open a MIDI connection.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> APPLE-M toggles between opening and closing the MIDI port
+connection.  You must open MIDI before sending data to it.  This only
+has to be done once per session, and only if you write midi data
+directly to your synthesizer.  The open connection is shown in the
+Lisp Listener Window.  (Your connection may indicate PRINTER instead
+of MODEM): #&lt;Port: Midi to MODEM&gt;
+
+</BLOCKQUOTE>
+
+<LI> Type APPLE-T to insure that  =Top-Level Listing=  is the active browser.
+
+<LI> &lt;Click&gt; on Tune1 in the main view of  =Top-Level Listing=.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> If both Tune1 and Algo1 are currently selected, clicking
+on Tune1 will deselect Algo1.
+
+</BLOCKQUOTE>
+
+<LI> Type APPLE-U to send musical output from Tune1 to your synthesizer.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> If you don't hear anything use APPLE-~ to debug your MIDI
+connection.  This command sends a short burst of notes to your
+synthesizer.  Keep testing the connection with APPLE-~ while you debug
+the problem.  Is your midi device connected properly?  Is your amp
+turned on?  ...?
+
+</BLOCKQUOTE>
+</UL>
+
+
+<BR><BR><h2>DUPLICATING MATERIAL</h2>
+
+<UL>
+
+<LI> Insure that =Top-Level Listing= the active browser again by
+clicking on its title bar or typing APPLE-T.
+
+<LI> &lt;Click&gt; on Tune1.
+
+<LI> Type APPLE-D to duplicate Tune1.  Tune1-Copy is now selected in the
+listing.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> You can also create objects using Copy Paste (APPLE-C,
+APPLE-P), or using the New submenu or the [+] icon in any listing
+browser.
+
+</BLOCKQUOTE>
+</UL>
+
+
+<BR><BR><h2>RENAMING OBJECTS</h2>
+
+<UL> 
+
+<LI> With Tune1-Copy still selected, click on [i] (the second icon
+from the left) in =Top-Level Listing=.  A new browser called
+=Tune1-Copy Info= appears, with the name Tune1-Copy already
+highlighted in the name buffer at the top of the window.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> =Tune1-Copy Info= is an information browser.  An
+Information browser shows summary information about an object and
+allows its attributes to be edited.
+
+</BLOCKQUOTE>
+
+<LI> Type Tune2 in the name box and press &lt;Return&gt;.  The browser
+is now titled =Tune2 Info= and Tune2 is selected in =Top-Level
+Listing=.
+
+<LI> &lt;Click&gt; on the small box on the left hand side of the title
+bar to close =Tune2 Info= .
+
+</UL>
+
+
+<BR><BR><h2>EDITING MATERIAL</h2>
+
+<UL>
+
+<LI> Select Tune2 in  =Top-Level Listing=.
+
+<LI> &lt;Click&gt; on [pencil] (fourth icon from left). The worksheet
+=Edit (Top-Level)= is now visible on your screen.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> A parenthesized name in a worksheet title shows the
+current focus object.
+
+</BLOCKQUOTE>
+
+<LI> Mouse on the Objects pop-up menu and select Midi-Note from the
+contents.  A table appears at the bottom of the worksheet and the
+command region at the top of the worksheet is now enabled.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> The Edit worksheet's table is a class specific template
+for specifying slot value expressions.  The worksheet automatically
+adjusts this table to reflect the current selection focus.  If a
+single table can't be determined for the current selections the table
+is removed and Edit waits for you to select the appropriate table by
+hand.  You can click the Lock check box to force the current table
+remain installed no matter what type of objects are selected in the
+current listing browser.
+
+</BLOCKQUOTE>
+
+<LI> Select the Transpose command by &lt;clicking&gt; its radio button
+directly to the left of the command name.
+
+<LI> &lt;Click&gt; in the edit buffer for Note, type 12 and the press
+the OK button.  All the MIDI data in Tune2 has now been transposed up
+12 degrees in the standard scale.
+
+<LI> &lt;Click&gt; the radio button for the Set command.
+
+<LI> &lt;Click&gt; in the table buffer for Amplitude, type .4 and then
+press OK.  All the MIDI data in Tune2 now has an amplitude of 0.4 (1.0
+= 127).
+
+<LI> Type APPLE-T and then &lt;Double-Click&gt; on Tune2 in =Top-Level
+Listing= to confirm that its MIDI data is now different than the data
+in Tune1.
+
+</UL>
+
+
+<BR><BR><h2>SCHEDULING OBJECTS RELATIVE TO ONE ANOTHER</h2>
+
+
+Now we will listen to Tune1 and Tune2 in canon.
+
+<UL>
+<LI> Type APPLE-T to make =Top-Level Listing=  the active browser.
+
+<LI> Select Tune1 AND Tune2 by selecting Tune1 and then dragging the
+mouse down to Tune2.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> APPLE-&lt;Click&gt; performs disjoint selection and
+deselection.  SHIFT-&lt;Click&gt; performs contiguous
+selection/deselection.
+
+</BLOCKQUOTE>
+
+<LI> &lt;Click&gt; on [layout] (4th icon from right) to bring up an
+=Output= worksheet.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> The =Output= worksheet allows you to design different
+"layouts" of musical material.  Each layout represents horizontal
+(sequencing) and vertical (mixing) relationships between objects that
+produce sound.
+
+</BLOCKQUOTE>
+
+<LI> Select Midi from the pop-up Streams menu in the upper field of
+=Output=.
+
+<LI> &lt;Click&gt; in the box for Tune2 and change the text to "Tune2
+start 5" and then press &lt;Return&gt; or <Enter> to exit the box.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> The box automatically resizes itself after you type
+&lt;Return&gt;.
+
+</BLOCKQUOTE>
+
+<LI> &lt;Click&gt; on the Output button or type APPLE-U to start
+output processing.  You now hear Tune1 starting at time 0 and Tune2
+starting at time 5.
+
+</UL>
+
+
+<BR><BR><h2>CONDITIONAL EDITING</h2>
+
+Next we will edit some of the material in Tune2.
+
+<UL>
+
+<LI> Type APPLE-T to activate =Top-Level Listing=.
+
+<LI> &lt;Click&gt; on the "Select" text in =Top-Level Listing= to
+clear everything.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> &lt;Clicking&gt; "Select" toggles between selecting and
+clearing everything.  APPLE-A selects everything, or use Select All
+and Clear in the Edit menu.
+
+</BLOCKQUOTE>
+
+<LI> &lt;Double-Click&gt; on Tune2 in =Top-Level Listing= to open a
+listing browser on Tune2.  =Tune2 Listing= is now the active browser.
+ 
+<BLOCKQUOTE>
+
+<B>Note:</B> The [Magnifying Glass] icon also opens up a listing
+browser.
+
+</BLOCKQUOTE>
+
+<LI> &lt;Double-Click&gt; the left or right outer parenthesis of the
+following expression and type APPLE-C:
+
+<PRE>
+     (member note '(g5 af5 g6 af6 g7 af7))
+</PRE>
+
+<LI> &lt;Click&gt;inside the type-in field just below "Select" in
+=Tune2 Listing= and type APPLE-V to paste the expression into the
+buffer.
+
+<LI> Press &lt;Return&gt; after pasting.  All midi notes whose note
+values are G or A flat within three octaves above middle C are now
+highlighted (selected).  It is impossible to see all these objects but
+the browser tells you that 58 of the 180 objects are currently
+selected.
+
+<LI> &lt;Click&gt; on [Pencil] or select the old =Edit (Top-Level)=
+worksheet.  The Edit worksheet is now titled =Edit (Tune2)= because
+Tune2 is now the current focus object.
+
+<LI> Select the Scale command in the upper portion of =Edit (Tune2)=.
+
+<LI> &lt;Click&gt; in the edit buffer for Amplitude and enter 1.25 .
+
+<LI> &lt;Click&gt; in the edit buffer for Duration and enter 2 .
+
+<LI> &lt;Click&gt; OK.  The selected MIDI data in =Tune2 Listing= now
+has 1.25 times more amplitude and 2 times more duration.
+
+</UL>
+
+
+
+<BR><BR><h2>LISTEN AGAIN</h2>
+
+Now use =Output= to listen to both Tune1 and Tune2 in canon again:
+
+<UL>
+
+<LI> &lt;Click&gt; on =Output= or select it from the Windows menu.
+
+<LI> Type APPLE-U to listen to the material.
+
+</UL>
+
+
+
+<BR><BR><h2>STORING LAYOUTS</h2>
+      
+You can name, store and later retrieve layouts for use.
+
+<UL>
+
+<LI> Type Canon1 (or whatever name you want to use) in the text box
+above the layout field.
+
+<LI> &lt;Click&gt; the Store button.
+
+</UL>
+
+The layout is now accessible via the pop-up menu to the left.  This layout is
+preserved even if the =Output=  window has been closed.<P>
+
+
+
+
+<BR><BR><h2>MAKING A THIRD VOICE</h2>
+      
+Next we build a bass line by duplicating Tune1, renaming the new
+object Tune3 and transposing its MIDI data down 2 octaves:
+
+<UL>
+
+<LI> Select Tune1 in  =Top-level Listing=.
+
+<LI> Type APPLE-D.
+
+<LI> Type APPLE-I.
+
+<LI> Type Tune3 and press &lt;Return&gt;.
+
+<LI> Close  =Tune3 Info=.
+
+<LI> Type APPLE-T.
+
+<LI> &lt;Click&gt; the [Pencil] icon.
+
+<LI> Select  Midi-Note from the Object menu in =Edit (Top-level)=.
+
+<LI> &lt;Click&gt; on the radio button for Transpose.
+
+<LI> &lt;Click&gt; in the edit buffer for Note and type -24 .
+
+<LI> &lt;Click&gt; OK.
+
+<LI> &lt;Click&gt; on the radio button for Set.
+
+<LI> &lt;Click&gt; in the edit buffer for Amplitude and type .5 .
+
+<LI> &lt;Click&gt; OK.
+
+</UL>
+
+Tune3 is now a slightly louder bass line two octaves below Tune1.<P>
+
+
+
+
+<BR><BR><h2>USING QUERY</h2>
+
+Now we want to emphasize just the lowest tone in Tune3.  But what is
+the lowest tone and which midi-notes contain it?
+
+<UL>
+
+<LI> Select Tune3 in =Top-level Listing=.
+
+<LI> &lt;Click&gt; the [?] icon.  A new worksheet called =Query
+(Top-Level)= appears.
+
+<LI> Select Lowest from the Find menu at the top of the window.
+
+<LI> Type Note in the buffer to the right of the menu and press
+&lt;Return&gt;.  An answer appears in the output pane at the bottom of
+the window telling you that C2 is the lowest note.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> Note is an example of a simple mapping expression.  See
+the end of the Selection help in Capella's help menu for more
+information.
+
+</BLOCKQUOTE>
+
+</UL>
+
+
+
+<BR><BR><h2>EMPHASIZING THE LOWEST PITCH</h2>
+
+<UL>
+
+<LI> Type APPLE-T and &lt;Double-Click&gt; Tune3 to bring up =Tune3
+Listing=.
+
+<LI> Copy Paste the following expression to the selection buffer in
+=Tune3 Listing=:
+
+<PRE>
+     (equal note c2)
+</PRE>
+
+<LI> Press &lt;Return&gt;.  All midi data with a Note value of C2 is
+now selected.
+
+<LI> Select the =Edit ...= worksheet.
+
+<LI> &lt;Click&gt; on the radio button for Scale.
+
+<LI> &lt;Click&gt; in the edit buffer for Amplitude and type 1.25 .
+
+<LI> &lt;Click&gt; OK.
+
+</UL>
+
+
+
+<BR><BR><h2>LISTENING IN PARALLEL</h2>
+
+Now listen to Tune1, Tune2 and Tune3 with local start time offsets of
+0, 5 and 10, respectively:
+
+<UL>
+
+<LI> Select the =Output= worksheet or use the [Layout] icon in
+=Top-Level Listing=.
+
+<LI> Select Canon1 from the Layout pop-up menu if it is not already
+visible.
+
+<LI> &lt;Click&gt; in the box "Tune2 start 5" and type APPLE-C to copy
+its contents.
+
+<LI> Type APPLE-V to create a new box underneath it.
+
+<BLOCKQUOTE>
+
+<B>Note:</B> APPLE-N creates a new, empty box in the layout field
+ready for input.
+
+</BLOCKQUOTE>
+
+<BLOCKQUOTE>
+
+<B>Note:</B>  Use the Tab key or Control-f (forward) and Control-b (backward)
+to move from box to box.
+
+</BLOCKQUOTE>
+
+<LI> &lt;Click&gt; in the newly created box and change "Tune2 start 5"
+to "Tune3 start 10".
+
+<LI> Press &lt;Return&gt;.
+
+<LI> &lt;Click&gt; on the Output button or type APPLE-U to listen to
+the output mix of the three objects.
+
+</UL>
+
+
+
+<BR><BR><h2>LISTENING IN SEQUENCE</h2>
+
+Algo1 is an algorithm that creates chords using pseudo-random
+selection.  We first listen to Algo1 several times understand its
+behavior :
+
+<UL>
+
+<LI> Select the =Output= worksheet.
+
+<LI> Select New from the Layouts pop-up menu in =Output=.
+
+<LI> Type APPLE-T to select  =Top-Level Listing=.
+
+<LI> Select only Algo1 in =Top-Level Listing= and &lt;Click&gt; the
+[Layout] icon.
+
+<LI> Append " start 1 repeat 2 pause 3" to the "Algo1" text string,
+then press &lt;Return&gt;to exit the box.
+
+<LI> &lt;Click&gt; the Output button.  Algo1 will start playing after
+1 second.  It will play two times with a three second pause between
+each iteration.
+
+<LI> Look at Algo1's algorithm by selecting =Algo1 Code= from the
+Windows menu. A Code browser is a structured editor for developing
+musical algorithms. Explaining it is beyond the scope of this
+tutorial.
+ 
+<BLOCKQUOTE>
+
+<B>Note:</B> See the Common Music 
+<A HREF="../../dict/index.html">Dictionary</A> 
+to learn about pattern generation in Common Music.
+
+</BLOCKQUOTE>
+
+</UL>
+
+
+
+<BR><BR><h2>LISTENING TO THE COMPOSITION</h2>
+
+
+<UL>
+
+<LI> Select the =Output= worksheet.
+
+<LI> Drag the lower right corner of =Output= to make it slightly
+longer.
+
+<LI> Select Canon1 from the Layouts pop-up menu in =Output=.
+
+<LI> &lt;Click&gt; in the box "Tune3 start 10" and type APPLE-C to
+copy its contents.
+
+<LI> Type APPLE-V to create a new box underneath it.
+
+<LI> Click in the new box and change "Tune3 start 10"  to "Algo1 start 15".
+
+<LI> Press &lt;Return&gt;.
+
+<LI> &lt;Click&gt; on the Output button or type APPLE-U to listen to
+the output mix of all the objects.
+
+</UL>
+
+
+
+<BR><BR><h2>SAVING YOUR WORK</h2>
+
+
+<UL>
+
+<LI> Select =Top-Level Listing=.
+
+<LI> Select Archive from the Common Music menu, or &lt;Click&gt; the
+[Download] icon (furthest right).  Specify the directory and filename
+and &lt;Click&gt; OK. It may take a bit of time to save the objects,
+so be patient.
+
+</UL>
+
+
+
+<BR><BR><h2>LEARNING MORE ABOUT COMMON MUSIC</h2>
+
+<A HREF="../../cm.html#Documentation">Common Music Documentation</A>.
+<P>
+
+<HR>
+
+</P>
+</P><A HREF="mailto:hkt@cmp-nxt1.music.uiuc.edu">hkt</A> 17.11.95
+
+
+
+Last Modified:     5-Mar-1998
+</BODY>
+</HTML>

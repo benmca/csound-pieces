@@ -16,7 +16,7 @@ ipan = p6
 idist = p7
 ipct = p8
 
-kamp    linen   iamp, idur*.1, idur, idur*.4
+kamp    linen   iamp, idur*.4, idur, idur*.4
 ;kamp    linen   iamp, .02, idur, idur*.5
 ;amod    oscili  1000, ipitch, 1
 ;acar    oscili  kamp, ipitch+amod, 1

@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+
+<A NAME="exclamationmark.cmd">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>! {<I>number</I> | ?}+</B></TT>
+<TD align="right" valign="top">
+[Command]<TR>
+</TABLE><P>
+Re-executes previous command or lisp input. If {<I>event</I>} is
+not specified it defaults to the last input.  If {<I>event</I>}
+is <TT>?</TT> the history list is printed. If {<I>event</I>} is a negative number it
+references events backward from the current event. If {<I>event</I>} is positive 
+it references that event within a window of 50 previous events.
+<P>
+<P><B>Example:</B></P>
+
+<PRE>? <B>(stella)</B>
+Stella [Top-Level]: <B>(setf x (random 10000))</B>
+5642
+Stella [Top-Level]: <B>!</B>
+
+Stella [Top-Level]: <B>,x</B>
+2050
+Stella [Top-Level]: <B>! ?</B> 
+[1]     (SETF X (RANDOM 10000))
+[2]     (!-CMD "")
+[3]     X
+Stella [Top-Level]: 
+</PRE>
+
+<P>
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

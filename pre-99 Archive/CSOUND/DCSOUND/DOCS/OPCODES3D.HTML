@@ -1,0 +1,703 @@
+<HTML>
+<HEAD>
+  <!-- Created with AOLpress/2.0 -->
+  <TITLE>3D opcodes</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<P ALIGN=Center>
+<B>DirectCsound RELEASE 3.0</B>
+<CENTER>
+  <H1 ALIGN=Center>
+    <FONT color="#8000FF" size="+3"><B>3D SOUND OPCODES</B></FONT>
+  </H1>
+</CENTER>
+<CENTER>
+  <P ALIGN=Center>
+  by Gabriel Maldonado <BR>
+  g.maldonado@agora.stm.it <BR>
+  http://web.tiscalinet.it/G-Maldonado
+  <P ALIGN=Center>
+  <FONT size="-2">This documentation is partially based upon Microsoft DirectX
+  &reg; SDK manual and Creative Labs EAX 2.0 &reg; SDK manual. All respective
+  copyright reserved </FONT>
+  <P>
+  <P ALIGN=Left>
+    <HR SIZE=15>
+    <HR SIZE=15>
+  <H3>
+    <P ALIGN=Left>
+    <!-- --><B>&nbsp;</B><A NAME="3daudio"><!-- --></A><B>3D AUDIO SOURCE OUTPUT
+    AND INITALIZATION</B>
+  </H3>
+  <P ALIGN=Left>
+  <B>Init3dAudio</B> isourcenummax<BR>
+  <B>InitEAX</B><BR>
+  <B>Out3d</B> asig, ksourcenum
+  <P ALIGN=Left>
+  <B>DESCRIPTION</B>
+  <P ALIGN=Left>
+  3D audio source output and initialization
+  <P ALIGN=Left>
+  <B>INITIALIZATION</B>
+  <P ALIGN=Left>
+  <B>isourcenummax</B> - number of 3D audio sources to initialize (max. 32)<BR>
+  <P ALIGN=Left>
+  <B>PERFORMANCE</B>
+  <P ALIGN=Left>
+  <B>asig</B> - audio input signal<BR>
+  <B>ksourcenum</B> - 3D audio source number
+  <P ALIGN=Left>
+  <B>Init3dAudio</B> must be located in the header section of the orchestra,
+  externally to the intruments. It sets the number of 3D sources available
+  in the orchestra (max. 32), initializes the 3d audio support and creates
+  the listener and source objects. Without placing this opcode in the header
+  section, it is not possible to use any 3D audio opcode. <I>IMPORTANT</I>:
+  When using 3d audio, <I>nchnls</I> <U>must be set to 1</U> (at least in present
+  version). 
+  <P ALIGN=Left>
+  If 3D audio <U>is NOT supported in hardware</U> by your audio card, it is
+  not recommended to use it, because realtime performance with DirectCsound
+  will be seriously lowered. Furthermore, in emulated mode the sound quality
+  is very bad (since DirectSound3D emulation translates the output to eight-bit
+  samples, at a sampling-rate of 22'050 automatically).
+  <P ALIGN=Left>
+  <B>InitEAX</B> opcode has no arguments. It enables EAX 2.0 operations with
+  the related opcodes. Notice that, at present time (october 1999), EAX 2.0
+  is available only &nbsp;with <I>SoundBlaster Live!</I> and <I>SoundBlaster
+  Live! value</I> audio cards. I've heard that <I>Diamond Monster Sound MX300</I>
+  will support EAX 2.0 soon. However Creative says that EAX is an open standard
+  approved by IASIG (Interactive Audio Special Interest Group) and will be
+  supported by most audio card manufacturers in the near future. 
+  <P ALIGN=Left>
+  <B>InitEAX</B> must be placed in the header section of the orchestra, after
+  the line containing <B>Init3dAudio</B> opcode. It is not allowed to use
+  <B>InitEAX</B> if <B>Init3dAudio</B> has not been previously called. Don't
+  use any EAX-related opcode if <B>InitEAX</B> is not present in the header
+  section of the orchestra. Also, don't use any EAX-related opcodes if EAX
+  2.0 is not supported by your platform (otherwise DirectCsound will crash).
+  <P ALIGN=Left>
+  <B>Out3d</B> represent a 3D source. It is similar to <B>out</B> opcode: it
+  sends audio samples to one of the 3d audio accumulating output buffers created
+  at the beginning of performance by the <B>Init3dAudio</B> opcode. It collects
+  the output of all active instruments referring to the same source number,
+  before the sound stream is processed by the DirectSound3D API routines. There
+  can be any number of <B>Out3d</B>s referring to the same 3D source
+  number&nbsp;in an instrument, and the output of different instruments can
+  be patched to the same 3D source. Each 3D source can be considered as a
+  continuosly-movable virtual speaker which can be placed anywhere in the aural
+  space.
+  <P ALIGN=Left>
+  The first 3D source is number 0, the second &nbsp;sound source is number
+  1 etc. The maximum number one can assign to a sound source is
+  <B>isourcenummax</B> - 1.
+  <P ALIGN=Left>
+  <B>Out3d</B> is similar to the <B>out</B> opcode. <B>koutnum</B> argument
+  indicates the number of 3D source.
+  <P ALIGN=Left>
+  The names of 3D opcodes contain uppercase characters. Notice that uppercases
+  <U>are significant</U>.
+  <P ALIGN=Left>
+  <B>Out3d</B> can be used only in realtime sessions, since no output will
+  be written to a file.
+  <P ALIGN=Left>
+  It is still possible to use <B>out</B> opocode, however consider that its
+  output will seem to originate from the center of the listener's head.
+  <P ALIGN=Left>
+  <BR>
+    <HR SIZE=15>
+    <HR SIZE=15>
+  <H3>
+    <P ALIGN=Left>
+    <A NAME="listprop"><!-- --></A>Setting <B>DirectSound3D Listener properties</B>
+  </H3>
+  <P ALIGN=Left>
+  <B>DsListenerPosition_i &nbsp;&nbsp;</B>ix, iy, iz<B><BR>
+  DsListenerPosition</B> &nbsp;<B>&nbsp;</B>kx, ky, kz
+  <P ALIGN=Left>
+  <B>DsListenerOrientation_i &nbsp;</B>ixfront, iyfront, izfront, ixtop, iytop,
+  iztop<B><BR>
+  DsListenerOrientation</B> &nbsp;kxfront, kyfront, kzfront, kxtop, kytop,
+  kztop
+  <P ALIGN=Left>
+  <B>DsListenerRolloffFactor_i </B>irolloff<B><BR>
+  DsListenerRolloffFactor</B> krolloff
+  <P ALIGN=Left>
+  <B>DsListenerDistanceFactor_i &nbsp;</B>idistancefactor<B><BR>
+  DsListenerDistanceFactor</B> &nbsp;kdistancefactor
+  <P ALIGN=Left>
+  <B>DsListenerSetAll_i</B> &nbsp; &nbsp; iPositionx, iPositiony, iPositionz,
+  iOrientFrontx, iOrientFronty, iOrientFrontz, iOrientTopx, iOrientTopy,
+  iOrientTopz, iRolloffFactor, iDistanceFactor
+  <P ALIGN=Left>
+  <B>DsListenerSetAll</B> &nbsp; &nbsp; kPositionx, kPositiony, kPositionz,
+  kOrientFrontx, kOrientFronty, kOrientFrontz, kOrientTopx, kOrientTopy,
+  kOrientTopz, kRolloffFactor, kDistanceFactor
+  <P ALIGN=Left>
+  <P ALIGN=Left>
+  <B>DESCRIPTION</B>
+  <P ALIGN=Left>
+  Set the listener properties, such as position, orientation, rolloff factor
+  and distance factor.
+  <P ALIGN=Left>
+  <B>INITIALIZATION</B> and <B>PERFORMANCE</B>
+  <P ALIGN=Left>
+  <B>x, y, z</B> - coordinates of listener position, expressed in meters by
+  default (this unit of measure can be changed. See DsListenerDistanceFactor).
+  <P ALIGN=Left>
+  <B>xfront, yfront, zfront </B>- coordinates of listener front vector
+  <P ALIGN=Left>
+  <B>xtop, ytop, ztop</B> - coordinates of listener top vector
+  <P ALIGN=Left>
+  <B>rolloff</B> - amount of attenuation that is applied to sounds, based on
+  the listener's distance from the sound source. Range: 0 to 10
+  <P ALIGN=Left>
+  <B>distancefactor</B> - scales listener's distance from sound sources.
+  <P ALIGN=Left>
+  <B>Positionx, Positiony, Positionz, OrientFrontx, OrientFronty, OrientFrontz,
+  OrientTopx, OrientTopy, OrientTopz, RolloffFactor, DistanceFactor</B> -
+  &nbsp;DirectSound3D listener batch parameters
+  <P ALIGN=Left>
+  <B>DsListenerPosition</B> sets the position of the listener in 3D aural space.
+  Every 3D sound source and 3D listener has a position. As one would expect,
+  the position of a 3D sound source or listener represents its location in
+  3D space. Listener position can be changed continuously at k-rate. &nbsp;Default
+  listener position has coordinates 0,0,0.
+  <P ALIGN=Left>
+  <B>DsListenerOrientation</B> sets the orientation of the listener in the
+  3D aural space. Listener orientation is defined by the relationship between
+  two vectors that share an origin: the top and front vectors. The top vector
+  originates from the center of the listener's head and points straight up
+  through the top of the head. The front vector also originates from the center
+  of the listener's head, but it points at a right angle to the top vector,
+  forward through the listener's face. Listener orientation can be changed
+  continuously at k-rate. By default, the front vector is 0, 0, 1.0, and the
+  top vector is 0, 1.0, 0
+  <P ALIGN=Left>
+  <B>DsListenerRolloffFactor</B> sets the amount of attenuation that is applied
+  to sounds, based on the listener's distance from the sound source.
+  <B>DsListenerRolloffFactor</B> can apply to a sound up to 10 times the rolloff
+  experienced in the real world by setting a rolloff factor. The rolloff factor
+  can range from 0 to 10. A value of 0 means no rolloff is applied to a sound.
+  Every other value represents a multiple of the rolloff experienced in the
+  real world. In other words, a value of 1 means the rolloff experienced in
+  the real world is applied to the sound; a value of 2 means two times the
+  rolloff experienced in the real world, and so on. Default rolloff factor
+  is 1.0
+  <P ALIGN=Left>
+  Normally ,3D DirectSound3D API uses meters as the default unit of distance
+  measurements. If your application does not use meters, it can set a distance
+  factor. To set a distance factor for an application that uses feet, for example,
+  call the <B>DsListenerDistanceFactor</B> opcode, specifying .30480006096
+  as the <B>distancefactor</B> parameter (this value is the number of meters
+  in a foot). The default value is 1.0, meaning that one distance unit corresponds
+  to 1 meter. At the default value, a position vector of 3.0, 7.2, -20.9 means
+  that the object is 3.0 m right, 7.2 m above, and 20.9 m behind the origin.
+  If the distance factor were changed to 2.0, the same position vector would
+  mean that the object is 6.0 m right, 14.4 m above, and 41.8 m behind the
+  origin.
+  <P ALIGN=Left>
+  <B>DsListenerSetAll</B> sets all DirectSound listener properties at once.
+  <P ALIGN=Left>
+    <HR SIZE=15>
+    <HR SIZE=15>
+  <H3>
+    <P ALIGN=Left>
+    <A NAME="souprop"><!-- --></A>Setting <B>DirectSound3D Sound Sources
+    properties</B>
+  </H3>
+  <P ALIGN=Left>
+  <B>DsMode_i &nbsp;</B>imode<B>, </B>isourcenum<B><BR>
+  DsMode</B> &nbsp;kmode<B>, </B>isourcenum
+  <P ALIGN=Left>
+  <B>DsPosition_i </B>&nbsp; ix, iy, iz<B>, </B>isourcenum<B><BR>
+  DsPosition</B> &nbsp; kx, ky, kz, isourcenum
+  <P ALIGN=Left>
+  <B>DsMinDistance_i &nbsp; </B>imindistance<B>, </B>isourcenum<B><BR>
+  DsMinDistance</B> &nbsp; kmindistance<B>, </B>isourcenum
+  <P ALIGN=Left>
+  <B>DsMaxDistance_i &nbsp; </B>imaxdistance<B>, </B>isourcenum<B><BR>
+  DsMaxDistance</B> &nbsp; kmaxdistance, isourcenum
+  <P ALIGN=Left>
+  <B>DsConeAngles_i &nbsp; </B>insideconeangle, ioutsideconeangle<B>,
+  </B>isourcenum<B><BR>
+  DsConeAngles</B> &nbsp; kinsideconeangle, koutsideconeangle<B>, </B>isourcenum
+  <P ALIGN=Left>
+  <B>DsConeOrientation_i &nbsp; </B>ixo, iyo, izo<B>, </B>isourcenum<B><BR>
+  DsConeOrientation</B> &nbsp; kxo, kyo, kzo<B>, </B>isourcenum
+  <P ALIGN=Left>
+  <B>DsConeOutsideVolume_i &nbsp; </B>ivolume<B>, </B>isourcenum<B><BR>
+  DsConeOutsideVolume &nbsp; </B>kvolume<B>, </B>isourcenum
+  <P ALIGN=Left>
+  <B>DsSetAll_i &nbsp; &nbsp;</B>iMode, iPositionx, iPositiony, iPositionz,
+  iMinDistance, iMaxDistance, iInsideConeAngle, iOutsideConeAngle, iConeOrientx,
+  iConeOrienty, iConeOrientz, iConeOutsideVolume<B>, </B>isourcenum
+  <P ALIGN=Left>
+  <B>DsSetAll </B>&nbsp; &nbsp;kMode, kPositionx, kPositiony, kPositionz,
+  kMinDistance, kMaxDistance, kInsideConeAngle, kOutsideConeAngle, kConeOrientx,
+  kConeOrienty, kConeOrientz, kConeOutsideVolume<B>, </B>isourcenum
+  <P ALIGN=Left>
+  <B>DESCRIPTION</B>
+  <P ALIGN=Left>
+  Set the sound-sources properties, such as position, minimum and maximum distance,
+  cone angles, cone orientation and cone outside volume for each individual
+  3D sound source. Different sound sources can be set each one with different
+  parameter values.
+  <P ALIGN=Left>
+  <B>INITIALIZATION</B> and <B>PERFORMANCE</B>
+  <P ALIGN=Left>
+  <B>isourcenum</B> - 3D audio source number
+  <P ALIGN=Left>
+  <B>mode</B> - operation mode for 3D sound processing. Must be set to one
+  of the following values: 0=normal; &nbsp;1=head-relative; &nbsp;2= disabled.
+  <P ALIGN=Left>
+  <B>x, y, z</B> - coordinates of the 3D sound source position, expressed in
+  meters by default (this unit of measure can be changed. See
+  <B>DsListenerDistanceFactor</B>).
+  <P ALIGN=Left>
+  <B>mindistance, maxdistance </B>- minimum and maximum distance values.
+  <P ALIGN=Left>
+  <B>insideconeangle, outsideconeangle </B>- inside outside sound cone
+  angles.<BR>
+  <B>xo, yo, zo</B> - coordinates of the cone orientation vector<BR>
+  <B>volume</B> - volume of outside cone.
+  <P ALIGN=Left>
+  <B>kMode, kPositionx, kPositiony, kPositionz, kMinDistance, kMaxDistance,
+  kInsideConeAngle, kOutsideConeAngle, kConeOrientx, kConeOrienty, kConeOrientz,
+  kConeOutsideVolume</B> - DirectSound3D sound-source batch parameters
+  <P ALIGN=Left>
+  ----------
+  <P ALIGN=Left>
+  <B>DsMode</B> sets the operation mode for 3D sound processing. Sound sources
+  have three processing modes: <I>normal, head-relative</I>, and
+  <I>disabled</I>. <I>Normal</I> processing mode is the default mode. In the
+  <I>head-relative</I> mode, sound parameters (position, velocity, and orientation)
+  are relative to the listener's parameters. In this mode, the absolute parameters
+  of the sound are updated automatically as the listener's parameters change,
+  so that the relative parameters remain constant. In the <I>disabled</I> mode,
+  3D sound processing is disabled and the sound seems to originate from the
+  center of the listener's head.
+  <P ALIGN=Left>
+  <B>DsPosition</B> sets the position of one of the sound sources in 3D aural
+  space. Every 3D sound source has a position. As one would expect, the position
+  of a 3D sound source represents its location in 3D space. Source position
+  can be changed continuously at k-rate. &nbsp;Default position has coordinates
+  0,0,0.
+  <P ALIGN=Left>
+  <B>DsMinDistance</B> &nbsp;and <B>DsMaxDistance</B> allow to specify minimum
+  and maximum distance values for a 3D sound source. The minimum distance is
+  the distance at which the sound does not get louder. Conversely, the maximum
+  distance is the distance at which the sound no longer attenuates. For more
+  information about the relationship between these values, see
+  <A HREF="surroundpcodes.html#minmax">Minimum and Maximum Distances</A>.
+  <P ALIGN=Left>
+  A 3D sound source has two sound cones: an inside cone and an outside cone.
+  It is possible to set and retrieve the cone angles, maximum and minimum
+  distances, and position and orientation of a source's sound projection cones
+  by using <B>DsConeAngles</B>, &nbsp;<B>DsConeOrientation</B> and
+  <B>DsConeOutsideVolume </B>opcodes. For more information about the behavior
+  and characteristics of sound projection cones, see
+  <A HREF="surroundpcodes.html#cones">Sound Cones</A>. &nbsp;
+  <P ALIGN=Left>
+  <B>DsConeAngles</B> sets the inside and outside cone angles. &nbsp;By default,
+  cone angles are 360 degrees, meaning the object projects sound at the same
+  volume in all directions. A smaller value means that the object projects
+  sound at a lower volume outside the defined cone. The outside cone angle
+  must always be equal to or greater than the inside cone angle.
+  <P ALIGN=Left>
+  <B>DsConeOutsideVolume</B> sets outside cone volume. The outside cone volume
+  represents the additional volume attenuation of the sound when the listener
+  is outside the sound source cone. This factor is expressed in hundredths
+  of decibels. By default the outside volume is zero, meaning the sound cone
+  will have no perceptible effect until this parameter is changed. Keep in
+  mind that an audible outside cone volume is still subject to attenuation,
+  due to distance from the sound source. When the listener is within the sound
+  cone, the normal sound source volume is used. When the listener is outside
+  the sound cone, the cone outside volume is applied as well, making the actual
+  volume the sum of the two. Near the boundary of the cone, the volume fades
+  smoothly between the two levels to avoid perceptual artifacts.
+  <P ALIGN=Left>
+  <B>DsSetAll</B> sets all DirectSound properties of a 3D&nbsp;sound source
+  at once.
+  <P ALIGN=Left>
+    <HR SIZE=15>
+    <HR SIZE=15>
+  <H3>
+    <P ALIGN=Left>
+    <A NAME="eaxlistprop"><!-- --></A>Setting <B>EAX 2.0 Listener properties</B>
+  </H3>
+  <P ALIGN=Left>
+  <B>EaxListenerEnvironment_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerEnvironment</B> &nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerEnvSize_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerEnvSize</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerEnvDiffusion_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerEnvDiffusion</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerRoom_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerRoom</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerRoomHF_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerRoomHF</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerDecayTime_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerDecayTime</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerDecayTimeHfRatio_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerDecayTimeHfRatio</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerReflections_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerReflections</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerReflectionsDelay_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerReflectionsDelay</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerReverb_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerReverb</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerReverbDelay_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerReverbDelay</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerRoomRolloff_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerRoomRolloff</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerAirAbsorption_i </B>&nbsp; &nbsp; iparm<B><BR>
+  EaxListenerAirAbsorption</B>&nbsp; kparm
+  <P ALIGN=Left>
+  <B>EaxListenerFlags_i </B>&nbsp; &nbsp; idecaitimescale, ireflectionsscale,
+  ireflectionsdelayscale, ireverbscale, ireverbdelayscale, idecayhflimit<B><BR>
+  EaxListenerFlags</B>&nbsp; &nbsp; kdecaitimescale, kreflectionsscale,
+  kreflectionsdelayscale, kreverbscale, kreverbdelayscale, kdecayhflimit
+  <P ALIGN=Left>
+  <B>EaxListenerAll_i </B>&nbsp; &nbsp;iEnvironment, iEnvironmentSize,
+  iEnvironmentDiffusion, iRoom, iRoomHF, iDecayTime, iDecayHFRatio, iReflections,
+  iReflectionsDelay, iReverb, iReverbDelay, iRoomRolloffFactor, iAirAbsorptionHF
+  <P ALIGN=Left>
+  <B>EaxListenerAll</B> &nbsp; &nbsp;kEnvironment, kEnvironmentSize,
+  kEnvironmentDiffusion, kRoom, kRoomHF, kDecayTime, kDecayHFRatio, kReflections,
+  kReflectionsDelay, kReverb, kReverbDelay, kRoomRolloffFactor, kAirAbsorptionHF
+  <P ALIGN=Left>
+  <B> DESCRIPTION</B>
+  <P ALIGN=Left>
+  Set the EAX 2.0 Listener properties.
+  <P ALIGN=Left>
+  <B>INITIALIZATION</B> and <B>PERFORMANCE</B>
+  <P ALIGN=Left>
+  <B>iparm, kparm</B> - EAX Listener opcode parameter (its meaning varies according
+  to each opcode). See below.<BR>
+  <B>decaitimescale, reflectionsscale, reflectionsdelayscale, reverbscale,
+  reverbdelayscale, decayhflimit </B>- EAX Listener flags (can be set to 0
+  or 1).
+  <P ALIGN=Left>
+  <B>Environment, EnvironmentSize, EnvironmentDiffusion, Room, RoomHF, DecayTime,
+  DecayHFRatio, Reflections, ReflectionsDelay, Reverb, ReverbDelay,
+  RoomRolloffFactor, AirAbsorptionHF</B> - EAX listener batch parameters
+  <P ALIGN=Left>
+  --------------------
+  <P ALIGN=Left>
+  The listener-related opcodes allow to set the EAX listener properties. EAX
+  Listener properties mainly deal with enviromental reverb parameters.
+  <P ALIGN=Left>
+  For an overview table of all listener properties,
+  <A HREF="surroundpcodes.html#listprop">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerEnvironment</B> sets the environment-model preset number. <BR>
+  Value range: 0 to 25.&nbsp;&nbsp;<BR>
+  Default value: 0. <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#lisenvir">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerEnvSize</B> sets the apparent size of the surrounding
+  &#147;room.&#148;<BR>
+  Value range: 1.0 to 100.0 meters<BR>
+  Default value: 7.5 meters<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envsiz">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerEnvDiffusion</B> controls the echo density in the reverberation
+  decay.<BR>
+  Value range: 0.0 to 1.0<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envdiff">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerRoom</B> sets the maximum amount of reflections and reverberation
+  added to the sound mix in the listener.<BR>
+  Value range: -10000 to 0 hundredths of a dB<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envroom">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerRoomHF</B> modifies reflected sound by attenuating it at high
+  frequencies. <BR>
+  Value range: -10000 to 0 hundredths of a dB<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envroomhf">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerDecayTime</B> sets the reverberation decay time.<BR>
+  Value range: 0.1 to 20.0 &nbsp;seconds<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envdectim">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerDecayTimeHfRatio</B> sets the spectral quality of the Decay
+  Time parameter.<BR>
+  Value range: 0.1 to 20.0 <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envdectimrat">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerReflections</B> controls the overall amount of initial reflections
+  relative to the Room property. <BR>
+  Value range: -10000 to 1000 hundredths of a dB<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envrefl">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerReflectionsDelay</B> sets the amount of delay between the arrival
+  time of the direct path from the source to the first reflection from the
+  source.<BR>
+  Value range: 0.0 to 0.3 seconds<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envrefldel">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerReverb</B> controls the overall amount of later reverberation
+  relative to the Room property.<BR>
+  Value range: -10000 to 2000 <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envrev">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerReverbDelay</B> defines the begin time of the late reverberation
+  relative to the time of the initial reflection (the first of the early
+  reflections). <BR>
+  Value range: 0.0 to 0.1 seconds<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envrevdel">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerRoomRolloff</B> attenuates the reflected sound (containing
+  both reflections and reverberation) according to source-listener distance.<BR>
+  Value range: 0.0 to 10.0 <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envroomroll">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerAirAbsorption</B> controls the distance-dependent attenuation
+  at high frequencies caused by the propagation medium. <BR>
+  Value range: -100.0 to 0.0 hundredths of a dB per meter <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envairabs">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerFlags</B> sets the listener flags.<BR>
+  Value range: 0 or 1 (false or true) for each argument<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#envflags">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxListenerAll</B> sets all EAX listener properties (except for EAX listener
+  flags) at once.
+  <P ALIGN=Left>
+    <HR SIZE=15>
+    <HR SIZE=15>
+  <H3>
+    <P ALIGN=Left>
+    <A NAME="eaxsouprop"><!-- --></A>Setting <B>EAX 2.0 Sound Sources
+    properties</B>
+  </H3>
+  <P ALIGN=Left>
+  <B>EaxSourceDirect_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceDirect</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceDirectHF_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceDirectHF</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceRoom_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceRoom</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceRoomHF_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceRoomHF</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceObstruction_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceObstruction</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceObstructionRatio_i</B> &nbsp; &nbsp; &nbsp;iparm,
+  isourcenum<B><BR>
+  EaxSourceObstructionRatio</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceOcclusion_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceOcclusion</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceOcclusionRatio_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceOcclusionRatio</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceOcclusionRoomRatio_i</B> &nbsp; &nbsp; &nbsp;iparm,
+  isourcenum<B><BR>
+  EaxSourceOcclusionRoomRatio</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceRoomRolloff_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceRoomRolloff</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceAirAbsorption_i</B> &nbsp; &nbsp; &nbsp;iparm, isourcenum<B><BR>
+  EaxSourceAirAbsorption</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceOutsideVolumeHF_i</B> &nbsp; &nbsp; &nbsp;iparm,
+  isourcenum<B><BR>
+  EaxSourceOutsideVolumeHF</B> &nbsp; &nbsp; &nbsp; &nbsp;kparm, isourcenum
+  <P ALIGN=Left>
+  <B>EaxSourceFlags_i</B> &nbsp; &nbsp;iDIRECTHFAUTO, iROOMAUTO, iROOMHFAUTO<BR>
+  <B>EaxSourceFlags &nbsp;&nbsp;</B>kDIRECTHFAUTO, kROOMAUTO, kROOMHFAUTO
+  <P ALIGN=Left>
+  <B>EaxSourceAll_i</B> &nbsp; &nbsp; iDirect, iDirectHF, iRoom, iRoomHF,
+  iObstruction, iObstructionLFRatio, iOcclusion, iOcclusionLFRatio,
+  iOcclusionRoomRatio, iRoomRolloffFactor, iAirAbsorptionFactor, iOutsideVolumeHF,
+  isourcenum
+  <P ALIGN=Left>
+  <B>EaxsourceAll</B> &nbsp; &nbsp;kDirect, kDirectHF, kRoom, kRoomHF,
+  kObstruction, kObstructionLFRatio, kOcclusion, kOcclusionLFRatio,
+  kOcclusionRoomRatio, kRoomRolloffFactor, kAirAbsorptionFactor, kOutsideVolumeHF,
+  isourcenum
+  <P ALIGN=Left>
+  <B> DESCRIPTION</B>
+  <P ALIGN=Left>
+  Set the EAX 2.0 properties of each individual 3D sound source. Different
+  sound sources can be configured each one with different EAX parameters.
+  <P ALIGN=Left>
+  <B>INITIALIZATION</B> and <B>PERFORMANCE</B>
+  <P ALIGN=Left>
+  <B>isourcenum</B> - 3D audio source number<BR>
+  <B>iparm, kparm</B> - EAX source opcode parameter (its meaning varies according
+  to each opcode). See below.
+  <P ALIGN=Left>
+  <B>DIRECTHFAUTO, ROOMAUTO, ROOMHFAUTO</B> - 3D sound source flags
+  <P ALIGN=Left>
+  <B>Direct, DirectHF, Room, RoomHF, Obstruction, ObstructionLFRatio, Occlusion,
+  OcclusionLFRatio, OcclusionRoomRatio, RoomRolloffFactor, AirAbsorptionFactor,
+  OutsideVolumeHF</B> - EAX sound-source batch parameters
+  <P ALIGN=Left>
+  --------------------
+  <P ALIGN=Left>
+  <B><BR>
+  EaxSourceDirect</B> applies a relative correction to this sound source&#146;s
+  direct-path intensity.<BR>
+  Value range: -10000 to 1000 hundredths of a dB <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#soudir">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxSourceDirectHF</B> applies a relative correction to the high-frequency
+  component of the sound source&#146;s direct-path intensity. <BR>
+  Value range: -10000 to 0 hundredths of a dB <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#soudirhf">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxSourceRoom</B> is the volume control for reflected sound (early reflections
+  and reverberation). <BR>
+  Value range: -10000 to 1000 hundredths of a dB <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#souroom">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxSourceRoomHF</B> controls a low-pass filter that applies to the reflected
+  sound added to this source. <BR>
+  Value range: -10000 to 0 hundredths of a dB <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#souroomhf">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxSourceObstruction</B> specifies the amount of obstruction muffling
+  to apply to a sound source&#146;s direct-path sound. <BR>
+  Value range -10000 to 0 hundredths of a dB <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#souobs">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxSourceObstructionRatio</B> specifies the obstruction attenuation at
+  low frequencies relative to the attenuation at high frequencies.<BR>
+  Value range: 0.0 to 1.0 <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#souobsrat">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxSourceOcclusion</B> specifies the amount of occlusion muffling to apply
+  to a sound source&#146;s direct sound and to its reflected sound. <BR>
+  Value range: -10000 to 0 hundredths of a dB <BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#souoccl">click here</A>.&nbsp; &nbsp;
+  <P ALIGN=Left>
+  <B>EaxSourceOcclusionRatio</B> specifies the occlusion attenuation at low
+  frequencies relative to the attenuation at high frequencies.<BR>
+  Value range: 0.0 to 1.0 <BR>
+  For detailed information about this property
+  <A HREF="surroundpcodes.html#souocclrat">click here</A>.&nbsp; &nbsp;
+  <P ALIGN=Left>
+  <B>EaxSourceOcclusionRoomRatio</B> specifies the additional amount of occlusion
+  attenuation to be applied to reflected sound (early reflections and
+  reverberation).<BR>
+  Value range: 0.0 to 10.0 <BR>
+  For detailed information about this property
+  <A HREF="surroundpcodes.html#souocclroomrat">click here</A>.&nbsp; &nbsp;
+  <P ALIGN=Left>
+  <B>EaxSourceRoomRolloff</B> attenuates the reflected sound (early reflections
+  and reverberation) according to source-listener distance. <BR>
+  Value range: 0.0 to 10.0 <BR>
+  For detailed information about this property
+  <A HREF="surroundpcodes.html#souroomroll">click here</A>.&nbsp; &nbsp;
+  <P ALIGN=Left>
+  <B>EaxSourceAirAbsorption</B> controls the distance-dependent attenuation
+  at high frequencies caused by the propagation medium. <BR>
+  Value range: 0.0 to 10.0 <BR>
+  For detailed information about this property
+  <A HREF="surroundpcodes.html#souairabs">click here</A>.&nbsp;
+  <P ALIGN=Left>
+  <B>EaxSourceOutsideVolumeHF</B> &nbsp; &nbsp; &nbsp; <BR>
+  Value range: -10000 to 0 hundredths of a dB <BR>
+  For detailed information about this property
+  <A HREF="surroundpcodes.html#sououtvolhf">click here</A>.&nbsp;
+  <P ALIGN=Left>
+  <B>EaxSourceFlags</B> sets the flags of a sound source.<BR>
+  Value range: 0 or 1 (false or true) for each argument<BR>
+  For &nbsp;detailed information about this property
+  <A HREF="surroundpcodes.html#souflag">click here</A>.
+  <P ALIGN=Left>
+  <B>EaxSourceAll</B> sets all properties of a 3D&nbsp;sound source at once
+  (except for flags) .
+  <P ALIGN=Left>
+  <P ALIGN=Left>
+    <HR SIZE=15>
+    <HR SIZE=15>
+  <H3>
+    <P ALIGN=Left>
+    <A NAME="comm"><!-- --></A>DirectSound3D and <B>EAX 2.0 property </B>deferred
+    settings
+  </H3>
+  <P ALIGN=Left>
+  <P ALIGN=Left>
+  <B>DsEaxSetDeferredFlag</B> iflag
+  <P ALIGN=Left>
+  <B>DsCommitDeferredSettings_i<BR>
+  DsCommitDeferredSettings</B>
+  <P ALIGN=Left>
+  <P ALIGN=Left>
+  <B> DESCRIPTION</B>
+  <P ALIGN=Left>
+  Set DirectSound3D and EAX deferred flag and commits deferred property updating.
+  <P ALIGN=Left>
+  <B>INITIALIZATION</B>
+  <P ALIGN=Left>
+  iflag - activates or deactivates deferred settings (1=deferred; 0=immediate)
+  <P ALIGN=Left>
+  Every change to a 3D listener parameter requires a recalculation of the 3D
+  positional filter parameters. Therefore, in order to get maximum efficiency,
+  it is possible to defer parameter changes by using
+  <B>DsEaxSetDeferredFlag</B> opcode, setting <I>iflag</I>=1. When all settings
+  are complete, a call of <B>DsCommitDeferredSettings </B>will actually update
+  all the parameters that were changed in the meanwhile. This applies both
+  to DirectSound3D opcodes and to EAX opcodes.
+  <P ALIGN=Left>
+  Any deferred settings are overwritten if you call the same setting with iflag
+  set to 0 (<I>immediate</I>) before calling <B>DsCommitDeferredSettings</B>.
+  That is, if you set the listener position to (1,2,3) by using the
+  <I>deferred</I> flag and then set the listener position to (4,5,6) with the
+  <I>immediate</I> flag, the position will be (4,5,6). Then, if you call
+  <B>DsCommitDeferredSettings</B> opocode, the position will still be (4,5,6).
+  <P ALIGN=Left>
+  These opcodes allow to set a 3D sound buffer's parameters individually or
+  in batches. To set individual values, your application can use the applicable
+  IDirectSound3DBuffer interface method. However, applications often must set
+  or retrieve all the values that describe the buffer at once. An application
+  can perform a batch parameter manipulation in a single call by using the
+  IDirectSound3DBuffer::GetAllParameters and IDirectSound3DBuffer::SetAllParameters
+  methods.
+  <P ALIGN=Left>
+  <A HREF="surroundpcodes.html#defset">Click here</A> for more infomation about
+  deferred settings.
+</CENTER>
+</BODY></HTML>

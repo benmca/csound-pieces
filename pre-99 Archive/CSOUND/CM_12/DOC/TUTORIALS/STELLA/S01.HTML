@@ -1,0 +1,235 @@
+<HTML>
+<HEAD>
+<TITLE>Stella Tutorial (The Basics)</TITLE>
+<!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<A NAME="The_Basics"></A>
+<A HREF="s02.html"><i>Next Chapter</i></A><BR>
+<A HREF="s00.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+
+<H2>The Basics</H2>
+
+<H3>Starting Stella</H3>
+
+To start up Stella, boot Common Music and then use the
+<tt>(stella)</tt> function:<p>
+
+<pre>&lt;cl&gt; <b>(stella)</b>
+Type ? for help.
+Stella [Top-Level]:
+</pre>
+
+
+<H3>About the prompt</H3>
+
+After Stella starts up a help message is printed and the Lisp prompt
+changes to<p>
+
+<PRE>Stella [Top-Level]:
+</PRE>
+
+The new prompt consists of the name of the editor followed by the name
+of the current "focus object" printed inside square brackets [].  The
+focus object provides a selection context.  Think of the editor as
+being "inside" the focus object.  The focus object is important
+because it allows other objects to be selected based on their
+position(s) relative to the current focus.  Stella has a number of
+commands for moving to a new focus object.  Whenever the focus changes the []
+portion of the prompt is updated to display the name of the new focus.
+When Stella first starts up its focus is <TT>Top-Level</TT>, a system
+container holding all the user's containers.  Much more about this
+later.<p>
+
+
+<H3>Using the Help Facility</H3>
+
+First, type <tt>?</tt> to learn about the <TT>help</TT> command:<p>
+
+<PRE>Stella [Top-Level]: <b>?</b>
+
+!                     Show/execute history.
+?                     Show this help.
+ADD                   Add objects to container.
+ARCHIVE               Archive objects to file.
+CHANGE                Change the class of objects.
+CL                    Compile/load a file.
+
+<i>[... rest of  help listing deleted]</i>
+
+Stella [Top-Level]: 
+</PRE>
+
+Stella's on-line help facility includes both short and long help. To
+see short help use the <A HREF="../../dict/questionmark.cmd.html">?</A> command.
+Use <A HREF="../../dict/help.cmd.html">help</A> to read
+long help about a particular command or topic.  For example, to read
+documentation about the <tt>help</tt> command itself, type:<p>
+
+<PRE>Stella [Top-Level]: <b>help help</b>
+</PRE>
+
+The <TT>help</TT> command will attempt to use Netscape to display help topics.
+If you do not have Netscape (or enough memory to run CM and 
+Netscape together) on your machine use
+the <TT>browser</TT> option to turn this off:
+<PRE>Stella [Top-Level]: <b>help help browser nil</b>
+</PRE>
+
+The <tt>browser</TT> option can be set to either <TT>netscape</TT> or
+<TT>nil</TT>.  If <TT>nil</TT>, a strict text translation of the HTML
+documentation will be printed to the terminal. The formatting will not be
+perfect but the documentation should still be readable. <tt>browser</TT> 
+is sticky so your choice remains in effect until explicity changed.
+<P>
+Try using <tt>help</tt> on several commands or topics, for example
+<A HREF="../../dict/list.cmd.html">list</A>,
+<A HREF="../../dict/map.cmd.html">map</A> or
+<A HREF="../../dict/algorithm.mcr.html">algorithm</A>.  <p>
+
+
+<H3>About the Command Interpreter</H3>
+
+Let's stop briefly to examine some of the more important properties of
+Stella's command interpreter.<p>
+
+<H4>Command Invocation</H4>
+
+Command names are case insensitive and only enough of the name needs
+to be typed to distinguish it from other commands.  For example, the
+previous example:<p>
+
+<PRE>Stella [Top-Level]: <b>help help</b>
+</PRE>
+
+could be typed:
+
+<PRE>Stella [Top-Level]: <b>he help</b>
+</PRE>
+
+because <tt>he</tt> is enough to uniquely identify <tt>help</tt>
+in the full command set.<P>
+
+
+<H4>Command Arguments</H4>
+
+Command arguments are information necessary for a command to execute.
+In the previous example:<p>
+
+<PRE>Stella [Top-Level]: <b>help help</b>
+</PRE>
+
+the first <tt>help</tt> is the name of the command, and the second
+<tt>help</tt> is a command argument, in this case the name of a
+command to read help about.<P>
+
+
+<H4>Command Prompting</H4>
+
+Commands normally prompt for missing or erroneous arguments. 
+The global variable <tt>*command-prompting*</tt> enables or disables
+interactive command prompting.  Set <tt>*command-prompting*</tt> to
+<tt>nil</tt> to make the interpreter behave more "tersely", like a
+UNIX shell.  <p>
+
+
+<H4>Command Syntax</H4>
+
+Most commands follow the form:<P>
+
+<pre>    <i>command references arg1 ... argn</i>
+</pre>
+
+where <i>command</i> is the name of the command, <i>references</i> are
+the names or positions of one or more objects separated by comma and
+<i>arg1</i> through <i>argn </i>are additional command arguments.<p>
+
+Object references can be fairly complex and are covered in a later
+section of this tutorial.  See 
+<A HREF="../../dict/command_references.tpc.html">
+Command Referencing</A> for complete information.<p>
+
+<H4>Responding to Command Prompts</H4>
+
+There are several possible ways to answer a command prompt.<p> 
+
+<UL>
+
+<LI> Type <i><tt>&lt;cr&gt;</tt></i> to accept a default value if one
+is offered.  A default value is always displayed inside parentheses.
+For example <tt>(&lt;cr&gt;=123)</tt> means press Return to accept 123
+as the input value.
+
+<LI> Type non-default information.
+
+<LI> Type <tt>?</tt> for help.  This may print some clarification of
+what the command expects as input.
+
+<LI> Type <tt>^</tt> to abort the command and return to
+Stella's main command loop.
+
+</UL>
+<p>
+
+
+<H4>Typing Lisp to the Command Interpreter</H4>
+
+Stella's editor is actually a full Lisp interpreter.  To evaluate a
+Lisp expression, simply type the expression at the main command loop
+prompt:<p>
+
+<PRE>Stella [Top-Level]: <b>(floor 1 2)</b>
+0 
+1 
+Stella [Top-Level]: 
+</PRE>
+
+Since Stella is both a Lisp and command interpreter, you must
+distinguish command names from Lisp variables.  To evaluate name,
+precede it with a comma:<p>
+
+<PRE>Stella [Top-Level]: <b>,2pi</b>
+6.283185307179586
+Stella [Top-Level]:
+</PRE>
+<P>
+
+<H4>Continuing From Errors</H4>
+
+To return to the editor from an error break in ACL or GCL use the
+<tt>:tl</tt> error break command. Use <tt>:tl</tt> even if it isn't
+listed in the error break message.  (<tt>:tl</tt> stands for Top
+Level, the name of Stella's interpreter.)  In Macintosh Common Lisp,
+type Command-. (a period with the Apple command key depressed) or
+select "Return to Top-Level" from "Restarts..." under the main Eval
+menu.  In Clisp, type <TT>tl</TT> or whatever you are offered as a
+restart option from the system, such as <TT>r1</TT>.<p>
+
+<PRE>Stella [Top-Level]: <b>(/ 1 0)</b>
+Error: An attempt was made to divide by zero.
+Restart actions (select using :continue):
+    0: Return to Top-Level.
+    1: Exit Top-Level.
+[1] &lt;cl&gt; <b>:tl</b>
+Stella [Top-Level]: 
+</PRE>
+
+If for some reason you end up in the main Lisp environment after
+resuming from an error just use the (stella) function to start up
+Stella again.  No work is lost.<p>
+
+<A HREF="../../dict/quit.cmd.html"><H3><TT>Quit</TT></H3></A>
+
+Use <tt>quit</tt> to return to the general Lisp environment. <p>
+
+<A HREF="s02.html"><i>Next Chapter</i></A><BR>
+<A HREF="s00.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+<P>
+
+
+  Last Modified:  5-Mar-1998
+</BODY>
+</HTML>     

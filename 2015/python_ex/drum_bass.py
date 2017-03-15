@@ -1,8 +1,8 @@
-from composition.generator import Generator
-from composition.generator import keys
-from composition.itemstream import Itemstream
+from thuja.generator import Generator
+from thuja.generator import keys
+from thuja.itemstream import Itemstream
 from collections import OrderedDict
-from composition import utils
+from thuja import utils
 import copy
 import numpy as np
 import csnd6
@@ -28,6 +28,7 @@ def calc_endx(note):
 def calc_pitch(note):
     origtem = (60*(1/.697))
     note.pfields[keys.frequency] = g.context['tuplestream'].tempo / origtem
+
 
 g = Generator(
     streams=OrderedDict([

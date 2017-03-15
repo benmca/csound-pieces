@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="map-data.fun">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>map-data <I>function stream</I></B></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE><P>
+
+Maps <I>function</I> over each item in <I>stream</I>.  <I>Function</I>
+is passed one argument, the currently mapped item.  Note that items
+are often transformed into an internal form different than what was
+externally specified to the item stream.  <P>
+
+<P><B>Example:</B></P>
+
+<PRE>(defun stream-list (stream)
+  (let ((l '()))
+    (map-data #'(lambda (x) (push x l)) stream)
+    (nreverse l)))
+
+(defun stream-items (stream)
+  (let ((l '()))
+    (map-data #'(lambda (x)
+                    (if (typep x 'item-stream)
+                        (push (stream-items x) l)
+                        (push x l)))
+               stream)
+    (nreverse l)))
+</PRE>
+
+<P><B>See Also:</B></P>
+
+<A HREF="doitems.mcr.html"><TT>doitems</TT></A>,
+<A HREF="item.fun.html"><TT>item</TT></A>,
+<A HREF="read-items.fun.html"><TT>read-items</TT></A>
+<P>
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

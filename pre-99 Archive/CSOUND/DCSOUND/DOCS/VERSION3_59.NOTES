@@ -1,0 +1,120 @@
+Release Notes for 3.59
+======================
+
+These are the release notes for version 3.59
+
+Bug Fixes
+---------
+
+Fixed a typing error in fgens
+
+MIDI file sin .csd files now work
+
+
+Language Changes
+----------------
+
+a-rate^p-rate expressions allowed
+
+
+Opcode Fixes
+------------
+
+pluck: Error check for kcps exceeding sample rate
+
+posc family: allow negative frequencies
+
+Phasor: use double sinternally for better precision
+
+poweroftwo -- also works at a-rate
+logbasetwo -- also works at a-rate
+
+repluck, nreverb, grain, cross2, nlfilt -- no longer change constants
+
+linseg -- h-rate version rewritten to remove various bugs
+
+tone, tonex, atone, atonex -- better intialisation
+
+mxdsr, madsr -- new optional arguemnt to give release time.
+
+linesegr, expsegr -- bugs corrected
+
+vpvoc -- new optional argument to give a table for controsl rather than 
+previous tableseg/tablexseg
+
+slider* -- fixed so work
+
+New Opcodes 
+-----------
+
+phasorbnk -- bank of phasors
+
+schedkwhen -- k-rate adding of score events
+
+
+Other Changes:
+-------------
+
+Better treatment of score events
+
+Windows GUI Changes
+-------------------
+
+Correction in MIDI files selected
+
+------------------------------------------------------------------------
+
+phasorbnk
+---------
+
+kr     phasorbnk    kcps, kindx, icnt [, iphs]
+ar     phasorbnk    xcps, kindx, icnt [, iphs]
+
+DESCRIPTION
+This opcode works like the phasor opcode, except that there is an array
+of an arbitrary number of phasors that can be accessed by index.
+
+INITIALIZATION
+icnt     -  maximum number of phasors to be used.
+iphs     -  initial phase if each phasor, if -1 initialization is skipped.
+            If > 1 all phases will be initialized with a random value.
+
+PERFORMANCE
+For each independent phasor an internal phase is successively accumulated
+in accordance with the cps frequency to produce a moving phase value,
+normalized to lie in the range 0 <= phs < 1.
+Each individual phasor is accessed by index kindx.
+This phasor bank can be used inside a k-time loop to generate multiple
+independent voices, or together with the adsynt opcode to change parameters
+in the tables used by adsynt.
+
+EXAMPLE
+Generate multiple voices with independent partials.
+(In fact this example would better be done with adsynt.) 
+See also example for k-rate use of phasorbnk under adsynt.
+
+giwave ftgen  1, 0, 1024, 10, 1           ; generate a sinewave table
+
+       instr 1
+icnt   =          10                      ; generate 10 voices
+asum   =          0                       ; empty output buffer
+kindex =          0                       ; reset loop index
+
+loop:                                     ; loop executed every k-cycle
+
+kcps   =          (kindex+1)*100 + 30     ; non-harmonic partials
+aphas  phasorbnk  kcps, kindex, icnt      ; get phase for each voice
+asig   table      aphas, giwave, 1        ; and read wave from table
+asum   =          asum + asig             ; accumulate output
+
+kindex =          kindex + 1
+if (kindex < icnt) kgoto loop             ; do loop
+
+       out        asum*3000
+       endin
+========================================================================
+
+========================================================================
+==John ff
+  1999 August 30
+========================================================================

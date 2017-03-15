@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="mix.cmd">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>mix {<I>containers</I>} {<I>offsets</I>} {<I>stream</I>}+ {<I>option value</I>}*</B></TT>
+<TD align="right" valign="top">
+[Command]<TR>
+</TABLE><P><P>
+Sends the mixed output from {<I>containers</I>} to {<I>stream</I>} or to
+the currently <A HREF="open.cmd.html">open</A> 
+stream if {<I>stream</I>} is not specified.  If {<I>offsets</I>} is a single number
+it becomes the start time for all {<I>containers</I>}. If {<I>offsets</I>} 
+is a series of numbers seperated by comma they are applied to each corresponding
+object in {<I>containers</I>}. Otherwise, if {<I>offsets</I>} is *,
+start times for each {<I>container</I>} are individially prompted for.
+Start time offsets specified to <TT>mix</TT> affect only the current listening pass.
+<P>
+See <A HREF="open.cmd.html">open</A> for a list of available {<I>option value</I>} pairs.
+
+<P>
+<P><B>Example:</B></P>
+Mix Foo and Bar offset to 1.5 seconds, don't play the output stream:
+<PRE>Stella [Top-Level]: <B>mix foo,bar 1.5 play nil
+</B></PRE>
+
+Mix Foo and Bar at times .1 and 2 to test.midi, play it too.
+<PRE>Stella [Top-Level]: <B>mix foo,bar .1,2 test.midi play t
+</B></PRE>
+
+Mix Foo and Bar with prompted offsets:
+<PRE>Stella [Top-Level]: <B>mix foo,bar</B>
+Start time offset: (&lt;cr&gt;=None) <B>*</B>
+Foo start time offset: (&lt;cr&gt;=None) 
+Bar start time offset: (&lt;cr&gt;=None) <B>5</B>
+</PRE>
+<P><B>See Also:</B></P>
+
+<A HREF="run.cmd.html">run</A>,
+<A HREF="sequence.cmd.html">sequence</A>,
+<A HREF="tlist.cmd.html">tlist</A>
+
+<P>
+
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

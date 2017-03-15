@@ -1,0 +1,1180 @@
+Release Notes for 3.47
+======================
+
+These are the release notes for version 3.47.
+They should be read in conjunction with earlier release notes.
+
+Many internal changes made to remove compiler warnings.  Mainly
+declarations and prototypes.  Anyone who works at source level should
+beware as structures have new fields, fields have been removed and so
+on.  Some variables have type changed.
+  The Windows GUI has been revised as well.
+
+Language Changes:
+
+1.  Comments allowed in score in more places
+2.  Treat \ at end of line as continuation in orchestra
+3.  Maximum number of an instrument is dynamic, and expands as needed.
+4.  Removed limit on number of labels
+5.  Introduced ^ syntax into score files
+6.  Two new GENs, numbered 25 and 27
+7.  No limit to number of partials in hetro/adsyn
+
+Opcode Fixes
+
+1.  Some fixes in fog
+2.  Internal tidying in granule
+3.  Bug fix in cpsxpch
+4.  Fix problem with tables 300, 600, 900,...
+
+New Opcodes
+
+The following have been added.  
+
+        acos            asin            atan            birrnd
+        chanctrl        cosh            cross2          ctlinit 
+        ctrl14          ctrl21          ctrl7           dam
+        expsegr         filter2         ftgen           ftlptim
+        harmon          ictrl14         ictrl21         ictrl7
+        imidic14        imidic21        imidic7         initc14
+        initc21         initc7          ioff            ion
+        iondur          iondur2         ioutat          ioutc
+        ioutc14         ioutpat         ioutpb          ioutpc
+        ipchbend        kfilter2        kon             koutat
+        koutc           koutc14         koutpat         koutpb
+        koutpc          kpchbend        linsegr         massign
+        mclock          midic14         midic21         midic7
+        moscil          mrtmsg          osciln          release
+        repluck         rnd             sinh            tanh
+        turnon          wgpluck         wgpuck2         xtratim
+
+and the modelled opcodes (following Perry Cook)
+        wgclar		wgflute		wgbow		wgbrass
+	marimba		vibes		agogobel        shaker
+        fmbell		fmrhode         fmwurlie        fmmetal
+        fmb3            fmvoice         fmpercfl        moog        
+        mandol          voice
+
+Revised Opcodes:
+
+The opcode here have had their specification changed, generally in a
+compatible way. Usually to add scale factors and the like
+	imidictrl	kmidictrl	linseg		pchbend
+	printks		veloc
+
+
+Other Changes:
+
+	Revised realtime audio on Windows (again!)
+        Additional features on Windows GUI to includes access
+                to orchestra and score editing and post-calculation
+                soundfile editing.
+	Emacs orchestra mode expanded for new opcodes, and fixed a
+		little
+	ksmps constrained to be integer
+
+
+Details on Opcodes
+==================
+
+atan(x), acos(x), asin(x), tanh(x), sinh(x), cosh(x)
+----------------------------------------------------
+    Functions to calculate the arctangent, etc.  Available in i, k and a 
+forms
+  (Author JPff)
+
+irnd(x), krnd(x), ibirnd(x), kbirnd()
+-------------------------------------
+    Functions, return random values in the range [0,x) or (-x,x)
+
+chanctrl
+--------
+ival  chanctrl  ichnl, ictlno[,ilow,ihigh]
+kval  chanctrl  ichnl, ictlno[,ilow,ihigh]
+
+Get the current value of a controller and optionally map it onto
+specified range.  ichnl is the MIDI channel and ictlno is the MIDI
+controller number.
+  (Author BV)
+
+cross2
+------
+asig  cross2    ain1, ain2, ilen, iovl, iwin, kbias
+
+Cross synthesis between the two audio signals
+  (Author PS)
+
+ctrtlinit
+---------
+
+  ctrlinit  ichnkm, ictlno1, ival1[, ictlno2, ival2[, ictlno3, ival3[,..ival32]]
+
+Sets initial values for a set of MIDI controllers.
+  (Author BV)
+
+dam
+---
+
+Dynamic amplitude modifier
+  ar   dam  ain, kthresh, icomp1, icomp2, irtme, iftme 
+
+  (Author MR)
+
+
+filter, kfilter, zfilter
+------------------------
+
+a1	filter2	   asig, iM, iN, ib0, ib1, ..., ibM, ia1, ia2, ..., iaN
+k1	kfilter2   ksig, iM, iN, ib0, ib1, ..., ibM, ia1, ia2, ..., iaN
+a1	zfilter2   asig, kdamp, kfreq, iM, iN, ib0, ib1,..,ibM, ia1, ia2, .,iaN
+
+General purpose custom filter with time-varying pole control. The
+filter coefficients implement the following difference equation:
+
+
+ (1)*y(n) = b0*x[n] + b1*x[n-1] + ... + bM*x[n-M] - 
+                      a1*y[n-1] - ... - aN*y[n-N]
+
+
+the system function for which is represented by:
+
+                                      -1              -M 
+                   B(Z)      b0 +  b1*Z   + ... + bM*Z
+      H(Z) =     ----  =  ---------------------------------
+                                       -1              -N
+                   A(Z)       1  + a1*Z    + ... + aN*Z
+
+
+INITIALIZATION
+
+At initialization the number of zeros and poles of the filter are
+specified along with the corresponding zero and pole coefficients. The
+coefficients must be obtained by an external filter-design application
+such as Matlab and specified directly or loaded into a table via
+gen01. With zfilter2, the roots of the characteristic polynomials are
+solved at initialization so that the pole-control operations can be
+implemented efficiently.
+
+
+PERFORMANCE
+
+The filter2 and kfilter2 opcodes perform filtering using a transposed
+form-II digital filter lattice with no time-varying control. zfilter2
+uses the additional operations of radial pole-shearing and angular
+pole-warping in the Z plane.
+
+Pole shearing increases the magnitude of poles along radial lines in
+the Z-plane. This has the affect of altering filter ring times. The
+k-rate variable kdamp is the damping parameter. Positive values (0.01
+to 0.99) increase the ring-time of the filter (hi-Q), negative values
+(-0.01 to -0.99) decrease the ring-time of the filter, (lo-Q).
+
+Pole warping changes the frequency of poles by moving them along
+angular paths in the Z plane. This operation leaves the shape of the
+magnitude response unchanged but alters the frequencies by a constant
+factor (preserving 0 and p). The k-rate variable k-freq determines the
+frequency warp factor. Positive values (0.01 to 0.99) increase
+frequencies toward p and negative values (-0.01 to -0.99) decrease
+frequencies toward 0.
+
+Since filter2 implements generalized recursive filters, it can be used
+to specify a large range of general DSP algorithms. For example, a
+digital waveguide can be implemented for musical instrument modeling
+using a pair of delayr and delayw opcodes in conjunction with the
+filter2 opcode.
+
+Examples:
+
+A first-order linear-phase lowpass linear-phase FIR filter operating
+on a k-rate signal:
+
+  k1	kfilter2 ksig, 2, 0, 0.5, 0.5	;; k-rate FIR filter
+
+A controllable second-order IIR filter operating on an a-rate signal:
+
+  a1	zfilter2 asig, kdamp, kfreq, 1, 2, 1, ia1, ia2 ;; controllable IIR
+
+  (Author MKC)
+
+ftgen
+-----
+
+iafno	ftgen   ifno,itime,isize, igen, iarga[,...iargz]
+
+iafno is either a requested or automatically assigned table number above
+100.  If ifno is zero the number is assigned automatically and the value 
+placed in iafno,  Any other value is used as the table.  itime is
+ignored, but otherwise this is as the table generation in the score
+with the f statement.
+  (Author BV)
+
+ftlptim
+-------
+
+Function.  Returns the loop segment start-time in seconds of a stored table.
+  (Author BV)
+
+harmon
+------
+
+ar  harmon  asig,kestfrq,kmaxvar, kgenfrq1, kgenfrq2, imode, iminfrq, iprd
+
+Analyse an audio input and generate harmonising voices in synchrony.
+
+imode=0 is to treat the 2 generated frequencies as ratios
+     =1 they are cps
+iminfrq is the lowest expects frequency in cps
+iprd is the period of analysis
+
+kestfrq is an estimate of the input frequency, and kmaxvar is a ratio
+to limit the search.
+Only one voice may be higher that the the signal,  and a zero
+frequency silences the sound
+
+  (Author BV)
+
+ictrl7, ictrl21, ictrl14, ctrl7, ctrl21, ctrl14
+imidic7, imidic14, imidic21, midic7, midic14, midic21
+-----------------------------------------------------
+
+idest	imidic7	ictlno, imin, imax [, ifn]
+kdest	midic7	ictlno, kmin, kmax [, ifn]
+                                		
+idest	imidic14	ictlno1, ictlno2, imin, imax [, ifn]
+kdest	midic14	ictlno1, ictlno2, kmin, kmax [, ifn]
+		
+idest	imidic21	ictlno1, ictlno2, ictlno3, imin, imax [, ifn]
+kdest	midic21	ictlno1, ictlno2, ictlno3, kmin, kmax [, ifn]
+
+
+idest     ictrl7  ichan, ictlno, imin, imax [,ifn]
+kdest     ctrl7   ichan, ictlno, kmin, kmax [,ifn]
+
+idest     ictrl14  ichan, ictlno1, ictlno2, imin, imax [,ifn]
+kdest     ctrl14   ichan, ictlno1, ictlno2, kmin, kmax [,ifn]
+
+idest     ictrl21  ichan, ictlno1, ictlno2, ictlno3, imin, imax [,ifn]
+kdest     ctrl21  ichan, ictlno1, ictlno2, ictlno3, kmin, kmax [,ifn]
+
+DESCRIPTION
+Allow precise MIDI input controller signal.
+
+INITIALIZATION
+idest - output signal
+ichan - MIDI channel (in (i)ctrl14 and (i)ctrl21 all the controllers
+	used  in an opcode instance must be of the same channel)
+
+ictlno - midi controller number (1-127)
+ictlno1 - most-significant byte controller number (1-127)
+ictlno2 - in midic14: less-significant byte controller number (1-127);
+          in midic21: mid-significant byte controller number (1-127) 
+ictlno3 - less-significant byte controller number (1-127)
+imi - user-defined minimum floating-point value of output
+imax - user-defined maximum floating-point value of output
+ifn (optional) - table to be read when indexing is required. Table
+	must be normalized. Output is scaled according to max and min val.
+
+PERFORMANCE
+kdest - output signal
+kmin - user-defined minimum floating-point value of output
+kmax - user-defined maximum floating-point value of output
+
+imidic7 and midic7 (i and k rate 7 bit midi control) allow floating
+point 7 bit midi signal scaled with a minimum and a maximum range. 
+They also allow optional non-interpolated table indexing. 
+In midic7 minimum and maximum values can be varied at krate.
+
+imidic14 and midic14 (i and k-rate 14 bit midi control) do the 
+same as the above with 14 bit precision.
+
+imidic21 and midic21 (i and k rate 21 bit midi control) do the 
+same as the above with 21 bit precision.
+
+imidic14, midic14, imidic21 and midic21 can use optional interpolated
+table indexing.  They require two or three midi controllers as input.
+
+Warning! Don't use (i)midicXX opcodes within a sco-activated
+i-statement or Csound will crash. Instruments containing (i)midicXX
+opcodes can be only activated by a MIDI note-on message. Use (i)ctrlXX
+opcodes if you need to include them in a sco-oriented instrument
+instead.
+
+ictrl7, ctrl7, ictrl14, ctrl14, ictrl21, ctrl21 are very similar to
+(i)midicXX opcodes the only differences are:
+
+   1) (i)ctrlXX UGs can be included in sco-oriented instruments
+without Csound crashes.
+   2) They need the additional parameter ichan containing the MIDI
+channel of the controller. MIDI channel is the same for all the
+controller used in a single (i)ctrl14 or (i)ctrl21 opcode.
+
+
+
+initc7, initc14, initc21
+------------------------
+	initc7	ichan, ictlno, ivalue	 
+	initc14	ichan, ictlno1, ictlno2, ivalue	
+	initc21	ichan, ictlno1, ictlno2, ictlno3, ivalue	
+
+DESCRIPTION
+Initializes MIDI controller ictlno with ivalue
+
+INITIALIZATION
+ichan - midi channel
+ictlno - controller number (initc7)
+ictlno1 - MSB controller number
+ictlno2 - in initc14 LSB controller number; in initc21 Medium Significant Byte
+                controller number
+ictlno3 - LSB controller number
+ivalue - floating point value (must be within 0 to 1)
+
+initc7, initc14, initc21 can be used together with both (i)midicXX and 
+(i)ctrlXX opcodes for initializing the first controllers' value. 
+Ivalue argument must be set with a number within 0 to 1. An error occurs
+if it is not. 
+Use the following formula to set ivalue according with (i)midicXX and 
+(i)ctrlXX  min and max range:
+
+               ivalue = (initial_value - min) / (max - min)
+
+ion, ioff, iondur, iondur2
+--------------------------
+	ion	ichn, inum, ivel
+	ioff	ichn, inum, ivel
+	iondur	ichn, inum, ivel, idur
+	iondur2	ichn, inum, ivel, idur
+
+DESCRIPTION
+send note-on and  note-off messages to the MIDI OUT port.
+
+INITIALIZATION
+
+ichn - MIDI channel number (0-15)
+inum - note number (0-127)
+ivel - velocity  (0-127)
+
+PERFORMANCE
+
+ion (i-rate note on) and ioff (i-rate note off) are the simplest MIDI
+OUT opcodes.  
+ion sends a MIDI noteon message to MIDI OUT port, and ioff sends a
+noteoff message.  
+A ion opcode must always  be followed by an ioff with the same channel
+and number inside the same instrument, otherwise the note will play
+endlessly.
+These ion and ioff are useful only when introducing a timout statement
+to play a non zero duration MIDI note. 
+For most purposes it is better to use iondur and iondur2.
+
+iondur and iondur2 (i-rate note on with duration) send a noteon and a
+noteoff MIDI message both with the same channel, number and
+velocity. Noteoff message is sent after idur seconds are elapsed by
+the time iondur was activated. 
+
+iondur differs from iondur2 in that iondur truncates note duration
+when current instrument is deactivated by score or by realtime
+playing, while iondur2 will extend performance time of current
+instrument until idur seconds have elapsed.  In realtime playing it is
+suggested to use iondur also for undefined durations, giving a large
+idur value.
+
+Any number of iondur or iondur2 opcodes can appear in the same Csound
+instrument, allowing chords to be played by a single instr.
+
+ioutc, ioutc14, koutc, koutc14, ioutpb, koutpb, ioutat, koutat, 
+ioutpc, koutpc, ioutpat, koutpat
+--------------------------------
+	ioutc	ichn, inum, ivalue, imin, imax
+	koutc	kchn, knum, kvalue, kmin, kmax
+	ioutc14	ichn, imsb, ilsb, ivalue, imin, imax
+	koutc14 kchn, kmsb, klsb, kvalue, kmin, kmax
+
+	ioutpb	ichn, ivalue, imin, imax
+	koutpb	kchn, kvalue, kmin, kmax
+	ioutat	ichn, ivalue, imin, imax
+	koutat	kchn, kvalue, kmin, kmax
+	ioutpc	ichn, iprog, imin, imax
+	koutpc	kchn, kprog, kmin, kmax
+
+	ioutpat         ichn, inotenum, ivalue, imin, imax
+	koutpat         kchn, knotenum, kvalue, kmin, kmax
+
+DESCRIPTION
+Send a single Channel message to the MIDI OUT port.
+
+INITIALIZATION AND PERFORMANCE
+
+ichn, kchn - MIDI channel number (0-15)
+inum, knum - controller number (0-127 for example. 1 = ModWheel;  2 =
+	     BreathControl etc.) 
+ivalue, kvalue - floating point value 
+imin, kmin - minimum floating point value (converted in midi integer value 0)
+imax, kmax - maximum floating point value (converted in midi integer value 127 
+             (7 bit) or 16383 (14 bit))
+imsb, kmsb - most significant byte controller number when using 14 bit
+	     parameters 
+ilsb, klsb - less significant byte controller number when using 14 bit
+	     parameters
+iprog, kprog - program change number in floating point
+inotenum, knotenum - MIDI note number (used in polyphonic aftertouch messages)
+
+
+ioutc and koutc (i and k-rate midi controller output) send controller
+messages to MIDI OUT device.
+
+iout14 and kout14 (i and k-rate midi 14 bit controller output) send a
+pair of controller messages. These opcodes can drive 14 bit parameters
+on MIDI instruments that recognize them. The first control message
+contains the most significant byte of i(k)value argument while the
+second message contains the less significant byte.  i(k)msb and
+i(k)lsb are the number of the most and less significant controller.
+
+ioutpb and koutpb (i and k-rate pitch bend output) send pitch bend messages. 
+ioutat and koutat (i and k-rate aftertouch output) send aftertouch messages.
+ioutat and koutat (i and k-rate aftertouch output) send aftertouch messages.
+ioutpc and koutpc (i and k-rate program change output) send program change 
+messages.
+
+ioutpat and koutpat (i and k-rate polyphonic aftertouch output) send
+polyphonic aftertouch messages. These opcodes can drive a different
+value of a parameter for each note currently active. They work only
+with MIDI instruments which recognize them.
+
+N.B.  All these opcodes can scale the i(k)value floating-point
+argument according with i(k)max and i(k)min values. For example,
+setting i(k)min = 1.0 and i(k)max = 2.0, when i(k)value argument
+receives a 2.0 value, the opcode will send a 127 value to MIDI OUT
+device, while when receiving a 1.0 it will send a 0 value.  I-rate
+opcodes send their message once during instrument initialization.
+K-rate opcodes send a message each time the MIDI converted value of
+argument i(k)value changes.
+
+ipchbend, kpchbend
+------------------
+
+ibend  ipchbend  [ilow, ihigh]
+kbend  kpchbend  [ilow, ihigh]
+
+Get the current pitchbend value from a MIDI channel, and map it to the
+specified range
+  (Author BV)
+
+
+kon, moscil
+-----------
+	moscil	kchn, knum, kvel, kdur, kpause
+	kon	kchn, knum, kvel
+
+DESCRIPTION
+Send stream of note-on and note-off  messages to the MIDI OUT port.
+
+INITIALIZATION
+
+PERFORMANCE
+kchn - MIDI channel number (0-15)
+knum - note number (0-127)
+kvel - velocity  (0-127)
+kdur - note duration in seconds
+kpause - pause duration after each noteoff and before new note in seconds
+
+moscil and kon are the most powerful MIDI OUT opcodes.
+moscil (midi oscil) plays a stream of notes of kdur duration. Channel, pitch, 
+velocity, duration and pause can be controlled at k-rate, allowing very complex 
+algorithmically generated melodic lines. 
+When current instrument is deactivated, the note played by current instance 
+of moscil is forcely truncated.
+
+kon (k-rate note on) plays MIDI notes with current kchn, knum and kvel. 
+These arguments can be varied at k-rate. Each time the MIDI converted value 
+of any of these arguments changes, last MIDI note played by current instance 
+of kon is immediately turned off and a new note with the new argument values 
+is activated. 
+
+This opcode, as well as moscil, can generate very complex melodic textures 
+if controlled by complex k-rate signals.
+
+Any number of moscil or kon opcodes can appear in the same Csound instrument, 
+allowing a counterpoint-style polyphony within a single instrument.
+
+  (Author GM)
+
+linsegr,expsegr
+---------------
+
+kr  linsegr  ia, idur1, ib[,idur2, ic[..]]. irel, iz
+ar  linsegr  ia, idur1, ib[,idur2, ic[..]]. irel, iz
+kr  expsegr  ia, idur1, ib[,idur2, ic[..]]. irel, iz
+akr  expsegr  ia, idur1, ib[,idur2, ic[..]]. irel, iz
+
+Like linseg except that on a MIDI note off event the release sectin is
+used, extending the performance by irel seconds, during which the
+value of the opcode changes to iz,
+  (Author BV)
+
+
+massign
+-------
+
+    massign  ichnl, insno
+
+Assign MIDI channel to a Csound instrument.  This is an orchestral header
+statement
+  (Author BV)
+
+mclock, mrtmsg
+--------------
+	mclock	ifreq
+	mrtmsg	imsgtype
+
+DESCRIPTION
+Send System Realtime messages to the MIDI OUT port. 
+
+INITIALIZATION
+
+ifreq - clock message frequency rate in Hz
+imsgtype - type of real-time message: 
+           1 sends a START message (0xFA);  
+           2 sends a CONTINUE message (0xFB);  
+           0 sends a STOP message (0xFC); 
+          -1 sends a SYSTEM RESET message (0xFF); 
+          -2 sends an ACTIVE SENSING message (0xFE)
+
+PERFORMANCE
+
+mclock (midi clock) sends a MIDI CLOCK message (0xF8) every 1/ifreq
+seconds.  So ifreq is the frequency rate of CLOCK message in Hz.
+mrtmsg (midi realtime message) sends a realtime message once, in init
+stage of current instrument. imsgtype parameter is a flag to indicate
+the message type (see above, in ARGUMENTS description).
+
+  (Author GM)
+
+osciln
+------
+
+ar  osciln  kamp, ifrq, ifn, itimes
+
+Like oscil1, but makes a total of itimes passes over the data, after
+which it is silent
+  (Author BV)
+
+repluck, wgpluck2
+-----------------
+
+wgpluck2 is an implementation of the physical model of the plucked
+string, with control over the pluck point, the pickup point and the
+filter.  repluck is the same operation, but with an additional audio
+signal used to excite the 'string'
+
+  ar    wgpluck2   iplk, xam, icps, kpick, krefl
+  ar    repluck    iplk, xam, icps, kpick, krefl, axcite
+
+The string plays at icps pitch.  The point of pluck is iplk, which is
+a fraction of the way up the string (0 to 1).  A pluck point of zero
+means no initial pluck.  xamp is the gain. and kpick is what
+proportion of the way along the string to sample the output.  The
+relection at the bridge is contrlled by the refleaction coefficient,
+where 1 means total reflection and 0 is totally dead.
+
+  (Author JPff)
+
+turnon
+------
+
+    turnon   insno[,itime]
+
+Activate an instrument, for an indefinite time, after a delay of itime
+seconds.
+  (Author BV)
+
+wgpluck
+-------
+
+  (Author MKC)
+
+xtratim, release
+----------------
+	xtratim	 iextradur
+kflag	release 	
+
+DESCRIPTION
+Extend the duration of realtime generated events and handle their
+extra life. 
+
+INITIALIZATION
+
+iextradur - additional duration of current instrument instance
+
+PERFORMANCE
+
+xtratim exetends current MIDI-activated note duration of iextradur
+seconds after the corresponding note-off message has deactivated
+current note itself.  This opcode has no output arguments. 
+
+release outputs current note state. If current note is in the release
+stage (i.e. if its duration has been exetended with xtratim opcode and
+if it has only just deactivated), kflag output argument is set to 1,
+else (in sustain stage of current note) is set to 0.
+
+These two opcodes are useful for implementing complex release-oriented
+envelopes.
+
+Example:
+	instr	1	;allows complex ADSR envelope with MIDI events
+inum	notnum
+icps	cpsmidi
+iamp	ampmidi	4000
+;
+;############## complex envelope section ##############
+	xtratim	1	;extra-time, i.e. release dur
+krel	init	0
+krel	release		;outputs release-stage flag (0 or 1 values)
+if 	(krel > .5) kgoto  rel	;if in relase-stage goto relase section
+;
+;************ attack and sustain section ***********
+kmp1	linseg	0,.03,1,.05,1,.07,0,.08,.5,4,1,50,1 
+kmp	=	kmp1*iamp
+	kgoto	done
+;
+;************ release section **********************
+rel:
+kmp2	linseg	1,.3,.2,.7,0	
+kmp	= kmp1*kmp2*iamp
+done:
+;###################################################
+;
+a1	oscili	kmp, icps, 1
+	out	a1
+	endin
+------------------------------------------------------------------------
+
+ar wgclar kamp, kfreq, kstiff, iatt, idetk, kngain, kvibf, kvamp, ifn[, iminfreq]
+
+Audio output is a tone similar to a clarinet, using a physical model 
+developed from Perry Cook, but re-coded for Csound.
+
+Initialisation
+
+iatt - time in seconds to reach full blowing pressure.  0.1 seems to
+    correspond to reasonable playing.  A longer time gives a definite 
+    initial wind sound.
+
+idetk - time in seconds taken to stop blowing.  0.1 is a smooth ending
+
+ifn - table of shape of vibrato, usually a sine table, created by a
+    function 
+
+iminfreq - lowest frequency at which the instrument will play.  If
+    it is omitted it is taken to be the same as the initial kfreq. 
+
+
+Performance
+
+A note is played on a clarinet-like instrument, with the arguments as
+    below.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played.  While it can be varied in
+    performance,  I have not tried it 
+
+kstiff - a stiffness parameter for the reed.  Values should be
+    negative, and about -0.3.  The useful range is approximately -0.44
+    to -0.18.
+
+kngain - amplitude of the noise component, about 0 to 0.5
+
+kvibf - frequency of vibrato in Hertz. Suggested range is 0 to 12
+
+kvamp - amplitude of the vibrato
+
+Example:
+
+a1          wgclar      31129.60, 440, -0.3, 0.1, 0.1, 0.2, 5.735, 0.1, 1
+            out         a1
+
+------------------------------------------------------------------------
+ar wgflute kamp, kfreq, kjet, iatt, idetk, kngain, kvibf, kvamp, ifn[, iminfreq]
+
+Audio output is a tone similar to a flute, using a physical model 
+developed from Perry Cook, but re-coded for Csound.
+
+Initialisation
+
+iatt - time in seconds to reach full blowing pressure.  0.1 seems to
+    correspond to reasonable playing.
+
+idetk - time in seconds taken to stop blowing.  0.1 is a smooth ending
+
+ifn - table of shape of vibrato, usually a sine table, created by a
+    function 
+
+iminfreq - lowest frequency at which the instrument will play.  If
+    it is omitted it is taken to be the same as the initial kfreq. 
+
+
+Performance
+
+A note is played on a flute-like instrument, with the arguments as
+    below.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played.  While it can be varied in
+    performance,  I have not tried it 
+
+kjet - a parameter controlling the air jet.  Values should be
+    positive, and about 0.3.  The useful range is approximately 0.08
+    to 0.56.
+
+kngain - amplitude of the noise component, about 0 to 0.5
+
+kvibf - frequency of vibrato in Hertz. Suggested range is 0 to 12
+
+kvamp - amplitude of the vibrato
+
+Example:
+
+a1          wgflute     31129.60, 440, 0.32, 0.1, 0.1, 0.15, 5.925, 0.05, 1
+            out         a1
+
+------------------------------------------------------------------------
+ar wgbow kamp, kfreq, kpres, krat, kvibf, kvamp, ifn[, iminfreq]
+
+Audio output is a tone similar to a bowed string, using a physical model 
+developed from Perry Cook, but re-coded for Csound.
+
+Initialisation
+
+ifn - table of shape of vibrato, usually a sine table, created by a
+    function 
+
+iminfreq - lowest frequency at which the instrument will play.  If
+    it is omitted it is taken to be the same as the initial kfreq. 
+
+
+Performance
+
+A note is played on a bowed string-like instrument, with the arguments as
+    below.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played.  While it can be varied in
+    performance,  I have not tried it 
+
+kpres - a parameter controlling the pressure of the bow on the string.  
+    Values should be about 3.  The useful range is approximately 1
+    to 5.
+
+kratio - the position of the bow along the string.  Usual playing is
+    about 0.127236.  The suggested range is 0.025 to 0.23.
+
+kvibf - frequency of vibrato in Hertz. Suggested range is 0 to 12
+
+kvamp - amplitude of the vibrato
+
+Example:
+  A bowing with vibrato setting in after a short time.
+
+kv          linseg      0, 0.5, 0, 1, 1, p3-0.5, 1
+a1          wgbowed     31129.60, 440, 3.0, 0.127236, 6.12723, kv*0.01, 1
+            out         a1
+
+------------------------------------------------------------------------
+ar wgbrass kamp, kfreq, klipt, idatt, kvibf, kvamp, ifn[, iminfreq]
+
+Audio output is a tone related to a brass instrument, using a physical model 
+developed from Perry Cook, but re-coded for Csound.
+[NOTE:  This is rather poor, and at present uncontrolled
+        Needs revision, and possibly more parameters]
+
+Initialisation
+
+
+idatt -- time taken to stop blowing
+
+ifn - table of shape of vibrato, usually a sine table, created by a
+    function 
+
+iminfreq - lowest frequency at which the instrument will play.  If
+    it is omitted it is taken to be the same as the initial kfreq. 
+
+
+Performance
+
+A note is played on a bowed string-like instrument, with the arguments as
+    below.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played.  While it can be varied in
+    performance,  I have not tried it 
+
+klibt - tension of lips, in range 0 to 1
+
+kvibf - frequency of vibrato in Hertz. Suggested range is 0 to 12
+
+kvamp - amplitude of the vibrato
+
+Example:
+a1          wgbrass     31129.60, 440, 0.4, 0.1, 6.137, 0.05, 1
+
+------------------------------------------------------------------------
+ar marimba kamp, kfreq, ihrd, ipos, imp, kvibf, kvamp, ivibfn, idec
+ar vibes   kamp, kfreq, ihrd, ipos, imp, kvibf, kvamp, ivibfn, idec
+
+Audio output is a tone related to the striking of a wooden or metal
+block as found in a marimba or vibraphone.  The method is a physical
+model developed from Perry Cook, but re-coded for Csound. 
+
+Initialisation
+
+ihrd -- the hardness of the stick used in the strike.  A range of 0 to
+    1 is used.  0.5 is a suitable value.
+
+ipos -- where the block is hit, in the range 0 to 1.
+
+imp - a table of the strike impulses.  The file "marmstk1.wav" is a
+    suitable function from measurements, and can be loaded with a GEN1
+    table.
+
+ivfn - shape of vibrato, usually a sine table, created by a
+    function 
+
+idec - time before end of note when damping is introduced
+
+
+Performance
+
+A note is played on a marimba-like instrument, with the arguments as
+    below.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played.  While it can be varied in
+    performance,  I have not tried it 
+
+kvibf - frequency of vibrato in Hertz. Suggested range is 0 to 12
+
+kvamp - amplitude of the vibrato
+
+Example:
+a1          marimba     31129.60, 440, 0.5, 0.561, 2, 6.0, 0.05, 1, 0.1
+a2          vibes       31129.60, 440, 0.5, 0.561, 2, 4.0, 0.2, 1, 0.1
+
+------------------------------------------------------------------------
+ar agogobel kamp, kfreq, ihrd, ipos, imp, kvibf, kvamp, ivibfn
+
+Audio output is a tone related to the striking of a cow bell or
+similar.  The method is a physical model developed from Perry Cook,
+but re-coded for Csound.  
+
+Initialisation
+
+ihrd -- the hardness of the stick used in the strike.  A range of 0 to
+    1 is used.  0.5 is a suitable value.
+
+ipos -- where the block is hit, in the range 0 to 1.
+
+imp - a table of the strike impulses.  The file "britestk.wav" is a
+    suitable function from measurements, and can be loaded with a GEN1
+    table.
+
+ivfn - shape of vibrato, usually a sine table, created by a
+    function 
+
+Performance
+
+A note is played on a cowbell or agogobell-like instrument, with the
+arguments as below.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played.  While it can be varied in
+    performance,  I have not tried it 
+
+kvibf - frequency of vibrato in Hertz. Suggested range is 0 to 12
+
+kvamp - amplitude of the vibrato
+
+Example:
+a1          agogobel    31129.60, 440, p4, 0.561, 3, 6.0, 0.3, 1
+
+------------------------------------------------------------------------
+ar shaker kamp, kfreq, kbeans, kdamp, knum, ktimes[, idecay]
+
+Audio output is a tone related to the shaking of a maraca or
+similar gourd instrument.  The method is a physically inspired model
+developed from Perry Cook, but re-coded for Csound.  
+
+Initialisation
+
+idecay - If present indicates for how long at the end of the note the
+   shaker is to be damped.  The default value is zero.
+
+Performance
+
+A note is played on a cowbell or agogobell-like instrument, with the
+arguments as below.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played, that is the frequency of the
+    gourd. It can be varied in performance,  I have not tried it 
+
+kbeans - The number of beans in the gourd.  A value of 8 seems suitable,
+
+kdamp -- The damping vsalue of the shaker.  Values of 0.98 to 1 seems
+  suitable, with 0.99 a reasonable default.
+
+knum -- The number of shakes of the gourd.  Values over 64 are
+   considered infinite.
+
+ktimes -- Number of times shaken.
+
+[RICK: Not sure all these are useful -- not clear in code]
+
+Example:
+a1          shaker	31129.60, 440, 8, 0.999, 0, 100, 0
+
+------------------------------------------------------------------------
+a1 fmtbell  kamp, kfreq, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
+a1 fmrhode  kamp, kfreq, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
+a1 fmwurlie kamp, kfreq, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
+a1 fmmetal  kamp, kfreq, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
+a1 fmb3     kamp, kfreq, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
+a1 fmpercfl kamp, kfreq, kc1, kc2, kvdepth, kvrate, ifn1, ifn2, ifn3, ifn4, ivfn
+
+
+A family of FM sounds, all using 4 basic oscilators and various
+architectures, as used in the TX81Z synthesiser.
+
+Initialisation
+
+All these opcodes take 5 tables for initialisation.  The first 4 are
+the basic inputs and the last is the low frequency oscillator (LFO)
+used for vibrato.  The last table should usually be a sine wave.
+
+For the other opcodes the initial waves should be as in the table
+              ifn1        ifn2          ifn3      ifn4
+fmtbell       sinewave    sinewave      sinewave  sinewave
+fmrhode       sinewave    sinewave      sinewave  fwavblnk
+fmwurlie      sinewave    sinewave      sinewave  fwavblnk
+fmmetal       sinewave    twopeaks      twopeaks  sinewave
+fmb3          sinewave    sinewave      sinewave  sinewave
+fmpercfl      sinewave    sinewave      sinewave  sinewave
+
+The sounds produced are then
+
+fmtbell       Tubular Bell
+fmrhode       Fender Rhodes  Electric Piano
+fmwurlie      Wurlitzer Electric Piano
+fmmetal       "Heavy Metal"
+fmb3          Hammond B3 organ
+fmpercfl      Percussive Flute
+
+Performance
+
+kamp -- Amplitude
+
+kfreq -- frequency
+
+kc1, kc2 -- Controls for the syntheser, as in the table
+              kc1         	kc2                         Algorithm
+fmtbell       Mod index 1	Crossfase of two outputs        5
+fmrhode       Mod index 1	Crossfase of two outputs        5
+fmwurlie      Mod index 1	Crossfase of two outputs        5
+fmmetal       Total mod index   Crossfade of two modulators     3
+fmb3          Total mod index   Crossfade of two modulators     4
+fmpercfl      Total mod index   Crossfade of two modulators     4
+
+kvdepth -- Vibrator depth
+
+kvrate -- Vibrator rate
+
+Examples:
+a1          fmtbell	31129.60, 440, 1,   1.2, 0.2, 6,   1,1,1,1, 1
+a1          fmrhode	31129.60, 440, 1,   1.2, 0.2, 12,  1,1,1,4, 1
+a1          fmwurlie	31129.60, 440, 1,   1.2, 0.2, 8,   1,1,1,4, 1
+a1          fmmetal  	31129.60, 110, 1,   1.2, 0.2, 5.5, 1,5,5,1, 1
+a1          fmb3   	31129.60, 440, 1,   1.2, 0.2, 8,   1,1,1,1, 1
+a1          fmpercfl	31129.60, 440, 0.1, 0.1, 0.5, 12,  1,1,1,1, 1
+
+------------------------------------------------------------------------
+a1 fmvoice  kamp, kfreq, kvowel, ktilt, kvibamt, kvibrate, ifn1, ifn2, ifn3, ifn4, ivibfn
+
+FM Singing Voice Synthesis,
+
+Initialisation:
+
+ifn1, ifn2, ifn3,ifn3 -- Tables, usually of sinewaves.
+
+Performance
+
+kamp -- Amplitude control
+
+kfreq -- Base frequency of sound
+
+kvowel -- the vowel being sung, in the range 0-64; it is rounded to
+the nearest integer.
+
+ktilt -- the spectral tilt of the sound in the range 0 to 99
+
+kvibamt -- Depth of vibrato
+
+kvibrate -- Rate of vibrato
+
+Example
+
+k1          line        0, p3, 64
+a1          fmvoice	31129.60, 110, k1, 0, 0.005, 6, 1,1,1,1,1
+
+------------------------------------------------------------------------
+a1  moog        kamp, kfreq, kfiltq, kfiltrate, kvibf, kvamp, iafn, iwfn, ivfn
+
+An emulation of a mini-Moog syntheser.
+
+Initialisation.
+
+iafn, iwfn, ivfn -- three table numbers containing the attack wave
+    form (unlooped), the main looping wave form, and the vibrato waveform.
+    The files mandpluk.aiff and impuls20.aiff are suitable for the first two,
+    and a sine wave for the last.
+
+Performance.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played. It can be varied in performance.
+
+kfiltq - Q of the filter, in the range 0.8 to 0.9
+
+kfiltrate - rate control for the filter in the range 0 to 0.0002
+
+kvibf - frequency of vibrato in Hertz. Suggested range is 0 to 12
+
+kvamp - amplitude of the vibrato
+
+------------------------------------------------------------------------
+a1  mandol     kamp, kfreq, kpluck, kdetune, kgain, ksize, ifn[, iminfreq]
+
+An emulation of a mandolin.
+
+Initialisation.
+
+ifn -- table number containing the pluck wave form. 
+    The file mandpluk.aiff is suitable for this.
+
+iminfreq -- Lowest frequency to be played on the note.  If
+    it is omitted it is taken to be the same as the initial kfreq. 
+
+Performance.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played. It can be varied in performance.
+
+kpluck - The pluck position, in range 0 to 1.  Suggested value is 0.4
+
+kgain - the loopgain of the model, in the range 0.97 to 1
+
+kdetune - The proportional detuning between the two strings.
+        Suggested range 1 and 0.9
+
+ksize - The size of the body of the mandolin.  Range 0 to 2
+
+------------------------------------------------------------------------
+a1  voice        kamp, kfreq, kphoneme, kform, kvibf, kvamp, ifn, ivfn
+
+An emulation of a human voice.
+
+Initialisation.
+
+ifn, ivfn -- two table numbers containing the carrier wave form and
+    the vibrato waveform.
+    The files impuls20.aiff, ahh.aiff eee.aiff or ooo.aiff are suitable for
+    the first of these, and a sine wave for the second.
+
+Performance.
+
+kamp - Amplitude of note. 
+
+kfreq - Frequency of note played. It can be varied in performance.
+
+kphoneme - an integer in the range 0 to 16, which select the formants for
+     the sounds         "eee","ihh","ehh","aaa",
+                        "ahh","aww","ohh","uhh",
+                        "uuu","ooo","rrr","lll",
+                        "mmm","nnn","nng","ngg".
+
+At present the phonemes
+                        "fff","sss","thh","shh",
+                        "xxx","hee","hoo","hah",
+                        "bbb","ddd","jjj","ggg",
+                        "vvv","zzz","thz","zhh"
+are not available
+
+kform - Gain on the phoneme.  values 0.0 to 1.2 recommended.
+
+kvibf - frequency of vibrato in Hertz. Suggested range is 0 to 12
+
+kvamp - amplitude of the vibrato
+------------------------------------------------------------------------
+GEN25, GEN27
+These subroutines are used to construct functions from segments of
+exponential curves (GEN25) or straight lines (GEN27) in breakpoint
+fashion.
+
+f #  time  size  25  x1 y1 x2 y2 x3 y3 . . .
+f #  time  size  27  x1 y1 x2 y2 x3 y3 . . .
+
+size - number of points in the table.  Must be a power of 2 or power-of-2
+plus 1 (see f statement).
+
+x1, x2, x3, etc. - locations in table at which to attain the following y
+value.  Must be in increasing order.  If the last value is less than size,
+then the rest will be set to zero.  Should not be negative but can be zero.
+
+y1, y2, y3,  etc. - Breakpoint values attained at the location specified
+by the preceding x value.  For GEN25 these must be non-zero and must be
+alike in sign.  No such restrictions exist for GEN27.
+
+Note: If p4 is positive, functions are post-normalized (rescaled to a
+maximum absolute value of 1 after generation).  A negative p4 will cause
+rescaling to be skipped.
+
+Example:  f 1 0 257 27 0 0 100 1 200 -1 256 0
+
+This describes a function which begins at 0, rises to 1 at the 100th table
+location, falls to -1, by the 200th location, and returns to 0 by the end
+of the table.  The interpolation is linear. 
+
+f 1 0 257 25 0 0.001 100 1 200 .001 256 0.001
+
+Similar to above, but creates exponential curve. No values <= 0 are
+allowed in Gen25
+
+------------------------------------------------------------------------
+Windows GUI  Changes
+====================
+
+The treatment of graphs has changed significantly.  In particular
+there are two new menu items, to display the previous or next graph.
+These work during the run, and also at the end.  It can remember up to
+40 graphs.
+
+Instead of a dialog asking for a click at the end, the system waits
+for any character.  During this time the menus can be used, so the
+graphs can be redisplayed, or the output scrolled back.  Also the text
+buffer size has been increased.
+
+Also for Windows, the output form devaudio0, devaudio1,.. or adc0,
+adc1,... can be used to select which of many audio devices are to be
+used. (devaudio1 would refer to device 1 etc).  The form devaudio refers
+to device zero.
+
+
+
+==John ff
+  1998 Jan 2

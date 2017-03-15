@@ -3,9 +3,9 @@
 #use variable blueLibDir for blue's lib directory
 #use variable blueProjectDir for this project's directory
 #use variable score at end of script to bring score back into blue
-import composition
-import composition.itemstream as ci
-import composition.score as cs
+import thuja
+import thuja.itemstream as ci
+import thuja.score as cs
 import numpy as np
 
 

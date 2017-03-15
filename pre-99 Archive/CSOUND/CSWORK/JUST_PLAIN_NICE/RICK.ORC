@@ -1,0 +1,55 @@
+sr        =         44100
+kr        =         4410
+ksmps     =         10
+nchnls    =         2
+
+instr     1
+
+p3        =         p3+p9
+idur      =         p3
+iamp      =         p4
+ifqc      =         cpspch(p5)
+iatk      =         p6
+idec      =         p7
+isus      =         p8
+irel      =         p9
+ilfowv    =         p10
+ilfort    =         p11
+
+krez      =         8
+
+; LFO
+if   (ilfowv = 0)   goto next1
+  alfo1   oscil     1, ilfort, ilfowv
+  goto    cont1
+
+next1:
+  alfo2   randh     .5, ilfort
+  alfo1   =         alfo2+.5
+
+cont1:
+alfo      butterlp  alfo1, 1000
+kfco      downsamp  alfo*2000+200
+
+; VCA
+kamp      linseg    0, iatk, iamp, idec, isus*iamp, idur-iatk-idec-irel, isus*iamp, irel, 0
+
+apulse    buzz      1,ifqc, sr/2/ifqc, 1     ; AVOID ALIASING
+asaw      integ     apulse
+axn       =         asaw-.5
+
+; RESONANT LOWPASS FILTER (4 POLE)
+ifqcadj   =         .149659863*sr
+kc        =         ifqcadj/kfco
+krez2     =         krez/(1+exp(kfco/11000))
+ka1       =         kc/krez2-1
+kasq      =         kc*kc
+kb        =         1+ka1+kasq
+
+ayn       nlfilt    axn/kb, (ka1+2*kasq)/kb, -kasq/kb, 0, 0, 1
+ayn2      nlfilt    ayn/kb, (ka1+2*kasq)/kb, -kasq/kb, 0, 0, 1
+
+
+          outs      ayn2*kamp, alfo*2000+200
+
+          endin

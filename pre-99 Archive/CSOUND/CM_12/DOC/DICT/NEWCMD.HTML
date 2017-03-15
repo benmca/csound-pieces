@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="new.cmd">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>new {<I>type</I>} {<I>name | number</I>}* {<I>position</I>}* {<I>slot value</I>}*</B></TT>
+<TD align="right" valign="top">
+[Command]<TR>
+</TABLE><P><P>
+Creates one or more objects of type {<I>type</I>}. If
+{<I>type</I>} is a container class then only one object is
+created with an optional {<I>name</I>}. Otherwise 
+{<I>type</I>} is a data class (such as <A HREF="midi-note.cls.html">midi-note</A>, etc.) and  
+{<I>number</I>} of these objects are created. If {<I>number</I>} may also be the token
+<TT>*</TT>, in which case the first expr in the {<I>slot expr</I>}* pairs is assumed
+to be an item stream whose period length determines the number
+of objects to create dynamically.  The new objects are placed at {<I>position</I>},
+which may be the name of a container or a container and
+index.  If {<I>position</I>} is not specified, it defaults to
+Top-Level for containers and the current focus container
+or the Pasteboard for data.
+
+<P><B>Example:</B></P>
+Create new thread Foo and place at position 4 in Bar:
+<PRE>Stella [Top-Level]: <B>new thread foo bar[4]
+</B></PRE>
+Append 5 new midi-notes to Foo:
+<PRE>Stella [Top-Level]: <B>new midi-note 5 foo
+</B></PRE>
+Create 20 midi-notes with random notes:
+<PRE>
+Stella [Top-Level]: <B>{new midi-note 20 foo[1] 
+                      note (between 30 90) rhythm 1.0}
+</B></PRE>
+<P>
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

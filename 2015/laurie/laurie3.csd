@@ -66,7 +66,7 @@ pyruni {{
 import random
 import audiolazy
 
-from composition import itemstream
+from thuja import itemstream
 
 random.seed()
 class PitchQueue:

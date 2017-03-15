@@ -1,0 +1,344 @@
+Release Notes for 4.10
+======================
+
+
+Bug Fixes
+---------
+
+-z option was broken
+
+/* ..  */ comments fixed
+
+Inaccuracies in sorted score on Linux modified; this may open a old
+bug which I do not know.
+
+Language Changes
+----------------
+
+The mixer did not have .wav tag added to default output file name.  It
+does now.
+
+A bug where variables in algebraic expressions in the orchestra could
+only be 11 characters long (longer ones just overwrote things!) has
+been fixed.  There is no reasonable limit to variable name lengths.
+
+
+Opcode Fixes
+------------
+
+Small fix in sfonts to check more
+
+rnd family allow seeding from the clock if the seed is >1
+
+comb and alpas -- can specify delay n samples optionally using an
+extra optional argument.  If the argument is non-zero then the loop
+time is counted in samples.
+
+vbap family bug fix
+
+vco opcode now has optional arguments which default to 1; now has
+xamp, xcps, [iwave,] [ipw,] [isine,] [imaxd]
+
+The htrf opcode does not click like it used to, but at teh expense of
+a more jerky motion.  This needs to be revisited.
+
+New Opcodes 
+-----------
+
+noise -- variable noise
+
+ampdbfs, dbfsamp -- just like ampdb and dbamp except assumes 16bits is
+0dB.  This will eventually be just full scale.
+
+lpf18 -- new low pass filter, 18dB/oct resonant 3 pole LPF with tanh() dist.
+
+tbvcf -- model some of the filter characteristics of a TB303 VCF.
+
+sensekey -- renamed and improved
+
+clock -- read real time clock
+
+
+Other Changes:
+-------------
+
+There is a utility for removing noise (dnoise) [See below]
+
+There is a sample-rate conversion utility (srconv)) [See below]
+
+Note that at present neither of these utilities are guaranteed to work
+with MYFLT set to double.  I will fix that soon.
+
+
+Windows GUI Changes
+-------------------
+
+Correct small bug in <=> button (now works)
+Bug in pvanal interface fixed
+
+
+------------------------------------------------------------------------
+==John ff
+  2000 December
+========================================================================
+ar      noise   xamp, kbeta
+
+noise is a white noise generator with an IIR lowpass filter.  The
+filter equation is
+        y_n = sqrt(1-beta^2) * x_n + beta Y_(n-1)
+where x_n is white noise.  Beta should be in the range 0 to 1.  The
+final signal is given amplitude xamp.
+
+------------------------------------------------------------------------
+ampdbfs, dbfsamp
+
+amplitude to full scale decibel and vice versa.  Full scale is 0db,
+and is currently taken as 16bits.  These are the same as ampdb and
+bpamp apart from the reference amplitude.
+
+------------------------------------------------------------------------
+ar      lpf18       asig, kfco, kres, kdist
+
+
+Implementation of a 3 pole sweepable resonant low-pass filter.
+
+PERFORMANCE
+
+lpf18 is a digital emulation of a 3 pole (18dB/oct.) lowpass filter
+capable of self-oscillation with a buit-in distortion unit. It is
+really a 3-pole version of the Moogvcf opcode, retuned, recalibrated
+and with some performance improvements.  The tuning and feedback tables
+use no more than 6 adds and 6 multiplies per control rate.  The
+distortion unit itself is based on a modified tanh() function driven
+by the filter controls.
+
+Note: This filter requires that the input signal be approximately
+normalized to one.
+
+kfco - the filter cut-off frequency in Herz, in (0,sr/2).
+kres - the amount of resonance in [0,1] with self-oscillation occurring
+when xres is approximately one. Values slightly greater than 1 are
+possible for more sustained oscillation and overdrive effect.
+kdist - distortion amount, kdist=0 gives a clean output, kdist>0 adds
+tanh() distortion controlled by the filter parameters, in such a way
+that both low cutoff and high resonance increase the distortion
+amount. Some experimentation is encouraged.
+
+Josep M Comajuncosas, gelida@intercom.es
+
+------------------------------------------------------------------------
+ar    tbvcf    asig, xfco, xres, kdist, kasym
+
+by Hans Mikelson December 2000-January 2001
+
+This opcode attempts to model some of the filter characteristics of a TB303
+VCF.  Euler's method is used to approximate the system rather than
+traditional filter methods.  Cut-off frequency, Q and distortion   are all
+coupled.  Empirical methods were used to try to unentwine  but frequency is
+only approximate as a result. In the future I may try to fix some problems
+with this opcode which may break existing orchestras relying on this opcode.
+
+asig - The input signal should be normalized to +/- 1.0.
+
+xfco - Cut-off frequency works best in the range 10,000 to 1500.  Values
+below 1000 may cause problems.
+
+xres - Resonance or Q, typically 0-2.
+
+kdist - Distortion amount, typically 2, changing kdist significantly from 2
+may cause odd fco and Q responses.
+
+kasym - Asymmetry of resonance, typically 0-1.
+
+Test orchestra and score:
+
+;---------------------------------------------------------
+; TBVCF Test
+; Coded by Hans Mikelson December, 2000
+;---------------------------------------------------------
+sr =  44100   ; Sample rate
+kr =  4410   ; Kontrol rate
+ksmps =  10   ; Samples/Kontrol period
+nchnls =  2   ; Normal stereo
+ zakinit  50, 50
+
+ instr 10
+
+idur = p3            ; Duration
+iamp = p4            ; Amplitude
+ifqc = cpspch(p5)    ; Pitch to frequency
+ipanl = sqrt(p6)      ; Pan left
+ipanr = sqrt(1-p6)    ; Pan right
+iq      =       p7
+idist   =       p8
+iasym   =       p9
+
+kdclck linseg 0, .002, 1, idur-.004, 1, .002, 0 ; Declick envelope
+
+kfco expseg 10000, idur, 1000 ; Frequency envelope
+
+ax vco 1, ifqc, 2, 1   ; Square wave
+ay tbvcf ax, kfco, iq, idist, iasym ; TB-VCF
+ay      buthp   ay/1, 100    ; Hi-pass
+
+ outs ay*iamp*ipanl*kdclck, ay*iamp*ipanr*kdclck
+ endin
+
+f1 0 65536 10 1
+; TeeBee Test
+; Sta Dur Amp   Pitch Pan Q Dist1 Asym
+
+i10 0 0.2 32767 7.00 .5 0.0 2.0 0.0
+i10 0.3 0.2 32767 7.00 .5 0.8 2.0 0.0
+i10 0.6 0.2 32767 7.00 .5 1.6 2.0 0.0
+i10 0.9 0.2 32767 7.00 .5 2.4 2.0 0.0
+i10 1.2 0.2 32767 7.00 .5 3.2 2.0 0.0
+i10 1.5 0.2 32767 7.00 .5 4.0 2.0 0.0
+i10 1.8 0.2 32767 7.00 .5 0.0 2.0 0.25
+i10 2.1 0.2 32767 7.00 .5 0.8 2.0 0.25
+i10 2.4 0.2 32767 7.00 .5 1.6 2.0 0.25
+i10 2.7 0.2 32767 7.00 .5 2.4 2.0 0.25
+i10 3.0 0.2 32767 7.00 .5 3.2 2.0 0.25
+i10 3.3 0.2 32767 7.00 .5 4.0 2.0 0.25
+i10 3.6 0.2 32767 7.00 .5 0.0 2.0 0.5
+i10 3.9 0.2 32767 7.00 .5 0.8 2.0 0.5
+i10 4.2 0.2 32767 7.00 .5 1.6 2.0 0.5
+i10 4.5 0.2 32767 7.00 .5 2.4 2.0 0.5
+i10 4.8 0.2 32767 7.00 .5 3.2 2.0 0.5
+i10 5.1 0.2 32767 7.00 .5 4.0 2.0 0.5
+i10 5.4 0.2 32767 7.00 .5 0.0 2.0 0.75
+i10 5.7 0.2 32767 7.00 .5 0.8 2.0 0.75
+i10 6.0 0.2 32767 7.00 .5 1.6 2.0 0.75
+i10 6.3 0.2 32767 7.00 .5 2.4 2.0 0.75
+i10 6.6 0.2 32767 7.00 .5 3.2 2.0 0.75
+i10 6.9 0.2 32767 7.00 .5 4.0 2.0 0.75
+i10 7.2 0.2 32767 7.00 .5 0.0 2.0 1.0
+i10 7.5 0.2 32767 7.00 .5 0.8 2.0 1.0
+i10 7.8 0.2 32767 7.00 .5 1.6 2.0 1.0
+i10 8.1 0.2 32767 7.00 .5 2.4 2.0 1.0
+i10 8.4 0.2 32767 7.00 .5 3.2 2.0 1.0
+i10 8.7 0.2 32767 7.00 .5 4.0 2.0 1.0
+
+------------------------------------------------------------------------
+kt      clock
+
+Return the value of the wall-clock time as provided by the operating
+system, in seconds.  Note that the resolution of this clock may be
+coarser or finer than that.  On GNU/Linux it works to microseconds; on
+Windows to seconds.
+
+------------------------------------------------------------------------
+
+Utility: dnoise
+
+Usage: dnoise [flags] input_file
+        flags:
+        -N = # of bandpass filters (1024)
+        -w = filter overlap factor: {0,1,(2),3} DON'T USE -w AND -M
+        -M = analysis window length (N-1 unless -w is specified)
+        -L = synthesis window length (M) 
+        -D = decimation factor (M/8)
+        -b = begin time in noise reference soundfile (0)
+        -B = starting sample in noise reference soundfile (0)
+        -e = end time in noise reference soundfile (end)
+        -E = final sample in noise reference soundfile (end)
+        -t = threshold above noise reference in dB (30)
+        -S = sharpness of noise-gate turnoff (1) (1 to 5)
+        -n = number of FFT frames to average over (5)
+        -m = minimum gain of noise-gate when off in dB (-40)
+        -V: verbose - print status info
+        -A : AIFF format output
+        -W : WAV format output
+        -J : IRCAM format output
+
+
+This is a noise reduction scheme using frequency-domain noise-gating.
+This should work best in the case of high signal-to-noise with
+hiss-type noise.  The algorithm is that suggested by Moorer & Berger
+in "Linear-Phase Bandsplitting: Theory and Applications" presented at the 76th
+Convention 1984 October 8-11 New York of the Audio Engineering Society
+(preprint #2132) except that it uses the Weighted Overlap-Add
+formulation for short-time Fourier analysis-synthesis in place of the
+recursive formulation suggested by Moorer & Berger.  The gain in each
+frequency bin is computed independently according to
+
+gain = g0 + (1-g0) * [avg / (avg + th*th*nref)] ^ sh
+
+where avg and nref are the mean squared signal and noise respectively
+for the bin in question.  (This is slightly different than in Moorer &
+Berger.)  The critical parameters th and g0 are specified in dB and
+internally converted to decimal values.  The nref values are computed
+at the start of the program on the basis of a noise_soundfile
+(specified in the command line) which contains noise without signal.
+The avg values are computed over a rectangular window of m FFT frames
+looking both ahead and behind the current time.  This corresponds to a
+temporal extent of m*D/R (which is typically (m*N/8)/R).  The default
+settings of N, M, and D should be appropriate for most uses.  A higher
+sample rate than 16KHz might indicate a higher N. 
+
+Mark Dolson
+August 26, 1989
+
+and
+
+John ffitch
+2000 December 30
+
+------------------------------------------------------------------------
+Utility: srconv
+
+Convert the sample rate of an audio file sample rate Rin and outputs
+them at sample rate Rout.  Optionally the ratio (Rin / Rout) may be
+linearly time-varying according to a set of (time, ratio) pairs in an
+auxiliary file.
+
+Usage: srconv [flags] infile
+        flags:
+        -P num pitch transposition ratio (srate / r) [don't specify both P and r]
+        -Q num quality factor (1, 2, 3, or 4: default = 2)
+        -i filnam break file
+        -r num output sample rate (must be specified)
+        -o fnam sound output filename\n
+
+        -A create an AIFF format output soundfile;
+        -J create an IRCAM format output soundfile;
+        -W create a WAV format output soundfile;
+        -h no header on output soundfile;
+        -c 8-bit signed_char sound samples;
+        -a alaw sound samples;
+        -8 8-bit unsigned_char sound samples;
+        -u ulaw sound samples;
+        -s short_int sound samples;
+        -l long_int sound samples;
+        -f float sound samples;
+        -r N orchestra srate override;
+        -K Do not generate PEAK chunks;
+        -R continually rewrite header while writing soundfile (WAV/AIFF);
+        -H# print a heartbeat style 1, 2 or 3 at each soundfile write;
+        -N notify (ring the bell) when score or miditrack is done;
+        -- fnam log output to file
+
+This program performs arbitrary sample-rate conversion with high
+fidelity.  The method is to step through the input at the desired
+sampling increment, and to compute the output points as appropriately
+weighted averages of the surrounding input points.  There are two
+cases to consider: 
+  1) sample rates are in a small-integer ratio - weights are obtained
+     from table, 
+  2) sample rates are in a large-integer ratio - weights are linearly
+    interpolated from table.
+
+Calculate increment: if decimating, then window is impulse response of
+low-pass filter with cutoff frequency at half of output sample rate;
+if interpolating, then window is impulse response of lowpass filter
+with cutoff frequency at half of input sample rate.
+
+
+Mark Dolson
+August 26, 1989
+
+and
+
+John ffitch
+2000 December 30
+------------------------------------------------------------------------

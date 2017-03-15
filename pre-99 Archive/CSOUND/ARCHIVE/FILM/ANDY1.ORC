@@ -1,0 +1,1 @@
+sr=22050kr=2205ksmps=10nchnls=2instr	1kamp	linen	1, 5, p3, 2ktimpt	linseg	0, p3-p6, p4, p6, p4 asig	sndwarp	2000*kamp, ktimpt, p5, 2, 0, 4000, 200, 10, 1, 1outs asig, asigendin

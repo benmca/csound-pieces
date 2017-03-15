@@ -1,0 +1,243 @@
+Release Notes for 4.07
+======================
+
+These are the release notes for version 4.07. Note that there are two
+new files in the sources, phisem.c and phisem.h.
+
+Bug Fixes
+---------
+
+Error in message in extract functions fixed
+
+Typing error in fileopen fixed
+
+Fixed bad message in AIFF headers
+
+Minor fix in WAV format files used for input
+
+Initial value in midi controllers changed in one case
+
+Language Changes
+----------------
+
+New tags added to .csd files to allow for Base64 encoded MIDI files
+<CsMidifileB filename=...>, and for Base64 encoded samples <CsSampleB
+filename=...>. 
+
+Macro names can now include _ as a character
+
+Exponential format numbers in scores allowed (finishes earlier attempt)
+
+
+Opcode Fixes
+------------
+
+Minor bug in bowed fixed related to length of delay line
+
+The physical model opcodes have been revised in line with P.Cook's
+STK3.1.  This effects filter values in marimba, gogobel in
+particular.  Strike position on vibraphone now used, and in gogobell.
+
+The reverb and nreverb opcodes could have a zero delay time, which
+gives rise to an infinite gain.  Attempts to set non-positive delay
+has the value changed to 0.01s
+
+New Opcodes 
+-----------
+
+clip -- apply soft clipping to a signal using a variety of
+algorithms.  Current version has two working algorithms
+
+wgbowedbar -- physical model of a bowed bar
+
+PhISem family of opcodes: cabasa, crunch, sekere, sandpaper, stix,
+guiro, tambourine, bamboo, dripwater, sleighbells.  These are all
+percussion sounds.
+
+
+Other Changes:
+-------------
+
+Some support for OS/2 in sources
+
+Some support for rpm format distribution
+
+In vbap a large array has been moved off stack, which should help
+platforms with stack limitations,
+
+
+Windows GUI Changes
+-------------------
+
+Phase Vocoder dialog had its check for illegal hopsize all wrong
+
+PVLook dialog extended to allow a log file
+
+
+------------------------------------------------------------------------
+==John ff
+  2000 August 
+========================================================================
+   ar	clip	ain, imethod, ilimit[, iarg]
+
+Clips an input audio signal to a limit in a 'soft' fashion rather than
+a straight cutoff.  There are three methods at present, and the
+argument is used in each case to control the abruptness of the clip.
+
+PERFORMANCE
+ar - clipped audio
+ain - an input a-rate signal
+imethod - selects clipping method. 
+        =0 Bram de Jong method (default).
+        =1 sine clipping
+        =2 tanh clipping
+iarg (optional)-- Method 0 in the range 0 to 1 indicating the fraction
+at which the clipping starts.  Default value is 0.5.  This argument is
+not used in methods 1 or 2 
+        
+The first method, by Bram de Jong, applies the algorithm (assuming a
+signal normalised to 1).  
+ |x| > a:  f(x) = sign(x) * (a + (x-a)/(1+((x-a)/(1-a))^2))
+ |x| > 1:  f(x) = sign(x)*(a+1)/2
+
+The second method is a sine clip:
+ |x|<limit f(x) = limit * sin(pi x/(2*limit)
+           f(x) = limit * sign(x)
+
+The third method is a tanh clip:
+ |x|<limit f(x) = limit * tanh(x/limit)/tanh(1)
+           f(x) = limit * sign(x)
+
+Note: Method 1 seems to be non-functional
+
+EXAMPLE
+
+    a1     in
+    a2     oscil   25000, 1
+    asig   clip    a1+a2, 0, 30000, 0.75
+           out     asig
+------------------------------------------------------------------------
+    ar	   wgbowedbar     kamp, kfreq, kpos, kbowpres, kgain[, kconst,
+                                                 ktVel, ibowpos, ilow]
+
+A physical model of a bowed bar, belonging to the Perry Cook family of
+waveguide instruments.
+
+kamp -- amplitude of signal
+
+kfreq -- frequency of signal
+
+kpos -- where on bar the bow is used in the range 0 to 1
+
+kbowpres -- pressure of the bow 9as in wgbowed)
+
+kgain -- gain of filter; suggested to have values about 0.809.
+
+kconst -- an integration constant, defaulting to zero.
+
+ktVel -- either 0 or 1; with zero the bow velocity follows an ADSR
+style trajectory; when 1 the value of the bow velocity decays in an
+exponential way.
+
+kbowpos -- the position on the bow, which affects the bow velocity
+trajectory. 
+
+ilow -- lowest frequency required
+
+Example
+            instr       1
+;;;        pos = [0, 1]
+;;;        bowpress = [1, 10]
+;;;        GAIN = [0.8, 1]
+;;;        intr = [0,1]
+;;;        trackvel = {0, 1}
+;;;        bowpos = [0, 1]
+
+        
+            ;;          amp,freq,       pos,bowPr,GAIN, int,trackVel,bowpos,lowest
+Freq;
+kb          line        0.5, p3, 0.1
+kp          line        0.6, p3, 0.7
+kc          line        1, p3, 1
+a1          wgbowedbar  p4, cpspch(p5), kb, kp,   0.995, p6, 0,      kc,     50
+            out         a1
+            endin       
+
+i1 0   3 32000 7.00 0
+------------------------------------------------------------------------
+PhiSem::
+  ar	cabasa		iamp, idettack[, knum, kdamp, kmaxshake]
+  ar	crunch		iamp, idettack[, knum, kdamp, kmaxshake]
+  ar	sekere		iamp, idettack[, knum, kdamp, kmaxshake]
+  ar	sandpaper	iamp, idettack[, knum, kdamp, kmaxshake]
+  ar	stix		iamp, idettack[, knum, kdamp, kmaxshake]
+  ar	guiro 		iamp, idettack[, knum, kdamp, kmaxshake, kfreq, kfreq1]
+  ar	tambourine 	iamp, idettack[, knum, kdamp, kmaxshake, kfreq, kfreq1, kfreq2]
+  ar	bamboo 	        iamp, idettack[, knum, kdamp, kmaxshake, kfreq, kfreq1, kfreq2]
+  ar	dripwater	iamp, idettack[, knum, kdamp, kmaxshake, kfreq, kfreq1, kfreq2]
+  ar	sleighbells     iamp, idettack[, knum, kdamp, kmaxshake, kfreq, kfreq1, kfreq2]
+
+Semi-physical models of various percussion sounds.
+
+iamp -- Amplitude of output.  Note that as these instruments are
+stochastic, this is only a rough guide.
+
+idettack -- period of time over which all sound is stopped
+
+knum -- The number of beads, teeth, bells, timbrels etc.  If zero the
+default value is used
+        cabasa		512
+    	crunch		7
+     	sekere		64
+    	sandpaper	128
+    	stix		30
+    	guiro 		128
+    	tambourine 	32
+    	bamboo 	        1.25
+    	dripwater	10
+    	sleighbells     32
+kdamp -- the damping factor of the instrument.  The value is used as
+an adjustment close to the defaults below, with 1 being no damping.
+If zero the default values are:
+        cabasa		0.997
+    	crunch		0.99806
+     	sekere		0.999
+    	sandpaper	0.999
+    	stix		0.998
+    	guiro 		1.0
+    	tambourine 	0.9985
+    	bamboo 	        0.9999
+    	dripwater	0.995
+    	sleighbells     0.9994
+
+kmaxshake -- amount of energy to add back into the system, in range 0
+to 1.
+kfreq -- Setting the main resonant frequency; default values are:
+    	guiro 		2500
+    	tambourine 	2300
+    	bamboo 	        2800
+    	dripwater	450
+    	sleighbells     2500
+kfreq1 -- setting the first resonant frequency; defaults are
+    	guiro 		
+    	tambourine 	5600
+    	bamboo 	        2240
+    	dripwater	600
+    	sleighbells     5300
+kfreq2 -- setting the second resonant frequency; defaults are
+    	tambourine 	8100
+    	bamboo 	        3360
+    	dripwater	750
+    	sleighbells     6500
+
+Examples
+
+ asig cabasa  p4, 0.01, 0, 0, 0
+ asig sekere  p4, 0.01, 0, 0, 0
+ asig sandpaper  p4, 0.01, 0, 0, 0
+ asig stix  p4, 0.01, 0, 0, 0
+ asig tambourine p4, 0.01
+ asig bamboo p4, 0.01
+ asig dripwater p4, 0.01
+ asig sleighbells p4, 0.01
+------------------------------------------------------------------------

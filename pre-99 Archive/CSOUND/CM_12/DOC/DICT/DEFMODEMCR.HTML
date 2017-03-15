@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="defmode.mcr">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>defmode {<I>name</I> | (<I>name</I>} {<I>option value</I>})} {<I>step</I>}+</B></TT>
+<TD align="right" valign="top">
+[Macro]<TR>
+</TABLE><P>
+
+Defines a named, transposable subset of a scale.  Modes may replace
+scales when specifying <TT>notes</TT>, <TT>pitches</TT>,
+<TT>degrees</TT> or <TT>intervals</TT> and may function as "filters" by using
+<TT>mode-note</TT>, <TT>mode-degree</TT>, or <TT>mode-pitch</TT>.<P> 
+<I>Name</I> is the name of
+the new mode. Following <I>name</I> comes by zero or more <I>option value</I>
+pairs.<P>
+
+<TT>defmode</TT> supports the following options: <P>
+
+<DL>
+
+<DT><TT>scale {<I>scale</I>}</TT>
+
+<DD>Sets the scale of the mode to <I>object</I>, which must be a scale
+object.  Defaults to <TT>*standard-scale*</TT>.
+
+<DT><TT>on {<I>note</I> | <I>pitch</I> | <I>degree</I>}</TT>
+
+<DD>Sets the initial transposition level for the mode, expressed as a
+note, pitch or degree of the mode's scale.
+
+</DL>
+The step content of a mode may be specified as either an ascending sequence of note names or as a sequence of integers defining the relative distances between adjancent notes in the mode.  If note names are used then the lowest (first) note
+becomes the initial transposition offset for the mode.
+If the steps are specified as relative interval distances then the 
+transposition offset of the mode must
+be set before the mode can be used. Use the
+<TT>transpose</TT> function to set or change the transposition level of
+a mode.<P>
+
+<P><B>Example:</B></P>
+
+<PRE>? (setf m (defmode (major on 'c4) 2 2 1 2 2 2 1))
+<I>#&lt;MODE: Major (on C)&gt;</I>
+
+? (note 0 m)
+<I>C00</I>
+
+? (note 7 m)
+<I>C0</I>
+
+? (setf x (intervals 0 1 2 3 4 5 6 7 from (notes c4 fs)
+                     of m returning note))
+<I>#&lt;CYCLIC-INTERVAL-STREAM 133753451&gt;</I>
+
+? (read-items x 16)
+<I>(C4 D4 E4 F4 G4 A4 B4 C5 FS4 GS4 AS4 B4 CS5 DS5 F5 FS5)</I>
+
+? (transpose m 'D4)
+<I>#&lt;MODE: Major (on D)&gt;</I>
+
+? (loop for i from 35 repeat 15 collect (note i m))
+<I>(D4 E4 FS4 G4 A4 B4 CS5 D5 E5 FS5 G5 A5 B5 CS6 D6)</I>
+
+? (setf m (defmode funny-mode c0 d e fs gs as c1 cs ds e fs g a bf c2))
+<I>#&lt;MODE: Funny-mode (on C0)&gt;</I>
+
+? (loop for i from (degree 'c4) below (degree 'c6) by 1
+        collect (mode-note i m))
+<I>(C4 C4 D4 D4 E4 E4 FS4 FS4 GS4 GS4 AS4 AS4 
+    C5 CS5 CS5 DS5 E5 E5 FS5 G5 G5 A5 AS5 AS5)</I>
+;;;
+;;; a few common mode definitions
+;;;
+
+(defmode pentatonic  2 3 2 2 3)
+(defmode whole-tone  2 2 2 2 2 2)
+(defmode octatonic1  1 2 1 2 1 2 1 2)
+(defmode octatonic2  2 1 2 1 2 1 2 1)
+(defmode dorian      2 1 2 2 2 1 2)
+(defmode phrygian    1 2 2 2 1 2 2)
+(defmode lydian      2 2 2 1 2 2 1)
+(defmode mixolydian  2 2 1 2 2 1 2)
+(defmode aeolian     2 1 2 2 1 2 2)
+(defmode locrian     1 2 2 1 2 2 2)
+(defmode ionian      2 2 1 2 2 2 1)
+</PRE>
+
+<P><B>See Also:</B></P>
+
+<A HREF="defscale.mcr.html"><TT>defscale</TT></A>,
+<A HREF="mode-note.fun.html"><TT>mode-note</TT></A>,
+<A HREF="mode-pitch.fun.html"><TT>mode-pitch</TT></A>,
+<A HREF="mode-degree.fun.html"><TT>mode-degree</TT></A>,
+<A HREF="transpose.fun.html"><TT>transpose</TT></A> [Function],
+<A HREF="../examples/defscales.lisp" TARGET="_parent">defscales.lisp</A>
+<P>
+
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:   5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

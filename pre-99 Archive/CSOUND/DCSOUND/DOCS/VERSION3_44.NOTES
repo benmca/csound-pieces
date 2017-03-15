@@ -1,0 +1,577 @@
+Release Notes for v3.44
+=======================
+
+Version 3.44 is mainly a collection of new opcodes, together with a
+few small fixes.
+
+Summary
+=======
+
+a) Phase Vocoding Opcodes:
+	ktableseg, ktablexseg, voscili, vpvoc, pvread, pvcross,
+	pvbufread, pvinterp
+
+b) Tuning Opcodes:
+	cps2pch, cpsxpch
+
+c) 3-D Sound Opcode:
+	hrtfer
+
+d) Time Stretching Opcode:
+	sndwarp
+
+e) Non-linear Filter Opcode:
+	nlfilt
+
+f) New format for LPC analysis:
+	Allows for pole stabalisation, and two new opcodes,
+		lpslot, lpinterp
+	for interpolation between different analyses
+
+g) Bug Fixes:
+	Reading of numbers in Event reading fixed
+	Comments allowed after e in scores
+	Obscure bad case in opening files
+	Minor bug in vdelay fixed
+
+h) Permanent Graphs (Fabio Bertolotti):
+	A new option (-G) ensures that the graphs are saved as a
+	PostScript file, with the same name as the soundfile with .eps
+	as the extention.  This has been in use by teachers for a while.
+
+h) Code Changes (PC):
+	Improvements in output to Multimedia-implemented DAC
+	Recognise file names starting a: etc
+	Non-stop feature in Windows
+
+and a number of internal code improvements which I doubt you care about.
+
+DOCUMENTATION ON NEW OPCODES
+============================
+
+a) PVOC related unit generators added by Richard Karpen, 1992-1996
+
+
+kfreq, kamp	pvread		ktimpnt,  ifile, ibin			
+		pvbufread	ktimpnt, ifile
+ar		pvinterp	ktimpnt, kfmod, ifile, kfreqscale1, kfreqscale2,
+			kampscale1, kampscale2, kfreqinterp, kampinterp
+ar		pvcross		ktimpnt, kfmod, ifile, kamp1, kamp2, [ispecwp]
+		tableseg	ifn1, idur1, ifn2[, idur2, ifn3[...]]
+		tablexseg	ifn1, idur1, ifn2[, idur2, ifn3[...]]
+ar		vpvoc		ktimpnt, kfmod, ifile, [ispecwp]
+
+DESCRIPTION
+
+pvread reads from a pvoc file and returns the frequency and amplitude
+from a single anaylsis channel or bin. The returned values can be used
+anywhere else in the csound instrument. For example, one can use them
+as arguments to an oscillator to synthesize a single component from an
+analyzed signal or a bank of pvreads can be used to resynthesize the
+analyzed sound using additive synthesis by passing the frequency and
+magnitude values to a bank of oscillators.
+
+pvbufread reads from a pvoc file and makes the retrieved data
+available to any following pvinterp and pvcross units that appear in
+an instrument before a subsequent pvbufread (just as lpread and
+lpreson work together). The data is passed internally and the unit has
+no output of its own. pvinterp and pvcross allow the interprocessing
+of two phase vocoder analysis files prior to the resynthesis which
+these units do also. Both of these units receive data from one of the
+files from a previously called pvbufread unit. The other file is read
+by the pvinterp and/or pvcross units. Since each of these units has
+its own time-pointer the analysis files can be read at different
+speeds and directions from one another. pvinterp does not allow for
+the use of the ispecwp process as with the pvoc and vpvoc units.
+
+pvinterp interpolates between the amplitudes and frequencies, on a bin
+by bin basis, of two phase vocoder analysis files (one from a
+previously called pvbufread unit and the other from within its own
+argument list), allowing for user defined transitions between analyzed
+sounds. It also allows for general scaling of the amplitudes and
+frequencies of each file separately before the interpolated values are
+calculated and sent to the resynthesis routines. The kfmod argument in
+pvinterp performs its frequency scaling on the frequency values after
+their derivation from the separate scaling and subsequent
+interpolation is performed so that this acts as an overall scaling
+value of the new frequency components.
+
+pvcross applies the amplitudes from one phase vocoder analysis file to
+the data from a second file and then performs the resynthesis. The
+data is passed, as described above, from a previously called pvbufread
+unit. The two k-rate amplitude arguments are used to scale the
+amplitudes of each files separately before they are added together and
+used in the resynthesis (see below for further explanation). The
+frequencies of the first file are not used at all in this
+process. This unit simply allows for cross-synthesis through the
+application of the amplitudes of the spectra of one signal to the
+frequencies of a second signal. Unlike pvinterp, pvcross does allow
+for the use of the ispecwp as in pvoc and vpvoc.
+
+tableseg and tablexseg are like linseg and expseg but interpolate
+between values in a stored function tables. The result is a new
+function table passed internally to any following vpvoc or voscili
+which occurs before a subsequent tableseg or tablexseg (much like
+lpread/lpreson pairs work). The uses of these are described below
+under vpvoc and (see also voscili which allows the use of these units
+in an interpolating oscillator).
+
+vpvoc is identical to pvoc except that it takes the result of a
+previous tableseg or tablexseg and uses the resulting function table
+(passed internally to the vpvoc), as an envelope over the magnitudes
+of the analysis data channels.  The result is spectral enveloping. The
+function size used in the tableseg should be framesize/2, where
+framesize is the number of bins in the phase vocoder analysis file
+that is being used by the vpvoc.  Each location in the table will be
+used to scale a single analysis bin. By using different functions for
+ifn1, ifn2, etc.. in the tableseg, the spectral envelope becomes a
+dynamically changing one.
+
+ARGUMENTS
+
+ifile is the pvoc number (n in pvoc.n) or the name in quotes of the
+analysis file made using pvanal. See pvoc documentation in Csound
+manual.
+
+kfreq and kamp are the outputs of the pvread unit. These values,
+retrieved from a phase vocoder analysis file, represent the values of
+frequency and amplitude from a single analysis channel specified in
+the ibin argument. Interpolation between analysis frames is performed
+at k-rate resolution and dependent of course upon the rate and
+direction of ktimpnt.
+
+ktimpnt, kfmod, and ispecwp used in pvread and vpvoc are exactly the
+same as for pvoc (see above description of pvinterp for its special
+use of kfmod).
+
+ibin is the number of the analysis channel from which to return
+frequency in cps and magnitude.
+
+kfreqscale1, kfreqscale2, kampscale1, kampscale2 are used in pvinterp
+to scale the frequencies and amplitudes stored in each frame of the
+phase vocoder analysis file. kfreqscale1 and kampscale1 scale the
+frequencies and amplitudes of the data from the file read by the
+previously called pvbufread (this data is passed internally to the
+pvinterp unit). kfreqscale2 and kampscale2 scale the frequencies and
+amplitudes of the file named by ifile in the pvinterp argument list
+and read within the pvinterp unit. By using these arguments it is
+possible to adjust these values before applying the interpolation.
+For example, if file1 is much louder than file2, it might be desirable
+to scale down the amplitudes of file1 or scale up those of file2
+before interpolating. Likewise one can adjust the frequencies of each
+to bring them more in accord with one another (or just the opposite of
+course!) before the interpolation is performed.
+
+kfreqinterp and kampinterp, used in pvinterp, determine the
+interpolation distance between the values of one phase vocoder file
+and the values of a second file. When the value of kfreqinterp is 0,
+the frequency values will be entirely those from the first file (read
+by the pvbufread), post scaling by the kfreqscale1 argument. When the
+value of kfreqinterp is 1 the frequency values will be those of the
+second file (read by the pvinterp unit itself), post scaling by
+kfreqscale2. When kfreqinterp is between 0 and 1 the frequency values
+will be calculated, on a bin, by bin basis, as the percentage between
+each pair of frequencies (in other words, kfreqinterp=.5 will cause
+the frequencies values to be half way between the values in the set of
+data from the first file and the set of data from the second file).
+kampinterp works in the same way upon the amplitudes of the two files.
+Since these are k-rate arguments, the percentages can change over time
+making it possible to create many kinds of transitions between sounds.
+
+ifn1, ifn2, ifn3, etc... in tableseg and tablexseg are stored
+functions, created from an f-card in the numeric notelist. ifn1, ifn2,
+and so on, MUST be the same size.
+
+idur1, idur2, etc...in tableseg and tablexseg are the durations during
+which interpolation from one table to the next will take place.
+
+
+SIMPLE EXAMPLES
+
+
+The example below shows the use pvread to synthesize a single
+component from a phase vocoder analysis file. It should be noted that
+the kfreq and kamp outputs can be used for any kind of synthesis,
+filtering, processing, and so on.
+
+
+ktime line 0, p3, 3 kfreq, kamp pvread ktime, "pvoc.file", 7 ; read
+data from 7th analysis bin.  asig oscili kamp, kfreq, 1 ; function 1
+is a stored sine
+
+The below shows an example using pvbufread with pvinterp to
+interpolate between the sound of an oboe and the sound of a
+clarinet. The value of kinterp returned by a linseg is used to
+determine the timing of the transitions between the two sounds. The
+interpolation of frequencies and amplitudes are controlled by the same
+factor in this example, but for other effects it might be interesting
+to not have them sychnronized in this way. In this example the sound
+will begin as a clarinet, transform into the oboe and then return
+again to the clarinet sound.  The value of kfreqscale2 is 1.065
+because the oboe in this case is a semitone higher in pitch than the
+clarinet and this brings them approximately to the same pitch. The
+value of kampscale2 is .75 because the analyzed clarinet was somewhat
+louder than the analyzed oboe. The setting of these two parameters
+make the transition quite smooth in this case, but such adjustments
+are by no means necessary or even advocated.
+
+ktime1	line	  0, p3, 3.5 ; used as index in the "oboe.pvoc" data file
+ktime2	line	  0, p3, 4.5 ; used as index in the "clar.pvoc" data file
+kinterp linseg 	  1, p3*.15, 1, p3*.35, 0, p3*.25, 0, p3*.15, 1, p3*.1, 1
+	pvbufread ktime1, "oboe.pvoc"
+apv	pvinterp  ktime2,1,"clar.pvoc",1,1.065,1,.75,1-kinterp,1-kinterp
+
+Below is an example using pvbufread with pvcross. In this example the
+amplitudes used in the resynthesis gradually change from those of the
+oboe to those of the clarinet. The frequencies, of course, remain
+those of the clarinet throughout the process since pvcross does not
+use the frequency data from the file read by pvbufread.
+
+ktime1	line		0, p3, 3.5 ; used as index in the "oboe.pvoc" data file
+ktime2	line		0, p3, 4.5 ; used as index in the "clar.pvoc" data file
+kcross  expon		.001, p3, 1
+	pvbufread	ktime1, "oboe.pvoc"
+apv	pvcross		ktime2, 1, "clar.pvoc", 1-kcross, kcross
+
+
+In following example using vpvoc shows the use of functions such as
+	f 1 0 256 5 .001 128 1 128 .001
+	f 2 0 256  5 1 128 .001 128 1
+	f 3 0 256  7 1 256 1
+
+to scale the amplitudes of the separate analysis bins.
+
+ktime	line		0, p3,3 ; time pointer, in seconds, into data file
+	ktablexseg	1, p3*.5, 2, p3*.5, 3
+apv	vpvoc		ktime,1, "pvoc.file"
+
+The result would be a time-varying "spectral envelope" applied to the
+phase vocoder analysis data. Since this amplifies or attenuates the
+amount of signal at the frequencies that are paired with the
+amplitudes which are scaled by these functions, it has the effect of
+applying very accurate filters to the signal. In this example the
+first table would have the effect of a band- pass filter , gradually
+be band-rejected over half the note's duration, and then go towards no
+modification of the magnitudes over the second half.
+
+------------------------------------------------------------------------
+
+b) Tuning Opcodes (John Fitch)
+
+		icps	cps2pch		ipch, iequal
+		icps	cpsxpch		ipch, iequal, irepeat, ibase
+
+Converts a pitch-class notation into cycles-per-second for equal
+divisions of the octave (for cps2pch) or for equal divisions of any
+interval.  There is a restriction of no more than 100 equal divisions.
+
+INITIALISATION
+
+ipch    - Input number of the form 8ve.pc, indicating an `octave' and
+	  which note in the octave.
+
+iequal  - if positive, the number of equal intervals into which the 
+	  `octave' is divided.  Must be less than or equal to 100.
+	  if negative is the number of a table of frequency multipliers
+
+irepeat - Number indicating the interval which is the `octave'.  The
+	  integer 2 corresponds to octave divisions, 3 to a twelveth,
+	  4 is two octaves, and so on.  This need not be an integer,
+	  but must be positive.
+
+ibase   - The frequency which corresponds to pitch 0.0
+
+Note:  1. The following are essentially the same
+
+	ia	=	cpspch(8.02)
+	ib	cps2pch		8.02, 12
+	ic	cpsxpch		8.02, 12, 2, 1.02197503906
+
+       2. These are opcodes not functions.
+
+       3. Negative values of ipch are allowed, but not negative irepeat,
+	  iequal or ibase.
+
+EXAMPLES
+
+
+  inote cps2pch	p5, 19			; convert oct.pch to cps in 19ET
+  inote cpsxpch	p5, 12, 3, 261.62561	; Pierce scale centered on middle A
+  inote cpsxpch p5, 21, 4, 16.35160062496 ; 10.5ET scale
+
+
+The use of a table allows exotic scales by mapping frequencies in a table
+
+For example the table
+	f2 0 16 -2 1 1.1 1.2 1.3 1.4 1.6 1.7 1.8 1.9
+
+can be used with
+	ip          cps2pch	p4, -2
+to get a 10 note scale of unequal divisions
+------------------------------------------------------------------------
+
+c) Use of HRTF data
+
+	aLeft, aRight	hrtfer	asig, kAz, kElev, "HRTFcompact"
+Output is binaural (headphone) 3D audio.	
+
+INITIALIZATION
+kAz - azimuth value in degrees. Positive values represent
+      position on the right, negative values are positions 
+      on the left.	
+kElev - elevation value in degrees. Positive values represent
+        position on the right, negative values are positions 
+        on the left.
+
+At present, the only file which can be used with hrtferxk is HRTFcompact. 
+It must be passed to the u.g. as the last argument within qoutes as
+shown above.
+
+PERFORMANCE
+These unit generators place a mono input signal in a virtual 3D space
+around the listner by convolving the input with the appropriate HRTF
+data specified by the opcode's azimuth and elevation values. hrtferxk
+allows these values to be k-values, allowing for dynamic
+spatialization. hrtferi can only place the input at the reqeusted
+position because the HRTF is loaded in at i-time (remember that
+currently, csound has a limit of 20 files it can hold in memory,
+otherwise it causes a segmentation fault). The output will need to be
+scaled either by using balance or by multiplying the output by some
+scaling constant.
+
+Note - the sampling rate of the orchestra must be 44.1kHz. This is
+because 44.1kHz is the sampling rate at which the HRTFs were measured.
+In order to be used at a different rate, the HRTFs need to be resampled
+at the desired rate.
+
+Example:
+	kaz		linseg 0, p3, -360  ; move the sound in circle
+	kel		linseg -40, p3, 45  ; around the listener, changing
+	 				    ; elevation as its turning
+	asrc		soundin "soundin.1"
+	aleft,aright	hrtfer asrc, kaz, kel, "HRTFcompact"
+	aleftscale	= aleft * 200
+	arightscale	= aright * 200
+
+	outs aleftscale, arightscale
+ 
+
+------------------------------------------------------------------------
+
+d) Time Stretch -- Written by Richard Karpen, 1992.
+
+ar	sndwarp	xamp, xtimewarp, xresample, ifn1, ibeg, iwsize,
+			 irandw, ioverlap, ifn2, itimemode
+
+DESCRIPTION
+
+sndwarp reads sound samples from a table (see under ifn1 for
+information about using this with the NeXT operating system) and
+applies time-stretching and/or pitch modification. Time and frequency
+modification are indepentant from one another. For example, a sound
+can be stretched while raising the pitch. The window size and overlap
+arguments are important to the result and should be experimented
+with. In general they should be as small as possible. For example,
+start with iwsize=sr/20 and ioverlap=5. Try irandw=iwsize*.2. The
+algorithm reacts differently depending upon the input sound.
+
+ARGUMENTS
+ ifn1 is the number of the table holding the sound samples which will
+be subjected to the sndwarp processing. GEN01 is the appropriate
+function generator to use to store the sound samples (a version of
+sndwarp for the NeXT operating system reads soundfiles directly
+instead of using function tables. In the NeXT version there is no
+practical limit to the length of the sound and stereo soundfiles can
+be processed. In this version, the maximum length of input sound is
+limited to the maximum table size allowable and/or to the amount of
+memory available to the program. Only the table-lookup version is
+available with this release). 
+ xamp is the amplitude by which to scale
+the signal (post time and frequency scaling).
+ xtimewarp determines how the input signal will be stretched or shrunk in
+time. There are two ways to use this argument dependent upon the value
+given for itimemode. When the value of itimemode is 0, xitimewarp will
+scale the time of the sound. For example, a value of 2 will stretch the
+sound by 2 times. When itimemode is any non-zero value then xtimewarp is
+used as a time pointer in a similar way in which the time pointer works in
+lpread and pvoc. An example below illustrates this. In both cases, the
+pitch will NOT be altered by this process. Pitch shifting is done
+independently using xresample.
+ xresample is the factor by which to change the pitch of the
+sound. For example, a value of 2 will produce a sound one octave
+higher than the original. The “speed” of the sound, however,
+will NOT be altered.
+ ibeg is the time in seconds to begin reading in the table (or
+soundfile). When itimemode is non-zero, the value of itemwarp is
+offset by ibeg.
+ iwsize is the window size in samples used in the time warping
+algorithm.  irandw is the bandwidth of a random number generator. The
+random numbers will be added to iwsize.
+ ioverlap determines the density of overlapping windows.
+ ifn2 is a function used to shape the window. It is usually something like a
+half a sine (ie: f1 0 16384 9 .5 1 0).
+
+EXAMPLE
+ The below example shows a slowing down or stretching of the sound
+stored in the stored table (ifn1). Over the duration of the note, the
+stretching will grow from no change from the original to a sound which
+is ten times “slower” than the original.  At the same time the
+overall pitch will move upward over the duration by an octave.
+
+iwindfun=1
+isampfun=2
+ibeg=0
+iwindsize=2000
+iwindrand=400
+ioverlap=10
+		      
+awarp	line	1, p3, 10
+aresamp	line	1, p3, 2
+kenv	line	1, p3, .1	
+asig  	sndwarp	kenv, awarp, aresamp, isampfun, ibeg, iwindsize, \
+		iwindrand, overlap, iwindfun
+
+
+Here is an example using xtimewarp as a time pointer
+
+itimemode=1
+atime line 0, p3, 10
+asig	sndwarp kenv, atime, aresamp, sampfun, ibeg, iwindsize, \
+		iwindrand, ioverlap, iwindfun, itimemode
+
+In the above, atime advances the time pointer used in the sndwarp from
+0 to 10 over the duration of the note. If p3 is 20 then the sound will
+be two times slower than the original. Of course you can use a more
+complex function than just a single straight line to control the time
+factor.
+
+------------------------------------------------------------------------
+
+e) Non-linear filter
+
+	ar	nlfilt	ain, ka, kb, kd, kC, kL
+
+Implements the filter Y{n} =a Y{n-1} + b Y{n-2} + d Y^2{n-L} + X{n} - C
+described in Dobson and Fitch (ICMC'96)
+
+Examples:
+i) Non-linear effect:
+With a=b=0 and a delay (L) of 20 samples.  The other parameter range
+	d = 0.8, 0.9, 0.7
+	C = 0.4, 0.5, 0.6
+This affects the lower register most but there are audible effects
+over the whole range.  We suggest that it may be useful for colouring
+drums, and for adding arbitrary highlights to notes
+
+ii) Low Pass with non-linear:
+a = 0.4
+b = 0.2
+d = 0.7 
+C = 0.11
+L = 20, ... 200
+
+There are instability problems with this variant but the effect is
+more pronounced of the lower register, but is otherwise much like the
+pure comb.  Short values of $L$ can add attack to a sound.
+
+iii) High Pass with non-linear:
+The range of parameters are
+a = 0.35
+b = -0.3
+d = 0.95
+C = 0,2, ... 0.4
+L = 200
+
+iv) High Pass with non-linear:
+The range of parameters are
+a = 0.7 
+b = -0.2, ... 0.5
+d = 0.9 
+C = 0.12, ... 0.24
+L = 500, 10
+
+The high pass version is less likely to oscillate.  It adds
+scintillation to medium-high registers.  With a large delay $L$ it is
+a little like a reverberation, while with small values there appear to
+be formant-like regions.  There are arbitrary colour changes and
+resonances as the pitch changes.  Works well with individual notes.
+
+Warning:  The "useful" ranges of parameters are not yet mapped.
+------------------------------------------------------------------------
+
+g) Chanhes to Linear Predictive Coding
+
+1)LPC Pole stabilization.
+
+It is done through a new option in the analysis stage.
+
+csound -U lpanal -a [other options]
+
+The -a flag [alternate storage] asks lpanal to write a file with
+filter poles values rather than the usual filter coefficient files.
+
+When lpread / lpreson are used with pole files, automatic
+stabilization is performed and the filter should not get wild
+anymore. I've implemented only one stabilization algorithm, more tune
+could be implemented later.
+
+(This is the default in the Windows GUI)
+
+2) LPC Interpolation.
+
+Two new opcodes are available to perform interpolation between pole
+files of two analysis.
+
+--------------------------
+	lpslot islot
+
+islot: number of slot to be selected [0<islot<20]
+
+lpslot selects the slot to be use by further lp opcodes. This is the
+way to load and reference several analysis at the same time.
+
+--------------------------
+
+	lpinterpol islot1,islot2,kmix
+
+islot1: slot where the first analysis was stored
+islot2: slot where the second analysis was stored
+kmix  : mix value between the two analysis. Should be between 0 and 1. 0
+means analysis 1 only. 1 means analysis 2 only. Any value inbetween will
+produce interpolation between the filters. 
+
+lpinterpol computes a new set of poles from the interpolation between
+two analysis. The poles will be stored in the current lpslot and used
+by the next lpreson opcode.
+
+---------------------------
+
+Here is a typical orc using the opcodes:
+
+sr=44100
+kr=4410
+nchnls=1
+
+instr 1
+; Define sound generator
+		ipower  init    50000
+		ifreq   init    440 
+		asrc    buzz    ipower,ifreq,10,1
+; Define time line
+	        ktime	line 	0,p3,p3
+; Read square data poles
+			lpslot  0
+krmsr,krmso,kerr,kcps	lpread 	ktime,"square.pol"
+; Read triangle data poles
+			lpslot  1
+krmsr,krmso,kerr,kcps	lpread 	ktime,"triangle.pol"
+; Compute result of mixing and balance power
+	        kmix	line 	0,p3,1
+			lpinterp 0,1,kmix
+
+		ares	lpreson asrc
+		aout	balance ares,asrc
+	       		out 	aout
+endin
+
+---------------------------------------------------------

@@ -1,0 +1,287 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+MainDialog DIALOGEX 20, 20, 453, 262
+STYLE DS_3DLOOK | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_ACCEPTFILES
+CAPTION "DirectCsound"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Stop",idcStartStop,38,0,32,12
+    PUSHBUTTON      "Suppress Display",IDC_Suppress,76,0,62,12,NOT 
+                    WS_TABSTOP
+    PUSHBUTTON      "Restart with new cmd-line args...",idcRestart,143,0,109,
+                    12
+    PUSHBUTTON      "About...",idcAbout,401,0,29,12
+    PUSHBUTTON      "Quit",QuitButton,433,0,20,12,NOT WS_TABSTOP
+    PUSHBUTTON      "Edit Orch",idcEditOrc,77,20,39,19
+    PUSHBUTTON      "Edit Score",idcEditSco,130,20,40,19
+    GROUPBOX        "Realtime File Output",idcGruppo1,228,15,225,39
+    PUSHBUTTON      "Start",idcStart,249,25,32,11
+    PUSHBUTTON      "Pause",idcPause,287,25,33,11
+    CONTROL         "Open/Close File",idcEnableFileOutput,"Button",
+                    BS_AUTOCHECKBOX,335,25,72,11
+    EDITTEXT        idcEditOutputFile,231,38,180,12,ES_AUTOHSCROLL | NOT 
+                    WS_TABSTOP,WS_EX_ACCEPTFILES
+    PUSHBUTTON      "Browse...",idcBrowse,413,38,36,12
+    EDITTEXT        ID_display,0,69,453,191,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    SCROLLBAR       idcBufferScrollBar,0,57,453,8
+    LTEXT           "",idcBufferLabel,45,46,21,8
+    LTEXT           "Buffer Size:",idcBSizeLabel,4,47,37,10
+    CONTROL         "Sleep",idcSleep,"Button",BS_AUTOCHECKBOX,5,31,39,10
+    CONTROL         122,idcVST,"Static",SS_BITMAP | SS_SUNKEN,9,26,55,30
+END
+
+InputBoxGabFrame DIALOGEX 100, 100, 274, 193
+STYLE DS_SYSMODAL | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",OkInputBox,96,168,74,18
+    EDITTEXT        EditInputBox,111,152,46,14,ES_AUTOHSCROLL | ES_NUMBER,
+                    WS_EX_DLGMODALFRAME
+    LTEXT           "Static",TestoInputBox,7,7,260,140
+END
+
+iddNoArguments DIALOGEX 100, 100, 311, 212
+STYLE DS_SYSMODAL | DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+EXSTYLE WS_EX_ACCEPTFILES
+CAPTION "DirectCsound - Set Command Line Arguments"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    COMBOBOX        idcFlags,57,127,204,69,CBS_DROPDOWN | CBS_AUTOHSCROLL | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        idcOrcFile,57,143,203,12,ES_AUTOHSCROLL
+    EDITTEXT        idcScoFile,57,159,203,12,ES_AUTOHSCROLL
+    EDITTEXT        idcOutFile,57,175,203,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",idNoArgOkButton,138,191,50,14
+    PUSHBUTTON      "Browse...",idcBrowseOrc,269,143,35,12
+    PUSHBUTTON      "Browse...",idcBrowseSco,269,159,35,12
+    PUSHBUTTON      "Browse...",idcBrowseOut,269,175,35,12
+    LTEXT           "Orc File",IDC_STATIC,29,143,25,9
+    LTEXT           "Sco File",IDC_STATIC,27,159,26,10
+    LTEXT           "Flags",IDC_STATIC,37,127,19,11
+    LTEXT           "Output File",IDC_STATIC,17,175,34,10
+    LTEXT           "Warning! No command line arguments found. You can still provide the command line by filling this form. Read Csound Manual for more information about the command line arguments needed to run DirectCsound. ",
+                    IDC_STATIC1,136,7,168,41
+    LTEXT           "Notice that realtime-related command-line flags of DirectCsound are different by those ones of the canonical version of Csound. See the included info files for more information about command-line arguments of DirectCsound.",
+                    IDC_STATIC2,136,63,168,47
+    CONTROL         109,idcVST,"Static",SS_BITMAP | SS_SUNKEN,7,7,120,113
+    CONTROL         122,idcVST2,"Static",SS_BITMAP,69,88,55,30
+END
+
+iddAbout DIALOG DISCARDABLE  0, 0, 272, 259
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About DirectCsound"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",idAboutOK,107,242,50,14,NOT WS_TABSTOP
+    EDITTEXT        idcAboutAuthor,46,0,182,49,ES_CENTER | ES_MULTILINE | 
+                    ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER | NOT 
+                    WS_TABSTOP
+    EDITTEXT        idcAboutQuickRef,7,63,258,82,ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL | NOT 
+                    WS_TABSTOP
+    CTEXT           "Read me first!",idcQrefLabel,7,53,258,8
+    CTEXT           "Copyright",IDC_STATIC,7,149,258,9
+    EDITTEXT        idcCopyright,7,159,258,81,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_READONLY | WS_VSCROLL | NOT WS_TABSTOP
+    CONTROL         112,IDC_STATIC,"Static",SS_BITMAP,7,1,119,112
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    MainDialog, DIALOG
+    BEGIN
+        VERTGUIDE, 409
+        BOTTOMMARGIN, 260
+    END
+
+    InputBoxGabFrame, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 267
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 186
+    END
+
+    iddNoArguments, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 304
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 205
+    END
+
+    iddAbout, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 265
+        BOTTOMMARGIN, 256
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "icon2.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR2             CURSOR  DISCARDABLE     "cursor2.cur"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Italian (Italy) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ITA)
+#ifdef _WIN32
+LANGUAGE LANG_ITALIAN, SUBLANG_ITALIAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR3             CURSOR  DISCARDABLE     "cursor3.cur"
+IDC_CURSOR4             CURSOR  DISCARDABLE     "cursor4.cur"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP  DISCARDABLE     "OrecchioGrande.bmp"
+IDB_BITMAP2             BITMAP  DISCARDABLE     "orecchioMedio.bmp"
+IDB_BITMAP3             BITMAP  DISCARDABLE     "vstpluglogo2.bmp"
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "041004b0"
+        BEGIN
+            VALUE "CompanyName", "Ciao\0"
+            VALUE "FileDescription", "DirectCsoundWin\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "DirectCsoundWin\0"
+            VALUE "LegalCopyright", "Copyright © 2000\0"
+            VALUE "OriginalFilename", "DirectCsoundWin.exe\0"
+            VALUE "ProductName", "Ciao DirectCsoundWin\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x410, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // Italian (Italy) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

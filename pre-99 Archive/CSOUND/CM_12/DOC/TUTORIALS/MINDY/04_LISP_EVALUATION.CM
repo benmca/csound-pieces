@@ -1,0 +1,368 @@
+
+(let (node19 node18 node17 node16 node15 node14 node13 node12 node11 node10
+      node9 node8 node7 node6 node5 node4 node3 node2 node1 node0)
+  (make-object 'network
+               :id
+               '02-lisp-evaluation
+               :extent
+               (xy 347 902)
+               :terminal-size
+               (xy 4 4)
+               :browser-size
+               (xy 0 0)
+               :node-font
+               '("Monaco" 9 :plain :srcor)
+               :active?
+               nil
+               :activation-mode
+               :backward
+               :view-position
+               (xy 0 35)
+               :view-size
+               (xy 347 354)
+               :inputs
+               (make-link-array 0)
+               :outputs
+               (make-link-array 0))
+  (setf node19
+        (make-object 'comment
+                     :comment
+                     "Networks can also be created by evaluating lisp code.  Mindy automatic lays out a network the first time it is displayed in a network browser.  Here are a few examples, there are many more at the end of mindy1.lisp."
+                     :font
+                     '("Times" 10 :plain :srcor)
+                     :view-position
+                     (xy 8 525)
+                     :view-size
+                     (xy 321 42)))
+  (setf node18
+        (make-object 'comment
+                     :comment
+                     "(browser
+  (network Bubba (node-font '(\"Monaco\" 12) 
+                  comment-font '(\"Times\" 12)
+                  terminal-size (xy 6 6))
+   (node comment \"Hi ho!\")
+   (node operator #'print args (node value 23))))"
+                     :font
+                     '("monaco" 10 :plain :srcor)
+                     :view-position
+                     (xy 8 585)
+                     :view-size
+                     (xy 321 85)))
+  (setf node17
+        (make-object 'comment
+                     :comment
+                     ";; comes up active
+
+(browser
+  (network simp (activation-mode ':backward
+                 active? t
+                 node-font '(\"Times\" 9)
+                 comment-font '(\"Times\" 9)
+                 terminal-size (xy 4 3))
+    (let (a b c d e)
+      (node comment \"Ready to go!\")
+      (setf a (node value 1.0))
+      (setf b (node operator #'random args a))
+      (setf c (node operator #'* args (list b 10)))
+      (setf d (node operator #'+ args (list c 50)))
+      (setf e (node operator #'floor args d))
+      (node operator #'print args e))))"
+                     :font
+                     '("monaco" 10 :plain :srcor)
+                     :view-position
+                     (xy 8 696)
+                     :view-size
+                     (xy 320 206)))
+  (setf node16
+        (make-object 'comment
+                     :comment
+                     "(print (+ 3 (random 10))) "
+                     :font
+                     '("monaco" 9 :plain :srcor)
+                     :view-position
+                     (xy 166 197)
+                     :view-size
+                     (xy 167 21)))
+  (setf node15
+        (make-object 'value
+                     :value
+                     3
+                     :view-position
+                     (xy 22 189)
+                     :view-size
+                     (xy 41 21)
+                     :inputs
+                     (make-link-array 8)
+                     :outputs
+                     (make-link-array 8)))
+  (setf node14
+        (make-object 'operator
+                     :operator
+                     #'+
+                     :view-position
+                     (xy 37 229)
+                     :view-size
+                     (xy 54 21)
+                     :inputs
+                     (make-link-array 10)
+                     :outputs
+                     (make-link-array 10)))
+  (setf node13
+        (make-object 'operator
+                     :operator
+                     #'print
+                     :view-position
+                     (xy 37 270)
+                     :view-size
+                     (xy 62 21)
+                     :inputs
+                     (make-link-array 12)
+                     :outputs
+                     (make-link-array 12)))
+  (setf node12
+        (make-object 'value
+                     :value
+                     "(random 1.0)"
+                     :view-position
+                     (xy 26 361)
+                     :view-size
+                     (xy 92 21)
+                     :inputs
+                     (make-link-array 18)
+                     :outputs
+                     (make-link-array 18)))
+  (setf node11
+        (make-object 'operator
+                     :operator
+                     #'read-from-string
+                     :view-position
+                     (xy 26 402)
+                     :view-size
+                     (xy 128 21)
+                     :inputs
+                     (make-link-array 25)
+                     :outputs
+                     (make-link-array 25)))
+  (setf node10
+        (make-object 'operator
+                     :operator
+                     #'ccl::cheap-eval
+                     :view-position
+                     (xy 26 443)
+                     :view-size
+                     (xy 92 21)
+                     :inputs
+                     (make-link-array 18)
+                     :outputs
+                     (make-link-array 18)))
+  (setf node9
+        (make-object 'operator
+                     :operator
+                     #'print
+                     :view-position
+                     (xy 26 484)
+                     :view-size
+                     (xy 62 21)
+                     :inputs
+                     (make-link-array 12)
+                     :outputs
+                     (make-link-array 12)))
+  (setf node8
+        (make-object 'value
+                     :value
+                     10
+                     :view-position
+                     (xy 72 148)
+                     :view-size
+                     (xy 41 21)
+                     :inputs
+                     (make-link-array 8)
+                     :outputs
+                     (make-link-array 8)))
+  (setf node7
+        (make-object 'operator
+                     :operator
+                     #'random
+                     :view-position
+                     (xy 67 189)
+                     :view-size
+                     (xy 68 21)
+                     :inputs
+                     (make-link-array 13)
+                     :outputs
+                     (make-link-array 13)))
+  (setf node6
+        (make-object 'comment
+                     :comment
+                     "<- click here, prints in Lisp window
+"
+                     :font
+                     '("Times" 10 :plain :srcor)
+                     :view-position
+                     (xy 113 269)
+                     :view-size
+                     (xy 158 22)))
+  (setf node5
+        (make-object 'comment
+                     :comment
+                     "This next example shows how Lisp's read-eval-print loop works."
+                     :font
+                     '("Times" 10 :plain :srcor)
+                     :view-position
+                     (xy 8 318)
+                     :view-size
+                     (xy 325 24)))
+  (setf node4
+        (make-object 'comment
+                     :comment
+                     "<- user's input string"
+                     :font
+                     '("Times" 10 :plain :srcor)
+                     :view-position
+                     (xy 184 362)
+                     :view-size
+                     (xy 96 20)))
+  (setf node3
+        (make-object 'comment
+                     :comment
+                     "<- read"
+                     :font
+                     '("Times" 10 :plain :srcor)
+                     :view-position
+                     (xy 183 406)
+                     :view-size
+                     (xy 76 20)))
+  (setf node2
+        (make-object 'comment
+                     :comment
+                     "<- eval"
+                     :font
+                     '("Times" 10 :plain :srcor)
+                     :view-position
+                     (xy 185 446)
+                     :view-size
+                     (xy 76 20)))
+  (setf node1
+        (make-object 'comment
+                     :comment
+                     "<- print"
+                     :font
+                     '("Times" 10 :plain :srcor)
+                     :view-position
+                     (xy 184 484)
+                     :view-size
+                     (xy 76 20)))
+  (setf node0
+        (make-object 'comment
+                     :comment
+                     "Mindy can run networks in forward or backward modes.  When a network is running in backward mode its backgroud is blue; a network in forward mode has a yellow background.  Forward mode means that values get \"pushed\" through the network from antecedent nodes to their successors.  ( This is the way Max works, for example.)  Backward mode is just the opposite: values are \"pulled\" through the network by dependant nodes. This is the way Lisp evaluation works.   To see this, try activataing this first example.  Remember that since the network is backward, you mouse the bottom (most dependant) node. Only Propagate links can currently be used in backward mode.
+"
+                     :font
+                     '("Times" 10 :plain :srcor)
+                     :view-position
+                     (xy 8 5)
+                     :view-size
+                     (xy 328 112)))
+  (link-nodes 'propagate
+              node15
+              node14
+              :from-index
+              3
+              :to-index
+              0
+              :to-slot
+              (list 'args '@ 0)
+              :from-slot
+              'value)
+  (link-nodes 'propagate
+              node14
+              node13
+              :from-index
+              0
+              :to-index
+              0
+              :to-slot
+              (list 'args '@ 0)
+              :from-slot
+              'value)
+  (link-nodes 'propagate
+              node12
+              node11
+              :from-index
+              0
+              :to-index
+              0
+              :to-slot
+              (list 'args '@ 0)
+              :from-slot
+              'value)
+  (link-nodes 'propagate
+              node11
+              node10
+              :from-index
+              0
+              :to-index
+              0
+              :to-slot
+              (list 'args '@ 0)
+              :from-slot
+              'value)
+  (link-nodes 'propagate
+              node10
+              node9
+              :from-index
+              0
+              :to-index
+              0
+              :to-slot
+              (list 'args '@ 0)
+              :from-slot
+              'value)
+  (link-nodes 'propagate
+              node8
+              node7
+              :from-index
+              4
+              :to-index
+              5
+              :to-slot
+              (list 'args '@ 0)
+              :from-slot
+              'value)
+  (link-nodes 'propagate
+              node7
+              node14
+              :from-index
+              2
+              :to-index
+              8
+              :to-slot
+              (list 'args '@ 1)
+              :from-slot
+              'value)
+  (add-objects (list node19
+                     node18
+                     node17
+                     node16
+                     node15
+                     node14
+                     node13
+                     node12
+                     node11
+                     node10
+                     node9
+                     node8
+                     node7
+                     node6
+                     node5
+                     node4
+                     node3
+                     node2
+                     node1
+                     node0)
+               (find-object '02-lisp-evaluation)
+               nil
+               :copy-first
+               nil)
+  (find-object '02-lisp-evaluation))

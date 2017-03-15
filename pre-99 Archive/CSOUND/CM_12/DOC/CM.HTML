@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<TITLE>Common Music</TITLE>
+<!-- Created by: Tobias Kunze, 14-Dec-1995 -->
+<!-- Changed by: Tobias Kunze,  6-Mar-1998 -->
+<!--  original gif: ulysses:~tkunze/work/lib/graph/cmlogo/cmlogo.gif  -->
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+<CENTER>
+<H1><FONT Size=7>Common Music</FONT></H1>
+
+<PRE>
+
+<IMG ALIGN=MIDDLE SRC="img/cmlogo.gif" ALT="[Logo]">
+
+</PRE>
+</CENTER>
+<HR>
+<p>
+
+<TABLE compact><TR>
+
+<TD valign=top><B><I>What is Common Music?</I></B><TD>
+
+<B>Common Music</B> (CM) is an object-oriented
+music composition environment.  It produces sound by transforming a
+high-level representation of musical structure into a variety of contol
+protocols for sound synthesis and display: 
+<A HREF="dict/midi.stx.html"><I>MIDI</I></A>,
+<A HREF="dict/csound.stx.html"><I>Csound</I></A>,
+<A HREF="dict/clm.stx.html"><I>Common Lisp Music</A></I>,
+<A HREF="dict/musickit.stx.html"><I>Music Kit</I></A>,
+<A HREF="dict/cmix.stx.html"><I>C Mix</I></A>,
+<A HREF="dict/cmusic.stx.html"><I>C Music</I></A>, 
+<A HREF="dict/m4c.stx.html"><I>M4C</I></A>,
+<A HREF="dict/rt.stx.html"><I>RT</I></A>,
+<A HREF="dict/sgimix.stx.html"><I>Mix</I></A> and
+<A HREF="dict/cmn.stx.html"><I>Common Music Notation</I></A>.
+
+Common Music defines an extensive library of compositional tools and
+provides a public interface through which the composer may easily
+modify and extend the system.
+
+All ports of Common Music provide a text-based music composition editor called
+<A HREF="tutorials/stella/toc.html"><I>Stella</I></A>.  A graphical interface
+called <A HREF="tutorials/capella/capella.html"><I>Capella</I></A> currently
+runs only on the Macintosh.  See <A HREF="#Documentation">Documentation</A>
+for more information.<P>
+
+
+<TD><TD><TR>
+
+<!------------------------------------------------------------->
+<TD valign=top><B><I>History</I></B><TD>
+
+Common Music began in 1989 as a response to the proliferation
+of different audio hardware, software and computers that resulted
+from the introduction of low cost processors.  As choices
+increased it became clear that composers would be well served by a
+system that defined a portable, powerful and consistent interface to
+the myriad sound rendering possibilities. Work on Common Music began
+in 1989 when the author was a guest composer at <A
+HREF="http://ccrma-www.stanford.edu/">CCRMA</A>, Stanford
+University. Most of the system as it exists today was implemented at
+the Institut f&uuml;r Musik und Akustik at the <A
+HREF="http://www.zkm.de"">Zentrum f&uuml;r Kunst und
+Medientechnologie</A> in Karlsruhe, Germany, where the author worked
+for five years.  Common Music continues to evolve today at the
+University of Illinois at Urbana-Champaign, where the author is now a
+professor of music composition. In 1996 Common Music received First
+Prize in the computer-assisted composition category at the <I>1er
+Concours International de Logiciels Musicaux</I> in Bourges, France.<P>
+
+
+<TD><TD><TR>
+
+<!------------------------------------------------------------->
+<TD valign=top><B><I>Implementation</I></B><TD>
+
+Common Music is implemented in Common Lisp and CLOS and runs on a variety of
+computers, including NeXT, Macintosh, SGI, SUN, and i386.  <A
+HREF="install.html#install_sources">Source code</A> and <A
+HREF="install.html#install_binaries">binary images</A> are freely available at
+several internet sites.  In order to compile the source code you need Common
+Lisp.  The best implementations are commercial products but there are also
+several good public domain implementations available on the Internet. See <A
+HREF="#Lisp_Ports">Lisp Ports</A> and <A HREF="install.html">Installing Common
+Music</A> for more information.<P>
+
+<TD><TD><TR>
+
+<!------------------------------------------------------------->
+
+<TD valign=top><B><I>Synthesis Control</I></B><TD>
+Each synthesis target is represented as a "syntax" in Common
+Music.  Any combination of syntaxes can be included
+when the system is built from its sources.  The available syntaxes are:
+<PRE><I>Synthesis Target         Syntax           Works on</I>
+
+C Mix                    CMIX             everywhere
+C Music                  CMUSIC           everywhere
+Csound                   CSOUND           everywhere
+Common Lisp Music        CLM              NeXTstep, IRIX, Mac
+Common Music Notation    CMN              everywhere
+M4C                      M4C              NeXTstep, Mac
+Mix                      SGIMIX           IRIX
+MIDI                     MIDI             everywhere
+Music Kit                MK               NeXTstep
+RT                       RT               NeXTstep, IRIX
+</PRE>
+<P>
+
+Whenever possible, CM sends and receives directly to and from the target.
+Otherwise, a file can be generated and sent to the target automatically so
+that the process of producing sound appears seamless and transparent.
+
+<P> All ports of CM support reading level 0 and 1 MIDI files and writing level
+0 files. Direct-to-driver MIDI input and output is supported for the following
+configurations:
+
+<P>
+<PRE>Mac OS 7.x    MCL 3.0, 3.9
+NeXTstep 3.2  ACL 3.2.1, 4.1; GCL 21.1; CLISP
+Windows 3.1   ACL/PC</PRE>
+<TR><TD><TD><TR>
+
+<!------------------------------------------------------------->
+
+<TD valign=top>
+<A NAME="Documentation">
+
+<B><I>Documentation</I></B></A>
+<TD>
+<DL>
+<DT><I>References</I>
+<DD><A HREF="dict/index.html">Common Music Dictionary</A>
+<P>
+<DT><I>Tutorials and Overviews</I>
+<DD><A HREF="tutorials/stella/toc.html">Stella Tutorial</A>
+<DD><A HREF="tutorials/capella/capella.html">Capella Tutorial</A>
+<DD><A HREF="intro/intro.html">Introduction to Common Music</A>
+<DD><A HREF="items.html">Introduction to Item Streams</A>
+<DD><A HREF="examples/">Source Examples</A>
+<DD><A HREF="http://ccrma-www.stanford.edu/CCRMA/Software/clm/compmus/compmus-tutorials.html">
+    Nicky Hind's CM and CLM Tutorials</A>
+<DD><A HREF="http://www.stanford.edu/~tkunze/papers.html">
+    Tobias Kunze's CM Papers</A>
+<DD> <A HREF="http://www.stanford.edu/~tkunze/cm.html">
+    Tobias Kunze's CM Repository</A>
+<P>
+<DT><I>Installation</I>
+<DD><A HREF="install.html">Installing and Building CM</A>
+<DD><A HREF="changes.text">Change History</A>
+
+<P>
+<DT><A NAME="General_Lisp_Documentation"><I>General Lisp Documentation</I></A>
+<DD><A HREF="contrib/lispintro.html">Lisp Overview</A>
+<DD><A HREF="contrib/LISP-tutorial.html">Common Lisp Hints (Tutorial)</A>
+<DD><A HREF="contrib/lispstyle.html">Lisp Style Tips</A>
+<DD><A HREF="http://http.tamu.edu:8000/~colin/lp/">Lisp Primer</A>
+<DD><A HREF="http://rex.cs.tulane.edu/www/Villamil/lisp/lisp1.html">Lisp Tutorial</A>
+<DD><A HREF="http://www.apl.jhu.edu/~hall/lisp.html">Common Lisp Resources</A>
+<DD><A HREF="http://www.civilized.com/LispBook/">Interpreting Lisp</A>
+<DD><A HREF="http://www.harlequin.com/books/HyperSpec/FrontMatter/index.html">Common Lisp HyperSpec</a>
+<DD><A HREF="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/cltl2.html">
+Common Lisp: the Language (2nd Edition)</A>
+</DL>
+<TR>
+
+<TD><TD><TR>
+
+<!------------------------------------------------------------->
+
+<TD valign=top>
+<A NAME="Lisp_Ports">
+<B><I>Lisp Ports</I></B>
+</A>
+<TD>
+Common Music has been ported to the following Common Lisp
+implementations:
+
+<DL>
+
+<DT><B><I>Allegro Common Lisp (ACL)</I></B><br>
+
+A full-featured commercial product available for
+Unix and 386/Windows. It is CLTL 2, includes
+a native CLOS and a graphical interface.
+<DD> Franz Inc., 1995 University Avenue, Berkeley, California 94704 USA <BR>
+     <TT>Tel:</TT> (510) 548-3600<BR>
+     <TT>Fax:</TT> (510) 548-8253 <BR>
+     <TT>www:</TT> <A HREF="http://www.franz.com/">
+         http://www.franz.com/</A><BR>
+     <TT>e-mail:</TT> <A HREF="mailto:info@franz.com">info@franz.com</A><BR>
+     <TT>News:</TT> <A HREF="news:comp.lang.lisp.franz">
+         comp.lang.lisp.franz</A>
+<p>
+<DT><B><I>CLISP</I></B><br>
+A public domain Common Lisp available for I386 (Windows 95 and NT),
+and Unix (Linux, NeXTstep, Irix, etc.). It is mostly CLTL 2, includes
+a native CLOS, no graphical interface.  It is actively supported by its 
+authors.
+
+<DD> <TT>www:</TT> <A HREF=" http://clisp.cons.org/~haible/clisp.html">
+      http://clisp.cons.org/~haible/clisp.html</A><BR>
+     <TT>ftp:</TT>
+         <A HREF="ftp://ftp2.cons.org/pub/lisp/clisp/">
+     ftp://ftp2.cons.org/pub/lisp/clisp/</A>
+<P>
+
+<DT><B><I>GNU Common Lisp (GCL)</I></B><br> A public domain Common Lisp
+available for Unix, (including NeXTstep and SGI Irix).  It is mostly CLTL 2,
+uses PCL for CLOS, no graphical interface.
+
+<DD><TT>ftp:</TT><A HREF="ftp://math.utexas.edu/pub/gcl/">
+ftp://math.utexas.edu/pub/gcl/</A> as gcl.*.*.tgz
+<P>
+
+<DT><B><I>Macintosh Common Lisp</I></B><br>
+A full-featured commercial product available for
+Macintosh. It is CLTL 2, includes a native CLOS, true multi-processing, and
+a graphical interface. A native PPC version is scheduled for early 1996. <br>
+<DD>Digitool, Inc. One Main Street - 7th Floor Cambridge, MA 02142 USA<BR>
+<TT>Tel:</TT> 617-441-5000<BR>
+<TT>Fax:</TT> 617-576-7680<BR>
+<TT>www:</TT> <A HREF="http://www.digitool.com/">
+    http://www.digitool.com/</A><BR>
+<TT>ftp:</TT> <A HREF="ftp://ftp.digitool.com/pub/">
+    ftp://ftp.digitool.com/pub/</A><BR>
+<TT>e-mail:</TT> <A HREF="mailto:info@digitool.com">
+    info@digitool.com</A><BR>
+<TT>News:</TT> <A HREF="news:comp.lang.lisp.mcl">comp.lang.lisp.mcl</A>
+<P>
+
+<DT>
+Common Music is known to work in the following configurations:
+<DD>
+<PRE>                 NeXT  Mac  SGI  Sun  DOS  Windows
+
+ACL 3.1.2         x
+ACL 4.2           x          x    x           x
+CLISP 1996-04-17  x          x    x    x      x
+GCL 1.1           x               x
+MCL 3.0, 3.9            x
+</PRE>
+
+
+</DL>
+<TD><TD><TR>
+
+<!------------------------------------------------------------->
+<TD valign=top><B><I>Contact</I></B><TD>
+
+
+
+Feel free to contact me with any questions or comments. To receive email
+information about software releases or to track developments in <A
+HREF="http://ccrma-www.stanford.edu/">CCRMA</A>'s family of Lisp music
+programs: CM, <A
+HREF="http://ccrma-www.stanford.edu/CCRMA/Software/clm/clm.html">CLM</A> and
+<A HREF="http://ccrma-www.stanford.edu/CCRMA/Software/cmn/cmn.html">CMN</A>
+please join <TT>cmdist@ccrma.stanford.edu</TT> by sending your request to <TT>
+<A HREF="mailto:cmdist-request@ccrma.stanford.edu">
+cmdist-request@ccrma.stanford.edu</A></TT>.  <P>
+
+Rick Taube<BR>
+School of Music<BR>
+University of Illinois<BR>
+Urbana, IL<BR>
+Fax: 217 355 5780<BR>
+Vox: 217 244 2684<BR>
+Net: <A HREF="mailto:taube@uiuc.edu"><TT>taube@uiuc.edu</TT></A><BR>
+<P>
+<TD><TD><TR>
+
+
+
+</TABLE>
+
+<HR>
+
+
+
+Last Modified:     6-Mar-1998
+</BODY>
+</HTML>

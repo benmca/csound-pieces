@@ -1,0 +1,72 @@
+diff -r -N -u4 Csound-4.15.src.old/otran.c Csound-4.15.src.new/otran.c
+--- Csound-4.15.src.old/otran.c	Sat Sep 29 23:06:38 2001
++++ Csound-4.15.src.new/otran.c	Mon Nov  5 18:55:16 2001
+@@ -20,11 +20,8 @@
+ static	short	*nxtargoffp, *argofflim, lclpmax;
+ static	char	*strargspace, *strargptr;
+ static	long	poolcount, strargsize = 0, argoffsize;
+ static  int	nconsts;
+-static	MYFLT	tran_sr = -FL(1.0);
+-static	MYFLT	tran_kr = -FL(1.0);
+-static	MYFLT	tran_ksmps = -FL(1.0);
+ 	int	tran_nchnls = DFLT_NCHNLS;  /* used by rdorch  */
+ static	int	displop1, displop2, displop3, displop4;
+ 
+ extern	MYFLT	*pool;
+@@ -67,11 +64,8 @@
+     strargspace = strargptr = NULL;
+     gblnxtkcnt  = 0;
+     gblnxtacnt  = 0;
+     strargsize  = 0L;
+-    tran_sr     = -FL(1.0);
+-    tran_kr     = -FL(1.0);
+-    tran_ksmps  = -FL(1.0);
+     tran_nchnls = DFLT_NCHNLS;
+     nlabels     = NLABELS;
+ }
+ #endif
+@@ -231,43 +225,17 @@
+ 		else lgbuild(s);
+ 		if (!nn && bp->t.opcod[1] == '_'	/* rsvd glbal = n ? */
+ 		    && strcmp(bp->t.opcod,"=_r")==0) {	/*  (assume const)  */
+ 		    MYFLT constval = pool[constndx(bp->t.inlist->arg[0])];
+-		    if (strcmp(s,"sr") == 0)
+-			tran_sr = constval;		/* modify otran defaults*/
+-		    else if (strcmp(s,"kr") == 0)
+-			tran_kr = constval;
+-		    else if (strcmp(s,"ksmps") == 0)
+-			tran_ksmps = constval;
+-		    else if (strcmp(s,"nchnls") == 0)
++		    if (strcmp(s,"nchnls") == 0)
+ 			tran_nchnls = (int)constval;
+ 		}
+ 	    }
+             n = 0;              /* Mark as unfinished */
+ 	    break;
+ 	}
+     }
+     if (n != -1) synterr(Str(X_348,"Missing endin"));
+-
+-                                /* Deal with defaults and consistency */
+-    if (tran_ksmps == -FL(1.0)) {
+-      if (tran_sr == -FL(1.0)) tran_sr = DFLT_SR;
+-      if (tran_kr == -FL(1.0)) tran_kr = DFLT_KR;
+-      tran_ksmps = (MYFLT)((int) (tran_sr / tran_kr));
+-    }
+-    else if (tran_kr == -FL(1.0)) {
+-      ksmps = ((int)tran_kr); /* Ensure integer */
+-      if (tran_sr == -1) tran_sr = DFLT_SR;
+-      tran_kr = tran_sr / tran_ksmps;
+-    }
+-    if (tran_sr == -FL(1.0)) tran_sr = DFLT_SR;
+-                                /* That deals with missing values */
+-				/* However we do need ksmps to be integer */
+-    if (tran_sr / tran_kr != tran_ksmps) {
+-	printf("sr = %f, kr = %f, ksmps = %f\n",
+-	       tran_sr, tran_kr, tran_ksmps);
+-	    synterr(Str(X_903,"inconsistent sr, kr, ksmps"));
+-    }
+ 
+     ip = instxtanchor.nxtinstxt;
+     bp = (OPTXT *) ip;
+     while (bp != (OPTXT *) NULL && (bp = bp->nxtop) != NULL) {	/* chk instr 0 for illegal perfs */

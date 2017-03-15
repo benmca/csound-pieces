@@ -1,0 +1,130 @@
+<HTML>
+<HEAD>
+<TITLE>Stella Tutorial (Mapping Slot Data)</TITLE>
+<!-- Changed by: Tobias Kunze,  6-Mar-1998 -->
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<A NAME="Mapping_Slot_Data"></A>
+<A HREF="s10.html"><i>Next Chapter</i></A><BR>
+<A HREF="s08.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+
+<H2>Mapping Slot Data</H2>
+
+The <tt>map</tt> command is a general purpose query and edit facility.
+For example, what the highest note value and the average rhythm of the
+events in Nood?<p>
+
+<i>[This example assumes you have imported "noodle.midi" as in the
+previous chapter and renamed the thread to Nood]</I><p>
+
+<pRE>Stella [Top-Level]: <b>map nood highest note and average rhythm</b>
+CLAUSE           COUNT  VALUE
+
+highest  note      180  GS6
+average  rhythm    180  0.10138889
+
+Stella [Top-Level]:
+</PRE>
+
+<tt>Map</tt> examined the data in Nood and returned information
+in a table.  Each table entry shows the relevant command clause, the
+number of times it was processed and the value that the clause
+returned.  The first entry says that the highest note in Nood is GS6
+and that the clause was processed 180 times.  This number might be
+less than the total number of elements mapped if the clause were
+conditional.<p>
+
+
+<H3><a href="../../dict/map.cmd.html"><TT>map</TT></a></H3>
+
+The syntax of <tt>map</tt> is unlike any other command discussed so
+far.  <tt>Map</tt> input consists of a series of clauses.  Causes may
+be independent or conditional.  A clause consists of an operator and
+an <A HREF="../../dict/command_expressions.tpc.html"> expression</A>
+ to evaluate in the context of the currently mapped
+object.  There are three broad categories of clause operators.
+<a href="../../dict/map.cmd.html#information_operators">Information operators</a>
+ collect information about the mapped objects and return the
+results in a table.  <a href="../../dict/map.cmd.html#command_operators">Command operators</A>
+ edit data. <a href="../../dict/map.cmd.html#clause_operators">Clause operators</A>
+connect clauses together. 
+
+<H3>
+<a name="Map Examples">Map Examples</a></H3>
+
+To find the total rhythmic time of <I>Nood</I>:<p>
+
+<pRE>Stella [Top-Level]: <b>map nood sum rhythm</b>
+
+CLAUSE           COUNT  VALUE
+sum      rhythm    180  18.25
+</PRE>
+
+To count the number of frequencies above fs5:<p>
+
+<pRE>Stella [Top-Level]: <b>map nood count (scale&gt; note fs5)</b>
+
+CLAUSE                       COUNT  VALUE
+count    (scale&gt; note 'fs5)    180  81
+
+</PRE>
+
+To collect every 20th frequency in a list:<p>
+
+<pRE>Stella [Top-Level]: <b>map nood[1:*:20] collect note</b>
+
+CLAUSE         COUNT  VALUE
+collect  note      9  (C4 GS4 F4 C4 C6 GS4 DS6 C6 DS6)
+</PRE>
+
+<H3><a name="Conditional Mapping">Conditional Mapping</a></H3>
+
+Conditional operators such as <tt>when</tt> and <tt>unless</tt>
+evaluate a clause only in the event that their predicate test
+evaluates to true or false.  For example, what is the rhythmic time
+occupied by notes higher than fs5?:<p>
+
+<pRE>Stella [Top-Level]: <b>map nood when (scale&gt; note 'fs5) sum rhythm</b>
+
+CLAUSE           COUNT  VALUE
+sum      rhythm     81  8.625
+</PRE>
+
+More than one clause may be conditional on a single test, and mixtures
+of conditional and independent clauses may also be expressed.  The
+next example counts the note and sum the rhythms of frequencies higher
+than fs5, but sums all duration.<p>
+
+<pRE>Stella [Top-Level]: <b>map nood when (scale&gt; note fs5) count note and
+sum rhythm sum duration</b>
+
+CLAUSE             COUNT  VALUE
+count    note         81  81
+sum      rhythm       81  8.625
+sum      duration    180  49.875
+</PRE>
+
+In this final example, material is scaled if the frequency is either
+c4, fs4, or c5:<p>
+
+<pRE>Stella [Top-Level]: <b>map nood when (member note '(c4 fs4 c5)) scale
+amplitude 1.5</b>
+Stella [Top-Level]: <b>mix nood</b>
+Start time offset: (&lt;cr&gt;=None) <B><I>&lt;cr&gt;</I></B>
+Stella [Top-Level]: 
+</PRE>
+<P>
+
+<A HREF="s10.html"><i>Next Chapter</i></A><BR>
+<A HREF="s08.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+<P>
+
+
+  Last Modified:   6-Mar-1998
+</BODY>
+</HTML>     
+
+

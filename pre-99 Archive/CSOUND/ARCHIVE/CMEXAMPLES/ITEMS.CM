@@ -1,0 +1,308 @@
+;;;
+;;; simple item stream examples adapted for use with the Midi syntax in
+;;; Stella.  You can either use Stella's Load command to load all the examples
+;;; at once and then use the Listen command on each example, or else else
+;;; copy/paste the individual examples to Stella's prompt, and Listen.
+;;;
+
+(in-package :cm)
+(in-syntax :midi)
+
+;;;
+;;; Example 1:
+;;; A simple cyclic note stream
+;;;
+
+(algorithm ex1 midi-note (length 24 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes c4 d ef f g r))))
+
+;;;
+;;; Example 2:
+;;; Item streams may be recursively nested
+;;;
+
+(algorithm ex2 midi-note (length 32 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes c4 c3 c5 in heap)
+                          (notes d4 d3 d5 in heap)
+                          (notes ef4 ef3 ef5 in heap)
+                          (notes f4 f3 f5 in heap)
+                          (notes g4 g4 g5 in heap)
+                          r))))
+
+;;;
+;;; Example 3:
+;;; Period length does not have to be the same as
+;;; the number of items.
+;;;
+
+(algorithm ex3 midi-note (length 25 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes c4 d ef f g for 4) r))))
+
+;;;
+;;; Example 4:
+;;; Period length may change over time
+;;;
+
+(algorithm ex4 midi-note (length 40 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes 
+                     (notes c4 d ef f g 
+                            for (items 1 2 3 4
+                                       in random))
+                     r))))
+
+;;;
+;;; Example 5: 
+;;; Cycle Pattern 
+;;;
+
+(algorithm ex5 midi-note (length 24 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes c4 d ef f g in cycle)
+                          r))))
+
+;;;
+;;; Example 6a: 
+;;; Sequence Pattern
+;;;
+
+(algorithm ex6a midi-note (length 18 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes c4 d ef f g in sequence)
+                          r))))
+
+;;;
+;;; Example 6b:
+;;; Sequence with last item changing
+;;;
+
+(algorithm ex6b midi-note (length 24 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes c4 d ef f 
+                                 (notes g4 af5 a3 in heap for 1)
+                                 in sequence)
+                          r))))
+
+;;;
+;;; Example 7a: 
+;;; Palindrome with last item changing
+;;;       
+
+(algorithm ex7a midi-note (length 30 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes c4 d ef f 
+                                 (notes g3 af5 a4 in heap)
+                                 in palindrome)
+                          r))))
+
+;;;
+;;; Example 8a:
+;;; Graph
+;;;
+
+(algorithm ex8a midi-note (length 30 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes (c4  id 1 to (items 2 5 in random))
+                                 (d4  id 2 to (items 1 3 in random))
+                                 (ef4 id 3 to (items 2 4 in random))
+                                 (f4  id 4 to (items 3 5 in random))
+                                 (g4  id 5 to (items 1 4 in random))
+                                 in graph for 5)
+                          r))))
+
+;;;
+;;; Example 8b:
+;;; Graph with recursive stream
+;;;
+
+(algorithm ex8b midi-note (length 36 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes (c4 id 1 to (items 2 5 in random))
+                                 (d4 id 2 to (items 1 3 in random))
+                                 (ef4 id 3 to (items 2 4 in random))
+                                 (f4 id 4 to (items 3 5 in random))
+                                 ((notes g4 af b c5 in heap) 
+                                  id 5 to (items 1 4))
+                                 in graph for 5)
+                          r))))
+
+;;;
+;;; Example 9a:
+;;; Random
+;;;
+
+(algorithm ex9a midi-note (length 24 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes c4 d ef f g in random)
+                          r))))
+
+;;;
+;;; Example 9b:
+;;; Random with constraints on some items
+;;;
+
+(algorithm ex9b midi-note (length 36 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes (c4 weight 4 max 2)
+                                 d ef f (g weight 4)
+                                 in random)
+                          r))))
+
+;;;
+;;; Example 9c:
+;;; Random with changing item weights
+;;;
+
+(algorithm ex9c midi-note (length 24 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes (c4 weight (items 4 3 2 1 in sequence) max 2)
+                                 d ef f 
+                                 (g weight (items 1 2 3 4 in sequence))
+                                 in random)
+                          r))))
+
+;;;
+;;; Example 9d:
+;;; Random with embedded item stream
+;;;
+
+(algorithm ex9d midi-note (length 80 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (notes (notes (c4 weight (items 4 3 2 1 in sequence) max 2)
+                                 d ef f 
+                                 ((notes g4 af bf c5 in heap) 
+                                  weight (items 1 2 3 4 in sequence))
+                                 in random)
+                          r))))
+
+;;;
+;;; Example 10:
+;;; Notes, Pitches, Degrees are interchangable
+;;; 
+
+(merge ex10 ()
+
+  (algorithm example-10a midi-note (length 24 rhythm .2 duration .2 
+                                    amplitude .5)
+    (setf note (item (notes c2 d ef f g r in heap))))
+
+  (algorithm example-10b midi-note (length 24 rhythm .2 duration .2 
+                                    amplitude .5)
+    (setf note (item (pitches c3 d ef f g r in heap))))
+
+  (algorithm example-10c midi-note (length 24 rhythm .2 duration .2 
+                                    amplitude .5)
+    (setf note (item (degrees c4 d ef f g r in heap)))))
+
+;;;
+;;; Example 11a:
+;;; intervals
+;;;
+
+(algorithm ex11a midi-note (length 20 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (intervals 0 2 3 5 7 in heap
+                       from 'c4
+                       returning note))))
+
+;;;
+;;; Example 11b:
+;;; intervals with changing offset
+;;;
+
+(algorithm ex11b midi-note (length 20 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (intervals 0 2 3 5 7 in heap
+                       from (notes c2 c3 c4 c5)
+                       returning note))))
+
+;;;
+;;; Example 12a:
+;;; steps
+;;;
+
+(algorithm ex12a midi-note (length 48 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (steps 1 2 3 in random for 12
+                          from 'c4
+                          returning note))))
+
+;;;
+;;; Example 12b:
+;;; steps with changing offset
+;;;
+
+(algorithm ex12b midi-note (length 48 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (steps 1 2 (3 max 1 weight .5)
+                          in random for 12
+                          from (notes c2 c3 c4 c5)
+                          returning note))))
+
+;;;
+;;; Example 13:
+;;; offset read in parallel with data, once per chord:
+;;;
+
+(algorithm ex13 midi-note (length 20 rhythm .2 duration .2 amplitude .5)
+  (setf note (item (intervals [0 6 11] [0 3 9]
+                              [0 8 11][0 6 11]
+                              in random
+                              on (steps 1 2 (3 max 1 weight .5)
+                                        in random for 4
+                                        from (notes c2 c3 c4 c3 c2))
+                              returning note))))
+
+;;;
+;;; Example 14:
+;;; rhythms
+;;;
+
+(algorithm ex14 midi-note (length 20 duration .2 amplitude .5)
+  (setf note (item (notes c4 d ef f g)))
+  (setf rhythm (item (rhythms 16 e in random
+                              tempo 120))))
+
+;;;
+;;; Example 15:
+;;; amplitude
+;;;
+
+(algorithm ex15 midi-note (length 24 rhythm .2 duration .2)
+  (setf note (item (notes c4 d ef f g af b c5)))
+  (setf amplitude (item (crescendo from ppp to fff in 8))))
+
+
+;;;
+;;; Example 16: 
+;;;
+
+;(in-syntax :midi)
+;
+;(setf *cm-state* 
+;  '#s(random-state :seed 219719301209209))
+;
+; the mcl random-state object:
+;(setf *cm-state* 
+;  '#.(random-state 63784 83))
+;
+;
+
+(merge ex16 ()
+  (algorithm ex16mel midi-note (length 50 start 0 amplitude .4)
+    (setf note (item 
+                (notes 
+                  (steps 1 -1 2 -2 (3 max 1) (-3 max 1)
+                         (6 max 1) (-6 max 1) (-5 weight .05) (5 weight .05) 
+                         in random for (items 4 8)
+                         from (notes c4 b fs5 in random))
+                  r in random)))
+    (if (status? :resting) (setf rhythm 1.0)
+        (setf rhythm 
+              (item (items 1 
+                           (2 weight .1 max 1) 
+                            in random))))
+    (setf duration rhythm))
+  (algorithm ex16har midi-note (length 40 start 3 amplitude .5
+                                       rhythm 1.0 duration .95)
+    (setf note (item 
+                (notes 
+                  (chord (steps (2 to (items 3 4 5 6 in random))
+                                (3 to (items 2 4 5 in random))
+                                (4 to 2)
+                                (5 to (items 2 3 4 in random))
+                                (6 to (items 2 3 in random))
+                                from (steps 1 -1 2 -2 
+                                            (3 max 1) (-3 max 1)
+                                            (6 max 1) (-6 max 1)
+                                            in random from 'c4 for 4)
+                                in graph for 4 returning note))
+                  r in random)))
+    (setf duration rhythm)))
+
+

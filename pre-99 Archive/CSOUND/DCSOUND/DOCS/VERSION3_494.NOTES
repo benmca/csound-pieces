@@ -1,0 +1,350 @@
+Release Notes for 3.493
+=======================
+
+These are the release notes for version 3.493, which will eventually
+becone 3.50
+
+
+Bug Fixes
+---------
+
+Pow now available again.
+Internal changes to parser to make fewer calls to strcmp
+Corrections to rand in a-rate case and 16 bit randoms
+
+Language Changes
+----------------
+
+hetro had a wrong constant which would give rise to a little noise.
+
+If the incorrect out opcode is used it now attempts to correct to the
+correct one, which is not necessarily correct.
+
+new names dumpk rather than kdump introduced. 
+
+kon renamed midion
+
+kfilter2 renamed filter2 (still not sure it works though)
+
+The opcodes rand randi and randh take an additional, optional argument
+which if non zero gives a 31bit random nuber rather than the 16bit one.
+
+Rising to a power is available in expressions with the ^ operator.
+use with some caution as I am not sure that the precidence is correct.
+
+An internal changes has changed the conditional compilation flag for
+the Ingalls' port from __MWERKS__ to macintosh; this should help the
+BeOS port.
+
+Opcode Fixes
+------------
+
+sndwarp had bugs on Linux
+
+ramnd, randh and randi now take an additional operand, which if
+non-zero use a better randon number generator
+
+bug in ntrpol fixed
+
+MIDI on Linux may work.
+
+New Opcodes 
+-----------
+
+schedule -- schedule an instrument event
+
+schedwhen -- conditional scheduling
+
+lfo -- Low Frequency Oscilator with 6 shapes
+
+midion2 -- MIDI turnon (G.Maldonado)
+
+midiin --  (G.Maldonado)
+
+midiout --  (G.Maldonado)
+
+nrpn --  (G.Maldonado)
+
+cpstmid --  (G.Maldonado)
+
+streson -- string resonator (V.Lazzarini)
+
+Other Changes:
+-------------
+
+Windows GUI Changes
+-------------------
+
+
+------------------------------------------------------------------------
+==John ff
+  1998 Nov 1
+========================================================================
+
+schedule, schedwhen
+
+	schedule	inst, iwhen, idur, ....
+	schedwhen	ktrigger, kinst, kwhen, kdur, ....
+
+PERFORMANCE
+
+schedule adds a new score event.  The arguments are the same as in a
+score.  The when time (p2) is measured from the time of this event.
+
+If the duration is zero or negative the new event is of MIDI type, and
+inherits the release sub-event from the scheduling instruction.
+
+In the case of schedwhen the event is only scheduled when the krate
+value ktrigger is first non-zero.
+
+Examples:
+
+;; Double hit and 1sec separation
+instr 1
+      schedule	2,  1, 0.5, p4, p5
+a1    shaker	p4, 60, 0.999, 0, 100, 0
+      out	a1
+endin
+
+instr 2
+a1    marimba   p4, cpspch(p5), p6, p7, 2, 6.0, 0.05, 1, 0.1
+      out       a1
+endin 
+
+instr 3 
+kr    table	kr, 1
+      schedwhen	kr, 1, 0.25, 1, p4, p5
+endin
+------------------------------------------------------------------------
+
+lfo
+
+kr	lfo		kamp, kcps[, itype]
+ar	lfo		kamp, kcps[, itype]
+
+DESCRIPTION
+
+A LFO of various shapes
+
+INITALIZATION
+
+itype -- determine the form of the oscilator
+  (default) 0:	sine
+            1:  triangles
+	    2:  square (biplar)
+	    3:  square (unipolar)
+	    4:  saw-tooth
+	    5:  saw-tooth(down)
+
+The sine wave is implemented as a 4096 table and linear
+interpolation.  The others are calculated.
+
+PERFORMANCE
+
+ar, kr - output signal
+kamp - amplitude
+kcps - frequency of oscilator
+
+EXAMPLE:
+instr 1
+kp    lfo	10, 5, 4
+ar    oscil	p4, p5+kp, 1
+      out	ar
+endin
+
+------------------------------------------------------------------------
+minion2
+
+        midion2    kchn, knum, kvel, ktrig
+
+DESCRIPTION
+
+sends note on and off messages to the midi out port when triggered by a 
+value different than zero.
+
+
+PERFORMANCE
+
+kchn - midi channel
+knum - midi note number
+kvel - note velocity
+ktrig - trigger input signal (normally 0)
+
+Similary to 'midion', this opcode sends note-on and note-off messages
+to the midi out port, but only when ktrig is different than zero. This
+opcode is thinked to work toghether with the output of the 'trigger' opcode.
+
+(G.Maldonado)
+------------------------------------------------------------------------
+pctrlinit
+
+(G.Maldonado)
+------------------------------------------------------------------------
+dpctrlinit
+
+(G.Maldonado)
+------------------------------------------------------------------------
+midiin
+
+kstatus, kchan, kdata1, kdata2          midiin
+
+DESCRIPTION
+returns a generic midi message received by the midi in port
+
+
+PERFORMANCE
+kstatus - the type of midi message. Can be:
+                128 (note off),
+                144 (note on),
+                160 (polyphonic aftertouch), 
+                176 (control change),
+                192 (program change), 
+                208 (channel aftertouch),
+                224 (pitch bend)
+                or 0 if no midi message are pending in the MIDI IN buffer.
+
+kchan - midi channel (1-16)
+kdata1, kdata2 - message-dependent data values
+
+midiin has no input arguments, because it reads at the midi in port
+implicitly.  It works at k-rate. Normally (i.e. when no messages are
+pending) kstatus is zero, only each time midi data are present in the
+midi in buffer, kstatus is set to the type of the relative messages.
+
+(G.Maldonado)
+------------------------------------------------------------------------
+midiout
+
+        midiout         kstatus, kchan, kdata1, kdata2
+
+DESCRIPTION
+sends a generic midi message to the midi out port
+
+PERFORMANCE
+kstatus - the type of midi message. Can be:
+                128 (note off),
+                144 (note on),
+                160 (polyphonic aftertouch), 
+                176 (control change),
+                192 (program change), 
+                208 (channel aftertouch),  
+                224 (pitch bend)
+                or 0 when no midi messages must be sent to the MIDI OUT port.
+kchan - midi channel (1-16)
+kdata1, kdata2 - message-dependent data values
+
+midiout has not output arguments, because it sends the message to the
+midi out port implicitly.  It works at k-rate. It sends a midi message
+only when kstatus is different than zero. 
+Warning! Normally kstatus should be set to 0, only when the user
+intend to send a midi message, it can be set to the corresponding
+message type number.
+
+(G.Maldonado)
+------------------------------------------------------------------------
+nrpn
+
+        nrpn    kchan, kparmnum, kparmvalue
+
+DESCRIPTION
+
+sends a nprn (Non Registered Parameter Number) message to the midi out port 
+each time one of the input arguments changes.
+
+
+PERFORMANCE
+
+kchan - midi channel
+kparmnum - number of NRPN parameter
+kparmvalue - value of NRPN parameter
+
+
+This opcode sends new message when the MIDI translated value of one of
+the input arguments changes. It operates at k-rate. Useful with the
+midi instruments that recognize NRPNs (for example with the newest
+sound-cards with internal midi synthesizer such as SB AWE32, AWE64,
+GUS etc. in which each patch parameter can be changed during the
+performance via NRPN)
+
+(G.Maldonado)
+------------------------------------------------------------------------
+cpstmid
+
+icps    cpstmid  ifn
+
+INITIALIZATION
+
+ifn - function table containing the parameters 
+      (numgrades, interval, basefreq, basekeymidi) and
+      the tuning ratios.
+
+(init rate only)
+
+This unit is similar to cpsmidi, but allows fully customized
+micro-tuning scales.  It requires five parameters, the first ifn is
+the function table number of the tuning ratios, and the other
+parameters must be stored in the function tables itself.  The function
+table ifn should be generated by the GEN2 and the first four values
+stored in this function are: numgrades (the number of grades of the
+micro-tuning scale), interval (the frequency range covered before
+repeating the grade ratios, for example 2 for one octave, 1.5 for a
+fift etcetera), basefreq (the base frequency of the scale in cps),
+basekeymidi (the midi-note-number to which to assign the basefreq
+unmodified). 
+
+After these four values, the user can begin to insert the tuning
+ratios.  For example, for a standard 12-grade scale with the
+base-frequency of 261 cps assigned to the key-number 60, the
+corresponding f-statement in the score to generate the table should
+be:
+
+
+;       numgrades     basefreq               tuning-ratios (eq.temp) ..
+.....   
+;            nterval         basekeymidi       
+f1 0 64 -2 12 2   261    60   1  1.059463094359  1.122462048309  1.189207115003 ..etc...  
+
+
+Another example with a 24-grade scale with a base frequency 
+of 440 assigned to the key-number 48, and a repetition interval of 1.5:
+
+
+;        numgrades        basefreq               tuning-ratios .......   
+;                 interval         basekeymidi       
+f1 0 64 -2   24      1.5     440        48        1   1.01  1.02  1.03   ..etc...  
+
+(G.Maldonado)
+------------------------------------------------------------------------
+ar   streson  asig, kfr, ifdbgain
+
+An audio signal is modified by an string resonator with variable
+fundamental frequency.
+
+INITIALIZATION
+
+ifdbgain - feedback gain, between 0 and 1, of the internal
+           delay line. A value close to 1 creates a slower decay and
+           a more pronounced resonance. Small values may leave the
+           input signal unaffected. Depending on the filter frequency,
+           typical values are > .9.
+
+
+PERFORMANCE
+
+streson passes the input asig through a network composed of comb,
+low-pass and all-pass filters, similar to the one used in some
+versions of the Karplus-Strong algorythm, creating a string resonator
+effect. The fundamental frequency of the "string" is controled by
+the k-rate variable kfr.This opcode can be used to simulate sympathetic
+resonances to an input signal.
+
+streson is an adaptation of the StringFlt object of the SndObj Sound
+Object Library developed by the author.
+
+Victor Lazzarini
+Music Department
+National University of Ireland, Maynooth
+Maynooth Co.Kildare
+Ireland
+------------------------------------------------------------------------
+

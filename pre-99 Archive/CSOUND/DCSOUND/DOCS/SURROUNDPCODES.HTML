@@ -1,0 +1,2152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+  <META NAME="GENERATOR" CONTENT="Mozilla/4.06 [en] (Win95; I) [Netscape]">
+  <!-- Created with AOLpress/2.0 -->
+  <TITLE>New opcodes of DirectCsound</TITLE>
+</HEAD>
+<BODY bgcolor="#FFFFFF">
+<CENTER>
+  <A NAME="start"><!-- --></A><B>DirectCsound RELEASE 3.0</B>
+</CENTER>
+<P>
+<CENTER>
+  <H1>
+    DirectSound3D and <BR>
+    EFX 2.0 API introduction<BR>
+    <FONT size="-2">(Must be previusly read in order to understand 3-D opcodes
+    implemented in DirectCsound)</FONT>
+  </H1>
+</CENTER>
+<CENTER>
+  <FONT size="-2">This documentation is based on Microsoft DirectX &reg; SDK
+  manual and Creative Labs EAX 2.0 &reg; SDK manual. All respective rights
+  reserved </FONT>&nbsp;
+</CENTER>
+<P>
+  <HR SIZE=15>
+<H2>
+  Introducing 3-D opcodes
+</H2>
+<P>
+<FONT size="-3">(with exerpts from Microsoft (c) DirectX SDK and Creative
+(c) EAX 2.0 SDK manuals. All rights reserved).</FONT>
+<P>
+(N.B. Do not confuse the similar words "DirectCsound" with "DirectSound",
+as the first refers to a realtime oriented version of Csound, whereas the
+second refers to multimedial system-routines present in Windows 95/98/NT
+operating systems).
+<P>
+Microsoft&#146;s DirectSound3D &reg; API, provides a major first step for
+creating a realistic 3D aural world: it creates an easy-to-use programming
+environment for 3D aural modeling.
+<P>
+DirectCsound now implements almost all DirectSound3D APIs as opcodes, as
+well as Creative's Environmental Audio Extensions (EAX 2.0), wich provide
+some other important environmental effects: high quality reverberation,
+reflections, and sound occlusion or obstruction by intervening objects.
+<P>
+At present time several hardware-accelerated audio cards are available in
+the market; some of them can take advantage of DirectSound3D API. Some of
+such cards allow quadraphony as well as the 5.1 surround mode (six channels)
+when using DirectSound3D API. Maybe cards with more channels supporting these
+API will be manifactured in the future.
+<P>
+DirectCsound now can take advantage of the hardware acceleration of such
+cards allowing realtime performance with the newly implemented 3D-sound opcodes.
+This provides high quality and high perfomance aural-surround capabilities
+under DirectCsound.
+<P>
+You can use the surround opcodes of DirectCsound to create separate sound
+sources that move around realistically in the 3D aural world along with their
+corresponding objects in the physical space.
+<P>
+In order to create sound sources, one must set their 3D positions and take
+care of other decisions about the quality and placement of sounds in the
+aural world. DirectSound3D API, through its audio driver installed in a computer,
+does the work of translating sound-source waveforms, positions, velocity,
+and more into a mix that ultimately comes out in realistic 3D audio through
+speakers or headphones.
+<P>
+As DirectCsound accesses these APIs directly, the user must know their principle
+in order to take advantage of them. So an introduction to DirectSound3D and
+EAX 2.0 follows.
+<H2>
+  <A NAME="direct"><!-- --></A>DirectSound3D introduction
+</H2>
+<P>
+<B>Perception of Sound </B>
+<P>
+"Positions In the real world, the perception of a sound's position in space
+is influenced by a number of factors, including the following:
+<UL>
+  <LI>
+    <B>Volume</B>. The farther an object is from the listener, the quieter it
+    sounds. This phenomenon is known as
+    <FONT color="#990066"><I><B>rolloff</B></I></FONT>.
+  <LI>
+    <B>Arrival offset</B>. A sound emitted by a source to the listener's right
+    will arrive at the listener's right ear slightly before it arrives at the
+    left ear. (The duration of this offset is approximately a millisecond.)
+  <LI>
+    <B>Muffling</B>. The orientation of people's ears ensures that sounds coming
+    from behind the listener are slightly muffled compared with sounds coming
+    from in front of the listener. In addition, if a sound is coming from the
+    listener's right, the sounds reaching the left ear will be muffled by the
+    mass of the listener's head.
+</UL>
+<P>
+Although these are not the only cues people use to discern the position of
+sound, they are the main ones, and they are the factors that have been
+implemented in DirectSound's positioning system. When hardware that supports
+3D sound becomes generally available, other positioning cues might be
+incorporated into the system, including the difference in how high- and
+low-frequency sounds are muffled by the mass of the listener's head and the
+reflections of sound off the listener's shoulders and external ear parts.
+One of the most important sound-positioning cues is the apparent visual position
+of the sound source. If a projectile appears as a dot in the distance and
+grows to the size of an intercontinental missile before it roars past the
+viewer's head, for example, the sound will appear to have gone by the listener
+without much help from subtle cues." <FONT size="-2">(excerpt from DirectX
+SDK).</FONT>
+<P>
+<A NAME="list"><!-- --></A><B>The Listener and the sound Sources.</B>
+<P>
+Microsoft (c) DirectSound3D API introduces two classes of aural objects:
+the Listener and the Sound Sources. Even if several sound sources are possible
+in the same sonic field, only ONE listener can be possible at a time.
+<P>
+The listener, as well as every sound source, has a position. As one would
+expect, the position of a sound source or listener represents its location
+in trhee-dimensional space.
+<P>
+"Listener experience an identical sonic effect when an object moves in a
+90-degree arc around them or if they move their heads 90 degrees relative
+to the object. Programmatically, however, it is often much simpler to change
+the position or orientation of the listener than to change to positions of
+every other object in a scene.
+<P>
+A sound with a position but no orientation is a point source; the farther
+the listener is from the sound, in any direction, the quieter the sound.
+A sound with a position and an orientation is a sound cone.
+<P>
+Stereo sound sources are not particularly useful in 3D sound environments.
+In effect, a stereo signal consists of two separate monaural tracks played
+simultaneously on different speakers. Applications should supply monaural
+sound sources when using DirectSound's 3D capabilities.
+<P>
+<A NAME="cones"><!-- --></A><B>Cones</B>
+<P>
+In DirectSound, sound cones include an inside cone and an outside cone. Within
+the inside cone, the volume is at the maximum level for that sound source.
+(Because DirectSound does not support amplification, the maximum volume level
+is zero; all other volume levels are negative values that represent an
+attenuation of the maximum volume.) Outside the outside cone, the volume
+is the specified outside volume added to the inside volume. If an application
+sets the outside volume to -10,000, for example, the sound source will be
+inaudible outside the outside cone. Between the outside and inside cones,
+the volume changes gradually from one level to the other. The concept of
+sound cones is shown in the following illustration: <picture>
+<P align="center">
+<IMG src="cones.gif" width="513" height="292">
+<P>
+... every sound source ... is a sound cone, but often these sound cones behave
+like omnidirectional sound sources. For example, the default value for the
+volume outside the sound cone is zero; unless the application changes this
+value, the volume will be the same inside and outside the cone, and sound
+will not have any apparent orientation. Additionally, you could make the
+sound-cone angles as wide as you want, effectively making the sound cone
+a sphere." (ibidem)
+<P>
+<A NAME="minmax"><!-- --></A><B>Minimum and Maximum Distances</B>
+<P>
+"As a listener approaches a sound source, the sound gets louder. Past a certain
+point, however, it isn't reasonable for the volume to continue to increase;
+either the maximum (zero) has been reached, or the nature of the sound source
+imposes a logical limit. This is the minimum distance for the sound source.
+Similarly, the maximum distance for a sound source is the distance beyond
+which the sound does not get any quieter. The minimum distance is especially
+useful when an application must compensate for the difference in absolute
+volume levels of different sounds. Although a jet engine is much louder than
+a bee, for example, for practical reasons these sounds must be recorded at
+similar absolute volumes (16-bit audio doesn't have enough room to accommodate
+such different volume levels). An application might use a minimum distance
+of 100 meters for the jet engine and 2 centimeters for the bee. With these
+settings, the jet engine would be at half volume when the listener was 200
+meters away, but the bee would be at half volume when the listener was 4
+centimeters away. This concept is shown in the following illustration:
+<P>
+<IMG src="bee.gif" width="546" height="370">
+<P>
+Notice that doppler-shift effect is not implemented in DirectCsound, because
+of technical reasons.
+<P>
+"The default values for the 3D sound effects mimic the natural world. Many
+application designers choose to change these values, however, to make the
+effects more dramatic. Exaggerated sound attenuation with distance can make
+an application more exciting.
+<P>
+DirectSound's 3D effects use meters as the default unit of distance measurements.
+If your application does not use meters, it need not convert between units
+of measure to maintain compatibility with the component. Instead, the application
+can set a distance factor, which is a floating-point value that represents
+meters per application-specified distance unit. For example, if your application
+uses feet as its unit of measure, it could specify a distance factor of
+.30480006096, which is the number of meters in a foot. " (ibidem).
+<H1>
+  <A NAME="eax"><!-- --></A>Environmental Audio Extensions <BR>
+  (EAX 2.0)
+</H1>
+<P>
+"Creative&#146;s EAX add reverberation and occlusion/obstruction effects
+to Microsoft's DirectSound3D. You can add EAX features for each sound source
+in the 3D aural world and then set the reverberation amount or control the
+occlusion and obstruction effects for individual sound sources. You can also
+control the overall quality of the reverberation the listener hears, tweaking
+reverberation factors such as:
+<UL>
+  <LI>
+    the apparent size of the room surrounding the listener
+  <LI>
+    the duration and tonal color of the reverberation&#146;s decay
+  <LI>
+    the amount and delay of reflections and reverberation.
+</UL>
+<P>
+These effects combine to add a visceral realism to DirectSound3D aural
+environment, an often subliminal context that can give an emotional depth
+to the 3D world of the player. All of this works even when the visual component
+of the 3D world is out of sight. Think, for example, of a single candle next
+to a pond of water in dark surroundings. When a drop of water hits the pond
+and you hear long and luscious reverberation on the plink of the drop, your
+mind senses the vast cavern surrounding the pond even though you can&#146;t
+see it.
+<P>
+If you don&#146;t care for reverberation in some circumstances, you can turn
+it off on a per-sound-source basis or turn it off altogether.
+<P>
+<B></B><A NAME="3dfx"><!-- --></A><B>3D Effects </B>
+<P>
+Because EAX is thoroughly integrated with DirectSound3D, it enhances the
+3D aural world created by DirectSound3D. These enhancements include a much
+more robust perception of individual sound source distance or proximity that
+establishes the depth of the sound scene. When you move a sound source in
+relation to the listener, EAX can automatically adjust the reverberation
+for the sound source (increasing the ratio of reverberation for a source
+moving away, for example) to simulate the behavior of natural environments.
+None of DirectSound&#146;s 3D effects are lost in the mix; they&#146;re augmented
+with reverberation calculated to enhance the feeling of three dimensions.
+<P>
+<A NAME="envirs"><!-- --></A><B>Environments </B>
+<P>
+EAX provides reverberation environments that make it easy to simulate any
+one of a large variety of acoustic surroundings. Each EAX environment simulates
+a given set of acoustic surroundings such as an auditorium, a padded cell,
+an arena, a stone corridor, underwater, a city street, and so on. All you
+have to do is specify the environment you want. EAX takes care of the rest,
+supplying realistic and interactive 3D reverberation and reflections for
+all the sound sources within the environment you choose. You can, if you
+wish, tweak the reverberation quality of any environment to get the exact
+acoustic surroundings you want.
+<P>
+<A NAME="standard"><!-- --></A><B>An Open Standard </B>
+<P>
+As DirectSound property sets, EAX is an open standard that takes advantage
+of any hardware-accelerated card (such as Sound Blaster&reg; Live!) that
+provides the necessary reverberation and occlusion/obstruction processing.
+When your application first asks for an EAX interface, DirectSound queries
+the card&#146;s audio driver to see if it supports EAX extensions, then notifies
+the application so it can take advantage of EAX effects if they&#146;re
+available.
+<P>
+As an open standard, EAX works not only with Creative&#146;s cards, but with
+any manufacturer&#146;s cards that care to take advantage of the EAX API.
+<P>
+Version 2.0 of EAX adds significant enhancements to version 1.0. These
+enhancements provide much more detail to the aural world perceived by the
+listener. They also give programmers more power for sound design by controlling
+specific environmental audio effects.
+<P>
+<A NAME="envcontrol"><!-- --></A><B>Environmental Reverberation Control </B>
+<P>
+EAX 2.0 offers a complete set of reverberation parameters that allow you
+to control the intensity and delay of reflections, to continuously adjust
+the environment size, and to set the direct path and reverberation filters
+for each sound source. These direct controls allow dedicated sound designers
+to tweak environmental reverberation to get precisely the aural surroundings
+they desire. EAX can also make your programming work easier by automatically
+taking care of these parameters for you.
+<P>
+<A NAME="distance"><!-- --></A><B>Distance Effects</B>
+<P>
+To help provide a better perception of listener-to-sound-source distance,
+EAX 2.0 provides several different modes of automatic distance-effects
+management. They manage attenuation and filtering effects that change according
+to the distance between the listener and a sound source. The distance effects
+include:
+<UL>
+  <LI>
+    A method of simulating the natural statistical behavior of reverberation
+    in enclosed spaces
+  <LI>
+    A reverberation rolloff factor that allows you to customize or modify the
+    statistical reverberation model
+  <LI>
+    An adjustable air absorption model that filters out high frequencies with
+    increasing distance. (You can use this to simulate moisture in the air such
+    as high humidity or fog.)
+</UL>
+<P>
+<A NAME="occl&amp;obs"><!-- --></A><B>Occlusion and Obstruction Effects </B>
+<P>
+EAX 2.0 introduces occlusion and obstruction properties that provide aural
+cues about objects and walls that come between sound sources and the listener.
+<P>
+Occlusion occurs when a wall that separates two environments comes between
+source and listener. There&#146;s no open-air sound path for sound to go
+from source to listener, so the sound source is completely muffled because
+it&#146;s transmitted through the wall. EAX occlusion properties provide
+parameters that adjust wall transmission characteristics to simulate different
+wall materials and thickness. You can, for example, use occlusion properties
+to make a voice or noise sound very realistically as if it were coming from
+behind a door or from outside the listener&#146;s house.
+<P>
+Obstruction occurs when source and listener are in the same room but
+there&#146;s an object directly between them. There&#146;s no direct sound
+path from source to listener, but the reverberation comes to the listener
+unaffected. The result is altered direct-path sound with unaltered reverberation.
+EAX obstruction properties can simulate sound diffraction around the obstacle
+or sound transmission through the obstacle, which provide rich aural cues
+about the nature of the obstruction. You can, for example, use obstruction
+properties to make a voice sound as if it were coming through a thin curtain
+or from behind a large pillar.
+<P>
+<A NAME="sdirect"><!-- --></A><B>Source Directivity </B>
+<P>
+DirectSound already offers control of source directivity, where a sound source
+is stronger in one direction than in all others&#151;like a trumpet, for
+example, that&#146;s strongest in the direction of the bell and attenuated
+to the sides and behind the bell. DirectSound sets the directivity across
+all frequencies equally, which usually not the case in the real world.
+<P>
+EAX makes source directivity sound much more natural by allowing you to make
+sound sources more directive at high frequencies than at low frequencies.
+This makes the sound of directional sources such as a voice, a loudspeaker,
+or a horn sound much more realistic as the listener moves around the
+source&#151;or as the source rotates or flies by the listener.
+<H1>
+  <A NAME="useax"><!-- --></A><B>USING EAX</B>
+</H1>
+<P>
+EAX offers several different approaches to creating environmental effects.
+They range from high-level approaches where EAX does almost all of the work
+itself to low-level approaches where one can directly tweak all the tiny
+details of environmental effects. In this section we&#146;ll look at the
+levels of control that EAX offers and at programming approaches to using
+those levels of control.
+<H3>
+  <B>LEVELS OF CONTROL </B>
+</H3>
+<P>
+EAX provides an extensive set of environmental audio parameters that you
+can tweak through properties. These parameters are layered. Some are high
+level, providing large overall effects; others are low level, providing
+customized control over elementary aspects of the aural sensation. How much
+direct control of sound design you want determines what parameters you&#146;ll
+work with.
+<P>
+<B>High-Level Control </B>
+<P>
+For excellent environmental audio effects with very little programming work,
+you can use high-level properties. The simplest property (found in the listener
+property set) lets you select an environmental preset&#151;that is, to specify
+the type of room in which you want the listener and sound sources located.
+Once you specify the room using this single property, the EAX engine does
+all the rest of the work necessary to create the aural illusion of being
+in that room. It automatically controls the lower-level parameters to set
+the amount and quality of reverberation and reflection, to vary the
+reverberation/direct-sound ratio of each sound source as that source moves
+within the room, and much more.
+<P>
+All of the lower-level parameters are automatically computed for each source
+based on DirectSound&#146;s positional parameters and the environmental preset,
+which means that if you don&#146;t add obstruction or occlusion effects you
+don&#146;t even have to set sound-source properties. And because EAX uses
+a statistical reverberation model, you get convincing dynamic reverberation
+changes without having to provide a polygon based description of room geometry.
+<P>
+If you&#146;d like to tweak an environmental preset, you can use other high-level
+properties to change aspects of the room until you essentially create a new
+type of room. You can change the size of the room, the amount of air absorption,
+the directivity settings of each source, and other parameters. The low-level
+parameters affected by each of these high-level control methods are automatically
+adjusted by the EAX driver.
+<P>
+<B>Low-Level Control </B>
+<P>
+If you have specific intentions about exactly how each effect should sound,
+you can gain complete control of elementary environmental audio parameters
+through EAX&#146;s low-level properties. These properties set the minutiae
+of environmental parameters, those that are normally controlled automatically
+by high-level properties. Low-level properties include listener properties
+that set reverberation decay time, reflection and reverberation delays,
+reverberation diffusion. They also include sound-source properties that adjust
+levels and filters for each sound source.
+<P>
+Low-level properties directly control internal parameters that are additive
+to the parameters set by higher-level properties. The environmental preset
+sets the baseline parameters. Other high-level environment properties such
+as room size and air absorption tweak the environmental parameters one way
+or the other. And low-level properties tweak the environmental parameters
+even further in very localized ways.
+<H3>
+  <B>APPROACHES TO ENVIRONMENTAL AUDIO PROGRAMMING</B>
+</H3>
+<P>
+Because EAX offers different levels of control, you can take different approaches
+to creating an audio environment in your program. These approaches each typically
+divide into two parts: sound design and programming. In sound design you
+decide what environmental audio effects you&#146;d like to hear, where
+you&#146;d like to hear them, and what quality those effects should have.
+Programming implements the elements of sound design and integrates them with
+the dynamic runtime events in the application. The sound designer can then
+adjust settings to get the acoustic environment sounding just right.
+<P>
+<B>Creating a Single Environment </B>
+<P>
+In the easiest approach to environmental audio, you don&#146;t really need
+to spend any time with sound design other than deciding what kind of environment
+you want your listener and sound sources to populate. To do so, you choose
+the EAX environmental preset that most closely matches the environment you
+want.
+<P>
+Once you&#146;re done with that, you really don&#146;t have much programming
+to do either. You simply specify the environmental preset you want using
+the listener property set, then let the EAX driver do all the rest of the
+work. This simple step by itself substantially enhances the listener&#146;s
+experience, adding life and reality to all game sounds (or the sounds of
+whatever application you&#146;re creating). It reinforces the listener&#146;s
+perception of sound-source distance and the depth of the sound scene as well.
+<P>
+If you&#146;d like to go a step further, you can tweak the environmental
+preset properties using high-level listener properties to change the quality
+of the surrounding &#147;room.&#148; You can also&#151;independently of the
+environment parameter settings&#151;add realism to individual sound sources
+by tuning the source&#146;s directivity parameters if required. Part of these
+directivity parameters are DirectSound parameters (cone angles and volumes),
+part are EAX sound-source parameters (the high-frequency directivity parameter).
+The EAX engine automatically adjusts the reverberation intensity and tonal
+filtering for each source, taking into account its distance from the listener
+and its orientation and directivity.
+<P>
+<B>Creating a World of Multiple Environments </B>
+<P>
+If your application moves the listener from environment to environment (such
+as going from room to room in a first-person 3D game), you can create multiple
+environments, each with its own unique set of acoustic properties. As the
+listener moves from one room to the next, the acoustic quality changes
+appropriately.
+<P>
+For sound design, you must first pick or design a predefined environmental
+preset for each room. If you&#146;d like to modify individual presets to
+design a specific room, you can decide on settings for reverberation and
+for reverberation rolloff with distance and air absorption. This creates
+a custom environmental preset. If you think there will be overly abrupt acoustic
+transitions from one room to the next, you can design &#147;transition
+environments,&#148; small environments located between rooms. A transition
+environment can have acoustic qualities that are halfway between its adjacent
+rooms so the acoustic changes are less abrupt when the listener comes through.
+<P>
+You can&#151;just as in a single environment&#151;tweak directivity parameters
+for individual sound sources if they require it. This requires no more work
+than it does in a single environment because it&#146;s a source parameter
+that applies to the source no matter what environment it resides in.
+<P>
+Programming your sound design requires identifying what environment your
+listener and sound sources are in. Because most game programs already have
+location mechanisms for their graphics, they can use these to define adjacent
+closed environments in the 3D world and to check on listener and source positions
+and test to see if they fall into one acoustic environment or another. If
+the program detects the listener moving from one environment to another,
+it sets the appropriate environmental preset.
+<P>
+Once a listener is in a room with sound sources, the program doesn&#146;t
+need to do any more work&#151;the EAX engine performs all the necessary
+calculations for moving sources and listener. And if, after listening to
+the results, the sound designer wants to make changes, he can do so by changing
+just a few property values&#151;changes don&#146;t require extensive
+reprogramming.
+<P>
+<B>Implementing Occlusion Between Environments </B>
+<P>
+In a world of multiple environments, there will be times when the listener
+is in one room and an audible sound source is in another room. In that case,
+the listener hears an occluded sound source transmitted through the wall
+between rooms. You can add occlusion effects to any sound source using EAX.
+<P>
+For sound design, you decide what kind of material makes up each partition
+between adjacent environments: how transmissive it is, how it attenuates
+high and low frequencies. You can choose or create a material preset (described
+in Appendix C) that matches each material. A material preset, like an
+environmental preset, controls a number of audio parameters. In this case,
+it controls low-level sound-source properties so they create the illusion
+of the sound coming through the specified material.
+<P>
+You can create a material preset from scratch by directly setting low-level
+sound-source properties, or you can choose a predefined material preset.
+The predefined presets specify materials such as concrete, wood, or a thin
+door. You can then tweak a predefined preset if you wish to get precisely
+the effect you want.
+<P>
+Programming occlusion requires detecting when a sound source is in an adjacent
+room to the listener, and then determining which partition separates source
+and listener. As in the last situation, a program can use its 3D graphics
+mechanisms to do much of this work. Whenever the program detects a sound
+source in an adjacent room to the listener and determines which partition
+separates them, the program applies the appropriate material preset to the
+sound source&#146;s occlusion properties. If the sound designer doesn&#146;t
+like the results, he can easily tune some material presets or, if necessary,
+directly adjust occlusion properties for each source.
+<P>
+<B>Implementing Obstruction Within an Environment </B>
+<P>
+When a sound source and the listener are in the same environment but an obstacle
+blocks the direct sound path from the source to the listener, the sound is
+obstructed. Its direct sound may be diffracted around the edges of the
+obstruction or transmitted through the obstruction if the object is acoustically
+transmissive. (Although both may occur, one of the two will usually overcome
+the other. Transmitted sound reaches the ear earlier than diffracted sound
+and the diffracted sound will then often blend into the reflections.) You
+can add obstruction effects to any sound source through EAX in much the same
+way you add occlusion effects&#151;including using material presets when
+sound transmits through the obstacle.
+<P>
+The sound design for obstruction requires you to adjust obstruction settings
+to best simulate sound diffraction (how much attenuation and filtering is
+applied to sound waves as they bend around an obstacle) or&#151;if the object
+has any acoustic transparency&#151;the kind of material the object is made
+of. You determine the obstruction setting that best matches a diffraction
+effect or, if the object transmits sound, you create or choose a material
+preset for the object.
+<P>
+Programming requires positional detection that notices when an object appears
+between a sound source and a listener in the same room. When this occurs,
+the program sets the sound source&#146;s diffraction setting appropriately
+or&#151;if the obstruction is acoustically transmissive&#151;sets a material
+preset.
+<P>
+<B>Creating Your Own Low-Level Environmental Audio Effects </B>
+<P>
+EAX&#146;s higher-level properties effectively create a full set of carefully
+designed and realistic environmental audio effects. There are times, however,
+when you may want something that goes beyond realistic for psychological
+impact. You can use EAX&#146;s low-level properties to create these kinds
+of effects to match your creative vision.
+<P>
+There are also times, if you&#146;re a committed sound designer with definite
+ideas about how effects should be implemented, when you may wish to implement
+on your own higher-level effects that EAX already provides. Although you
+may duplicate a lot of work that&#146;s already been done, EAX gives you
+the flexibility to do so through low-level properties. Because control at
+this level involves many personal and very technical issues, there&#146;s
+no recommended procedure for sound design and programming implementation.
+<H1>
+  <A NAME="acumod"><!-- --></A><B>ACOUSTIC MODELS IN EAX </B>
+</H1>
+<P>
+EAX properties tweak the parameters of underlying acoustic models that the
+EAX engine uses to create environmental audio. These models determine the
+quality of the acoustic environments you create and the way sound sources
+interact with the environments. To use EAX&#146;s low-level properties well,
+it&#146;s important to understand the components of the models and how they
+work together. This section describes acoustic model components and how EAX
+properties control them.
+<H3>
+  <B>ENVIRONMENT REVERBERATION MODEL </B>
+</H3>
+<P>
+In EAX, an environment is described by parameter settings that define the
+acoustical quality of the reverberation. It&#146;s also described by a number
+of properties whose settings apply to all sound sources in the environment.
+<P>
+<B>Reverberation Response Model </B>
+<P>
+The reverberation response (shown in Figure 1) is divided into three temporal
+sections respectively labeled <B>Direct</B> (direct path), <B>Reflections</B>
+(initial reflections) and <B>Reverb</B> (exponentially decaying late
+reverberation). The temporal division between these components is defined
+by the parameters <B>Reflections Delay</B> and <B>Reverb Delay</B>. The
+<B>Decay Time</B> is derived from the slope of the late reverberation (Reverb)
+decay, and defined as the time that Reverb takes to decay by 60 decibels
+(dB).
+<P>
+This describes the response at the listener&#146;s position for a particular
+position of the source, assuming that the two are in the same environment
+(the &#147;current&#148; environment). All reflection and reverberation
+parameters therefore refer to the listener's room&#151;not to the source's
+room if it is different (a case of occlusion).
+<P>
+The reverberation response is defined by the following parameters:
+<UL>
+  <LI>
+    The energy in each of the three sections Direct, Reflections, and Reverb
+    at low frequencies
+  <LI>
+    The Reflections Delay and the Reverb Delay
+  <LI>
+    The &#147;Direct filter,&#148; a low-pass filter that affects the Direct
+    component by reducing its energy at high frequencies
+  <LI>
+    The &#147;Room filter,&#148; a low-pass filter that affects the Reflections
+    and Reverb components identically by reducing their energy at high frequencies
+  <LI>
+    The Decay Time at low and high frequencies
+  <LI>
+    The Diffusion and the Size of the room (defined below)
+</UL>
+<P>
+The definition of &#147;low&#148; and &#147;high&#148; frequencies is given
+below in the section &#147;Spectral Effects&#148;.
+<P align="center">
+<IMG src="Rev%20resp.gif" width="459" height="230">
+<P align="center">
+<I>Figure 1: Reverberation response model </I>
+<P>
+<B>Distance Effects </B>
+<P>
+DirectSound defines the notions of <B>Minimum Distance, Maximum Distance</B>,
+and <B>Rolloff Factor</B>. It applies an attenuation to the source signal
+according to source-listener distance as follows:
+<UL>
+  <LI>
+    If distance &lt;= Minimum_Distance, the attenuation is 0 dB (no attenuation).
+  <LI>
+    If Minimum_Distance &lt;= distance &lt;=Maximum_Distance, the attenuation
+    expressed in dB is -6 dB for each doubling of distance if the Rolloff Factor
+    is set to 1.0. For values different from 1.0, the Rolloff Factor acts as
+    a multiplier applied to the source-listener distance (diminished by the minimum
+    distance).
+  <LI>
+    If distance &gt;= Maximum_Distance, the attenuation no longer varies with
+    distance.
+</UL>
+<P>
+In natural environments, the total intensity of the reflected sound received
+by the listener varies little vs. source-listener distance, and therefore
+the direct-to-reflected energy ratio decreases with distance. This provides
+an essential cue to the listener for assessing the distance of the source.
+<P>
+In general the reflected intensity actually decays somewhat with increasing
+distance, although not as fast as the direct path intensity. EAX provides
+two methods for automatically attenuating the reflected sound (Reflections
+and Reverb) according to source-listener distance:
+<UL>
+  <LI>
+    The first (and default) method simulates the natural rolloff of reverberation
+    vs. distance in typical rooms. This method is based on a physically proven
+    statistical reverberation model that allows predicting the intensity and
+    tonal characteristics of reflections and reverberation in natural environments
+    according to source-listener distance, room size, reverberation decay time
+    and source directivity.
+  <LI>
+    The second method for controlling the rolloff of reflected sound vs. distance
+    uses a parameter called Room Rolloff Factor that acts like DirectSound&#146;s
+    Rolloff Factor but affects the reflected sound component instead of the
+    direct-path sound component. The default value of Room Rolloff Factor is
+    0.0, which implies that the reflected intensity does not vary with distance,
+    while the default value for the (Direct) Rolloff Factor is 1.0. Setting Room
+    Rolloff Factor to 0.5 instead would imply that the reflected sound is also
+    attenuated with increasing distance, although not as fast as the direct path.
+</UL>
+<P>
+DirectSound&#146;s Minimum Distance and Maximum Distance act on the reflected
+sound as they do on the direct component. EAX 2.0 also provides an additional
+parameter to control the attenuation at high frequencies caused by the
+propagation medium. This parameter is called Air Absorption HF and is expressed
+in dB per meter. You can, for example, increase Air Absorption HF in order
+to simulate higher humidity in the air.
+<P>
+<B>Environment Presets </B>
+<P>
+The Environment&#146;s reverberation quality is defined in a manner that
+applies to all sound sources in the Environment:
+<BLOCKQUOTE>
+  An Environment is characterized by the values of all reverberation response
+  parameters when distance = Minimum_Distance. This defines an &#147;Environment
+  preset.&#148;
+</BLOCKQUOTE>
+<P>
+The only reverberation response parameters that can vary automatically with
+distance in EAX are the intensities of the three temporal sections Direct,
+Reflections and Reverb. At Minimum Distance, the intensity level of the Direct
+component is 0 dB (no attenuation with respect to the source signal, except
+for the attenuation due to DirectSound&#146;s Volume setting for that source,
+which affects Direct, Reflections and Reverb identically). Note that the
+intensity level of Reverb or Reflections is defined relative to the source
+signal (not relative to the Direct-Path component attenuated by
+DirectSound&#146;s rolloff effect).
+<P>
+EAX provides a list of predefined environment presets in order to make work
+easier for the user.
+<P>
+<B>Environment Diffusion and Size </B>
+<P>
+Diffusion and Room Size are familiar parameters of artificial reverberation
+processors. In EAX, <B>Environment Diffusion</B> controls the echo density
+in the Reverb section of the response (not the Reflections). <B>Environment
+Size</B> is expressed in meters and affects (by default) the delay and intensity
+of reflections and reverberation, as well as the reverberation decay time.
+When Room Size is set to about 2 meters or less, the reverberation also takes
+on a spectral coloration characteristic of small rooms.
+<P>
+The Room Size parameter in EAX works as a high-level parameter that allows
+tuning an environment preset by adjusting several lower-level parameters
+simultaneously in order to reproduce the physical effect of increasing the
+dimensions and cubic volume of a room. EAX also allows programmers to customize
+the effect of Room Size by selecting which low-level parameters are affected.
+<P>
+<B>Spectral Effects </B>
+<P>
+All spectral effects in EAX are controlled by specifying an attenuation at
+a reference high frequency of 5 kHz. All low-pass effects are specified as
+high-frequency attenuations in dB relative to low frequencies. This manner
+of controlling low-pass effects is similar to a using a graphic equalizer
+(controlling levels in fixed frequency bands). It allows the sound designer
+to predict the overall effect of combined (cascaded) low-pass filtering effects
+by adding together the resulting attenuations at 5 kHz. This method of specifying
+low-pass filters is also used in the definition of the EAX Occlusion and
+Obstruction properties and in the source directivity model as described in
+the next section.
+<P>
+<B>Reverberation Decay</B>
+<P>
+Reverberation decay is the result of acoustic energy absorption by a room&#146;s
+surfaces and the propagation medium. Each time a sound wave bounces off a
+surface, it decreases in amplitude until there is negligible reflected sound.
+If room surfaces are acoustically &#147;live,&#148; they absorb very little
+acoustic energy, reflected sounds diminish little each time they bounce,
+and the reverberation (the combination of all reflected sound) takes a long
+time to decay. If room surfaces are acoustically &#147;dead,&#148; reverberation
+decays very quickly as acoustic energy is absorbed faster.
+<P>
+For a room of a given size, the Decay Time property effectively sets the
+average acoustic properties of the virtual room&#146;s surfaces by setting
+the time in seconds it takes the reverberation to diminish by 60 dB. For
+a room having given wall materials, the Decay Time is roughly proportional
+to the dimension of the room expressed in meters.
+<P>
+The acoustic reflectivity of a surface material is not always even across
+all frequencies. Many surfaces reflect more low and middle frequencies while
+absorbing high frequencies. The high-frequency decay time in EAX is defined
+as the decay time at the reference high frequency of 5 kHz. In practice,
+it is controlled via a multiplicative factor applied to the low-frequency
+Decay Time (called <B>Decay HF Ratio</B>). As a result, increasing the
+(low-frequency) Decay Time implies a proportional increase of the high-frequency
+decay time. In order to avoid unnaturally long decay times at high frequencies,
+EAX 2.0 offers the option of limiting the high-frequency decay time to a
+value controlled by the setting of the <B>Air Absorption HF</B> parameter
+(in large rooms, it is the air absorption that determines the high-frequency
+decay time).
+<H3>
+  <B>INTERACTION BETWEEN SOUND SOURCES AND ENVIRONMENT </B>
+</H3>
+<P>
+Individual sound sources within the acoustic environment each have their
+own aural behavior that&#146;s determined by acoustic models.
+<P>
+<B>Source Processing Model </B>
+<P>
+EAX&#146;s processing model for each sound source comprises an attenuation
+and a low-pass filter that are applied independently to the direct path and
+the reflected sound (see Figure 2). All the sound-source properties in EAX
+have the effect of adjusting these attenuation and filter parameters relative
+to the Environment settings.
+<P>
+The Environment settings are described by the listener properties that we
+just discussed. The settings apply for an omnidirectional sound source located
+at Minimum Distance, in the absence of Occlusion or Obstruction. (Note that
+DirectSound allows setting the Minimum Distance and the Maximum Distance
+differently for each sound source.).
+<P>
+The EAX 2.0 sound-source property set defines a variation relative to the
+baseline setting described by the listener properties. This variation results
+from several combined effects:
+<UL>
+  <LI>
+    Distance-dependent effects (statistical reverberation model, Room_Rolloff
+    factor, and Air Absorption) as already described above
+  <LI>
+    Enhanced source directivity model (frequency-dependent source directivity)
+  <LI>
+    Occlusion and obstruction effects
+  <LI>
+    Manual adjustment of the Direct and Room attenuations and filters.
+</UL>
+<P align="center">
+<IMG src="SourceProc.gif" width="510" height="127">
+<P align="center">
+<I>Figure 2: Source processing model in EAX 2.0 (not showing DirectSound&#146;s
+3D positional functions) </I>
+<P>
+<B>Orientation and Directivity </B>
+<P>
+DirectSound represents directive sound sources using the concept of Sound
+Cones. A source radiates its maximum intensity within the Inside Cone (in
+front of the source) and its minimum intensity in the Outside Cone (in back
+of the source). A sound source can be made more directive by making the Outside
+Cone Angle wider or by reducing the Outside Cone Volume.
+<P>
+EAX enhances this model by allowing programmers to further reduce the Outside
+Volume at high frequencies in order to make the sound source more directive
+at high frequencies than at low frequencies. As a result, when the listener
+is located away from the main radiation axis of the source, the sound is
+not only attenuated but also filtered. This feature can be used to obtain
+a more natural simulation of directive sources (such as voices or horns,
+for example).
+<P>
+The orientation of the source with respect to the listener modifies the intensity
+and color of the direct component, but it does not affect the reflected sound.
+A more directive source, however, radiates less total sound power into the
+room. EAX reproduces this natural property of room reverberation automatically
+by default. If the source is made more directive at high frequencies, the
+reverberation is filtered accordingly as it is in natural environments. This
+can also be an important factor in improving the naturalness of the sound
+scene.
+<P>
+<B>Occlusion and Obstruction </B>
+<P>
+The concepts of Occlusion and Obstruction enable applications to reproduce
+the effects of obstacles standing between a source and the listener. Sounds
+can be heard through walls from other rooms, from around corners, through
+open and closed doors and windows, and from behind other objects. These sounds
+are different from the same sounds unobstructed, and this difference helps
+give a listener detailed information about the environment in which he or
+she is immersed and the sound-emitting objects within it. The Occlusion and
+Obstruction properties allow sources to be made to sound as if they are in
+other rooms, behind doors, around corners, or in any other way muffled by
+an obstacle.
+<P>
+Sounds which are transmitted through material structures undergo a frequency
+dependent attenuation. This attenuation usually has a low-pass character
+with the amount of attenuation and the slope of the high frequency roll-off
+being dependent on the material, thickness, and construction of the partition.
+<P>
+Sounds which travel around corners and through openings also undergo a low-pass
+attenuation due to a phenomenon known as diffraction. The effect of an obstacle
+will depend on the size of that obstacle with respect to the wavelength of
+the sound. If small compared to the wavelength, it will have very little
+effect. Thus low frequencies tend to travel around corners or swallow obstacles,
+and are not as attenuated by obstructions as high frequencies are. As a rule
+of thumb, the more acute the angle a sound path must make to travel around
+an obstacle, the greater the amount of high-frequency attenuation.
+<P>
+EAX distinguishes two cases:
+<UL>
+  <LI>
+    <B>Obstruction</B> of sound by an object between the listener and the source,
+    all contained within a common environment. The Direct path can reach the
+    listener via diffraction around the obstacle and/or via transmission through
+    the obstacle. In both cases, the direct path is muffled (low-pass filtered)
+    but the reflected sound form that source is unaffected (because the source
+    radiates in the listener&#146;s environment and the reverberation is not
+    blocked by the obstacle). Most often the transmitted sound is negligible
+    and the low-pass effect only depends on the position of the source and listener
+    relative to the obstacle, not on the transmission coefficient of the material.
+    In the case of a highly transmissive obstacle (such as a curtain), however,
+    the sound that goes through the obstacle may not be negligible compared to
+    the sound that goes around it.
+  <LI>
+    <B>Occlusion</B> of sound by a partition or wall separating two environments
+    (rooms). Sounds that are in a different room or environment can reach the
+    listener&#146;s environment by transmission through walls or by travelling
+    through any openings between the sound source&#146;s and the listener&#146;s
+    environments. Before these sounds reach the listener&#146;s environment they
+    have been affected by the transmission or diffraction effects, therefore
+    both the direct sound and the contribution by the sound to the reflected
+    sound in the listener&#146;s environment are muffled. In addition to this,
+    the element which actually radiates sound in the listener&#146;s environment
+    is not the original sound source but the wall or the aperture through which
+    the sound is transmitted. As a result, the reverberation is usually more
+    attenuated by occlusion than the direct component because the actual radiating
+    element is more directive than the original source.
+</UL>
+<P>
+The perceptual effects of the two situations, Obstruction and Occlusion,
+are similar in nature: the sound undergoes an amount of low-pass attenuation.
+The difference between the two situations is that the reflected sound remains
+unaffected in the case of Obstruction, while it is affected in the case of
+Occlusion. In order to enable this functionality, it would in principle have
+been sufficient to expose the Direct and Room attenuations/filters defined
+in the previous section.
+<P>
+However, programming these effects in an interactive application would have
+been inconvenient because it would systematically require updating four
+parameters simultaneously (for occlusion) or at least two parameters (for
+obstruction).
+<P>
+For this reason, EAX 2.0 provides a more hierarchized interface to control
+the effects of obstacles:
+<P>
+It distinguishes Obstruction (where only the direct path is muffled) and
+Occlusion (where both the direct path and the reflected sound are muffled).
+<P>
+Both effects are controlled by specifying the high-frequency attenuation
+(the main perceived effect) at the reference frequency of 5 kHz, optionally
+accompanied by an attenuation at low frequencies. In order to allow controlling
+both effects via a single knob, the second is relative to the first as
+illustrated in Figure 3. In the case of Occlusion, these two effects are
+also accompanied by an adjustable attenuation of the reflected sound compared
+to the direct component.
+<P align="center">
+<IMG src="occlus.gif" width="388" height="175">
+<P align="center">
+<I>Figure 3: Occlusion or Obstruction filter control model. The reference
+high frequency is set to 5 kHz. </I>
+<P>
+<B>Using the Occlusion and Obstruction properties </B>
+<P>
+The Occlusion property, which you use when a sound source is in a different
+environment than the listener, might be used in the following example scenario.
+A loud moving sound source is in a room which has a closed door leading to
+a hallway. If the listener is in the hallway outside the room the sound source
+could have its Occlusion property set to &#150;40 dB, which makes it sound
+as if it is behind a thick wall. When the source passes in front of the doorway
+to the room the Occlusion property value can be changed to &#150;30 dB, which
+will make the sound slightly more clear since the door is thinner than the
+wall. While the door opens the value can be gradually changed to &#150;8
+dB, and if the source enters the room the value can again be changed to 0
+dB so the sound will be completely clear. Although this could all be done
+by just manipulating the main Occlusion property, the simulation can also
+be refined by assigning a particular material preset to the wall (which sets
+the secondary Occlusion properties to values different from their default
+value).
+<P>
+The Obstruction property might be used in the following way. If the listener
+and the sound source are in the same room and there is nothing between them
+then the Obstruction property for the sound source can be set to 0 dB (its
+default value). If the sound source moves behind a large object (a large
+pillar for example) the Obstruction property could be set to a value of &#150;25
+dB. As the sound source moves further behind the obstacle the Obstruction
+property value can be progressively lowered. The value of the Obstruction
+property can be related to the angle which the sound must travel around to
+reach the listener (the more acute the angle, the more the sound is muffled).
+If the source, while behind the obstacle, moves into another room, Occlusion
+can be used simultaneously with Obstruction.
+<H1>
+  <A NAME="overview"><!-- --></A><B>AN OVERVIEW OF EAX PROPERTIES </B>
+</H1>
+<P>
+Before looking at detailed descriptions of the EAX properties, you can see
+an overview of both the listener and sound-source property sets in this short
+section. You&#146;ll find details for the properties in the following section.
+<P>
+<B>PROPERTY CONVENTIONS</B>
+<P>
+All intensity levels are defined relative to the intensity level of the source
+signal. It&#146;s important to realize that the source signal is not the
+same thing as the direct-path sound from the source. The direct-path sound
+may be attenuated by DirectSound according to distance or directivity, and
+so may be less intense than the source. The intensity of the sound source
+is measured at 0 dB. All other intensities are relative to this point.
+<P>
+All times are expressed in seconds. To be consistent with DirectSound&#146;s
+convention, all intensity levels or relative attenuations are expressed in
+hundredth of decibels (millibels, mB). The relation between the gain expressed
+in millibels and the linear amplitude gain is:
+<P align="center">
+gain_mB = 2000 * log10(gain)
+<P>
+Some properties appear with the same name in both the sound-source and listener
+property sets. Whenever this happens, the two values simply combine
+additively&#151;in other words the listener property acts as an offset that
+applies to all sources.
+<P>
+Some properties only operate if Direct Sound&#146;s 3D mode is enabled. This
+is indicated for each property in the following tables by the characters
+3D in the left column.
+<H3>
+  <A NAME="listprop"><!-- --></A><B>TABLE OF LISTENER PROPERTIES </B>
+</H3>
+<P>
+&nbsp;
+<DIV align="center">
+  <TABLE border="1" width="91%">
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%"><B>PROPERTY NAME</B></TD>
+      <TD width="13%"><B>TYPE</B></TD>
+      <TD width="24%"><B>RANGE</B></TD>
+      <TD width="20%"><B>DEFAULT</B></TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">All</TD>
+      <TD width="13%">array</TD>
+      <TD width="24%">&nbsp;</TD>
+      <TD width="20%">&nbsp;</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Environment</TD>
+      <TD width="13%">DWORD</TD>
+      <TD width="24%">[0, 25]</TD>
+      <TD width="20%">0</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Environment Size</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="24%">[1.0, 100.0]</TD>
+      <TD width="20%">(*) meters</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Environment Diffusion</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="24%">[0.0, 1.0]</TD>
+      <TD width="20%">(*)</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Room</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="24%">[&#150;10000, 0]</TD>
+      <TD width="20%">(*) mB</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Room HF</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="24%">[&#150;10000, 0 ]</TD>
+      <TD width="20%">(*)</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Decay Time</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="24%">[0.1, 20.0]</TD>
+      <TD width="20%">(*) seconds</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Decay HF Ratio</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="24%">[0.1, 2.0]</TD>
+      <TD width="20%">(*)</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Reflections</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="24%">[&#150;10000, 1000]</TD>
+      <TD width="20%">(*) mB</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Reflections Delay</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="24%">[0.0, 0.3]</TD>
+      <TD width="20%">(*) seconds</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Reverb</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="24%">[&#150;10000, 2000]</TD>
+      <TD width="20%">(*) mB</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">Reverb Delay</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="24%">[0.0, 0.1]</TD>
+      <TD width="20%">(*) seconds</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;<I>3D</I></TD>
+      <TD width="38%">Room Rolloff Factor</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="24%">[0.0, 10.0]</TD>
+      <TD width="20%">0.0</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;<I>3D</I></TD>
+      <TD width="38%">Air Absorption HF</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="24%">[&#150;100.0, 0.0]</TD>
+      <TD width="20%">&#150;5.0 mB/m</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%"><B><I>Flags</I></B></TD>
+      <TD width="13%">DWORD</TD>
+      <TD width="24%">[0x0, 0x2F]</TD>
+      <TD width="20%">(*)</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">&#183; Decay Time Scale</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="24%">&nbsp;</TD>
+      <TD width="20%">TRUE</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">&#183; Reflections Scale</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="24%">&nbsp;</TD>
+      <TD width="20%">TRUE</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">&#183; Reflections Delay Scale</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="24%">&nbsp;</TD>
+      <TD width="20%">TRUE</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">&#183; Reverb SCALE</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="24%">&nbsp;</TD>
+      <TD width="20%">TRUE</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">&#183; Reverb Delay Scale</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="24%">&nbsp;</TD>
+      <TD width="20%">TRUE</TD>
+    </TR>
+    <TR>
+      <TD width="5%">&nbsp;</TD>
+      <TD width="38%">&#183; Decay HF Limit</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="24%">&nbsp;</TD>
+      <TD width="20%">(*)</TD>
+    </TR>
+  </TABLE>
+</DIV>
+<P align="center">
+<I>(*) means that the default value depends on Environment. </I>
+<P>
+&nbsp;
+<H3>
+  <A NAME="listsou"><!-- --></A><B>TABLE OF SOUND-SOURCE PROPERTIES</B>
+</H3>
+<P>
+&nbsp;
+<DIV align="center">
+  <TABLE border="1" width="97%">
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%"><B>PROPERTY NAME</B></TD>
+      <TD width="13%"><B>TYPE</B></TD>
+      <TD width="23%"><B>RANGE</B></TD>
+      <TD width="21%"><B>DEFAULT</B></TD>
+    </TR>
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%">All</TD>
+      <TD width="13%">array</TD>
+      <TD width="23%">&nbsp;</TD>
+      <TD width="21%">&nbsp;</TD>
+    </TR>
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%">Direct</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="23%">[&#150;10000, 1000]</TD>
+      <TD width="21%">0 mB</TD>
+    </TR>
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%">Direct_HF</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="23%">[&#150;10000, 0]</TD>
+      <TD width="21%">0 mB</TD>
+    </TR>
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%">Room</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="23%">[&#150;10000, 1000]</TD>
+      <TD width="21%">0 mB</TD>
+    </TR>
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%">Room_HF</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="23%">[&#150;10000, 0]</TD>
+      <TD width="21%">0 mB</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%">Obstruction</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="23%">[&#150;10000, 0]</TD>
+      <TD width="21%">0 mB</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%">Obstruction_LF_ratio</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="23%">[0.0, 1.0]</TD>
+      <TD width="21%">0.0</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%">Occlusion</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="23%">[&#150;10000, 0]</TD>
+      <TD width="21%">0 mB</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%">Occlusion_LF_ratio</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="23%">[0.0, 1.0]</TD>
+      <TD width="21%">0.25</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%">Occlusion_Room_ratio</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="23%">[0.0, 10.0]</TD>
+      <TD width="21%">0.5</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%">Room_rolloff_factor</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="23%">[0.0, 10.0]</TD>
+      <TD width="21%">0.0</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%">Air_absorption_factor</TD>
+      <TD width="13%">FLOAT</TD>
+      <TD width="23%">[0.0, 10.0]</TD>
+      <TD width="21%">1.0</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%">Outside_volume_HF</TD>
+      <TD width="13%">LONG</TD>
+      <TD width="23%">[&#150;10000, 0]</TD>
+      <TD width="21%">0 mB</TD>
+    </TR>
+    <TR>
+      <TD width="2%"><I>3D</I></TD>
+      <TD width="41%"><B><I>Flags</I></B></TD>
+      <TD width="13%">DWORD</TD>
+      <TD width="23%">[0x0, 0x7]</TD>
+      <TD width="21%">0x7</TD>
+    </TR>
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%">&#183; Direct HF Auto</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="23%">&nbsp;</TD>
+      <TD width="21%">TRUE</TD>
+    </TR>
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%">&#183; Room Auto</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="23%">&nbsp;</TD>
+      <TD width="21%">TRUE</TD>
+    </TR>
+    <TR>
+      <TD width="2%">&nbsp;</TD>
+      <TD width="41%">&#183; Room HF Auto</TD>
+      <TD width="13%">Flag bit</TD>
+      <TD width="23%">&nbsp;</TD>
+      <TD width="21%">TRUE</TD>
+    </TR>
+  </TABLE>
+</DIV>
+<P align="center">
+&nbsp;
+<H1>
+  <A NAME="eaxdesc"><!-- --></A><B>DETAILED EAX PROPERTY DESCRIPTIONS </B>
+</H1>
+<P>
+EAX contains two property sets: the listener property set and the sound-source
+property set. This section describes, in detail, the properties of each.
+To understand how lower-level properties described here combine to create
+the effects controlled by higher-level properties, you may want to read the
+previous section &#147;Acoustic Models in EAX.&#148;
+<P>
+You&#146;ll find all basic structures, types, and constants necessary for
+implementing EAX in the header file eax.h. You&#146;ll also find the minimum,
+maximum, and default values for each property defined here.
+<H3>
+  <B></B><A NAME="listset"><!-- --></A><B>THE LISTENER SET</B>
+</H3>
+<P>
+The listener set contains fourteen parameters
+<P>
+<A NAME="lisenv"><!-- --></A><A NAME="lisenvir"><!-- --></A><B>1) Environment
+</B>
+<P>
+<I>Value type: </I>DWORD<I> <BR>
+Value range: 0 to 25 (in EAX 2.0 version)<BR>
+Default value: 0<BR>
+Value units: Integers that each specify a specific environment</I>
+<P>
+Environment is the fundamental listener property. You typically set it first
+and then&#151;if you want&#151;modify it using other listener properties
+described later in this section.
+<P>
+When you set an environment, you choose the acoustic surroundings of the
+listener&#151;the size of the virtual room around the listener and the reflective
+qualities of its walls. When you modify the environment using the other listener
+properties you can, in particular, modify the room size or adjust lower-level
+parameters such as the overall level and delay of the first reflections,
+the overall level of the subsequent reverberation, and the duration and tonal
+quality of the reverberation decay.
+<P>
+To specify an environment, use an integer number which univocally refers
+to it.
+<P>
+The available environment numbers are:
+<BLOCKQUOTE>
+  <I>0. <B>GENERIC</B></I>
+</BLOCKQUOTE>
+<OL>
+  <LI>
+    <I><B>PADDEDCELL</B></I>
+  <LI>
+    <I><B>ROOM</B></I>
+  <LI>
+    <I><B>BATHROOM</B></I>
+  <LI>
+    <I><B>LIVINGROOM</B></I>
+  <LI>
+    <I><B>STONEROOM</B></I>
+  <LI>
+    <I><B>AUDITORIUM</B></I>
+  <LI>
+    <I><B>CONCERTHALL</B></I>
+  <LI>
+    <I><B>CAVE</B></I>
+  <LI>
+    <I><B>ARENA</B></I>
+  <LI>
+    <I><B>HANGAR</B></I>
+  <LI>
+    <I><B>CARPETEDHALLWAY</B></I>
+  <LI>
+    <I><B>HALLWAY</B></I>
+  <LI>
+    <I><B>STONECORRIDOR</B></I>
+  <LI>
+    <I><B>ALLEY</B></I>
+  <LI>
+    <I><B>FOREST</B></I>
+  <LI>
+    <I><B>CITY</B></I>
+  <LI>
+    <I><B>MOUNTAINS</B></I>
+  <LI>
+    <I><B>QUARRY</B></I>
+  <LI>
+    <I><B>PLAIN</B></I>
+  <LI>
+    <I><B>PARKINGLOT</B></I>
+  <LI>
+    <I><B>SEWERPIPE</B></I>
+  <LI>
+    <I><B>UNDERWATER</B></I>
+  <LI>
+    <I><B>DRUGGED</B></I>
+  <LI>
+    <I><B>DIZZY</B></I>
+  <LI>
+    <I><B>PSYCHOTIC</B></I>
+</OL>
+<P>
+The name of each constant gives you a good idea of the environment&#146;s
+acoustic qualities: small room, large room, live surfaces, dead surfaces,
+and so forth. GENERIC, environment 0, is the default Environment setting.
+It specifies an average room size with a typical reverberation quality.
+<P>
+Whenever you set the Environment property alone (that is, not as part of
+a set of all the listener property values at once), EAX automatically sets
+the values of all the other listener properties to defaults for the specified
+environment.
+<P>
+<A NAME="envsiz"><!-- --></A><B>2) Environment Size</B>
+<P>
+<I>Value type: FLOAT<BR>
+Value range: 1.0 to 100.0 <BR>
+Default value: 7.5 <BR>
+Value units: Linear meters <BR>
+</I>
+<P>
+&nbsp;
+<P>
+The Environment Size property sets the apparent size of the surrounding
+&#147;room.&#148; The value of Environment Size can be considered a
+characteristic dimension of the room expressed in meters. Scaling Environment
+Size is equivalent to scaling all dimensions of the room by the same factor.
+<P>
+Because Environment Size is a high-level property, when you change it it
+applies a relative adjustment to five lower-level listener properties that
+determine the shape of the reverberation response: Reflections, Reflections
+Delay, Reverb, Reverb Delay, and Decay Time. When you change the value of
+Environment Size, it actually changes the values of the lower-level properties.
+You can call Get on any of those lower-level properties to see how they have
+been changed.
+<P>
+Although Environment Size by default affects all five of the lower-level
+properties mentioned above, you can disable its effect on some or all of
+these properties by using the Flags listener property described later. It
+contains one flag for each of the lower-level protocols controlled by Environment
+Size. All flags are set to TRUE by default to provide a convincing simulation
+of change in the dimensions of a room (maintaining the reflective properties
+of its walls). You can override Environment Size&#146;s automatic scaling
+of any of the lower-level protocols by changing its flag to FALSE. You&#146;ll
+find more information about this in the description of the Flags property.
+<P>
+Note that when Environment Size is set to a small value (about two meters
+or less), it adds a coloration effect characteristic of small rooms to the
+reverberation. This effect becomes stronger as Environment Size is reduced.
+<P>
+<A NAME="envdiff"><!-- --></A><B>3) Environment Diffusion </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.0 to 1.0<BR>
+Default value: Varies depending on the environment <BR>
+Value units: A linear multiplier value </I>
+<P>
+The Environment Diffusion property controls the echo density in the reverberation
+decay. It&#146;s set by default to 1.0, which provides the highest density.
+Reducing diffusion gives the reverberation a more &#147;grainy&#148; character
+that is especially noticeable with percussive sound sources. If you set a
+diffusion value of 0.0, the later reverberation sounds like a succession
+of distinct echoes.
+<P>
+<A NAME="envroom"><!-- --></A><B>4) Room</B>
+<P>
+<I>Value type: LONG<BR>
+Value range: -10000 to 0 <BR>
+Default value: Varies depending on the environment <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Room property is the master volume control for the reflected sound (both
+early reflections and reverberation) that EAX adds to all sound sources.
+It sets the maximum amount of reflections and reverberation added to the
+sound mix in the listener. The value of the Room property ranges from 0 dB
+(the maximum amount) to -100 dB (no reflected sound at all).
+<P>
+<A NAME="envroomhf"><!-- --></A><B>5) Room HF </B>
+<P>
+<I>Value type: LONG <BR>
+Value range: -10000 to 0 <BR>
+Default value: Varies depending on the environment <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Room HF property further tweaks reflected sound by attenuating it at
+high frequencies. It controls a low-pass filter that applies globally to
+the reflected sound of all sound sources. The value of the Room HF property
+ranges from 0 dB (no filter) to -100 dB (virtually no reflected sound).
+<P>
+Although the amount and quality of reflected sound controlled by Room and
+Room HF is global for all sound sources, you can vary the reflected sound
+for individual sources by setting each source&#146;s corresponding sound-source
+properties&#151;also called Room and Room HF. These source properties treat
+the listener Room and Room HF properties as a baseline, and are added to
+the baseline value to determine the final amount of reflected sound for each
+sound source. (For more information see the description of Room and Room
+HF in the section on sound-source properties.)
+<P>
+<A NAME="envdectim"><!-- --></A><B>6) Decay Time </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.1 to 20.0<BR>
+Default value: Varies depending on the environment <BR>
+Value units: Seconds </I>
+<P>
+The Decay Time property sets the reverberation decay time. It ranges from
+0.1 (typically a small room with very dead surfaces) to 20.0 (typically a
+large room with very live surfaces). This low-level property may be controlled
+by the high-level listener property Environment Size, in which case its value
+is scaled according to the value set there. You can disable that automatic
+scaling by setting the appropriate flag in the listener property Flags. (See
+its description for more information.)
+<P>
+<A NAME="envdectimrat"><!-- --></A><B>7) Decay HF Ratio </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.1 to 20.0 <BR>
+Default value: Varies depending on the environment <BR>
+Value units: A linear multiplier value </I>
+<P>
+The Decay HF Ratio property sets the spectral quality of the Decay Time
+parameter. It is the ratio of high-frequency decay time relative to the time
+set by Decay Time. The Decay HF Ratio value 1.0 is neutral: the decay time
+is equal for all frequencies. As Decay HF Ratio increases above 1.0, the
+high-frequency decay time increases so it&#146;s longer than the decay time
+at low frequencies. You hear a more brilliant reverberation with a longer
+decay at high frequencies. As the Decay HF Ratio value decreases below 1.0,
+the high-frequency decay time decreases so it&#146;s shorter than the decay
+time of the low frequencies. You hear a more natural reverberation.
+<P>
+<A NAME="envrefl"><!-- --></A><B>8) Reflections </B>
+<P>
+<I>Value type: LONG <BR>
+Value range: -10000 to 1000 <BR>
+Default value: Varies depending on the environment <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Reflections property controls the overall amount of initial reflections
+relative to the Room property. (The Room property sets the overall amount
+of reflected sound: both initial reflections and later reverberation.) The
+value of Reflections ranges from a maximum of 10 dB to a minimum of -100
+dB (no initial reflections at all), and is corrected by the value of the
+Room property. The Reflections property does not affect the subsequent
+reverberation decay.
+<P>
+You can increase the amount of initial reflections to simulate a more narrow
+space or closer walls, especially effective if you associate the initial
+reflections increase with a reduction in reflections delays by lowering the
+value of the Reflection Delay property. To simulate open or semi-open
+environments, you can maintain the amount of early reflections while reducing
+the value of the Reverb property, which controls later reflections.
+<P>
+<A NAME="envrefldel"><!-- --></A><B>9) Reflections Delay</B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.0 to 0.3<BR>
+Default value: Varies depending on the environment <BR>
+Value units: Seconds </I>
+<P>
+The Reflections Delay property is the amount of delay between the arrival
+time of the direct path from the source to the first reflection from the
+source. It ranges from 0 to 300 milliseconds. You can reduce or increase
+Reflections Delay to simulate closer or more distant reflective
+surfaces&#151;and therefore control the perceived size of the room.
+<P>
+Both Reflections and Reflections Delay are low-level properties that may
+be controlled by the high-level listener property Environment Size. If so,
+their values are scaled according to the value set there. You can disable
+Environment Size&#146;s control over these properties by setting the appropriate
+flags in the listener property Flags. (See its description for more information.)
+<P>
+<A NAME="envrev"><!-- --></A><B>10) Reverb </B>
+<P>
+<I>Value type: LONG <BR>
+Value range: -10000 to 2000 <BR>
+Default value: Varies depending on the environment <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Reverb property controls the overall amount of later reverberation relative
+to the Room property. (The Room property sets the overall amount of both
+initial reflections and later reverberation.) The value of Reverb ranges
+from a maximum of 20 dB to a minimum of -100 dB (no late reverberation at
+all).
+<P>
+Note that Reverb and Decay Time are independent properties: If you adjust
+Decay Time without changing Reverb, the total intensity (the averaged square
+of the amplitude) of the late reverberation remains constant.
+<P>
+<A NAME="envrevdel"><!-- --></A><B>11) Reverb Delay </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.0 to 0.1 <BR>
+Default value: Varies depending on the environment <BR>
+Value units: Seconds </I>
+<P>
+The Reverb Delay property defines the begin time of the late reverberation
+relative to the time of the initial reflection (the first of the early
+reflections). It ranges from 0 to 100 milliseconds. Reducing or increasing
+Reverb Delay is useful for simulating a smaller or larger room.
+<P>
+Both Reverb and Reverb Delay are low-level properties that may be controlled
+by the high-level listener property Environment Size. If so, their values
+are scaled according to the value set there. For example, if you increase
+Environment Size, the intensity of later reverberation reduces. You can disable
+Environment Size&#146;s automatic scaling of these properties by setting
+the appropriate flags in the listener property Flags. (See its description
+for more information.)
+<P>
+<A NAME="envroomroll"><!-- --></A><B>12) Room Rolloff Factor </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.0 to 10.0 <BR>
+Default value: 0.0 <BR>
+Value units: A linear multiplier value</I>
+<P>
+The Room Rolloff property is one of two methods available in EAX to attenuate
+the reflected sound (containing both reflections and reverberation) according
+to source-listener distance. It&#146;s defined the same way as
+DirectSound&#146;s Rolloff Factor, but operates on reflected sound instead
+of direct-path sound. Setting the Room Rolloff Factor value to 1.0 specifies
+that the reflected sound will decay by 6 dB every time the distance doubles.
+Any value other than 1.0 is equivalent to a scaling factor applied to the
+quantity specified by ((Source listener distance) -( Minimum Distance)).
+Minimum distance is a DirectSound sound-source parameter that specifies the
+inner border for distance rolloff effects: if the source comes closer to
+the listener than the minimum distance, the direct-path sound isn&#146;t
+increased as the source comes closer to the listener, and neither is the
+reflected sound.
+<P>
+The default value of Room Rolloff Factor is 0.0 because, by default, EAX
+naturally manages the reflected sound level automatically for each sound
+source to simulate the natural rolloff of reflected sound vs. distance in
+typical rooms. (Note that this isn&#146;t the case if the source property
+flag Reverb Auto is set to false.) You can use Room Rolloff Factor as an
+option to automatic control so you can exaggerate or replace the default
+automatically-controlled rolloff.
+<P>
+Note that this property has no effect if DirectSound&#146;s 3D mode is disabled.
+<P>
+<A NAME="envairabs"><!-- --></A><B>13) Air Absorption HF </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: -100.0 to 0.0 <BR>
+Default value: -5.0 <BR>
+Value units: Hundredths of a dB per meter </I>
+<P>
+The Air Absorption HF property controls the distance-dependent attenuation
+at high frequencies caused by the propagation medium. It applies to both
+the direct path and reflected sound. You can use Air Absorption HF to simulate
+sound transmission through foggy air, dry air, smoky atmosphere, and so on.
+The default value is -0.05 dB per meter, which roughly corresponds to typical
+condition of atmospheric humidity, temperature, and so on. Lowering the value
+simulates a more absorbent medium (more humidity in the air, for example);
+raising the value simulates a less absorbent medium (dry desert air, for
+example).
+<P>
+<A NAME="envflags"><!-- --></A><B>14) Flags </B>
+<P>
+<I>Value type DWORD <BR>
+Value range 0x00000000 to 0x0000002F <BR>
+Default value Varies depending on the environment <BR>
+Value units Each bit of a value is a Boolean flag </I>
+<P>
+The Flags property uses its six low-order bits to set six listener-property
+flags. Five of these flags, the &#147;scale flags,&#148; set the control
+that listener property Environment Size has over five lower-level listener
+properties. The sixth flag prevents excessive decay times at high frequencies.
+<P>
+The scale flags are all set to TRUE by default so Environment Size has control
+over the lower-level properties to simulate the typical behavior expected
+for a change of room dimensions. Note that the scale flags differ from the
+other flags in EAX 2.0 in that setting them to TRUE means that one property
+(Environment Size) can affect the values of other properties if its value
+is changed.
+<P>
+The sixth flag, Decay HF Limit, takes a default value depending on the property
+Environment, which may be TRUE or FALSE depending on the specified environment.
+<P>
+Each flag is represented by a constant in the eax.h file. To set the flag
+true, call Get on the listener interface to get the current value of the
+Flags property. Bitwise OR the flag constant with the value of the Flags
+property, then call Set on the listener interface using the revised Flags
+value. To set the flag false, Get and Set the value as before, but instead
+of using bitwise OR, first NOT the flag constant then AND it with the retrieved
+value.
+<P>
+The flags are these:
+<BLOCKQUOTE>
+  <B>Decay Time Scale (argument position for Csound opcode: 1)</B>
+  <P>
+  If this flag is TRUE, a change in Environment Size value causes a proportional
+  change of the property Decay Time. If it&#146;s FALSE, a change in Environment
+  Size has no effect on Decay Time.
+  <P>
+  <B>Reflections Delay Scale (argument position: 2)</B>
+  <P>
+  If this flag is TRUE, a change in Environment Size value causes a proportional
+  change of the property Reflections Delay. (In effect, as the room gets larger
+  the nearest walls get more distant.) If it&#146;s FALSE, a change in Environment
+  Size has no effect on Reflections Delay. (In effect, as the room gets larger
+  or smaller the nearest walls stay the same distance.)
+  <P>
+  <B>Reverb Delay Scale (argument position: 3)</B>
+  <P>
+  If this flag is TRUE, a change in Environment Size value causes a proportional
+  change of the property Reverb Delay. If it&#146;s FALSE, a change in Environment
+  Size has no effect on Reverb Delay.
+  <P>
+  <B>Reflections Scale (argument position: 4)</B>
+  <P>
+  If both this flag and the Reflections Delay Scale flag are TRUE, an increase
+  in Environment Size value causes an attenuation of the property Reflections.
+  If it&#146;s FALSE, a change in Environment Size has no effect on Reflections.
+  <P>
+  <B>Reverb Scale (argument position: 5)</B>
+  <P>
+  If this flag is TRUE, an increase in Environment Size value causes an attenuation
+  of the property Reverb. If it&#146;s FALSE, a change in Environment Size
+  has no effect on Reverb.
+  <P>
+  <B>Decay HF Limit (argument position: 6)</B>
+  <P>
+  If this flag is TRUE, high-frequency decay time automatically stays below
+  a limit value that&#146;s derived from the setting of the property Air Absorption
+  HF. This limit applies regardless of the setting of the property Decay HF
+  Ratio, and the limit doesn&#146;t affect the value of Decay HF Ratio. This
+  limit, when on, maintains a natural sounding reverberation decay by allowing
+  you to increase the value of Decay Time without the risk of getting an
+  unnaturally long decay time at high frequencies.
+  <P>
+  If this flag is FALSE, high-frequency decay time isn&#146;t automatically
+  limited.
+</BLOCKQUOTE>
+<H3>
+  <A NAME="souset"><!-- --></A><B>THE SOUND-SOURCE SET</B>
+</H3>
+<P>
+The sound-source set contains thirteen parameters that apply to a particular
+sound source.
+<P>
+<A NAME="soudir"><!-- --></A><B>1) Direct </B>
+<P>
+<I>Value type: LONG <BR>
+Value range: -10000 to 1000 <BR>
+Default value: 0 <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Direct property is a low-level property that applies a relative correction
+to this sound source&#146;s direct-path intensity. (Direct-path intensity
+is the level of the sound source after attenuation for distance, orientation,
+and so on.) The Direct property allows you to apply a manual correction in
+addition to the effect of the DirectSound parameters distance, rolloff factor,
+orientation, and cone angles and to the effect of other EAX sound-source
+properties described in this section. The default value of 0 adds no correction
+to direct-path sound.
+<P>
+If you specify an increase in direct-path sound that, when combined with
+the direct-path sound set by both DirectSound and EAX properties results
+in a total gain larger than the intensity of the unattenuated sound source
+(referred to as 0 dB), the EAX driver clips the resulting send level to 0
+dB. This means that the Direct property can only increase direct-path sound
+that has been attenuated below the original source sound by these other factors.
+And that it can never increase the direct-path sound to more than the original
+sound source.
+<P>
+<A NAME="soudirhf"><!-- --></A><B>2) Direct HF </B>
+<P>
+<I>Value type: LONG<BR>
+Value range: -10000 to 0<BR>
+Default value: 0 <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Direct HF property is a related low-level property that applies a relative
+correction to the high-frequency component of the sound source&#146;s direct-path
+intensity. It has the same relationship to the high-frequency direct-path
+components of other DirectSound and EAX properties that the Direct property
+has to the full-frequency direct-path intensity.
+<P>
+<A NAME="souroom"><!-- --></A><B>3) Room </B>
+<P>
+<I>Value type: LONG<BR>
+Value range: -10000 to 1000 <BR>
+Default value: 0 <BR>
+Value units: Hundredths of a dB</I>
+<P>
+The Room property is a low-level sound-source property that&#146;s defined
+the same way as the listener (global) Room property: it is the volume control
+for reflected sound (early reflections and reverberation). In this case,
+however, Room applies only to this sound source, and therefore affects only
+the reflected sound added to this source. It is an additive property; its
+setting is added to the total reflected sound value for this source that
+is specified by all other EAX listener and source properties.
+<P>
+You can use the Room sound-source property to correct the intensity of reflected
+sound at minimum distance as defined by the Room listener property. This
+is useful especially if different sound soruces have different minimum distances.
+<P>
+Note that although you can specify a positive Room value, the combined
+reflected-sound volume cannot go above 0 dB&#151;that is, it can never be
+louder than the volume of the sound source without attenuation. You can use
+positive values to restore volume that has been diminished by other properties,
+but you can never go beyond that.
+<P>
+<A NAME="souroomhf"><!-- --></A><B>4) Room HF</B>
+<P>
+<I>Value type: LONG <BR>
+Value range: -10000 to 0 <BR>
+Default value: 0 <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Room HF property is a low-level sound-source property that is defined
+the same way as the listener Room HF property, but in this case is applied
+only to this sound source. It controls a low-pass filter that applies to
+the reflected sound added to this source. The value of Room HF ranges from
+0 dB (no filter) to -100 dB (virtually no reflected sound). This is an additive
+property; its setting is added to the listener Room HF property and the other
+sound-source properties to determine how filtered the reflected sound for
+this source.
+<P>
+<A NAME="souobs"><!-- --></A><B>5) Obstruction </B>
+<P>
+<I>Value type LONG <BR>
+Value range -10000 to 0 <BR>
+Default value 0 <BR>
+Value units Hundredths of a dB </I>
+<P>
+The Obstruction property specifies the amount of obstruction muffling to
+apply to a sound source&#146;s direct-path sound. Obstruction occurs when
+an object lies between a sound source and a listener who occupy the same
+room. The direct path from source to listener is muffled by the obstruction,
+but the reflected sound from the source remains unchanged.
+<P>
+You can set the value of the Obstruction property for each sound source.
+The value controls the degree to which the direct path from the source is
+muffled. If the Obstruction LF Ratio property (described below) is set to
+0.0, Obstruction controls only attenuation at high frequencies. If Obstruction
+LF Ratio is set above 0.0, Obstruction also muffles low frequencies to the
+extent specified by Obstruction LF Ratio.
+<P>
+Obstruction&#146;s maximum value, 0, specifies no attenuation and hence no
+obstruction effect. The minimum value, &#150;10000 (which is -100 dB), indicates
+that the sound source is so obstructed that the direct path from source to
+listener is negligible&#151;so only the source&#146;s reflected sound is
+audible. Any value between minimum and maximum indicates partial obstruction.
+<P>
+Note that you can use Obstruction and Occlusion simultaneously. If, for example,
+the source is in another room from the listener and there&#146;s also a large
+obstacle between the listener and the wall. In this case the dry path is
+filtered twice: once by Occlusion and once by Obstruction.
+<P>
+<A NAME="souobsrat"><!-- --></A><B>6) Obstruction LF Ratio</B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.0 to 1.0 <BR>
+Default value: 0.0<BR>
+Value units: A linear multiplier value </I>
+<P>
+The Obstruction LF Ratio property affects the spectral quality of obstruction
+set by the Obstruction property: it specifies the obstruction attenuation
+at low frequencies relative to the attenuation at high frequencies. The minimum
+value of 0.0 (the default value) specifies no attenuation at low frequencies;
+the maximum value of 1.0 specifies the same low-frequency attenuation as
+high-frequency attenuation. Note that adjusting Obstruction LF Ratio alone
+has no effect if Obstruction is set to 0.
+<P>
+Note too that both Obstruction properties have no effect if DirectSound&#146;s
+3D mode is disabled.
+<BLOCKQUOTE>
+  <B><I>Material Presets </I></B>
+  <P>
+  There are times when an obstructing object can transmit direct sound as well
+  as diffract it. If so, you can use the obstruction properties to specify
+  that transmission quality of the object. The most effective way to do this
+  is to use a material preset.
+  <P>
+  Material transmission presets<BR>
+  3 values in this order:
+  <BLOCKQUOTE>
+    1: occlusion (or obstruction) <BR>
+    2: occlusion LF Ratio (or obstruction LF Ratio) <BR>
+    3: occlusion Room Ratio
+  </BLOCKQUOTE>
+  <P>
+  <I>Single window: -2800, 0.71, 0.43<BR>
+  Double window : -5000, 0.40, 0.24<BR>
+  Thin door: -1800, 0.66, 0.66<BR>
+  Thick door: -4400, 0.64, 0.27<BR>
+  Wood wall: -4000, 0.50, 0.30 <BR>
+  Brick wall: -5000, 0.60, 0.24<BR>
+  Stone wall: -6000, 0.68, 0.20<BR>
+  Curtain: -1200, 0.15, 1.00</I><BR>
+  <BR>
+</BLOCKQUOTE>
+<P>
+<A NAME="souoccl"><!-- --></A><B>7) Occlusion</B>
+<P>
+<I>Value type: LONG <BR>
+Value range: -10000 to 0 <BR>
+Default value: 0 <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Occlusion property specifies the amount of occlusion muffling to apply
+to a sound source&#146;s direct sound and to its reflected sound. Occlusion
+occurs when the listener is in one room or environment, the sound source
+is in another room or environment, and the listener hears the sound through
+a separating wall or through an opened or closed door or window. Both the
+direct sound and the reflected sound from the sound source are muffled by
+the occlusion.
+<P>
+The effect of occlusion depends a great deal on the sound transmission qualities
+of the material separating the two rooms. Some materials are thick and absorbent
+and transmit very little sound; others are stiff and thin and transmit clearly;
+others have transmission qualities in between. Frequency response varies
+too. Some materials attenuate high frequencies more than others.
+<P>
+You can set the value of the Occlusion property for each sound source. The
+value controls the degree to which both the direct-path and reflected sound
+from the source are muffled. If the Occlusion LF Ratio property (described
+below) is set to 0.0, Occlusion controls only attenuation at high frequencies.
+If Occlusion LF Ratio is set above 0.0, Occlusion also muffles low frequencies
+to the extent specified by Occlusion LF Ratio.
+<P>
+Occlusion&#146;s maximum value, 0, specifies no attenuation and hence no
+occlusion effect. The minimum value, &#150;10000 (which is -100 dB), indicates
+that the sound source is so occluded that it is completely inaudible&#151;at
+least if Occlusion LF Ratio specifies that low frequencies are equally occluded
+with high frequencies. If it doesn&#146;t, low frequencies will still be
+audible. Any value between minimum and maximum indicates partial occlusion.
+<P>
+<A NAME="souocclrat"><!-- --></A><B>8) Occlusion LF Ratio</B>
+<P>
+<I>Value type: FLOAT<BR>
+Value range: 0.0 to 1.0 <BR>
+Default value: 0.25 <BR>
+Value units: A linear multiplier value </I>
+<P>
+The Occlusion LF Ratio property affects the spectral quality of occlusion
+set by the Occlusion property: it specifies the occlusion attenuation at
+low frequencies relative to the attenuation at high frequencies. The minimum
+value of 0.0 specifies no attenuation at low frequencies; the maximum value
+of 1.0 specifies the same low-frequency attenuation as high-frequency
+attenuation. The default setting of 0.25 specifies that low frequencies are
+attenuated much less than high frequencies. Note that adjusting Occlusion
+LF Ratio alone has no effect if Occlusion is set to 0.
+<P>
+<A NAME="souocclroomrat"><!-- --></A><B> 9) Occlusion Room Ratio </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.0 to 10.0 <BR>
+Default value: 0.5<BR>
+Value units: A linear multiplier value </I>
+<P>
+The Occlusion Room Ratio property specifies the additional amount of occlusion
+attenuation to be applied to reflected sound (early reflections and
+reverberation). The minimum value of 0.0 specifies no additional reflected
+sound occlusion attenuation&#151;that is, that direct-path and reflected
+sound attenuation occurs equally in the amount set by the Occlusion property.
+The maximum value of 10.0 specifies that the reflected sound is equal to
+10 times the setting of Occlusion.
+<P>
+The default value of 0.5 specifies that reflected sound undergoes an additional
+attenuation that is half the setting of Occlusion. This creates a natural
+sensation of occlusion because in the physical world, the occluding wall
+acts as a secondary sound source in the listener&#146;s room. Because the
+wall radiates sound in only half the directions that a sound source in the
+middle of the room can, it generates significantly less reflected sound than
+the original source would be if it were located in the room.
+<P>
+Note that all three of the Obstruction properties have no effect if
+DirectSound&#146;s 3D mode is disabled.
+<BLOCKQUOTE>
+  <I><B>Material Presets </B></I>
+  <P>
+  An effective way to set all three occlusion properties at once is to use
+  a material preset. A material preset is an array of three occlusion settings
+  chosen to represent the sound transmission properties of a specific occluding
+  material.
+</BLOCKQUOTE>
+<P>
+&nbsp;
+<P>
+<A NAME="souroomroll"><!-- --></A><B>10) Room Rolloff Factor </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.0 to 10.0 <BR>
+Default value: 0.0 <BR>
+Value units: A linear multiplier value </I>
+<P>
+The Room Rolloff Factor property is a low-level sound-source property that
+is defined the same way as the listener (global) Room Rolloff property: it
+is one of two methods available in EAX to attenuate the reflected sound (early
+reflections and reverberation) according to source-listener distance. In
+this case, however, Room Rolloff applies only to this sound source, and therefore
+affects only the reflected sound generated by this source. Room Rolloff is
+an additive property; its setting is added to the listener Room Rolloff setting
+to get the final room rolloff multiplier value for that source.
+<P>
+The resulting combined multiplier value affects the amount of room rolloff.
+A value of 1.0 specifies that the reflected sound will decay by 6 dB every
+time the distance doubles. Any value other than 1.0 is equivalent to a scaling
+factor that&#146;s applied to the quantity ((source listener distance) -
+(Minimum Distance)).
+<P>
+Note that this property has no effect if DirectSound&#146;s 3D mode is disabled.
+<P>
+<A NAME="souairabs"><!-- --></A><B>11) Air Absorption Factor </B>
+<P>
+<I>Value type: FLOAT <BR>
+Value range: 0.0 to 10.0 <BR>
+Default value: 1.0 <BR>
+Value units: A linear multiplier value</I>
+<P>
+The Air Absorption Factor property is a multiplier value for the air absorption
+value set by the listener property Air Absorption HF. The resultant air
+absorption value applies only to this sound source.
+<P>
+The air absorption value controls the distance-dependent attenuation at high
+frequencies caused by the propagation medium. It applies to both the direct-path
+and reflected sound, and can simulate sound transmission through foggy air,
+dry air, smoky atmosphere, and so on. The Air Absorption Factor default value
+of 1.0 specifies no change to the air absorption factor set by the listener
+Air Absorption HF property. The minimum value of 0.0 turns off air absorption
+for this source, and a maximum value of 10.0 multiplies absorption by 10
+for this source.
+<P>
+You can use the Air Absorption Factor to simulate a source located in different
+atmospheric conditions than the rest of the room. You can increase air
+absorption, for example, for a sound source that comes from the middle of
+a cloud of smoke. Or you can decrease air absorption for a sound source coming
+from a suddenly visible object in moving clouds.
+<P>
+Note that this property has no effect if DirectSound&#146;s 3D mode is disabled.
+<P>
+<A NAME="sououtvolhf"><!-- --></A><B>12) Outside Volume HF </B>
+<P>
+<I>Value type: LONG <BR>
+Value range: -10000 to 0 <BR>
+Default value: 0 <BR>
+Value units: Hundredths of a dB </I>
+<P>
+The Outside Volume HF property enhances the directivity effect provided by
+DirectSound 3D for individual sound sources. A directive sound source points
+in a specified direction. The source sounds at full volume when the listener
+is directly in front of the source; it&#146;s attenuated as the listener
+circles away from the front, with the maximum attenuation obtained in the
+back.
+<P>
+When DirectSound attenuates a source&#146;s direct-path sound to simulate
+directivity, it attenuates high- and low-frequency sounds equally. Real world
+sources tend to be more directive at high frequencies than at low frequencies.
+<P>
+The Outside Volume HF property enhances DirectSound&#146;s directivity effect
+at your option by attenuating high frequencies more than low frequencies
+when the listener is away from the front. The value defines the high-frequency
+attenuation applied in the back of the source (in addition to DirectSound&#146;s
+Outside Volume for that source). At the minimum (and default) setting of
+0, there is no additional high-frequency attenuation, so DirectSound&#146;s
+directivity effect is unaltered. At the maximum setting of &#150;10000 (-100
+dB), attenuation for high frequencies is 100 dB more than it is for low
+frequencies in the back of the source.
+<P>
+This property actually controls directivity-dependent high-frequency attenuation
+(low-pass filtering) for both the direct-path and the reflected sounds of
+the sound source. You can turn off its effect on direct-path sound using
+the Direct HF Auto flag, or you can turn off its effect on reflected sound
+using the Room HF Auto flag. Both flags are described later under the
+sound-source property Flags.
+<P>
+Note that if you use Outside Volume HF systematically on all sources and
+have Room HF Auto turned on, it may sound more natural to set the listener
+property Room HF to 0 (or raise it closer to 0) on all environment presets.
+If you have listener Room HF set far below zero, then you apply a low-pass
+filter to sound sources already affected by Outside Volume HF&#146;s low-pass
+filtering effect.
+<P>
+Note that the Outside Volume HF property has no effect if DirectSound&#146;s
+3D mode is disabled.
+<P>
+<A NAME="souflag"><!-- --></A><B>13) Flags </B>
+<P>
+<I>Value type: DWORD <BR>
+Value range: 0x00000000 to 0x00000007 <BR>
+Default value: 0x00000007 (all flags are set true) <BR>
+Value units: Each bit of a value is a Boolean flag </I>
+<P>
+The Flags property uses its three low-order bits to set three
+sound-source-property flags. These flags determine whether or not you want
+the EAX engine to automatically adjust the intensity and tonal color of the
+reflected sound or the tonal color of the direct-path sound for a source
+according to the setting of DirectSound&#146;s position and directivity
+parameters. These flags are all set to TRUE by default to provide a more
+realistic experience without any programming work. When they are TRUE, the
+automatic adjustments are made internally in the EAX engine and do not affect
+the values of other properties.
+<P>
+Each flag is represented by a constant in the eax.h file. To set the flag
+true, call Get on the listener interface to get the current value of the
+Flags property. Bitwise OR the flag constant with the value of the Flags
+property, then call Set on the listener interface using the revised Flags
+value. To set the flag false, Get and Set the value as before, but instead
+of using bitwise OR, first NOT the flag constant then AND it with the retrieved
+value.
+<P>
+The flags are these:
+<BLOCKQUOTE>
+  <I><B>Direct HF Auto </B></I>
+  <P>
+  If this flag is TRUE (its default value), this sound source&#146;s direct-path
+  sound is automatically filtered according to the orientation of the source
+  relative to the listener and the setting of the sound-source property Outside
+  Volume HF. If Outside Volume HF is set to 0, the source is not more directive
+  at high frequencies and this flag has no effect. Otherwise, the direct path
+  will be brighter in front of the source than on the side on in the rear.
+  <P>
+  If this flag is FALSE, this sound source&#146;s direct-path sound isn&#146;t
+  filtered at all according to orientation. Note that this isn&#146;t the same
+  as setting Outside Volume to 0, because this flag doesn&#146;t affect
+  high-frequency attenuation of each source&#146;s reflected sound in response
+  to DirectSound&#146;s directivity attenuation. That&#146;s controlled by
+  the Room HF Auto flag, described later.
+  <P>
+  Note too that this flag has no effect if DirectSound&#146;s 3D mode is disabled.
+  <P>
+  <B><I>Room HF Auto </I></B>
+  <P>
+  If this flag is TRUE (its default value), the intensity of this sound
+  <I>source&#146;s reflected</I> <I>sound</I> at high frequencies will be
+  automatically attenuated according to the high-frequency source directivity
+  as set by the EAX Outside Volume HF property. If Outside Volume HF is set
+  to 0, the source is not more directive at high frequencies and this flag
+  has no effect. Otherwise, making the source more directive at high frequencies
+  will have the natural effect of reducing the amount of high frequencies in
+  the reflected sound.
+  <P>
+  If this flag is FALSE, the sound source&#146;s reflected sound isn&#146;t
+  filtered at all according to the source&#146;s directivity. Note that this
+  isn&#146;t the same as setting Outside Volume to 0, because this flag
+  doesn&#146;t affect high-frequency attenuation of each source&#146;s direct-path
+  sound in response to DirectSound&#146;s directivity attenuation. That&#146;s
+  controlled by the Direct HF Auto flag, described earlier.
+  <P>
+  Note too that this flag has no effect if DirectSound&#146;s 3D mode is disabled.
+  <P>
+  <I><B>Room Auto </B></I>
+  <P>
+  If this flag is TRUE (its default value), the intensity of this sound
+  source&#146;s reflected sound is automatically attenuated according to
+  source-listener distance and source directivity (as determined by
+  DirectSound&#146;s Inside Cone Angle, Outside Cone Angle, and Outside Cone
+  Volume parameters). If it&#146;s FALSE, the reflected sound isn&#146;t attenuated
+  according to distance and directivity.
+  <P>
+  If you set DirectSound&#146;s Rollof Factor to a value different from 1.0
+  in order to warp the perceived distance to the sound source, EAX takes this
+  into account in computing the attenuation it applies to the reflected sound
+  for that source (so as to preserve the direct to reflected ratio). For instance,
+  if you set Rolloff Factor to 0.0, EAX does not apply an attenuation to the
+  reflected sound according to source-listener distance (even if the Room Auto
+  flag is TRUE).
+  <P>
+  Note that this flag has no effect if DirectSound&#146;s 3D mode is disabled.
+</BLOCKQUOTE>
+<H3>
+  <A NAME="defset"><!-- --></A><B>DEFERRED SETTINGS </B>
+</H3>
+<P>
+EAX, like DirectSound, allows you to postpone when property settings are
+executed. The main reason to do this is to save CPU resources. In certain
+cases it can also avoid audio artifacts, such as popping sounds, that can
+result from temporary combinations of settings during the execution of your
+program.
+<P>
+As you set properties in the EAX interface of the listener or of any sound
+source, you can specify that the settings be deferred. They won&#146;t be
+executed until you later set a property there using immediate execution,
+or you directly specify that all deferred settings be executed. At that point
+they&#146;re executed simultaneously." <FONT size="-2">(excerpt from &nbsp;EAX
+2.0 SDK manual).</FONT>
+<P>
+&nbsp;
+<P>
+&nbsp;
+<P>
+&nbsp;
+</BODY></HTML>

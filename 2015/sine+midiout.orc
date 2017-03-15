@@ -31,7 +31,7 @@ ipct = p8
 iamp_midi = p4
 ivelocity = int(127*iamp_midi)
 
-noteondur2   1, inotenum, ivelocity, p3-.1
+noteondur2   1, inotenum, ivelocity, idur
 
 
 kamp    linen   iamp, idur*.1, idur, idur*.4
@@ -43,7 +43,7 @@ acar    oscili  kamp, ipitch, 1
 
 a1, a2  locsig  acar, ipan, idist, ipct
 ar1, ar2  locsend
-outs a1, a2
+;outs a1, a2
 ga1 = ga1+ar1
 ga2 = ga2+ar2
 
@@ -75,7 +75,7 @@ endin
 instr 99 
 a1  reverb  ga1, 1
 a2  reverb  ga2, 1
-outs  a1,a2
+;outs  a1,a2
 ga1=0
 ga2=0
 endin

@@ -1,0 +1,739 @@
+(in-package :cm)
+
+;;;
+;;; network examples. The maybe-eval macro is used to conditionally
+;;; activate the examples if you are not using MCL.  If you are using MCL,
+;;; evaluating the examples will simply create the networks. You then run
+;;; each example interactively by opening it (Double-Clicking it in the
+;;; Top-Level window) and then clicking the Lightbulb icon.
+;;;
+
+(defparameter *eval-activate* #+mcl nil #-mcl t)
+
+(defmacro maybe-eval (&body body)
+  `(when *eval-activate* ,@body))
+
+(defmacro localvars (bindings &body body)
+  ;; stop nitpicking compliers from complaining
+  ;; about "unused" vars in examples
+  `(let ,bindings
+     ,@ body
+        ,@ (loop for b in bindings collect (if (consp b) (first b) b))
+           (values)))
+
+(proclaim '(special a))
+
+(defun prinval (x &optional y) 
+  (if (stringp x) (if y (format t x y) (format t x)) 
+      (format t "~%Value=~S" x)))
+
+(defun keydown? (m) 
+  (and (note-on-p m)
+       (> (note-on-velocity m) 0)
+       m))
+
+(defun keyup? (x)
+  (if (note-off-p x) x
+      (and (note-on-p x) 
+           (= (note-on-velocity x) 0)
+           x)))
+
+(defun chording? (s) (and (eq s ':chording) s))
+
+(defun addhist (new hist len)            
+  ;; circular history list. *print-circle* better be t!
+  (let ((cell (nthcdr (1- len) hist)))
+    (setf (car cell) new)
+    (setf (cdr cell) hist)
+    cell))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;------------------------------- Examples -----------------------------
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-01 ()
+  (localvars (a b)
+    (node comment "propagate value to operator")
+    (setf a (node value "Hello"))
+    (setf b (node operator #'princ args a))
+    (maybe-eval (forward-chain a))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-02 ()
+  (localvars (a b c d e)
+    (node comment "multiple propagations")
+    (setf a (node value (list 100 200 300)))
+    (setf b (node operator (op prinval) args a))
+    (setf c (node operator (op (x) (format t "~%value[0]=~S" x))
+                  args (propagate from a from-slot '(value at 0))))
+    (setf d (node operator (op (x) (format t "~%value[1]=~S" x))
+                  args (propagate from a from-slot '(value at 1))))
+    (setf e (node operator (op (x) (format t "~%value[2]=~S" x)) 
+                  args (propagate from a from-slot '(value at 2))))
+    (maybe-eval (forward-chain a))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-03 ()
+  (localvars (a b)
+    (node comment "operator no args")
+    (setf a (node operator (op () (between 20 60))))
+    (setf b (node operator (op prinval) args a))
+    (maybe-eval
+     ;; new value each time
+     (loop repeat 5 do (forward-chain a)))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-04 ()
+  (localvars (a b c)
+    (node comment "propagate mixed args")
+    (setf a (node value 200))
+    (setf b (node operator (op between) args (list 100 a)))
+    (setf c (node operator (op prinval) args b))
+    (maybe-eval (dotimes (i 5) (forward-chain a)))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-05 ()
+  (localvars (a b c d)
+    (node comment "sum value, operator and constant")
+    (setf a (node value 4))
+    (setf b (node operator (op () (between 10 20))))
+    (setf c (node + args (list 100 a b)))
+    (setf d (node operator (op prinval) args c))
+    (maybe-eval
+     (forward-chain a)  ; no print b still needed
+     (dotimes (i 5) (forward-chain b))  ; random 110<120
+     (dotimes (i 5) (forward-chain a))  ; prints last value of b
+     )))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-06 ()
+  (localvars (a a2 b c d)
+    (node comment "multiple inputs 2nd arg")
+    (setf a (node value 4))
+    (setf a2 (node value 100))
+    (setf b (node operator (op () (between 10 20))))
+    (setf c (node + args (list a2 (LIST a b))))
+    (setf d (node operator (op print) args c))
+    (maybe-eval
+     (forward-chain a)  ; nil
+     (forward-chain a2)
+     (dotimes (i 5) (forward-chain b))  ; random value 110<120
+     (forward-chain a))  ; 104
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-07 ()
+  (localvars (a b c)
+    (node comment "\"side effect\" activation")
+    (setf a (node value 4))
+    (setf b (node inputs a operator (op () (random 10))))
+    (setf c (node operator (op prinval) args b))
+    (maybe-eval
+     (dotimes (i 5) (forward-chain a)))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-08 ()
+  (localvars (a b c)
+    (node comment "update link.")
+    (setf a (node operator (op () (random 100))))
+    (setf b (node operator (op () (random 100))))
+    (setf c (node operator (op print) 
+                  args (list (list (update from a) b))))
+    (maybe-eval
+      (forward-chain a)   ; a never activates
+      (forward-chain b)
+      (forward-chain a)
+      (forward-chain b))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-09 ()
+  (localvars (a b c d)
+    (node comment "iterate 10x")
+    (setf a (node iterate repeat 10))
+    (setf b (node operator (op print) args a))
+    (maybe-eval (forward-chain a))
+    
+    (node comment "iterate list")
+    (setf a (node iterate repeat '(a b c d e f g)))
+    (setf b (node operator (op print) args a))
+    (maybe-eval (forward-chain a))
+    
+    (node comment "iterate chars")
+    (setf a (node iterate repeat "Hello, World!"))
+    (setf b (node operator (op print) args a))
+    (maybe-eval (forward-chain a))
+    
+    (node comment "iterate activation.")
+    (setf a (node iterate repeat 10))
+    (setf b (node operator (op () (between 1000 2000))
+                  inputs a))
+    (setf c (node operator (op print) args b))
+    (maybe-eval (forward-chain a))
+    
+    (node comment "set iterate value, activation triggers it")
+    (setf a (node iterate repeat nil))
+    (setf b (node value 3 
+                  outputs
+                  (update from-slot 'value 
+                          to a to-slot `(repeat by ,#'cons))))
+    (setf c (node operator (op print) args a) )
+    
+    (maybe-eval
+      (dotimes (i 5) (forward-chain b))
+      (forward-chain a))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-10 ()
+  (localvars (a b c d)
+    (setf *print-circle* t)                  ; be safe in case of error
+    (defun addone (n v) (addhist n v 3))
+    (node comment "cyclic history, special setter and update link.")
+    (setf a (node counter))                  ; values added to history
+    (setf b (node value (list nil nil nil)   ; history node of 3 values
+                  inputs (update from a :from-slot 'value
+                                 :to-slot `(value by , #'addone))))
+    (setf c (node operator (op (hist)  ; print current history
+                             (format t "~%History: [1]=~S [2]=~S [3]=~S"
+                                     (pop hist) (pop hist) (pop hist)))
+                  args b))
+    (setf d (node iterate repeat 10
+                  outputs (list (activate to b)
+                                (activate to a))))
+    (maybe-eval
+      (dotimes (i 10)
+        (forward-chain b)  ; print current history
+        (forward-chain a)) ; update history with new value
+      (setf *print-circle* nil))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-11 ()
+  (localvars (a b c d1 d2)
+    (node comment "conditional activation")
+    (setf d1 (node operator (op prinval) args " true!"))
+    (setf d2 (node operator (op prinval) args " false!"))
+    (setf a (node operator (op () (random 2))))
+    (setf b (node operator (op prinval) args a))
+    (setf c (node if (op =) args (list a 1) then d1 else d2))
+    (maybe-eval (dotimes (i 5) (forward-chain a)))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-12 ()
+  (localvars (a b c d)
+    (node comment "conditional prints even numbers")
+    (setf a (node operator (op () (random 10))))
+    (setf b (node if (op (x) (values (evenp x) x)) args a))
+    (setf c (node operator (op (x) (format t "~%Then: ~S" x))
+                  args (propagate from b from-slot 'then)))
+    (setf d (node operator (op (x) (format t "~%Else: ~S" x))
+                  args (propagate from b from-slot 'else)))
+    (maybe-eval (dotimes (i 10) (forward-chain a)))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;; no more switch node.
+
+#|
+(network net-13 ()
+  (localvars (a b c)
+    (node comment "switch toggles activation")
+    (setf a (node operator (op prinval) args "~%tick!"))
+    (setf b (node operator (op prinval) args "~%tock!"))
+    (setf c (node switch on a off b))
+    (maybe-eval (dotimes (i 6) (forward-chain c)))
+    ))
+|#
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-14 ()
+  (localvars (a b c)
+    (node comment "count cycles of 5")
+    (setf a (node counter limit 5))
+    (setf b (node operator (op prinval) args a))
+    (setf c (node operator (op prinval)
+                  args (list "~%~%Cycles=~D~%"
+                             (propagate from a from-slot 'cycles))))
+    (maybe-eval (dotimes (i 10) (forward-chain a)))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-15 ()
+  (localvars (a b c)
+    (node comment "operators activate when pattern state arrives")
+    (setf a (node pattern (items a b c)))
+    (setf b (node operator (op list)
+                  args (list (update from a)
+                             (propagate from a from-slot 'state))))
+    (setf c (node operator (op prinval) args b))
+    (maybe-eval (dotimes (i 6)  (forward-chain a)))
+    ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-16 ()
+  (localvars (a b c d)
+    (node comment "propagate pattern, state only prints if +eop+")
+    (setf a (node pattern (degrees c d e f g )))
+    (setf b (node operator (op prinval) args a))
+    (setf c (node if (op (x) (and (eq x +eop+) x))
+                  args (propagate from a from-slot 'state)))
+    (setf d (node operator (op prinval) 
+                  args (propagate from c from-slot 'then)))
+    (maybe-eval (dotimes (i 10) (forward-chain a)))
+    ))
+
+;;;
+;;;-------------The remaining examples require MIDI real time.-----------
+;;;
+
+(network net-17 ()
+  (localvars (b c)
+    (declare (special a))
+    (node comment "timer activates every 1/2 second")
+    (setf a (node timer rate 500))
+    (setf b (node operator (op () (between 20 60)) inputs a))
+    (setf c (node operator (op prinval) args b))
+    (maybe-eval 
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+;  ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-18 ()
+  (localvars (b c d)
+    (declare (special a))
+    (node comment "counter stops timer after 10x")
+    (setf a (node timer rate 500))
+    (setf c (node counter limit 10 inputs a 
+                  cycles (deactivate to a)))
+    (setf d (node operator (op prinval) args c))
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+;;;...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-19 ()
+  (localvars (b c d)
+    (declare (special a))
+    (node comment "print clock value")
+    (setf a (node clock rate 500))
+    (setf b (node operator (op prinval) args a))
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+; ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-20 ()
+  (localvars (b c d e)
+    (declare (special a))
+    (node comment "print random number followed by delayed value")
+    (setf a (node timer rate 1000))
+    (setf b (node operator (op () (between 20 60)) 
+                  inputs (list a)))
+    (setf c (node args (list b ) operator (op prinval)))
+    (setf d (node delay wait 500 value b))
+    (setf e (node operator (op prinval)
+                  args (list "~%Delayed=~S" d)))
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+; ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-21 ()
+  (localvars (b)
+    (declare (special a))
+    (node comment "Midi through.")
+    (setf a (node midiin))
+    (setf b (node midiout message a))
+    (maybe-eval 
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+; ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-22 ()
+  (localvars (b)
+    (node comment "print note ins")
+    (setf a (node midiin))
+    (setf b (node operator (op midi-print-message) args a))
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+
+; ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-23 ()
+  (localvars (b c d e f)
+    (node comment "play random noteOn and delayed noteOff.")
+    (setf a (node timer rate 1000))
+    (setf b (node inputs a operator (op () (between 20 60))))
+    (setf c (node args b operator (op (k) (make-note-on 0 k 40))))
+    (setf d (node args b operator (op (k) (make-note-off 0 k 100))))
+    (setf e (node delay wait 200 value d))
+    (setf f (node midiout message (list c e)))
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+; ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-24 ()
+  (localvars (b c d)
+    (node comment "harmonize note ins")
+    (setf a (node midiin))
+    (setf b (node operator (op (m) (incf (note-on-key m) 3) m)
+                  args a))
+    (setf c (node operator (op (m) (incf (note-on-key m) 7) m)
+                  args a))
+    (setf d (node midiout message (list a b c)))
+    (maybe-eval 
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+; ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+ 
+(network net-25 ()
+  (localvars (b c d)
+    (node comment "delay-line of transpositions 1 sec later")
+  (setf a (node midiin))
+  (setf b (node operator (op (m) (incf (note-on-key m) 12) m)
+                args a))
+  (setf c (node delay-line wait 1000 value b))
+  (setf d (node midiout message (list a c)))
+  (maybe-eval
+    (unless (midi-open?) (midi-open))
+   (timer-process-start)
+   (forward-chain a))
+  ))
+; ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-26 ()
+  (localvars (b f m s)
+    (node comment "sprout algo each keydown")
+    (open-cmd "MIDI")
+    (setf s (find-stream "MIDI"))
+    (defun make-one ()
+      (let ((low (between 20 60))
+            (high (between 60 90))
+            (rhy (between 100 300))
+            (len (between 5 20)))
+        (algorithm nil midi-note (rhythm rhy amplitude 60 length len)
+          (setf note (between low high)))))
+    
+    (setf m (node midiin ))
+    ; ~ is placeholder for first arg to write-event
+    (setf b (node operator (op write-event) args (list '~ s)))
+    ; propagate each event to the first arg of b.
+    (setf a (node sprout source (op make-one )
+                  event (propagate to b to-slot '(args at 0))))
+    ; allow only keydown to activate.
+    (setf f (node if (op keydown?) args (list m) then a))
+    ; start er up
+    (maybe-eval
+      (timer-process-start)
+      (forward-chain m))
+    ))
+; ...wait..then
+(maybe-eval (node-deactivate m) (node-deactivate a) (timer-process-stop))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;       this is cyclic so will run out of stack space at some point.
+
+#|
+(network net-27 ()
+  (localvars (b c d e f g) 
+    (node comment "interpolated random weights")
+    (unless (midi-open?) (midi-open))
+    (setf a (node clock rate 500))
+    (setf b (node pattern
+                  (degrees (c2 weight (expr (interpl (node-value a)
+                                                     0 5 2000 5 10000 0)))
+                           (c3 weight (expr (interpl (node-value a)
+                                                     0 0 2000 0 10000 5)))
+                           in random for 1)))
+    ; activate pattern if less than 12 seconds.
+    (setf c (node if (op (x ) (and (< x 12000) x))
+                  then (activate to b)
+                  else (deactivate to a)
+                  args a))
+    (setf d (node operator (op (k) (make-note-on 0 k 60)) 
+                  args b))
+    (setf e (node delay value b wait 200))
+    (setf f (node operator (op (k) (make-note-off 0 k 127)) args e))
+    (setf g (node midiout message (list d f)))
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+;...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+|#
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+(network net-28 ()
+  (localvars (b c d e f h)
+    (node comment "incf rhythm only if not chording")
+    ;; make a pattern of notes and chords
+    (setf a (node pattern (degrees c4 [d4 f a] e)))
+    ;; make a note on from pattern and play it
+    (setf b (node operator (op make-note-on) args (list 0 a 60)))
+    (setf c (node midiout message b))
+    ;; make a note off from pattern and play it .25 sec. later
+    (setf d (node delay-line wait 250 value a))
+    (setf e (node operator (op make-note-on) args (list 0 d 0)))
+    (setf f (node midiout message e))
+    ;; if the pattern is chording reactivate pattern immediatly
+    ;; otherwise wait 0.2 seconds before reactivating it.
+    (setf h (node args (propagate from a from-slot 'state)
+                  if (op chording?)
+                  then (activate to a) 
+                  else (activate to (node delay wait 200 outputs a))))
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+; ...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop ))
+
+;;;
+;;;----------------------------------------------------------------------
+;;;
+
+#|
+(network net-29 ()
+  (localvars (aa b c d e f g h i j k xxx)
+    (declare (special a))
+    (node comment "harmonize keydowns with chord patterns")
+    (defun transpm (m i &aux (k (note-on-key m)))
+      (setf (note-on-key m) (+ k i))
+      m)
+    (setf i (node iterate repeat NIL)) ; cache of chord ons.
+    (setf j (node value nil 
+                  outputs (update from-slot 'value
+                                  to i to-slot 'repeat)))
+    (setf K (node operator (op (x) (format t "~%note off for ~S" x))
+                  args i))
+    (setf a (node midiin))
+    (setf aa (node args a
+                   if (op (m) (and (or (keydown? m) (keyup? m)) m))
+                   then (propagate to b to-slot 'value)))
+    (setf b (node midiout))
+    (setf c (node args b
+                  if (op keydown?)   ; "then" establised by forward node d
+                  else (list
+                        (activate to i) ; activate cached note-offs
+                        (activate to j) ; clear cache
+                        )))
+    (setf d (node value (propagate from c from-slot 'then)))
+    (setf e (node pattern (degrees 1 [2 3] [4 5 6] ) inputs d ))
+    (setf f (node operator (op transpm) args (list (update from d) e)))
+    (swap-links d 'outputs 0 1) ; make the update happen first
+    (setf xxx
+          (link-nodes 'update f i 
+                      :from-slot 'value
+                      :to-slot `(repeat by ,#'cons)))
+    
+    ;(setf g (node midiout message f))
+    (setf g (node operator (op midi-print-message) args f))
+    
+    ;; reactivate the pattern until not chording
+    (setf h (node args (propagate from e from-slot 'state)
+                  if (op chording?)
+                  then (activate to e)))
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)
+      (forward-chain a))
+    ))
+
+;...wait...then
+(maybe-eval (node-deactivate a) (timer-process-stop))
+|#
+
+;;;
+;;;----------------------------------------------------------------------
+;;; (play mono line)
+
+#|
+(network net-28 ()
+  (localvars (midi offs mout kdn? kup? hist calc note play j k n v xxx)
+    (declare (special midi))
+    (node comment "tkunze's 3rd order automaton as accompanyist")
+    (defun 3rd-order-automata (history)  ; 3 past values
+      (let* ((p1 (first history))
+             (p2 (second history))
+             (p3 (third history))
+             (w (- (- p3 p2))))
+        (incf w (if (>= w 0) -12 12))
+        (incf w p1)
+        (cond ((< w 36) (+ w (* 12 (between 1 6)) 2))  
+              ((> w 98) (- w (* 12 (between 1 6)) -2)) 
+              (t (1+ w)))))
+    ; add a note-off given note-on    
+    (defun consoff (on values)
+      (setf (note-on-velocity on) 0)
+      (cons on values))
+    
+    
+    (setf offs (node iterate repeat NIL))             ; buffer of offs
+    (setf midi (node midiin))                         ; get input
+    (setf mout (node midiout value (list midi offs))) ; send thrus and outs.
+    ;(setf mout (node value (LIST midi offs))))
+    ;(setf dbug (node operator (op (m) (terpri) (midi-print-message m))
+    ;                 args mout))
+    (setf kdn? (node if (op keydown?) args midi))        ; "then" linked later
+    (setf kup? (node if (op keyup?) args midi
+                     then
+                     (list (activate to offs)         ; send pending
+                           (update to offs            ; flush pending
+                                   to-slot 
+                                   `(repeat by ,#'(lambda (n v) n v nil))))))
+    
+    (setf hist (node value (list 60 60 60)            ; history buffer
+                     inputs (activate from kdn? from-slot 'then)))
+    (setf calc (node operator #'3rd-order-automata args hist)) 
+    (setf note (node value calc                       ; compute next note
+                     outputs (update from-slot 'value to hist 
+                                     to-slot
+                                     `(value by ,(fn (n v) 
+                                                     (addhist n v 3))))))
+    (setf play (node operator (op (m k) (setf (note-on-key m) k) m)
+                     args (list (update from kdn? from-slot 'then)
+                                note)
+                     outputs                          ; send on, save off
+                     (list
+                      (propagate from-slot 'value
+                                 to mout to-slot 'value)
+                      (update from-slot 'value
+                              to offs to-slot `(repeat by ,#'consoff))
+                      )))
+    ; make update of play node happen before history activation4
+    (swap-links kdn? 'outputs 0 1)
+    
+    (maybe-eval
+      (unless (midi-open?) (midi-open))
+      (timer-process-start)      
+      (forward-chain midi))
+    ))
+
+;...wait...then
+(maybe-eval (node-deactivate midi) (timer-process-stop))
+|#
+
+
+

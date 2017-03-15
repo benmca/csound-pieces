@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="midifile-map.fun">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<B><TT>midifile-map <I>pathname</I> 
+     &amp;key :tracks :header-fn
+     :channel-message-fn :track-fn
+     :system-message-fn :meta-message-fn</TT></B>
+<TD align="right" valign="top">[Function]<TR>
+</TABLE>
+
+Maps optionally supplied functions over the contents
+of the MIDI file <I>pathname</I>.  If <I>:tracks</I> is <TT>t</TT>
+all MIDI tracks in the file are mapped, otherwise <I>:tracks</I>
+should be a track number or list of track numbers to map.  If <I>:header-fn</I> is
+supplied it is passed the MIDI file header information in 3 values:
+<I>file-format number-of-tracks divisions</I>.  If <I>:track-fn</I>
+is supplied it is passed information about each track in 2 values:
+<I>track-number length</I>.  If <I>:channel-message-fn</I> is
+supplied it is invoked on all channel messages in each track
+mapped. The function is passed 2 values: <I>message time</I>.  If
+<I>:meta-message-fn</I> is supplied it is invoked on all meta event
+messages in each track mapped. The function is passed 4 values:
+<I>message time data-length message-data</I>.  If
+<I>:system-message-fn</I> is supplied it is invoked on all system
+messages in each track mapped. The function is passed 4 arguments:
+<I>message time data-length message-data</I><P>
+<P>
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:     5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

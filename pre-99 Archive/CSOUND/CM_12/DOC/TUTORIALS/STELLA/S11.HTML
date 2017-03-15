@@ -1,0 +1,123 @@
+<HTML>
+<HEAD>
+<TITLE>Stella Tutorial (A Complete Example)</TITLE>
+<!-- Changed by: Tobias Kunze,  6-Mar-1998 -->
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<A NAME="Working_with_CLM"></A>
+<A HREF="s12.html"><i>Next Chapter</i></A><BR>
+<A HREF="s10.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+
+<H2>Working with CLM</H2>
+
+In this chapter we learn how to link Stella to new CLM instrument
+definitions.  This chapter assumes some familiarity with Lisp, CLOS
+and the CLM system.  To perform the examples you must have built
+Common Music with the CLM syntax enabled.<p>
+
+<H3><a name="About Common Lisp Music">About Common Lisp Music
+(CLM)</A></H3>
+
+Common Lisp Music, by William Schottstaedt (<A
+HREF="mailto:bil@ccrma.stanford.edu">bil@ccrma.stanford.edu</A>), is a
+powerful sound synthesis language implemented in Lisp and C.  CLM is
+essentially a toolbox for instrument building.  Although it comes with
+a number of instruments ready to use, most composers use CLM to define
+their own instruments.  <A
+HREF="http://ccrma-www.stanford.edu/CCRMA/Software/clm/clm.html">Visit
+the CLM home page</A> for more information.  <P>
+
+Given the potential for creating new instruments, we want to learn how
+extend Common Music to recognize new CLM instrument definitions.
+
+
+<H3>
+<a name="definstrument">definstrument</a></H3>
+
+When used within Common Music, CLM's <tt>definstrument</tt> 
+defines a CLM instrument and a Common Music event object for working
+with the instrument. With the exception of <tt>time</tt>, the slot declarations
+for the new object are the same as instrument's lambda parameter list.
+By default, Common Music assumes that <tt>time</tt> is passed to
+the instrument in its first parameter, no matter what the name the instrument
+calls it. See <a href="../../dict/definstrument.mcr.html"> definstrument</a> for
+more information. 
+<p>
+<i>The code for a working instrument can be found in the file fm.ins
+in the tutorial directory. Copy this file to your home directory
+before working with the examples.</i><p>
+
+
+<H3>
+<a name="RTFToC84"><TT>CL</TT></a></H3>
+
+CLM instrument definitions must be compiled.  Use the <tt>cl</tt>
+command to compile and load instrument or lisp source files:<p>
+
+<PRE>Stella [Top-Level]: <b>cl /user/hkt/fm</b>
+
+; --- Compiling file /user/hkt/fm.ins ---
+; Compiling FM
+; Writing fasl file "/user/hkt/fm.fasl"
+; Fasl write complete
+; Fast loading /user/hkt/fm.fasl.
+
+Stella [Top-Level}: 
+</PRE>
+
+Now try out the new <tt>fm</tt> instrument:<p>
+
+<PRE>Stella [Top-Level}: <b>(with-sound () (fm 0 1 440 .25))</b>
+</PRE>
+
+<i>After waiting a few seconds you should hear something.  If not,
+check to see if the volume is muted.</i><p>
+
+At this point we are ready to compose with the new instrument.  The
+next example defines an algorithm that generates fm notes.  The
+algorithm uses the <tt>pitches</tt> pattern macro because CLM
+instruments expect frequency values to be in Hz.<p>
+
+<PRE>(algorithm test fm (length 10 amp .3 )
+  (setf freq (item (pitches c4 d ef f g in heap)))
+  (setf rhythm (between .1 .4))
+  (setf dur (+ rhythm .2)))
+</PRE>
+
+Now test the new instrument by writing to a sound file and a score file:<p>
+
+<PRE>Stella [Top-Level]: <b>open /tmp/test.snd</b>
+Stream: #&lt;File:"/tmp/test.snd"&gt;
+Stella [Top-Level]: <b>mix test</b> <b>0</b>
+File:/tmp/test.snd
+Channels: 1
+Srate: 22050.0
+Reverb: None
+0.000... 0.173... 0.549...0.728... 0.932...
+1.298... 1.574... 1.840... 2.155... 2.551...Done!
+
+Stella[Top-Level]: <b>open test.clm</b>
+Stream: #&lt;File:"test.clm"&gt;
+Stella [Top-Level]: <b>mix test</b> <b>0</b>
+Play file test.clm?(&lt;cr&gt;=Yes) <b><i>&lt;cr&gt;</i></b>
+Channels: 1
+Srate: 22050.0
+Reverb: None
+
+Stella [Top-Level]:
+</PRE>
+<P>
+
+<A HREF="s12.html"><i>Next Chapter</i></A><BR>
+<A HREF="s10.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+<P>
+
+
+  Last Modified:  6-Mar-1998
+</BODY>
+</HTML>     
+
+

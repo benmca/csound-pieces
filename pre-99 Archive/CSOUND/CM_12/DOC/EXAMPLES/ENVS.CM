@@ -1,0 +1,25 @@
+;;;
+;;; using noramlized envelopes to control selection of midi keynums,
+;;; rhythms and amplitudes
+;;;
+
+(in-package :cm)
+(in-syntax :midi)
+
+(algorithm envs midi-note (length 100)
+  (vars (loenv  '(0 .23 .6 .23 1 .5))
+        (hienv '(0 .3 .3 .8 .5 .4 1 .7)))
+  (let ((i (/ count length)))
+    (setf note 
+          (tendency i loenv  hienv :scale 127 :return-type 'integer))
+    (setf rhythm (interp i loenv :offset .4 :scale .8))
+    (setf duration rhythm)
+    (setf amplitude (interp i hienv))))
+
+
+#|
+open test.midi
+mix envs  0
+|#
+
+

@@ -3,8 +3,8 @@
 # use variable blueLibDir for blue's lib directory
 # use variable blueProjectDir for this project's directory
 # use variable score at end of script to bring score back into blue
-from composition.itemstream import Itemstream
-from composition.score import Score
+from thuja.itemstream import Itemstream
+from thuja.score import Score
 import numpy.random as nprnd
 
 rhythms = Itemstream([.05*nprnd.random() for i in xrange(40)], 'sequence', tempo=60)

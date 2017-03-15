@@ -1,0 +1,64 @@
+This is the release README for Common Music.
+
+Release documentation can be found in doc/release.text.
+Installation documentation can be found in doc/install.html.
+
+Common Music is released in source and binary formats:
+
+Source Downloads:
+
+MacOS (PPC) ftp://ftp-ccrma.stanford.edu/pub/Lisp/cm/cm.sea.bin
+NT/Win95    ftp://ftp-ccrma.stanford.edu/pub/Lisp/cm/cm.zip
+Unix/Linux  ftp://ftp-ccrma.stanford.edu/pub/Lisp/cm/cm.tar.gz
+
+Binary Downloads:
+
+MacOS (PPC) ftp://ftp-ccrma.stanford.edu/pub/Lisp/cm/binaries/cm-ppc.sea.bin
+NT/Win95    ftp://ftp-ccrma.stanford.edu/pub/Lisp/cm/binaries/cm-win32.zip
+Linux       ftp://ftp-ccrma.stanford.edu/pub/Lisp/cm/binaries/cm-linux.tar.gz
+IRIX        ftp://ftp-ccrma.stanford.edu/pub/Lisp/cm/binaries/cm-irix.tar.gz
+
+The binary release of Common Music contains a runtime image plus all
+system documentation and example files. Each binary release is a bit
+different depending on the current state of CM in that OS/Lisp
+combination (and any vendor licensing conditions). At a minumum,
+all ports contain the basic kernel and can generate MIDI and CSound
+score files. The differences are summarized in this table:
+
+        Lisp     Compiler?  Csound?  CLM?      MIDIFile? MIDIRealtime?
+        -------------------------------------------------------------
+MacOS:  MCL 4.2  no         yes      no        yes       yes(OMS)
+Win32:  CLISP    byte       yes      no        yes       no
+Linux:  CLISP    byte       yes      yes(OSS)  yes(OSS)  no
+IRIX :  CLISP    byte       yes      no        yes       yes
+
+To use some other combination of features, or to include syntaxes
+other than the ones listed here, or to have the compiler available in
+MCL, you will need to ftp the sources and build the system yourself.
+
+
+Macintosh Notes:
+
+  MIDI real time support requires that the Opcode Midi System be installed.
+  You can download OMS from http://www.opcode.com/downloads/oms/mac/
+
+
+Linux Notes:
+ 
+  CLM Audio support requires that the OSS sound drivers be installed.
+  You can download the OSS drivers from http://www.4front-tech.com
+  The oss download also contains mplay, a shell command that can play
+  midi files from CM (See *midifile-player* entry in the dictionary.)
+
+  Edit the cm script file and change the pathnames for cm.mem and
+  lisp.run to relect your machine. Thereafter you can start Common Music
+  from a shell or Emacs by invoking the script.
+
+
+Windows Notes:
+
+  A shell-based MIDI file player for NT/Win95 would be a Good Thing...
+
+  Edit the CM.BAT script file and change the pathnames for cm.mem and
+  lisp.run to relect your machine. Thereafter you can start Common Music
+  from a shell or Emacs by invoking the script.

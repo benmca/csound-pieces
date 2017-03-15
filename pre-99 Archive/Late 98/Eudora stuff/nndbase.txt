@@ -1,0 +1,78 @@
+alias "Brent Mills" bmills@sunhawk.com,
+alias "Gary Martin" garmar@sunhawk.com
+alias Lees leew@u.washington.edu
+alias "Margaret Mills" mmills@mail.ciaccess.com,
+alias "Miriam and Jennifer" robi@mail.ciaccess.com,
+alias "Jayne Broughton" jayneb@execulink.com,
+alias Cam cstevens@sunhawk.com
+alias Lorick lorick@sunhawk.com,
+alias "!1st Passers!" mmills@ciaccess.com,jayneb@execulink.com,robi@mail.ciaccess.com
+alias "Brent cam lorick" bmills@sunhawk.com,cstevens@barint.on.ca,lorick@islandnet.com,
+alias editsun editsun@sunhawk.com,
+alias "Mark Brown" nalthni@sunhawk.com
+alias Robbyn robbynk@fraec.org,
+alias Ian enr@sunhawk.com,
+alias Judy judym@sunhawk.com
+alias Lonnie lonster@seanet.com
+alias "Richard Byrnes" byrnes@sunhawk.com
+alias Glenda glenda@oz.net
+alias levity novelty@levity.com
+alias bugs bugs@oz.net,
+alias clara clara@novaproj.org,
+alias sam withrow@excite.com,
+alias Heather hballard@sunhawk.com,
+alias pops Lee.McAllister@PSS.Boeing.com
+note pops Shifty character
+alias novelty novelty@levity.com
+alias "James W." jwierz@sunhawk.com
+alias "Mike Watson" mwatson@sunhawk.com
+alias "Richard Karpen" karpen@u.washington.edu,
+alias Lance lance@dsgi.com
+alias "Chris Chinn" cchinn@u.washington.edu
+alias Dimitri dcervo@u.washington.edu,
+alias "Craig M." mcmeekin@sunhawk.com
+alias erica ewood@oz.net,
+alias Jessica jlatham@sunhawk.com
+alias "Weekly Report rcpts." jlatham@sunhawk.com,garmar@sunhawk.com,glenda@oz.net,
+alias marlin marline@oz.net,
+alias Harry hmiller@sunhawk.com,
+alias shadmin shadmin@sunhawk.com,
+alias All seattle-office-staff@sunhawk.com
+alias Jill ohara@sunhawk.com,
+alias Mary mcconney@oz.net
+alias everybody seattle-office-staff@sunhawk.com
+alias Daddy-o Lee.McAllister@PSS.Boeing.com
+alias "Linda and Ethan" EVEEDO@aol.com,
+alias "Kosovo recipients" Craig M.,Dimitri,Ian,Lance,Lees,Lorick,jasonv@sunhawk.com,heather,Joyful,linda and ethan,President@Whitehouse.gov,First.Lady@Whitehouse.gov,secretary@state.gov,Vice.President@Whitehouse.gov,pm@pm.gc.ca,axworl@parl.gc.ca
+alias Joyful joym@carecomputer.com
+alias Don rhomboid@u.washington.edu,
+alias "csound list" csound@maths.ex.ac.uk
+alias "csound list cmds" Majordomo@maths.ex.ac.uk
+alias "Tarkovski list" tarkovski-l@oudenaarden.nl
+alias "Sarah B." sarahbas@u.washington.edu
+alias EMMY emulmer@u.washington.edu
+alias Douglas dhjelm@sunhawk.com
+alias Russ rprather@u.washington.edu,
+alias "John McCaig" thx1138@u.washington.edu
+alias jb jbking@sunhawk.com
+alias "jason v" jasonv@sunhawk.com,
+alias Misako mhaws@accessone.com
+alias "Ian Dobson" idobson@u.washington.edu
+alias paul wall@sunhawk.com,
+alias brandy brandy@sunhawk.com,
+alias Nicholas LBasila@aol.com
+alias "Jessica K." klep@u.washington.edu,
+alias tien tientien@sunhawk.com,
+alias "beefheart list" fireparty@listbot.com
+alias "Linda Antas" lantas@u.washington.edu
+alias "Heather Mills" millsh@sunhawk.com,
+alias Peter matern@sunhawk.com
+alias Abe anielson@sunhawk.com
+alias "cccp players" wall@sunhawk.com,lorick@sunhawk.com,jasonv@sunhawk.com,n9342475@titan.cc.wwu.edu,denbystew@aol.com,gcampbel@u.washington.edu,orange@seanet.com,lantas@u.washington.edu
+alias travis travr@sunhawk.com,
+alias "Chris S" orange@seanet.com
+alias "Cecilia List" cecilia@ginette.musique.umontreal.ca
+alias "Victoria Anderson" vander@u.washington.edu,
+alias yous alaoui@u.washington.edu
+alias "Michelle Jore" smilebubble@yahoo.com
+alias "Peter Spotts" lodger@speakeasy.org

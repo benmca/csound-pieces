@@ -1,0 +1,331 @@
+<HTML>
+<HEAD>
+<TITLE>Lisp Intro</TITLE>
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<CENTER>
+<BR><BR><BR><H1><FONT size=7>Lisp Overview</FONT></H1>
+<h2>(The 10 Most Important Things to Know About Lisp)</h2>
+
+<H4>Heinrich Taube</H4>
+
+<H4>Composition/Theory -- School of Music -- University of Illinois<BR>
+<TT>hkt@cmp-nxt.music.uiuc.edu, hkt@zkm.de, hkt@ccrma.stanford.edu</TT></H4>
+</CENTER>
+<HR>
+<BR>
+
+<b>1.</b> Lisp is interactive, it contains an interpreter that
+evaluates what you input. The interpreter is
+commonly referred to as the listener, evaluator,
+top-level, or read-eval-print loop.  The interpreter
+processes input in three steps.  First, it <i>reads</I> the input and constructs an
+expression from it. Next, it <i>evaluates</i> the expression for meaning.  Thirdly, it
+<i>prints</i> the results of the evaluation, or signals
+an error if the input was incorrect.  One of the nicest features
+about Lisp is the fact that each of these three steps -- reading, evaluating
+and printing -- may be customized by the user.  This makes
+Lisp an ideal language for implementing
+other languages in, or for building complex, interactive systems.<p>
+
+<HR width=50%>
+<P>
+
+<b>2.</b> Lisp is a dynamic language.  In languages like C or Pascal,
+a program is compiled and linked before it is run.  In Lisp, programs are
+usually developed incrementally, by making small changes to source code,
+evaluating the changed definitions, and then immediately running the results.
+New definitions and data
+structures can be added to Lisp at any time.
+ Lisp's dynamic programming features make it an ideal language for prototyping, or
+"thinking it up as you go along".<p>
+
+<HR width=50%>
+<P>
+
+<b>3.</b> Lisp has symbols.
+A symbol is a sequence of characters like <tt>HELLO</tt> or <tt>23-SKIDDOO</tt>.
+Symbols are a basic type of data that serve as "building blocks"
+for creating expressions.<p>
+
+<HR width=50%>
+<P>
+
+<b>4.</b> Lisp has lists.  The start and end points of
+a list are delimited by left and right parentheses <tt>()</tt>.
+Anything can be placed in a list, including other lists.  Here are a few simple examples of lists:<p>
+
+A list of three elements: an integer, a symbol and a floating point number:
+
+<pre>(1 ZZ-TOP 56.7)
+</pre>
+
+A list of two elements, a floating point number and a list.
+The sublist contains three symbols:
+
+<pre>(4.5 (THREE BLIND MICE))
+</pre>
+
+A list of no elements, also called "the empty list" or<tt> nil</tt>:
+
+<pre>()
+</pre>
+
+The name LISP stands for "<B>Lis</B>t <B>P</B>rocessing Language", which
+indicates that lists are a basic feature of the language.
+Lisp was initially developed by John McCarthy to implemente programs that "reason" about "concepts".  What conclusion can be
+reached from the following two concepts, each represented as a list of symbols?
+
+<pre>(humans are mortal)
+(socrates is a human)
+</pre>
+<P>
+The fact that lists sequentially organize things also makes them ideal for
+representing programs.  In this
+case, parentheses are similar in some sense
+to <TT>;</TT> <tt>{}</tt> and <tt>BEGIN</TT> <TT>END</tt> in other languages 
+in that they all delimit syntactic units, or statements, of a program.<p>
+
+<HR width=50%>
+<P>
+
+<b>5.</b> Lisp classifies data, not variables.   In most
+languages, programmers must declare the value type and name of each variable they use.
+In Lisp, a variable is just a symbol, and it can hold any type of value. Furthermore, a
+variable does not even need to be declared before it is used!<p>
+
+Rather than defining different types of variables, Lisp defines different
+types of data. New datatypes may be 
+dynamically added at any point in the development processs.
+Here is breakdown of the most common datatypes a beginner is likely to encounter:
+
+<pre>
+                      <i>Lisp Expression</i>
+                     /          |    \
+                 <i>number</I>       symbol  <i>sequence</I>
+                /  |  \         |       /  \
+          integer float ratio keyword list vector
+                                             |
+                                           string
+
+integer - a counting number like 1, 100 or -23.
+float   - a real number, like 1.23 or -32.0
+ratio   - a fraction, like 99/100 or 3/2.
+symbol  - a sequence of alphanumeric characters, like FOO or I34
+keyword - a symbol prefixed with a colon, like :FOO or :I34
+list    - a grouping of zero or more expressions inside ().
+vector  - a 1 dimensional grouping of expressions in sequential memory.
+string  - a vector of zero or more characters inside "", like "FOO" or "I34".
+
+</pre>
+
+<HR width=50%>
+<P>
+
+<b>6.</b> Lisp uses prefix notation.  Prefix notation  means that operators appear
+in front of their operands.  Prefix notation seems odd at first
+because years of math training teach us to place operators
+between operands, in what is called infix notation.  The infix
+expression <tt>(1 + 2)</tt> appears  as <tt>(+ 1
+2)</tt> in prefix notation.  The reason that Lisp uses prefix notation 
+is covered in the next point.<p>
+
+
+<HR width=50%>
+<P>
+
+
+<b>7.</b> Lisp is a functional language.  A function is a set of
+instructions for doing something, similar to procedures or programs in
+other languages.  As a general rule, Lisp functions take data,
+calculate with it, and then return the results of the calculation
+(if any) back to the caller.
+The results returned by a function are called function values.  A function can return any
+number of values.  When more than one value are returned they are called
+multiple values.<p>
+
+To use, or call, a function, place it as the first element of
+an input list together with any data that is to be passed to the function.
+For example:
+
+<pre>(+ 3 4 5 6)
+</pre>
+
+calls the <tt>+</tt> function and passes the numbers 3, 4, 5 and 6
+to the function.
+The <tt>+</tt> function would then add the numbers together and return the value
+18.  In the next example:
+
+<pre>(list)
+</pre>
+
+the <tt>list</tt> function is called with no arguments.  <tt>list</tt> then
+creates an empty list and returns the value <tt>nil</tt>
+to the caller (remember, <tt>nil</tt> means the empty list).  Calling a
+function and passing it data is sometimes referred to as "applying a function to
+its arguments".  It is important to understand that all
+calculations are accomplished by function calls in Lisp.  In most
+languages, programs are mixtures of calling and non-calling
+components.  For example, the C statement:
+
+<pre>x = 2 + get_some_number();
+</pre>
+
+contains a call to a procedure named <tt>get_some_number</tt> but the
+assignment of the variable <tt>x</tt> and the addition of 2 are
+"hardwired" into the C language.  The same statement would be
+implemented in Lisp by calling three functions: the function
+<tt>setf</tt> to assign the variable <TT>x</TT> a value, the function <tt>+</tt> to
+perform the addition, and the function <tt>get_some_number</tt>.  The
+whole statement would appear as a nested list:
+
+<pre>(setf x (+ 2 (get_some_number)))
+</pre>
+Since we know that functions return values, we can translate this Lisp expression 
+into the English expression:
+
+<pre>The value of setting x to
+  the value of adding 2 to
+    the value of get_some_number.
+</pre>
+Given an input expression, how can we tell what is a
+function from what is not?  Since Lisp uses prefix notation, we know
+that the first element of each list in the input expression
+should be a function; therefore <tt>setf</tt>, <tt>+</tt>, and
+<tt>get-some-number</tt> are functions.  Conversely, <tt>x</tt> and
+<tt>2</tt> are not the first element of any list so they cannot be
+interpreted by Lisp as function calls.<p>
+
+<HR width=50%>
+<P>
+
+<b>8.</b> Lisp does not make a distinction between programs and data.
+How can this be?  Programs are functions, and functions are just lists
+of instructions for doing something.  So a function really has a dual
+nature: it can calculate something but it can also be treated simply
+as a list of symbols. The fact that functions are also lists makes it
+easy to implement programs that create other programs or
+to implement programs that analyze other programs (or even themselves)!  The two different
+interpretations of a program (as a set of instructions and as a list
+of symbols) depends only on the context in which it is used, or how it
+is evaluated by the Lisp interpreter.<p>
+
+<HR width=50%>
+<P>
+
+<b>9.</b> Lisp evaluation is easy to understand.  The Lisp
+interpreter processes input in three steps, first
+reading input, then evaluating it, and finally printing the results
+back to the terminal.  The reading and printing steps
+are simple to understand because they are both visible in the Lisp
+window.  But
+what does it mean for Lisp to evaluate an input expression?  There are
+actually only four simple rules to understand.  And when you
+understand these rules, you understand how Lisp works.<p>
+
+<BLOCKQUOTE>
+<DL>
+<DT><b>Rule 1.</b>
+
+<DD>If the expression is a constant value (a value that cannot change,
+like a number) then Lisp returns that value as the result of the
+evaluation, and no more rules apply.  Common constants are
+numbers, keywords, strings and <b>anything that is preceded by a
+single quote <tt>'</tt></b>.  The quote character forces Rule 1
+because it returns the thing that was quoted without the quote.
+In other words, a quoted expression -- no matter what it is -- 
+is constant because  the quote evaluates to the expression without the quote.
+Here are some examples of constants:<p>
+
+<TABLE compact> 
+<TD align=right>float:<TD align=left><TT>4.5</TT><TR>
+<TD align=right>quoted symbol:<TD align=left><tt>'socrates</tt><TR>
+<TD align=right>string:<TD align=left><tt>"Hello, World"</tt><TR>
+<TD align=right>ratio:<TD align=left><tt>1/3</tt><TR>
+<TD align=right>quoted integer:<TD align=left><tt>'100</tt><TR>
+<TD align=right>keyword:<TD align=left>
+    <tt>:this-is-a-long-keyword</tt><TR>
+<TD align=right>quoted list:<TD align=left><tt>'(+ 3 4 5 6)</tt><TR>
+<TD align=right>boolean true:<TD align=left><tt>t</tt><TR>
+<TD align=right>boolean false:<TD align=left><tt>nil</tt><TR>
+</TABLE>
+
+
+<DT><b>Rule 2. </b>
+
+<DD>If Rule 1 did not apply and the expression is a symbol, then Lisp
+treats the symbol as a variable and no more rules are considered. If
+the variable has a value, Lisp returns the value as the result of the
+evaluation.  If the variable does not have a value (is
+unbound), then Lisp signals an error and waits for the problem to be fixed.<p>
+
+<DT><b>Rule 3.</b>
+
+<DD>If Rule 1 and 2 did not apply and the expression is a list, then
+Lisp treats it as a function call and no more rules are
+considered. The first element in the list is assumed to be a Lisp
+function. The rest of the list, if anything, is assumed to be data for
+the function to use.  <b>Each expression in the data is evaluated in
+left-to-right order according to the 4 rules defined here</b>.  If no
+errors are found, then the results of the argument evaluation are
+passed, or "applied", to the function.  If the first element of the
+list is not a function, then an error is signaled.  If it is a
+function, then the value it produces is returned as the result of the
+evaluation.<p>
+
+<DT><B>Rule 4.</B>
+
+<DD>If rule 1, 2 or 3 do not apply, Lisp signals an error and waits for
+the problem to be fixed.<p>
+
+</DL>
+</BLOCKQUOTE>
+
+<HR width=50%>
+<P>
+
+<b>10.</b> Lisp is easy to learn. There are almost no syntax rules to
+remember, no need to declare anything, no need to compile, no need to
+understand the details of memory management.  Of course, this means
+that it is easy for a beginner to jump in and start writing
+poor programs.  One way to avoid this pitfall is to read at the
+first few chapters of a good introductory textbook.  An excellent
+choice would be "Common Lisp: A Gentle Introduction to Symbolic
+Computation" by David S. Touretzky (Benjamin/Cummings). This book has
+clear explanations and covers some useful topics.
+"LISP", by Patrick H. Winston and Berthold K. P. Horn (Addison-Wesley)
+is also very good, but generally deals with more complex topics than
+Touretzky.  Finally, for the non-beginner, Peter Norvig's
+"Paradigms of AI Programming: Case Studies in Common Lisp" (Morgan
+Kaufmann) is an excellent but advanced Common Lisp textbook.  It
+provides an in-depth exposition of AI programming techniques,
+complex system development, and includes large-scale detailed
+examples.<p>
+
+Another good way to learn Lisp is to look up the definition of each Lisp function you
+encounter in
+<A HREF="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/cltl2.html">
+Common Lisp: the Language (2nd Edition)</A>.  Be sure to also read the explanations of
+ related entries in the same section.  "Common Lisp, the Language"
+is considered to be the official definition of Common Lisp, and is
+also referred to by programmers as "CLtL2" and "the Bible".  Despite
+the inherently technical subject matter, CLtL2 is easy to read and
+contains many humorous and witty examples.<p>
+
+It is also important to start developing a good programming style from
+the very start.  There are a number of textbooks on lisp style, the
+best is probably "Lisp Style and Design" by Molly M. Miller and Eric
+Benson.  But most programmers pick up style pointers
+by studying other people's code.  Perhaps the easiest way to start learning
+about Lisp programming style is to read <A HREF="contrib/lispstyle.html">Lisp Style Tips</A>.
+See <A HREF="../cm.html#General_Lisp_Documentation">General Lisp Documentation</A>
+for more information.
+
+<HR>
+&copy;MCMXCV <I>by <A HREF="mailto:hkt@ccrma.stanford.edu">
+hkt@ccrma.stanford.edu</A></I>
+
+</BODY>
+</HTML>

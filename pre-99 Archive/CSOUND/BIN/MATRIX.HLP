@@ -1,0 +1,25 @@
+MATRIX BUILDER HELP
+
+This program allows the graphical creation of connection matrices and
+prints them in a form that can be read by GEN23 in csound
+
+Right-Button    Create a new node
+
+Centre-Button   Draw a link to another node, which is the next one
+                entered.  A blue line is draw to show where the link
+                would go
+1               (In a node) marks start of a link
+2               (In a node) marks the end of a link
+
+Right-Button    Move a node and all its links
+
+r, k            Delete a node and all its links
+
+d               Delete a link from/to current node
+        y       Delete this link
+        n       Do not delete this link
+
+The buttons at the bottom of the canvas write the matrix, change the
+name of the file for output, of leave the program.
+
+JPff: June 2000      

@@ -32,7 +32,7 @@ pyinit
 
 pyruni {{
 import random
-from composition import itemstream
+from thuja import itemstream
 
 random.seed()
 class PitchQueue:
