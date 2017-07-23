@@ -32,5 +32,5 @@ g.gen_lines = [
 g.generate_notes()
 g.end_lines = ['i99 0 ' + str(g.score_dur) + '\n']
 
-cs_utils.play_csound("repeater.orc", g)
+cs_utils.play_csound('repeater.orc', g, string_values={'path_to_file': "/Users/benmca/Music/_toSort/2016.11.16.Three 4-tracks-p1.wav"})
 
