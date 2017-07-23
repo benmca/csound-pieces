@@ -61,6 +61,7 @@ g2 = copy.deepcopy(g)
 g2.context['indexes'] = [.018]
 g2.context['rhythms'] = ['q']
 g2.streams[keys.pan] = Itemstream([0])
+g2.streams[keys.amplitude] = Itemstream([1])
 g2.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[g2.context['rhythms'],
                                                      g2.context['indexes']],

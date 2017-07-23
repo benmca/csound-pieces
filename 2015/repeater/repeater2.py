@@ -31,6 +31,7 @@ s.generate_notes()
 
 s.end_lines = ['i99 0 ' + str(s.score_dur) + '\n']
 
-s.generate_score("repeater2-.05.sco")
+# s.generate_score("repeater2-.05.sco")
+cs_utils.play_csound("indexguy.orc", g)
 # print(s.generate_score_string())
 
