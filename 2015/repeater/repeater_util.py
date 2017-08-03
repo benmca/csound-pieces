@@ -32,7 +32,7 @@ g = Generator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.rhythm,  Itemstream([args.delta*nprnd.random() for i in xrange(args.numtapes)], 'sequence', tempo=60)),
-        (keys.duration, Itemstream([(2*60)+44.859])),
+        (keys.duration, Itemstream([filedur])),
         (keys.amplitude, Itemstream([.25])),
         (keys.frequency, Itemstream([1])),
         (keys.pan, Itemstream([45])),

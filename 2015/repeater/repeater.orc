@@ -14,10 +14,10 @@ ipan=p6
 idist=p7
 ipct=p8
 
+
 Spath chnget "path_to_file"
 
 kamp	linen		iamp, .001, p3, .001
-
 al,ar	diskin	Spath, ipitch, 0
 
 ;al, ar  locsig	al, ipan, idist, ipct
