@@ -1,1 +1,0 @@
-sr=44010kr=4401ksmps=10nchnls=2instr 1endin

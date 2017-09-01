@@ -1,1 +1,0 @@
-sr=22050kr=2205ksmps=10nchnls=1instr 1kenv1	oscili	p5 , 1/p3, 2, 0kenv11	oscili	3900, 1/p3, 3, 0aosc21	oscili	kenv1, kenv11, 1, 0endin

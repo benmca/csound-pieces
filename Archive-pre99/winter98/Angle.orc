@@ -1,1 +1,0 @@
-sr=1024kr=1024ksmps=1nchnls=1instr 100 ; make table from 0->pi for half and then 0 for halfk1 oscil1i 0, 32767, p3*.5, 1a1 upsamp k1out a1endin

@@ -1,3 +1,0 @@
-Delete the following from csoundvst.zip:
-
-AEffect.* aeffectx.h AEffEditor.* AudioEffect.* audioeffectx.* *.obj *.pch *.tmp *.bak *.wav *.sbr *.ncb makedb.exe *.aps *.ilk *.sco *.orc *.pdb *.lib *.opt *.aps *.idb

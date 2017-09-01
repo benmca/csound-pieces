@@ -1,3 +1,0 @@
-LIBRARY			CsoundVST
-DESCRIPTION		'Csound VST2 Synthesizer'
-EXPORTS			main

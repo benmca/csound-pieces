@@ -1,1 +1,0 @@
-sr=22050kr=2205ksmps=10nchnls=2	instr	1idur=p3iamp=p4ifreq=p5k1	linen		iamp, .01, idur, .01k2	linseg	.2, p3*.5, .7, p3*.5, .2	; amp and dist indexkamp	=	k1*k2a1	oscili	kamp, ifreq, 1a2	tablei	a1+k2, 2	outs	a2*kamp, a2*kamp	endin

@@ -1,1 +1,0 @@
-sr=22050		kr=2205ksmps=10nchnls=1instr 1ifc=p5ifm=p6indx=p7kenv	linen	p4, .1, p3, .6asig1	oscili	indx*ifm, ifm, 1asig2	oscili	kenv, ifc+asig1, 1		out	asig2			endin

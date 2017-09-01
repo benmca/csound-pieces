@@ -1,1 +1,0 @@
-sr=22050kr=2205ksmps=10nchnls=1instr 1kenv	linen	p4, .01, p3, .01		ar	wgbow		kenv, p5, 3, 0.127236, 3, 100, 1out arendininstr 2kenv	linen	p4, .01, p3, .01		ar	wgflute	kenv, p5, 0.3, .1, .1, .25, 3, 100, 1out arendininstr 3kenv	linen	p4, .01, p3, .01		ar	wgbrass	kenv, p5, .1, 3, 100, 1, 1out arendin
