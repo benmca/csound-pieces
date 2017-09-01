@@ -1,0 +1,128 @@
+Release Notes for 3.52
+======================
+
+These are the release notes for version 3.52.  This is a collection of
+bug fixes from 3.51, and some major opcode renaming to avoid vlashes
+between variables and opcodes
+
+
+Bug Fixes
+---------
+
+Extending the number of GOTOs and LABELS had two independent bugs
+which wuld usually lead to a segmentation error.  Fixed
+
+Some use of [] could give a memory error, now fixed
+
+
+Language Changes
+----------------
+
+aiff files with Author, Annotation and Copyright chunks read correctly
+
+In score arithmetic, operators % (for remainder) and ^ allowed
+
+The use of {} for exponential ramps is supplimented by ( and ).  This
+is so we can withdraw { and } soon so they can be used for section
+brackets. 
+
+Opcode Fixes
+------------
+
+biquad has an additional optional argument to skip reinitialisation,
+so smooth transitions can happen
+
+distort1 changes so all but first argument are optional
+
+tonex, atonex and resonx corrected when reinit is skipped.  Shoudl
+remove soem clicks.
+
+The opcode readk, readk2, readk3 and readk4 have been given code.  The
+interpolation argument is currently ignored whiel I think about it.
+The code has not been tested so may fail.
+
+New Opcodes 
+-----------
+
+poscil -- High precision oscilator
+
+poscil3 -- High precision oscilator with cubic interpolation
+
+lposci -- High precision looping oscilator
+
+lposcil3 -- High precision looping oscilator with cubic interpolation
+
+
+Other Changes:
+-------------
+
+opcodes islider8, islider16, islider32 renamed slider8/slider16/slider32 
+ilimit renamed limit
+itableng renamed tableng
+itimes/itimek renamed times/timek
+All itable.... opcodes renamed tablei....
+ictrl... renamed ctrl...
+imidic... renamed midic...
+ion renamed noteon
+ioff rename noteoff
+iout... rename outi...
+kout... rename outk...
+agogobel renamed gogobel
+iondur renamed ondur
+iondur2 renamed ondur2 
+is16b14 renamed s16b14
+
+kread renamed readk
+kread2 renamed readk2
+kread3 renamed readk3
+kread4 renamed readk4
+
+Windows GUI Changes
+-------------------
+
+None
+
+
+------------------------------------------------------------------------
+==John ff
+  1999 Valentine's Day, available on Galileo's birthday
+========================================================================
+poscil and lposcil, poscil3 and lposcil3
+
+ar	poscil		kamp, kcps, ift [,iphs]
+kr	poscil		kamp, kcps, ift [,iphs]
+ar	poscil3		kamp, kcps, ift [,iphs]
+kr	poscil3		kamp, kcps, ift [,iphs]
+
+ar	lposcil		kamp, kfreqratio, kloop, kend, ift [,iphs]
+ar	lposcil3	kamp, kfreqratio, kloop, kend, ift [,iphs]
+
+
+
+INITALIZATION
+
+ift - function table number
+iphs - initial phase (in samples)
+
+PERFORMANCE
+
+ar - output signal
+kamp - amplitude
+kcps - frequency
+kfreqratio - multiply factor of table frequency (for example: 1 =
+        original frequency, 1.5 = a fifth up , .5 = an octave down)
+kloop - loop point (in samples)
+kend - end loop point (in samples)
+
+poscil (precise oscillator) is the same as oscili but allows hugely
+more precise frequency control (especially when using long tables and
+low frequency values). It uses floating-point table indexing instead
+of integer math, differently by oscil and oscili.  It is only a bit
+slower than oscili.
+
+lposcil (loop oscillator) allows to vary at k-rate the starting and
+ending point of a sample contained in a table.  This can be useful
+when reading samples loop of a wavetable which repeat speed can be
+varied during the performance.
+
+The versions with a 3 use cubic interpolation.

@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+
+<A NAME="change.cmd">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>change {<I>objects</I>} {<I>newclass</I>} {<I>new old</I>}*</B></TT>
+<TD align="right" valign="top">
+[Command]<TR>
+</TABLE><P><P>
+
+Changes the class of {<I>objects</I>} to {<I>newclass</I>}.
+Slots that exist in both the old and new object keep the same
+values.  Slots in the new class
+that do not exist in the old class are initialized according to
+the optional {<I>new old</I>}* list, where each new slot in the
+redefined instance receives the corresponding old slot value
+from the old instance.
+
+<P><B>Example:</B></P>
+
+Change all objects in Foo to be Pluck objects and
+set the new freq slot to the old note value:
+<PRE>Stella [Top-Level]: <B>change * pluck freq note
+</B></PRE>
+Change the class of only midi-notes:
+<PRE>Stella [Top-Level]: <B>{map * when (eq $class midi-note)
+       change pluck freq note}
+</B></PRE>
+<P><B>See Also:</B></P>
+<A HREF="map.cmd.html">map</A>
+
+<P>
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

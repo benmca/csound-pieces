@@ -1,0 +1,212 @@
+Release Notes for 3.58
+======================
+
+These are the release notes for version 3.58
+
+Bug Fixes
+---------
+
+A file in .csd was left open which stopped some things working
+
+
+Language Changes
+----------------
+
+Number of arguments to macros in both score and orchestra is
+unrestricted, and spaces are now allowed in argument lists
+
+Blank lines and comments in .csd files allowed
+
+
+Opcode Fixes
+------------
+
+readk opcodes could not have worked as they were.
+
+fof/fog only allocate space if phs is positive, to allow for legato
+
+some improvement in streson (but not yet correct)
+
+Avoid some crashes when using MIDI in non-midi context
+
+
+New Opcodes 
+-----------
+
+adsynt -- Additive synthesis
+
+hsboscil -- Oscilator with brightness and tonality control
+
+pitchamdf -- Pitch following
+
+Other Changes:
+-------------
+
+
+
+Windows GUI Changes
+-------------------
+
+Windows GUI Changes:
+The xyin opcode should now read the mouse at the requested rate.
+
+---------------
+xyin 
+
+Windows Implementation Note
+
+In this implementation, mouse input is read from the full screen
+rather than clipped to the Winsound output window. If you use
+more instances of xyin in an orchestra, they will only do 
+different scaling of the mouse cursor position (this was also
+true in the earlier version).
+The bottom left screen position is minimum for x and y. 
+Note that the graphics display option must be set to Full 
+for the xyin operator to be functional.
+
+Example:
+
+sr = 22050
+kr =   294
+ksmps = 75
+nchnls = 2
+
+instr 1 ; Simple xyin test
+	; Let oscillators range 20 - 2000 Hz
+	kcps1, kcps2 xyin .03, 20, 2000, 20, 2000, 500, 300
+	; Smooth input
+	kcps1 port kcps1, .01
+	kcps2 port kcps2, .01
+
+	; Use input
+	kamp linseg 0, .5, 20000, p3-1, 20000, .5, 0
+	kndx oscil 4, kcps1 / 50, 1
+	kndx = kndx+5
+	ar1 foscil kamp, 1, kcps1, kcps2, kndx, 1
+	ar2 foscil kamp, 1, kcps2, kcps1, kndx, 1
+
+		outs ar1, ar2
+endin
+
+; Score:
+
+f1 0 4096 10 1        ; sine
+
+i1 0 10
+e
+
+; End score
+
+
+
+------------------------------------------------------------------------
+
+ar    adsynt   kamp, kcps, ifn, ifreqtbl, iamptbl, icnt [, iphs]
+
+DESCRIPTION
+This opcode performs additive synthesis with an arbitrary number of
+partials (not necessarily harmonic). Frequency and amplitude of each 
+partial is given in the two tables provided. The purpose of this opcode
+is to have an instrument generate synthesis parameters at k-time and
+write them to the global parameter tables with the tablew opcode.
+
+INITIALIZATION
+ifn      -  a function table, usually a sine. Table values are not
+            interpolated for performance reasons, so you better 
+            provide a larger table for better quality.
+ifreqtbl -  an arbitrary function table. Size has to be at least icnt.
+            Table can contain frequency values for each partial at start,
+            but is usually used for generating parameters at runtime
+            with tablew. Frequencies must be relative to kcps.
+iamptbl  -  same as ifreqtbl for relative partial amplitudes. 
+icnt     -  number of partials to be generated.
+iphs     -  initial phase if each oscillator, if -1 initialization is skipped.
+            If > 1 all phases will be initialized with a random value.
+
+PERFORMANCE
+kamp     -  Amplitude of note.
+kcps     -  Base frequency of note. Partial frequencies will be relative
+            to kcps.
+========================================================================
+hsboscil
+--------
+
+ar    hsboscil   kamp, ktona, kbrite, ibasef, ifn, imixtbl [, ioctcnt] [, iphs]
+
+DESCRIPTION
+This oscillator takes tonality and brightness as arguments, relative to a
+base frequency (ibasef). Tonality is a cyclic parameter in the logarithmic
+octave, brightness is realized by mixing multiple weighted octaves.
+It is useful when tone space is understood in a concept of polar coordinates.
+If you run ktona as a line and keep kbrite constant, you get Risset's glissando.
+Oscillator table ifn is always read interpolated. 
+Performance time requires about ioctcnt * oscili.
+
+INITIALIZATION
+ibasef   -  a base frequency to which tonality and brighness are relative.
+ifn      -  a function table, usually a sine.
+imixtbl  -  a function table used for weighting the octaves, usually
+            something like:  f n 0  1024  -19  1  0.5  270  0.5
+ioctcnt  -  number of octaves used for brightness blending,
+            default is 3, minimum 2, maximum 10.
+iphs     -  initial phase if the oscillator, if -1 initialisation is skipped.
+
+PERFORMANCE
+kamp     -  Amplitude of note.
+ktona    -  Cyclic tonality parameter relative to ibasef in logarithmic 
+            octave, range 0 - 1, values > 1 can be used and are internally 
+            reduced to frac(ktona).
+kbrite   -  brightness parameter relative to ibasef achieved by 
+            weighting ioctcnt octaves. It is scaled in a way that a value
+            of 0 corresponds to orignal ibasef, 1 one octave above, -2 two
+            octaves below ibasef etc. and any fractional value in between.
+========================================================================
+pitchamdf
+---------
+
+kcps, krms   pitchamdf   asig, imincps, imaxcps [, icps] [, imedi] [, idowns] [, iexcps]
+
+DESCRIPTION
+This opcode follows the pitch of signal asig based on the amdf method 
+(Average Magnitude Difference Function) and outputs it to kcps. Additionally
+it outputs the energy of the signal to krms. The method is quite fast and
+should run in realtime. Techniques like that usually only work for monophonic
+signals.
+
+INITIALIZATION
+imincps  -  estimated minimum frequency (expressed in cps) present in the signal.
+imaxcps  -  estimated maximum frequency present in the signal.
+icps     -  estimated initial frequency of the signal. 
+            If 0, (imincps+imaxcps) / 2 is assumed. (Default = 0)
+imedi    -  size of median filter applied to kcps output. 
+            In fact, the resulting size of the filter will be imedi*2+1. 
+            If 0, no median filtering will be applied. (Default = 1)
+idowns   -  downsampling factor for asig. A factor of idowns>1 results in 
+            faster performance but may result in worse pitch detection.
+            Useful range is 1...4 (integer values). (Default = 1)
+iexcps   -  how frequently pitch analysis is executed, expressed in cps.
+            If 0, iexcps is set to imincps which is usually reasonable, 
+            but you can experiment with other values. (Default = 0)
+
+PERFORMANCE
+Pitch is detected quite reliably in monophonic signals if you select fitting
+init values. imincps and imaxcps should be as narrow as possible to the range
+of the signal's pitch - this results in better performance and better detection.
+Setting icps close to the signal's real initial pitch prevents garbage at start, as
+the process can only detect pitch after some periods. The median filter prevents
+the pitch from jumping - experiment what size is best for the given signal.
+The other init values can usually be left at their default.
+It can be useful to lowpass-filter asig before giving it to pitchamdf.
+
+EXAMPLE
+
+asig        loscil     1, 1, input, 1       ; get input signal with original freq
+asig        tone       asig, 1000           ; lowpass-filter
+kcps, krms  pitchamdf  asig, 150, 500, 200  ; extract pitch and envelope
+asig1       oscil      krms, kcps, iwave    ; "resynthesize" with some waveform
+            out        asig1                ;
+
+========================================================================
+==John ff
+  1999 August 30
+========================================================================

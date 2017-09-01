@@ -1,0 +1,211 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="formatting-slots.mcr">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>formatting-slots (<I>object stream</I> {<I>keyword value</I>}*)
+             {<I>slot</I> | (<I>slot</I> {<I>keyword value</I>}*)}*</B></TT>
+<TD align="right" valign="top">
+[Macro]<TR>
+</TABLE><P>
+
+Provides explicit control over printing slot values used when defining
+methods on <TT>write-event</TT> and <TT>print-object</TT>.
+<TT>formatting-slots</TT> uses <I>formatting directives</I> to control
+slot value printing. Directives may be applied globally to all slots
+or locally to a single slot.  A local formatting directive always
+overrides a global directive with the same name.  Directives are
+specified as <I>keyword value</I> pairs, where <I>keyword</I> is the
+name of the directive and <I>value</I> is its value.  <P>
+
+<I>Object</I> is the object whose slots are to be printed.
+<I>Stream</I> is the output stream .  Following <I>stream</I> comes
+zero or more global directives. Local directives are specified along
+with the slots in the body of the macro.  <P>
+
+<TT>formatting-slots</TT> implements the following directives: <P>
+
+<DL>
+
+<DT><TT>:preamble {<I>string</I> | <I>char</I>}</TT>
+
+<DD>Sets a string or character to be printed before any slot
+formatting occurs.
+
+<DT><TT>:postamble {<I>string</I> | <I>char</I>}</TT>
+
+<DD>Sets a string or character to be printed after all slot formatting
+occurs.
+
+<DT><TT>:delimiter {<I>string</I> | <I>char</I>}</TT>
+
+<DD>Sets a string or char to be printed between each value. Defaults
+to #\Space.
+
+<DT><TT>:print-if { t | :bound | :always}</TT>
+
+<DD>Controls how a slot should be processed.  If <TT>t</TT> (the
+default), the slot is formatted without first checking its current
+state.  This means that an error will be signaled if the slot is
+unbound at the time that its value should be printed.  This is the
+correct behavior for printing required instrument parameter values
+since the error detects incomplete score data at the earliest possible
+time.  If the value is :<TT>always</TT>, then an unbound slot will
+print "-unset-" as its value, otherwise its value is printed.  Use
+:<TT>always</TT> inside methods on the Lisp function
+<TT>print-object</TT> to include slots in the printed representation
+of the object even if they are unbound.  If the value is
+<TT>:bound</TT>, then a slot is formatted only if it actually contains
+a value, otherwise it is omitted from the formatting-slots display
+altogether.  Use <TT>:bound</TT> to print optional, keyword or message
+parameters.  All Music Kit parameters are formatted using
+<TT>:bound</TT>.
+
+<DT><TT>:prefix {<I>string</I> | <I>char</I> | <I>function-name</I>}</TT>
+
+<DD>Sets a string or character to be printed after <TT>:delimiter</TT>
+and before the value.  If supplied, <TT>:prefix</TT> must print any
+delimiter between itself and the value to be printed.  If
+<TT>:prefix</TT> is a function, it is called at macro expansion time
+to return the actual prefix string or character to be used.  The
+function is be passed one argument, the name of the slot to be
+prefixed.  The system provides two prefix functions,
+<TT>keyword-prefix</TT>, which returns the Lisp keyword name for a
+given, and <TT>music-kit-prefix</TT>, which returns the objective C
+message string for a slot.
+
+<DT><TT>:suffix {<I>string</I> | <I>char</I> | <I>function-name</I>}</TT>
+
+<DD>Like <TT>:prefix</TT> except that it is processed after the value
+has been printed.
+
+<DT><TT>:default {<I>value</I> | nil}</TT>
+
+<DD>Sets a value to be printed if the slot is unbound.
+
+<DT><TT>:eol {nil | t}</TT>
+
+<DD>Sets whether or not an end-of-line character is printed after
+<TT>formatting-slots</TT> has processed all other directives.
+Defaults to <TT>nil</TT>.
+
+<DT><TT>:printer {<I>function-name</I> | <I>lambda-expression</I>}</TT>
+
+<DD>Sets the function called to print the value. This function is
+passed two arguments, the value to print and the output stream.  The
+default printer is <TT>princ</TT>.
+
+<DT><TT>:filter {<I>function-name</I> | <I>lambda-expression</I>}</TT>
+
+<DD>Sets a function to receive the value just before it is printed.
+<TT>:filter</TT> returns a value to print.
+
+<DT><TT>:decimals {<I>integer</I> | nil}</TT>
+
+<DD>Creates a filter to check for numeric slot values.  If the value
+is not numeric it is printed as is.  If the value is a floating point
+number then it is rounded to <I>integer</I> places after the decimal
+point.  If <TT>:decimals</TT> is 0 then floating point values are
+coerced to integers.  <TT>:decimals</TT> and <TT>:filter </TT>are
+exclusive keywords.
+
+<DT><TT>:format {:quoted | :string | :careful}</TT>
+
+<DD>Controls how a value should be formatted.  <TT>:quoted </TT>causes
+the Lisp quote character ' to appear just before the printed
+value. <TT>:string</TT> causes the value to be printed inside string
+quotes "...".  <TT>:careful</TT> first checks the value to be printed.
+If the value is a list or an unbound symbol, it is quoted before
+printing, otherwise it value is printed as is.  <TT>:careful</TT> is
+useful for printing note names or instrument envelopes.
+
+<DT><TT>:constructor {<I>function</I>}</TT>
+
+<DD>Provides an escape to user defined formatting via a supplied
+function.  This function is called at macro expansion time to return a
+function of one argument which will become the formatting function for
+the slot.  <TT>:constructor</TT> cannot be used in conjunction with
+any other keyword.
+
+</DL>
+
+Local directives are specified inside the body of the macro.  The
+simplest local directive is just the name of a slot, in which case all
+formatting information for that slot is taken from the global
+formatting directives.  Otherwise, the local directive should be a
+list of the slot name followed by zero or more directives, as defined
+above. local directives always override global directives of the same
+name. (<TT>:Preamble</TT> and <TT>:postamble</TT> are global
+directives only.)  <P>
+
+In addition to local directives, three special tokens
+<TT>&amp;key</TT>, <TT>&amp;rest</TT> and <TT>&amp;optional</TT> may
+appear in the body of <TT>formatting-slots</TT>.  These tokens
+implement a shorthand for formatting values in "lambda list" format.
+All slot directives appearing after <TT>&amp;key</TT> will
+automatically contain a <TT>:print-if</TT> value of <TT>:bound</TT>
+and a <TT>:prefix</TT> value equal to the keyword name of the slot.
+<P>
+
+<P><B>Example:</B></P>
+
+Music Kit syntax:<P>
+
+<PRE>(formatting-slots (object stream :print-if :bound
+                         :prefix mk-make-prefix)
+  freq amp)
+</PRE>
+
+This causes the printed values of <TT>freq</TT> and <TT>amp</TT> to be
+delimited by a space and prefixed by their music kit message names.  A
+typical display would look like:<P>
+
+<PRE>
+freq:c4 amp:.9
+</PRE>
+
+CLM syntax:<P>
+
+<PRE>
+(formatting-slots (obj stream :preamble "(fm-violin "
+                      :postamble ")" :eol t)
+  time dur freq &amp;key :amp :ampenv)
+</PRE>
+
+This prints the object in Lisp lambda list syntax.  The slots amp and
+ampenv are treated as lisp keyword values and only appear if they
+currently have values.  A typical display might look like:<P>
+
+<PRE>
+(fm-violin 0.0 1.0 440.0 .5 :ampenv '(0 0 1 100))
+</PRE>
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

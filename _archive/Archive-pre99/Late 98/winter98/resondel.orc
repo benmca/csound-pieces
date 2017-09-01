@@ -1,0 +1,39 @@
+
+;Simple versions of the Karplus Strong Algorithm
+
+sr=22050
+kr=22050
+ksmps=1
+nchnls=1
+
+
+
+instr 1
+        afeedback init 0
+        anoise=0
+        ilooptime = 1/cpspch(p4)
+        iamp=p5
+       
+        a2 delay afeedback+anoise,ilooptime
+        a3 delay1 a2
+        afeedback=(a2+a3)*.5
+
+        out a2*iamp
+
+endin
+instr	2
+iamp=p4*.5
+ifreq=p5
+kenv0	expseg  10000, p3*.3, 700, p3*.7, 100
+anoise	randi	iamp, kenv0
+;kenv1	expseg  .5
+ares1	reson	anoise, ifreq*2, .5, 2
+ares2	reson	anoise, ifreq*3, .5, 2
+ares3	reson	anoise, ifreq*4, .5, 2
+ares4	reson	anoise, ifreq*5, .5, 2
+ares5	reson	anoise, ifreq*6, .5, 2
+ares6	reson	anoise, ifreq*7, .5, 2
+ares7	reson	anoise, ifreq, .5, 2
+kenv2	linen	1, .05, p3, .05
+	out	kenv2*(ares1+ares2+ares3+ares4+ares5+ares6+ares7)
+endin

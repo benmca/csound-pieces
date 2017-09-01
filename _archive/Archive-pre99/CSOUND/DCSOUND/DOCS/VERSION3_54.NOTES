@@ -1,0 +1,86 @@
+Release Notes for 3.54
+======================
+
+These are the release notes for version 3.54  
+
+Bug Fixes
+---------
+
+in -o there were some bracketing difficulties.
+
+Arguments in macros are now checked for length overflowing internal
+buffer
+
+fm4op opcodes could give rubbish die to uninitialised array.
+
+Function nsamp made usable
+
+
+Language Changes
+----------------
+
+For piped output to work there must not be a WAV or AIFF header (they
+require a rewind).  This is not checked.
+
+The default sound file is test, test.wav or test.aif depending on
+selected format.
+
+There are now y and z type arguments in entry.c (from Gabriel)
+
+When using line events the e event is now accepted
+
+Both .csd and .CSD files are accepted as description files
+
+The system expects to have a file csound.txt for strings.  This allows
+for languages other than American.
+
+
+Opcode Fixes
+------------
+
+An error message in pvread said it was from pvoc.  Changed to correct
+opcode. 
+
+pareq, rezzy, moogvcf and biquad optimised a little
+
+New Opcodes 
+-----------
+
+sum -- add together arbitrary number of arguments
+
+product -- multiply arbitrary number of arguments
+
+
+Other Changes:
+-------------
+
+Internal changes to optimise all irate random opcodes; not much though.
+
+Internally the variable PMASK has been renamed PHMASK as (a) that is a
+better description and (b) it caused problems on Solaris
+
+
+Windows GUI Changes
+-------------------
+
+Automatic adding of .wav or .aif on sound files
+
+
+------------------------------------------------------------------------
+==John ff
+  1999 May 17
+========================================================================
+
+aout sum        a1, a2, a3, ...
+aout product    a1, a2, a3, ...
+
+DESCRIPTION
+
+The signals are added or multiplied together to give the output signal.
+
+PERFORMANCE
+
+a1, a2,.. -- audio inputs
+
+------------------------------------------------------------------------
+

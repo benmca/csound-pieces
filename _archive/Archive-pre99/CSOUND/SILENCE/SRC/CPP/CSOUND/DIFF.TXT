@@ -1,0 +1,674 @@
+13c13
+<        char sconame[L_tmpnam+4];
+---
+> char sconame[L_tmpnam+4];
+22,23c22,23
+<   char           *name;
+<   struct namelst *next;
+---
+> 	char           *name;
+> 	struct namelst *next;
+54,74c54,74
+<       if (macBufNdx >= 200) { /*then we must read in new buffer */
+< 	macBufNdx = 0;
+< 	ourReturn = fread(macBuffer, 1, num, stream);
+< 	if (ourReturn == 0)
+< 	  return NULL;
+<       }
+<       else {
+< 	char c = macBuffer[macBufNdx];
+< 	if (c == '\0' || c == '\n' || c == '\r') {
+< 	  buffer[bufferNdx] = '\r';
+< 	  if (bufferNdx < 199)
+< 	    buffer[bufferNdx+1] = '\0';
+< 	  macBufNdx++;
+< 	  return buffer;
+< 	}
+< 	else {
+< 	  buffer[bufferNdx] = c;
+< 	  bufferNdx++;
+< 	  macBufNdx++;
+< 	}
+<       }
+---
+> 		if (macBufNdx >= 200) { /*then we must read in new buffer */
+> 			macBufNdx = 0;
+> 			ourReturn = fread(macBuffer, 1, num, stream);
+> 			if (ourReturn == 0)
+> 				return NULL;
+> 		}
+> 		else {
+> 			char c = macBuffer[macBufNdx];
+> 			if (c == '\0' || c == '\n' || c == '\r') {
+> 				buffer[bufferNdx] = '\r';
+> 				if (bufferNdx < 199)
+> 					buffer[bufferNdx+1] = '\0';
+> 				macBufNdx++;
+> 				return buffer;
+> 			}
+> 			else {
+> 				buffer[bufferNdx] = c;
+> 				bufferNdx++;
+> 				macBufNdx++;
+> 			}
+> 		}
+84,91c84,91
+<       int ch = getc(stream);
+<       if (ch == EOF) {                       /* error or EOF       */
+<         if (s == a) return NULL;         /* no chars -> leave  */
+<         if (ferror(stream)) a = NULL;
+<         break; /* add NULL even if ferror(), spec says 'indeterminate' */
+<       }
+<       if ((*s++ = ch) == '\n') break;
+<       if (*(s-1) == '\r') break;
+---
+> 		int ch = getc(stream);
+> 		if (ch == EOF) {                       /* error or EOF       */
+> 			if (s == a) return NULL;         /* no chars -> leave  */
+> 			if (ferror(stream)) a = NULL;
+> 			break; /* add NULL even if ferror(), spec says 'indeterminate' */
+> 		}
+> 		if ((*s++ = ch) == '\n') break;
+> 		if (*(s-1) == '\r') break;
+120,130c120,130
+<       if (sampused[i]) {
+<         sprintf(name, "soundin.%d", i);
+<         remove(name);
+<       }
+<     while (toremove) {
+<       NAMELST *nxt = toremove->next;
+<       remove(toremove->name);
+<       free(toremove->name);
+<       free(toremove);
+<       toremove = nxt;
+<     }
+---
+> 		if (sampused[i]) {
+> 			sprintf(name, "soundin.%d", i);
+> 			remove(name);
+> 		}
+> 		while (toremove) {
+> 			NAMELST *nxt = toremove->next;
+> 			remove(toremove->name);
+> 			free(toremove->name);
+> 			free(toremove);
+> 			toremove = nxt;
+> 		}
+141,142c141,143
+<     char *filnamp = files;
+< 
+---
+>     char *filnamp = files;
+> 	
+> 	
+144,156c145,170
+<       if (strstr(buffer,"</CsOptions>") == buffer) {
+< 	return TRUE;
+<       }
+<       argc = 1;
+<       argv[0] = "csound";
+<       p = buffer;
+<       while (*p == ' ') p++;      /* Ignore leading spaces */
+<       if (*p==';' || *p=='#') continue; /* Comment line? */
+<       if (*p=='\n' || *p=='\r') continue; /* Empty line? */
+<       argv[1] = p;
+<       while (*p != '\0') {
+< 	if (*p==' ') {
+<           *p++ = '\0';
+---
+> 		if (strstr(buffer,"</CsOptions>") == buffer) {
+> 			return TRUE;
+> 		}
+> #ifdef SSOUND
+> 		{
+> 			extern char *orchname;
+> 			orchname = 0;
+> 		}
+> 		p = buffer;
+> 		while (*p == ' ') p++;      /* Ignore leading spaces */
+> 		if (*p==';' || *p=='#') continue; /* Comment line? */
+> 		if (*p=='\n' || *p=='\r') continue; /* Empty line? */
+> 		argc = 0;
+> 		argv[0] = p;
+> #else
+> 		argc = 1;
+> 		argv[0] = "csound";
+> 		p = buffer;
+> 		while (*p == ' ') p++;      /* Ignore leading spaces */
+> 		if (*p==';' || *p=='#') continue; /* Comment line? */
+> 		if (*p=='\n' || *p=='\r') continue; /* Empty line? */
+> 		argv[1] = p;
+> #endif
+> 		while (*p != '\0') {
+> 			if (*p==' ') {
+> 				*p++ = '\0';
+158c172
+<           printf("argc=%d argv[%d]=%s\n", argc, argc, argv[argc]);
+---
+> 				printf("argc=%d argv[%d]=%s\n", argc, argc, argv[argc]);
+160,186c174,200
+<           while (*p == ' ') p++;
+< 	  if (*p==';' ||
+<               *p=='#' ||
+<               (*p == '/' && *(p+1) == '/')) { /* Comment line? */
+< 	    *p = '\0'; break;
+< 	  }
+<           if (*p == '/' && *(p+1) == '*') {  /* Comment line? */
+<             p += 2;
+<           top:
+<             while (*p != '*' && *p != '\0') p++;
+<             if (*p == '*' && *(p+1)== '/') {
+<               p += 2; break;
+<             }
+<             if (*p=='*') {
+<               p++; goto top;
+<             }
+<             my_fgets(buffer, 200, unf);
+<             p = buffer; goto top;
+< 	  }
+<           argv[++argc] = p;
+<         }
+<         else if (*p=='\n' || *p == '\r') {
+< 	  *p = '\0';
+< 	  break;
+< 	}
+< 	p++;
+<       }
+---
+> 				while (*p == ' ') p++;
+> 				if (*p==';' ||
+> 					*p=='#' ||
+> 					(*p == '/' && *(p+1) == '/')) { /* Comment line? */
+> 					*p = '\0'; break;
+> 				}
+> 				if (*p == '/' && *(p+1) == '*') {  /* Comment line? */
+> 					p += 2;
+> top:
+> 					while (*p != '*' && *p != '\0') p++;
+> 					if (*p == '*' && *(p+1)== '/') {
+> 						p += 2; break;
+> 					}
+> 					if (*p=='*') {
+> 						p++; goto top;
+> 					}
+> 					my_fgets(buffer, 200, unf);
+> 					p = buffer; goto top;
+> 				}
+> 				argv[++argc] = p;
+> 			}
+> 			else if (*p=='\n' || *p == '\r') {
+> 				*p = '\0';
+> 				break;
+> 			}
+> 			p++;
+> 		}
+188c202
+<       printf("argc=%d argv[%d]=%s\n", argc, argc, argv[argc]);
+---
+> 		printf("argc=%d argv[%d]=%s\n", argc, argc, argv[argc]);
+190,191c204,205
+<       /*      argc++;                   /* according to Nicola but wrong */
+<       argdecode(argc, argv, &filnamp, getenv("SFOUTYP")); /* Read an argv thing */
+---
+> 		/*      argc++;                   /* according to Nicola but wrong */
+> 		argdecode(argc, argv, &filnamp, getenv("SFOUTYP")); /* Read an argv thing */
+200c214
+< 
+---
+> 	
+207,208c221,222
+<       perror(Str(X_269,"Failed to create\n"));
+<       exit(1);
+---
+> 		perror(Str(X_269,"Failed to create\n"));
+> 		exit(1);
+211,216c225,230
+<       if (strstr(buffer,"</CsInstruments>") == buffer) {
+< 	fclose(orcf);
+< 	atexit(deleteOrch);
+< 	return TRUE;
+<       }
+<       else fputs(buffer, orcf);
+---
+> 		if (strstr(buffer,"</CsInstruments>") == buffer) {
+> 			fclose(orcf);
+> 			atexit(deleteOrch);
+> 			return TRUE;
+> 		}
+> 		else fputs(buffer, orcf);
+226c240
+< 
+---
+> 	
+233,234c247,248
+<       return FALSE;
+< 
+---
+> 		return FALSE;
+> 	
+236,241c250,255
+<       if (strstr(buffer,"</CsScore>") == buffer) {
+< 	fclose(scof);
+< 	atexit(deleteScore);
+< 	return TRUE;
+<       }
+<       else fputs(buffer, scof);
+---
+> 		if (strstr(buffer,"</CsScore>") == buffer) {
+> 			fclose(scof);
+> 			atexit(deleteScore);
+> 			return TRUE;
+> 		}
+> 		else fputs(buffer, scof);
+252c266
+< 
+---
+> 	
+254,255c268,269
+<       printf(Str(X_206,"Cannot create temporary file for MIDI subfile\n"));
+<       exit(1);
+---
+> 		printf(Str(X_206,"Cannot create temporary file for MIDI subfile\n"));
+> 		exit(1);
+261,262c275,276
+<       printf(Str(X_217,"Cannot open temporary file (%s) for MIDI subfile\n"), midname);
+<       exit(1);
+---
+> 		printf(Str(X_217,"Cannot open temporary file (%s) for MIDI subfile\n"), midname);
+> 		exit(1);
+266,267c280,281
+<       printf(Str(X_255,"Error in reading MIDI subfile -- no size read\n"));
+<       exit(1);
+---
+> 		printf(Str(X_255,"Error in reading MIDI subfile -- no size read\n"));
+> 		exit(1);
+270,271c284,285
+<       c = getc(unf);
+<       putc(c, midf);
+---
+> 		c = getc(unf);
+> 		putc(c, midf);
+277,281c291,295
+<       if (my_fgets(buffer, 200, unf)!= NULL) {
+<         if (strstr(buffer,"</CsMidifile>") == buffer) {
+<           return TRUE;
+<         }
+<       }
+---
+> 		if (my_fgets(buffer, 200, unf)!= NULL) {
+> 			if (strstr(buffer,"</CsMidifile>") == buffer) {
+> 				return TRUE;
+> 			}
+> 		}
+291c305
+< 
+---
+> 	
+293c307
+<       c = getc(in);
+---
+> 		c = getc(in);
+297,314c311,328
+<       while (c == '\n') c = getc(in);
+<       if (c == '=' || c == '<' || c == EOF) break;
+<       if (isupper(c))       n[cycl] = c-'A';
+<       else if (islower(c))  n[cycl] = c-'a'+26;
+<       else if (isdigit(c))  n[cycl] = c-'0'+52;
+<       else if (c == '+')    n[cycl] = 62;
+<       else if (c == '/')    n[cycl] = 63;
+<       else {
+< 	fprintf(stderr, "Non 64base character %c(%2x)\n", c, c);
+< 	exit(1);
+<       }
+<       cycl++;
+<       if (cycl == 4) {
+< 	putc((n[0] << 2) | (n[1] >> 4), out);
+< 	putc(((n[1] & 0xf) <<4) | ((n[2] >> 2) & 0xf), out);
+< 	putc(((n[2] & 0x3) << 6) | n[3], out);
+< 	cycl = 0;
+<       }
+---
+> 		while (c == '\n') c = getc(in);
+> 		if (c == '=' || c == '<' || c == EOF) break;
+> 		if (isupper(c))       n[cycl] = c-'A';
+> 		else if (islower(c))  n[cycl] = c-'a'+26;
+> 		else if (isdigit(c))  n[cycl] = c-'0'+52;
+> 		else if (c == '+')    n[cycl] = 62;
+> 		else if (c == '/')    n[cycl] = 63;
+> 		else {
+> 			fprintf(stderr, "Non 64base character %c(%2x)\n", c, c);
+> 			exit(1);
+> 		}
+> 		cycl++;
+> 		if (cycl == 4) {
+> 			putc((n[0] << 2) | (n[1] >> 4), out);
+> 			putc(((n[1] & 0xf) <<4) | ((n[2] >> 2) & 0xf), out);
+> 			putc(((n[2] & 0x3) << 6) | n[3], out);
+> 			cycl = 0;
+> 		}
+318c332
+<       fprintf(stderr, "Ended on cycl=1\n");
+---
+> 		fprintf(stderr, "Ended on cycl=1\n");
+321c335
+<       putc((n[0] << 2) | (n[1] >> 4), out);
+---
+> 		putc((n[0] << 2) | (n[1] >> 4), out);
+324,325c338,339
+< 	putc((n[0] << 2) | (n[1] >> 4), out);
+< 	putc(((n[1] & 0xf) <<4) | ((n[2] >> 2) & 0xf), out);
+---
+> 		putc((n[0] << 2) | (n[1] >> 4), out);
+> 		putc(((n[1] & 0xf) <<4) | ((n[2] >> 2) & 0xf), out);
+333c347
+< 
+---
+> 	
+335,336c349,350
+<       printf(Str(X_206,"Cannot create temporary file for MIDI subfile\n"));
+<       exit(1);
+---
+> 		printf(Str(X_206,"Cannot create temporary file for MIDI subfile\n"));
+> 		exit(1);
+342,344c356,358
+<       printf(Str(X_217,"Cannot open temporary file (%s) for MIDI subfile\n"),
+<              midname);
+<       exit(1);
+---
+> 		printf(Str(X_217,"Cannot open temporary file (%s) for MIDI subfile\n"),
+> 			midname);
+> 		exit(1);
+351,355c365,369
+<       if (my_fgets(buffer, 200, unf)!= NULL) {
+<         if (strstr(buffer,"</CsMidifileB>") == buffer) {
+<           return TRUE;
+<         }
+<       }
+---
+> 		if (my_fgets(buffer, 200, unf)!= NULL) {
+> 			if (strstr(buffer,"</CsMidifileB>") == buffer) {
+> 				return TRUE;
+> 			}
+> 		}
+365c379
+< 
+---
+> 	
+369,370c383,384
+<       printf("File %s already exists\n", sampname);
+<       exit(1);
+---
+> 		printf("File %s already exists\n", sampname);
+> 		exit(1);
+375,376c389,390
+<       printf("Cannot open sample file (%s) subfile\n", sampname);
+<       exit(1);
+---
+> 		printf("Cannot open sample file (%s) subfile\n", sampname);
+> 		exit(1);
+382,383c396,397
+<       atexit(deleteSamp);
+<       firstsamp = 0;
+---
+> 		atexit(deleteSamp);
+> 		firstsamp = 0;
+386,390c400,404
+<       if (my_fgets(buffer, 200, unf)!= NULL) {
+<         if (strstr(buffer,"</CsSampleB>") == buffer) {
+<           return TRUE;
+<         }
+<       }
+---
+> 		if (my_fgets(buffer, 200, unf)!= NULL) {
+> 			if (strstr(buffer,"</CsSampleB>") == buffer) {
+> 				return TRUE;
+> 			}
+> 		}
+399c413
+< 
+---
+> 	
+402,403c416,417
+<       printf("File %s already exists\n", filename);
+<       exit(1);
+---
+> 		printf("File %s already exists\n", filename);
+> 		exit(1);
+408,409c422,423
+<       printf("Cannot open file (%s) subfile\n", filename);
+<       exit(1);
+---
+> 		printf("Cannot open file (%s) subfile\n", filename);
+> 		exit(1);
+414,415c428,429
+<       atexit(deleteSamp);
+<       firstsamp = 0;
+---
+> 		atexit(deleteSamp);
+> 		firstsamp = 0;
+418,422c432,436
+<       NAMELST *n = (NAMELST*)malloc(sizeof(NAMELST));
+<       n->next = toremove;
+<       toremove = n;
+<       n->name = (char*)malloc(1+strlen(filename));
+<       strcpy(n->name, filename);
+---
+> 		NAMELST *n = (NAMELST*)malloc(sizeof(NAMELST));
+> 		n->next = toremove;
+> 		toremove = n;
+> 		n->name = (char*)malloc(1+strlen(filename));
+> 		strcpy(n->name, filename);
+425,429c439,443
+<       if (my_fgets(buffer, 200, unf)!= NULL) {
+<         if (strstr(buffer,"</CsFileB>") == buffer) {
+<           return TRUE;
+<         }
+<       }
+---
+> 		if (my_fgets(buffer, 200, unf)!= NULL) {
+> 			if (strstr(buffer,"</CsFileB>") == buffer) {
+> 				return TRUE;
+> 			}
+> 		}
+439,453c453,467
+<       if (strstr(buffer, "</CsVersion>")==0) return result;
+<       if (strstr(buffer, "Before")==0) {
+<         sscanf(buffer, "Before %d.%d", &major, &minor);
+<         if (VERSION>major) result = FALSE;
+<         else if (SUBVER>minor) result = FALSE;
+<       }
+<       else if (strstr(buffer, "After")==0) {
+<         sscanf(buffer, "After %d.%d", &major, &minor);
+<         if (VERSION<major) result = FALSE;
+<         else if (SUBVER<minor) result = FALSE;
+<       }
+<       else if (sscanf(buffer, "%d.%d", &major, &minor)==2) {
+<         if (VERSION<major) result = FALSE;
+<         else if (SUBVER<minor) result = FALSE;
+<       }
+---
+> 		if (strstr(buffer, "</CsVersion>")==0) return result;
+> 		if (strstr(buffer, "Before")==0) {
+> 			sscanf(buffer, "Before %d.%d", &major, &minor);
+> 			if (VERSION>major) result = FALSE;
+> 			else if (SUBVER>minor) result = FALSE;
+> 		}
+> 		else if (strstr(buffer, "After")==0) {
+> 			sscanf(buffer, "After %d.%d", &major, &minor);
+> 			if (VERSION<major) result = FALSE;
+> 			else if (SUBVER<minor) result = FALSE;
+> 		}
+> 		else if (sscanf(buffer, "%d.%d", &major, &minor)==2) {
+> 			if (VERSION<major) result = FALSE;
+> 			else if (SUBVER<minor) result = FALSE;
+> 		}
+462c476
+< 
+---
+> 	
+465c479
+< 
+---
+> 	
+473c487
+<       i += eat_to_eol(&buffer[i]);
+---
+> 		i += eat_to_eol(&buffer[i]);
+475,476c489,490
+<       if (buffer[i]!=' ' && buffer[i]!='\t') return FALSE;
+<       i++;
+---
+> 		if (buffer[i]!=' ' && buffer[i]!='\t') return FALSE;
+> 		i++;
+485c499
+<                                        MIDI and the like. */
+---
+> 	MIDI and the like. */
+491,492c505,506
+<       return 0;
+< 
+---
+> 		return 0;
+> 	
+502,568c516,582
+<       if (strstr(buffer,"<CsoundSynthesizer>") == buffer ||
+< 	  strstr(buffer,"<CsoundSynthesiser>") == buffer) {
+< 	printf(Str(X_453,"STARTING FILE\n"));
+<         started = TRUE;
+<       }
+<       else if (strstr(buffer,"</CsoundSynthesizer>") == buffer ||
+< 	       strstr(buffer,"</CsoundSynthesiser>") == buffer)	{
+< 	*pname = orcname;
+< 	*score = sconame;
+< 	if (midiSet) {
+<           O.FMidiname = midname;
+<           O.FMidiin = 1;
+<         }
+<         fclose(unf);
+< 	return result;
+<       }
+<       else if (strstr(buffer,"<CsOptions>") == buffer) {
+< 	printf(Str(X_233,"Creating options\n"));
+< 	r = readOptions(unf);
+<         result = r && result;
+<       }
+< /*        else if (strstr(buffer,"<CsFunctions>") == buffer) { */
+< /*  	importFunctions(unf); */
+< /*        } */
+<       else if (strstr(buffer,"<CsInstruments>") == buffer) {
+< 	printf(Str(X_234,"Creating orchestra\n"));
+< 	r = createOrchestra(unf);
+<         result = r && result;
+<       }
+< /*  	  else if (strstr(buffer,"<CsArrangement>") == buffer) { */
+< /*  	    importArrangement(unf); */
+< /*  	  } */
+<       else if (strstr(buffer,"<CsScore>") == buffer) {
+< 	printf(Str(X_235,"Creating score\n"));
+< 	r = createScore(unf);
+<         result = r && result;
+<       }
+< /*  	  else if (strstr(buffer,"<CsTestScore>") == buffer) { */
+< /*  	    importTestScore(unf); */
+< /*  	  } */
+<       else if (strstr(buffer,"<CsMidifile>") == buffer) {
+< 	r = createMIDI(unf);
+<         result = r && result;
+<       }
+<       else if (strstr(buffer,"<CsMidifileB>") == buffer) {
+< 	r = createMIDI2(unf);
+<         result = r && result;
+<       }
+<       else if (strstr(buffer,"<CsSampleB filename=") == buffer) {
+<         r = createSample(unf);
+<         result = r && result;
+<       }
+<       else if (strstr(buffer,"<CsFileB filename=") == buffer) {
+<         r = createFile(unf);
+<         result = r && result;
+<       }
+<       else if (strstr(buffer,"<CsVersion>") == buffer) {
+<         r = checkVersion(unf);
+<         result = r && result;
+<       }
+<       else if (blank_buffer()) continue;
+<       else if (started && strchr(buffer, '<') == buffer) {
+<         printf(Str(X_510,"unknown command :%s\n"), buffer);
+<       }
+<       else {                    /* Quietly skip unknown text */
+< 	/* printf(Str(X_510,"unknown command :%s\n"), buffer); */
+<       }
+---
+> 		if (strstr(buffer,"<CsoundSynthesizer>") == buffer ||
+> 			strstr(buffer,"<CsoundSynthesiser>") == buffer) {
+> 			printf(Str(X_453,"STARTING FILE\n"));
+> 			started = TRUE;
+> 		}
+> 		else if (strstr(buffer,"</CsoundSynthesizer>") == buffer ||
+> 			strstr(buffer,"</CsoundSynthesiser>") == buffer)	{
+> 			*pname = orcname;
+> 			*score = sconame;
+> 			if (midiSet) {
+> 				O.FMidiname = midname;
+> 				O.FMidiin = 1;
+> 			}
+> 			fclose(unf);
+> 			return result;
+> 		}
+> 		else if (strstr(buffer,"<CsOptions>") == buffer) {
+> 			printf(Str(X_233,"Creating options\n"));
+> 			r = readOptions(unf);
+> 			result = r && result;
+> 		}
+> 		/*        else if (strstr(buffer,"<CsFunctions>") == buffer) { */
+> 		/*  	importFunctions(unf); */
+> 		/*        } */
+> 		else if (strstr(buffer,"<CsInstruments>") == buffer) {
+> 			printf(Str(X_234,"Creating orchestra\n"));
+> 			r = createOrchestra(unf);
+> 			result = r && result;
+> 		}
+> 		/*  	  else if (strstr(buffer,"<CsArrangement>") == buffer) { */
+> 		/*  	    importArrangement(unf); */
+> 		/*  	  } */
+> 		else if (strstr(buffer,"<CsScore>") == buffer) {
+> 			printf(Str(X_235,"Creating score\n"));
+> 			r = createScore(unf);
+> 			result = r && result;
+> 		}
+> 		/*  	  else if (strstr(buffer,"<CsTestScore>") == buffer) { */
+> 		/*  	    importTestScore(unf); */
+> 		/*  	  } */
+> 		else if (strstr(buffer,"<CsMidifile>") == buffer) {
+> 			r = createMIDI(unf);
+> 			result = r && result;
+> 		}
+> 		else if (strstr(buffer,"<CsMidifileB>") == buffer) {
+> 			r = createMIDI2(unf);
+> 			result = r && result;
+> 		}
+> 		else if (strstr(buffer,"<CsSampleB filename=") == buffer) {
+> 			r = createSample(unf);
+> 			result = r && result;
+> 		}
+> 		else if (strstr(buffer,"<CsFileB filename=") == buffer) {
+> 			r = createFile(unf);
+> 			result = r && result;
+> 		}
+> 		else if (strstr(buffer,"<CsVersion>") == buffer) {
+> 			r = checkVersion(unf);
+> 			result = r && result;
+> 		}
+> 		else if (blank_buffer()) continue;
+> 		else if (started && strchr(buffer, '<') == buffer) {
+> 			printf(Str(X_510,"unknown command :%s\n"), buffer);
+> 		}
+> 		else {                    /* Quietly skip unknown text */
+> 			/* printf(Str(X_510,"unknown command :%s\n"), buffer); */
+> 		}
+573,574c587,588
+<       O.FMidiname = midname;
+<       O.FMidiin = 1;
+---
+> 		O.FMidiname = midname;
+> 		O.FMidiin = 1;

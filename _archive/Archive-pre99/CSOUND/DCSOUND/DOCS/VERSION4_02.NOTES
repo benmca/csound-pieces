@@ -1,0 +1,56 @@
+Release Notes for 4.02
+======================
+
+These are the release notes for version 4.02.  This is a set of small
+changes against version 4.01.
+
+
+
+Bug Fixes
+---------
+
+On Windows, Macintoshes and BeOS any silent section of audio was
+possibly too long by up to 127 k-cycles.
+
+Coding error in tablew code fixed -- may have not given any errors.
+Similar error in Windows interface fixed.
+
+Temporary files are removed (was OK on Unix)
+
+^ in scores refers to previous event always
+
+
+Language Changes
+----------------
+
+Gen23 treats negative numbers correctly, and is more forgiving in some cases
+
+
+Opcode Fixes
+------------
+
+All the slider code had potential problems (order of evaluation)
+
+
+New Opcodes 
+-----------
+
+NONE
+
+Other Changes:
+-------------
+
+Slightly improved performance on Windows.
+
+
+Windows GUI Changes
+-------------------
+
+Improved code for play_at_end and similar.  Fixes some longstanding oddities
+
+Stupid coding errors in sound input fixed
+
+------------------------------------------------------------------------
+==John ff
+  2000 Jan 29
+========================================================================

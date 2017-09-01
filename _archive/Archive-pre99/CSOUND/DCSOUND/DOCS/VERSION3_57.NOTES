@@ -1,0 +1,214 @@
+Release Notes for 3.57
+======================
+
+These are the release notes for version 3.57
+
+Bug Fixes
+---------
+
+clock opcodes all mapped to clock 0 -- fixed
+
+divz was decoded incorrectly in parsing
+
+The triple strike in marimba never happened due to programming error.
+The percentage of doubles and singles are variable as two optional
+arguments, both defaulting to 20%.
+
+Some error and warning strings were wrong.  Extensively reviewed and
+fixed
+
+
+Language Changes
+----------------
+
+In GEN23 (read ASCII file of numbers it is now possible to have a
+length of 0 and have the generator calculated from the number of
+numbers in the file.
+
+
+Opcode Fixes
+------------
+
+in buzz and gbuzz at least 1 harmonic is always used, and the absolute
+value of the number is used rather than giving a warning
+
+bug in wgbrass fixed which could lead to crashes
+
+
+New Opcodes 
+-----------
+
+active -- tell how many active instances there are of an instrument
+cpuprc  -- limit number of allocations of an instrument by load
+maxalloc -- limit number of allocations of an instrument count
+prealloc -- create a pool of unactive instances
+
+expsega -- a-rate exponential segments
+
+logbtwo 
+powoftwo -- fast versions of pow and log in both i and k position
+
+ilen	filelen	ifilcod		; returns length of "ifilcod" in seconds
+isr	filesr	ifilcod		; returns the sample rate of "ifilcod"
+inchnls	filenchnls ifilcod	; returns the number of chnls of "ifilcod"
+ipeak	filepeak ifilcod, [ichnl]  ; returns peak absolute value of
+				   ; "ifilcod"
+			; if ichnl=0, returns peak out of all channels
+			; if ichnl>0, returns the peak of ichnl
+			; if ichnl is not specified, returns peak of
+			;	the entire file.
+			; currently only supports AIFF_C float files
+
+Other Changes:
+-------------
+
+The pvtool utility has been included in utils2, and as a -U option
+
+
+Windows GUI Changes
+-------------------
+
+New dialog for pvlook utility
+
+
+------------------------------------------------------------------------
+==John ff
+  1999 August 3
+========================================================================
+active
+
+inum  active   ins
+
+DESCRIPTION
+
+Returns the number of active instances of instrument number ins
+
+------------------------------------------------------------------------
+expsega 
+
+asig expsega ia, idur1, ib[, idur2, ic[...]] 
+
+DESCRIPTION 
+
+An exponential segment generator operating at a-rate. This unit is
+almost identical to expseg, but very more precise when defining
+segments with very short duration (i.e. in percussive attack phase) at
+audio-rate.  
+
+Note that expseg opcode does not operate correctly at audio rate when
+segments are shorter than a k-period.
+
+INITIALISATION 
+
+ia - starting value. Zero is illegal. 
+ib, ic, etc. - value after idur1 seconds, etc. must be non-zero and
+must agree in sign with ia.  
+idur1 - duration in seconds of first segment. 
+
+A zero or negative value will cause all initialization to be skipped. 
+
+idur2, idur3, etc. - duration in seconds of subsequent segments. 
+A zero or negative value will terminate the initialization process
+with the preceding point, permitting the last-defined line or curve to
+be continued indefinitely in performance.  The default is zero. 
+
+PERFORMANCE 
+
+These units generate control or audio signals whose values can pass
+through 2 or more specified points.  The sum of dur values may or may
+not equal the instrument's performance time: a shorter performance
+will truncate the specified pattern, while a longer one will cause the
+last-defined segment to continue on in the same direction.
+------------------------------------------------------------------------
+powoftwo(x) 
+logbtwo(x) 
+
+powoftwo() function returns 2 ^ x and allows positive and negatives
+numbers as argument.  
+
+logbtwo() returns the logarithm base two of x.
+
+If the argument is in the range [-5,+5] for powoftwo() or [0.25,4]
+for logbatwo() then an internal table is used, allowing a precision
+more fine than one cent in a range of ten octaves.  Outside those
+ranges the value is calculated afresh and will be as slow as use of
+pow or log.
+
+logbtwo() returns the logarithm base two of x. 
+
+Also they are very useful when working with tuning ratios. They work
+at i and k-rate.
+------------------------------------------------------------------------
+
+cpuprc
+maxalloc
+
+  cpuprc	instrnum, ipercent
+  maxalloc      instrnum, icount
+  prealloc      instrnum, icount
+
+DESCRIPTION
+cpuprc sets the cpu processing-time percent usage of an instrument in
+order to avoid buffer underrun in realtime performances 
+maxalloc limits the number of allocations of an instrument.
+prealloc creates space for instruments but does not run them
+
+INITIALIZATION
+
+instrnum - instrument number
+ipercent - percent of cpu processing-time to assign
+icount -- number of instruments instances that can be allocated
+
+cpuprc is an opcode that enables a sort of polyphony theshold.  The
+user must set ipercent value for each instrument he want to activate
+in realtime.  It is assumed that the total theorical processing time
+of the cpu of the computer is 100%, but note that this percent value
+can only be defined empirically.
+
+For example if ipercent is set to 5% for instrument 1, the maximum
+number of voices that can be allocated at any time will be 20 (as 5% X
+20 = 100%). If the user attempts to play a further note while the 20
+previous notes are still playing, Csound inhibits the allocation of
+that note and will display a warning message,
+
+In order to avoid audio buffer underruns, it is suggested to set
+the maximum number of voices a bit below the real processing power
+of the computer, because sometimes an instrument can require more
+processing time than normal (for example, if the instrument contains
+an oscillator which reads a table that doesn't fit in cache memory,
+it will be slower than normal; also, any concurrent program which run
+in multitasking, can subtract more processing power in some cases,
+less power in other cases etc.)
+
+Initially all instruments are set to a default value of ipercent =
+0.0% (i.e. zero processing time or rather infinite cpu
+processing-speed).  Note that this opcode can be used either at
+instrument 0 time or dynamically, when it only affects later
+instruments.  Any active instuenmt whose load is changed may lead to
+incorrect or anomolous results.
+
+In maxalloc setting the number of maximum allocation to 0 means
+unlimited allocations are allowed.  A negative allocation disallows
+any allocation.
+
+
+example:
+
+sr=44100
+kr=441
+ksmps=100
+nchnls=2
+
+cpuprc 1, 2.5		;** set instr 1 to 2.5% of cpu, max 40 voices
+cpuprc 2, 33.333 	;** set instr 2 to 33.333% of cpu, max 3 voices
+
+instr 1
+...body...
+endin
+
+instr 2
+....body...
+endin
+
+
+------------------------------------------------------------------------

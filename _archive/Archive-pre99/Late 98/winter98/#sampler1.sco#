@@ -1,0 +1,36 @@
+
+f 1 0 32768 1 "forest.aiff" 0 0 0
+f 2 0 4097 9 .5 1 0
+
+;p4=soundin#, p5=skiptime, p6=leftamp, p7=rightamp
+;p1 p2 p3 p4 p5 p6 p7
+i1  1  1  1  0  1  0
+i1  2  1  1  0  0  1
+s
+
+;p4=ratescale, p5=ampscale, p6=soundfunc, p7=location, p8=revsend, p9=ampfunc
+;p1 p2 p3 p4 p5 p6 p7 p8 p9
+i3  1  1  1  1  1  .5  0  2
+i3  2 .5  2  1  1  .1  0  2
+i3  3  2  .5 1  1  .9  0  2
+s
+
+;p4=ratescale, p5=ampscale, p6=soundfunc, p7=location, p8=revsend, p9=ampfunc
+;p1 p2 p3 p4 p5 p6 p7 p8 p9
+i4  1  1  1  1  1  .9  0  2
+i4  2 .5  2  1  1  .9  0  2
+i4  3  .5  .5 1  1  .9  0  2
+s
+
+;p4=ratescale, p5=ampscale, p6=soundfunc, p7=location, p8=revsend, p9=ampfunc
+;p1 p2 p3 p4 p5 p6 p7 p8 p9
+i5  1  10  1  1  1 .5  0 2
+i5  6  5  .85 1  1 .5  0 2
+s
+
+;p4=ratescale, p5=ampscale, p6=soundfunc, p7=location, p8=revsend, p9=ampfunc
+;p1 p2 p3 p4 p5 p6 p7 p8 p9
+i6  1  10  1  1  1 .5  0 2
+i6  6  5  .85 1  1 .5  0 2
+e
+

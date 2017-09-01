@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="changes.mcr">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>changes {start <I>value</I>}* {end <I>value</I>}* 
+          {step <I>value</I>}*</B></TT>
+<TD align="right" valign="top">
+[Macro]<TR>
+</TABLE><P>
+
+Returns one or more values suitable for the <TT>rotation</TT>
+pattern's <TT>change</TT> option.  <TT>start</TT>, <TT>end</TT>,
+<TT>step</TT>, and <TT>width</TT> may be numbers or lists of numbers.
+These values are "spread" across as many changes as necessary to
+represent the longest list of values.  <P>
+
+<P><B>Example:</B></P>
+
+<PRE>? (setf x (items a b c d in rotation
+                 change (changes start '(0 1) width 2)))
+<I>#&lt;ROTATIONAL-ITEM-STREAM 123424&gt;</I>
+
+? (loop repeat 8 collect (read-items x))
+<I>((A B C D) (C D A B) (C B A D) (A D C B) (A B C D)
+ (C D A B) (C B A D) (A D C B))</I>
+</PRE>
+
+<P><B>See Also:</B></P>
+
+<A HREF="rotation.pat.html"><TT>rotation</TT></A>
+
+<P>
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

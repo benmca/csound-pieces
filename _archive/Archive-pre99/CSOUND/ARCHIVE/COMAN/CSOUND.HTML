@@ -1,0 +1,500 @@
+<HTML>
+<HEAD>
+<!--Begin JavaScript roadmap code.  If editing downloaded HTML source, delete
+ this portion.-->
+
+<script language="JavaScript">
+
+<!--
+
+function TripodShowPopup() 
+{
+	// open the popup window
+	var popupURL = "http://members.tripod.com/adm/popup/roadmap.shtml";
+  	var popup = window.open(popupURL,"TripodPopup",'toolbar=0,location=0,directories=0,status=0,menubar=0,scrollbars=0,resizable=0,width=575,height=105');
+	// set the opener if it's not already set.  it's set automatically
+	// in netscape 3.0+ and ie 3.0+.
+	if( navigator.appName.substring(0,8) == "Netscape" )
+	{
+		popup.location = popupURL;
+	}
+}
+
+TripodShowPopup();
+
+// -->
+
+</script>
+
+<!--End inserted JavaScript code.-->
+
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (Win95; I) [Netscape]">
+   <TITLE>jmc instruments</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#66FFFF" ALINK="#FF0000">
+The JMC Csound Repository
+<BR><I>by Josep M Comajuncosas</I>
+<BR>&nbsp;
+<BR><FONT SIZE=-1>Hi Csounders. This is a set of Csound orchestras and
+scores I&acute;ve been collecting for years. Most of them work at sr=kr=44100
+and some are MIDIfied. My recent projects include a full <B>GM set </B>of
+Csound orchestras and a <B>Cband</B> of exotic woodwinds. Any suggestion
+and contribution would be greatly welcome!</FONT>
+<BR>&nbsp;
+<CENTER><TABLE BORDER >
+<TR>
+<TD BGCOLOR="#CC0000">
+<CENTER><B><BLINK><FONT COLOR="#FFFFFF"><FONT SIZE=-1>Contribute with your
+GM instruments!</FONT></FONT></BLINK></B></CENTER>
+
+<CENTER><FONT COLOR="#FFFFFF"><FONT SIZE=-2>By now I have already 40 <I>acceptable</I>
+GM MIDIfied instruments. I need a lot more!</FONT></FONT></CENTER>
+
+<CENTER><FONT COLOR="#FFFFFF"><FONT SIZE=-2>I &acute;ll post the full set
+as soon as I get all the 128 instr&acute;s ;-)</FONT></FONT></CENTER>
+
+<CENTER><FONT COLOR="#FFFFFF"><FONT SIZE=-1><A HREF="mailto:gelida@intercom.es">e-mail
+me!</A><I> (plz no samples)</I></FONT></FONT></CENTER>
+</TD>
+</TR>
+</TABLE></CENTER>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#FFFF99" >
+<CAPTION>Acoustic Guitar</CAPTION>
+
+<TR>
+<TD><I>PhM / CWS - SDL model</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCC99">A fully MIDIfied Acoustic Guitar based on papers
+from Tero Tolonen. The body impulse response comes from a Ramirez guitar
+and was kindly provided by Dr. Julius Orion Smith III.&nbsp;
+<BR>The sound is maybe too dull. Experiment with the user definable parameters!&nbsp;
+<BR>Synthesis technique: Commuted Waveguide Synthesis (2 Single Delay Loop
+strings in parallel)&nbsp;
+<BR>This instrument is polyphonic. Pitchbend works but can cause some discontinuities
+if it is too drastic. Maybe I&acute;ll implement a transient eliminator
+routine later on. Notice the fractional delay filter is a simple 1st order
+Lagrange interpolator by now. Suggested <I>sr = 44100</I> otherwise you
+must resample the IR. <I>kr</I> can be lower.&nbsp;</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="guitar.zip">guitar.zip</A> (includes orc&amp;sco files,
+a recorded guitar IR and a MIDI file)</I></TD>
+
+<TD><A HREF="guitar.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#FF99FF" >
+<CAPTION>Wts Bassoon</CAPTION>
+
+<TR>
+<TD><I>WTS / Waveshaping + HPF</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCC33">Sort of bassoon timbre with a bright attack modeled
+using Wave Terrain Synthesis + output lowpass filter. I suggest you not
+to display graphics (the instrument generates some hundreds of tables at
+initialisation).&nbsp;
+<BR>&nbsp;</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="wtsbassoon.ZIP">wtsbassoon.zip</A></I></TD>
+
+<TD><A HREF="wtsbassoon.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<CENTER><TABLE WIDTH="100%" BGCOLOR="#CCFFFF" >
+<CAPTION>Clarinet</CAPTION>
+
+<TR>
+<TD><I>PhM / Dynamic System - SDL model</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFFCC">A fairly sophisticated set of waveguide clarinets
+based on the paper "Physical Models of Wind Instruments: A Generalized
+Excitation Coupled with a Modular Tube Simulation Platform" by Gijs de
+Bruin and Maarten von Walstijn (JNMR Vol.24 pp 148-163).&nbsp;
+<BR>The excitation model derived by Keefe even includes air inertance and
+soft clipping for reed beating, and is solved in discrete time using a
+specially optimized integration scheme.&nbsp;
+<BR>Maarten was kind enough helping me in this Csound implementation, adding
+some improvements specially in the reflectance filter, the dual bore system
+for note transitions and a new soft clipping routine.&nbsp;
+<BR>Notice <I>kr must equal sr = 44100 </I>in this implementation. It runs
+in 2 instruments, instr1 is the MIDIfied one, and instr2 must be left activated
+during the performance.&nbsp;</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>COMING SOON</I></TD>
+
+<TD><A HREF="clarinet.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE></CENTER>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;&nbsp;
+<DIV ALIGN=right><TABLE WIDTH="100%" BGCOLOR="#99FF99" >
+<CAPTION>Wts drone</CAPTION>
+
+<TR>
+<TD><I>WTS</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#F5EC72">An example of Wave Terrain Synthesis from my HTML
+chapter to be included in R. Boulanger&acute;s Csound book. It generates
+a virtual surface by creating a rather high number of f-tables.Once the
+tables have been stored in memory, it is efficient to index the "surface"
+with multiple and slightly different orbits, for example placing the center
+of the orbit at different places in the surface. This orquestra creates
+in this way a very dense, deep analog-like drone sound. The mp3 example
+has been compressed and reenveloped after rendering.</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="wts_drone.ZIP">wts_drone</A>.zip</I></TD>
+
+<TD><A HREF="wts_drone.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE></DIV>
+&nbsp;&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE BGCOLOR="#993300" >
+<CAPTION>Metallic squeal</CAPTION>
+
+<TR>
+<TD><I>PhM ?</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#CC6600">This instrument can generate massive amounts of feedback
+noise by chaining a <I>repluck</I> unit with an IIR comb filter whose clipped
+output is in turn sent back to the repluck opcode, as if a guitar pickup
+was excited by the sound coming from the speaker. It emulates quite convincingly
+the guitar my neighbour uses to play at saturday evenings...</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="fdbk.zip">fdbk.zip</A></I></TD>
+
+<TD><A HREF="fdbk.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>&nbsp;
+<TABLE BGCOLOR="#FF3737" >
+<CAPTION>Techno bass</CAPTION>
+
+<TR>
+<TD><I>NLDS</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FF8C8C">Synthesis by Functional Iterations. This instrument
+is based on an article by Di Scipio &amp; Prignano, Journal of New Music
+Research, vol.25 (1996), pp. 31-46.&nbsp;
+<BR>Basically with these settings it creates an analog-like bass whose
+harmonic richness and eventually noise content can be adjustable by approaching
+the chaotic region of the bifurcation map.</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="siniter.zip">siniter.zip</A></I></TD>
+
+<TD><A HREF="tech_bass.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#CCCCCC" >
+<CAPTION>Karplus Strong variants</CAPTION>
+
+<TR>
+<TD><I>PhM / SDL model</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFC6C6">Some variants of the KS algorithm implemented as
+orchestra code to better understant it. I&acute;ve included a new Passive
+nonlinear filter developed by J.Pierce &amp; Scott V. Duyne / US Patent
+5,703,313 which can add a nice inharmonicity to your design.</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="ks.zip">KS.zip</A></I></TD>
+
+<TD>NO SAMPLE</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#FFCC99" >
+<CAPTION>Resynthesis examples</CAPTION>
+
+<TR>
+<TD><I>Resynthesis / Cross-synthesis</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#AD6B3F">This zip file includes examples of orchestras making
+use of the Hetro, Pvoc &amp; Lpc related resynthesis routines. Unfortunately
+I couldn&acute;t include the *.pv and *.wav files in the zip due to lack
+of disk space. Take them as a tutorial, the analysis are<I> really</I>
+bad.</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="resynth.zip">resynth.zip</A></I></TD>
+
+<TD>NO SAMPLE</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#00CC00" >
+<CAPTION>Tubular Bell</CAPTION>
+
+<TR>
+<TD><I><FONT COLOR="#FFFFFF">FM</FONT></I></TD>
+
+<TD><I><FONT COLOR="#FFFFFF">Josep M Comajuncosas</FONT></I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#66FFFF">My beloved FM Tubular Bell based on Nicky Hind&acute;s
+CLM tutorials (CCRMA, 1995).</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I><FONT COLOR="#FFFFFF">Get <A HREF="tubbell.zip">tubbell.zip</A>
+<B>(fixed at March 31, 1999)</B></FONT></I></TD>
+
+<TD><FONT COLOR="#FFFFFF"><A HREF="tubbell.mp3">mp3</A> sample</FONT></TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+
+<P>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#FF99FF" >
+<CAPTION>Kick bass drum</CAPTION>
+
+<TR>
+<TD><I>Analog Modelling</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#CCFFFF">The classic TR909 kick drum with a Drum Modeler based
+on STOMPER ULTRA++ oscillator module.</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="bdrum.zip">bdrum.zip</A></I></TD>
+
+<TD><A HREF="bdrum.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#FFCC00" >
+<CAPTION>TB 303 bass line</CAPTION>
+
+<TR>
+<TD><I>Analog Modelling</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFCC99">A rather complex instrument which tries to emulate
+the classic Roland TB303 bassline. It includes bandlimited sawtooth waves,
+24dB/oct Resonant Lowpass filter, ftable-based sequencer with accent &amp;
+slide and lots of minutiae to get that wonderful acid sound. To be included
+in R. Boulanger&acute;s Csound book together with some other analog emulations.</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="303emu.zip">303emu.zip</A></I></TD>
+
+<TD><A HREF="303emu.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#FFCCFF" >
+<CAPTION>Another Analog Synth</CAPTION>
+
+<TR>
+<TD><I>Analog Modelling</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FF6666">A cool synth making use of the new Csound opcodes
+for analog modelling, and even a PCF (pattern controlled filter) fully
+configurable. I&acute;ve included some dozens of filter patterns to start
+with. Also with distortion and syncronized delay like in Rebirth. Even
+more 303ish than my former 303 emulator!</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>COMING SOON</I></TD>
+
+<TD>COMING SOON</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#FF9900" >
+<CAPTION>Solina String machine</CAPTION>
+
+<TR>
+<TD><I>Analog Modelling</I></TD>
+
+<TD><I>Josep M Comajuncosas</I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#FFFF99">Tutorial showing how to get a good string ensemble
+sound reminiscent of the classig analog machines. The orchestra includes
+instruments of progressive refinement and complexity. The mp3 sample shows
+the final result.</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I>Get <A HREF="solina.zip">solina.zip</A></I></TD>
+
+<TD><A HREF="solina.mp3">mp3</A> sample</TD>
+</TR>
+</TABLE>
+&nbsp;
+<BR>&nbsp;
+<BR>&nbsp;
+<TABLE WIDTH="100%" BGCOLOR="#CC33CC" >
+<CAPTION>Analog Vocoder</CAPTION>
+
+<TR>
+<TD><I><FONT COLOR="#FFFFFF">Analog Modelling</FONT></I></TD>
+
+<TD><I><FONT COLOR="#FFFFFF">Josep M Comajuncosas</FONT></I></TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="#CCFFFF">My very own 8-band routable vocoder, employing a
+Solina string ensemble as the carrier and a drum pattern as the modulator.
+Flexible routing with the zak system and selectable frequency with table
+look-up. Improved freq. response with the addition of an unvocoded hi.freq.
+signal. Judge the results ! (the mp3 sample has been compressed at 1:2
+after rendering). <I>note:</I> To use it you may create a sound file to
+be called as the modulator input, by default named "f:\drums.wav".</TD>
+
+<TD></TD>
+</TR>
+
+<TR>
+<TD><I><FONT COLOR="#FFFFFF">Get <A HREF="jcnvoc.zip">jcnvoc.zip</A></FONT></I></TD>
+
+<TD><FONT COLOR="#FFFFFF"><A HREF="Jcn_voc.mp3">mp3</A> sample</FONT></TD>
+</TR>
+</TABLE>
+&nbsp;
+
+<P>&nbsp; For questions, suggestions and contributions please e-mail me
+at <A HREF="mailto:gelida@intercom.es">gelida@intercom.es</A>
+<BR>&nbsp;
+
+<P>&nbsp;
+<BR>&nbsp;
+<CENTER><TABLE BORDER WIDTH="43%" BGCOLOR="#000000" >
+<TR>
+<TD>
+<CENTER><I><FONT SIZE=-1><FONT COLOR="#FFFFFF">Csounders that have accessed
+this page since February 7 , 1999</FONT> :</FONT></I>
+<!--PRINCIPIO CiberStats-->
+<a HREF="http://gigs.infase.es/cgi-bin/status.cgi?csound_counter">
+  <script type="text/javascript" language="JavaScript">
+      <!--
+           document.write("<img src=\"http://gigs.infase.es/cgi-bin/hit.cgi?user=csound_counter");
+           document.write("&referer=",escape(document.referrer));
+           document.write("\" border=0 alt=\"Ciberstats\">");
+      // -->
+  </script>
+  <noscript><img SRC="http://gigs.infase.es/cgi-bin/hit.cgi?csound_counter" border=0 width=77 height=22 alt="CiberStats"></noscript>
+</a>
+<!--FIN CiberStats--> 
+</TR>
+</TABLE></CENTER>
+&nbsp;
+</BODY>
+</HTML>

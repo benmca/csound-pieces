@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<TITLE>Stella Tutorial (Saving Material)</TITLE>
+<!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<a name="Saving_Material"></A>
+<A HREF="s07.html"><i>Next Chapter</i></A><BR>
+<A HREF="s05.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+
+<H2>Saving Material</H2>
+
+<H3><A HREF="../../dict/archive.cmd.html">archive</TT></a></H3>
+
+
+The <tt>archive</tt> command saves objects to a *.cm archive file.
+This next example saves all the objects in Top-Level:<p>
+
+<PRE>Stella [Test]: <b>up</b>
+
+Focus:    Top-Level
+Type:     Container
+Status:   System
+Elements: 4
+
+Stella [Top-Level]: <b>archive * examples</b>
+Archiving /user/hkt/examples.cm
+Stella [Top-Level]: 
+</PRE>
+
+The default archive file is "test.cm" in your home directory. File
+names are merged against this default to produce the fully specified
+pathname for the archive.  <tt>Archive</tt> stores the current output
+syntax along with the objects it saves so that the current syntax is
+restored when the archive is loaded.  There are a few potential
+pitfalls to be aware of when archiving objects: <P>
+
+<OL>
+
+<LI> If an object is saved without its parent, the links will be broken when the object is reloaded.
+
+<LI> <tt>Archive</tt> does not check for circularity.
+
+<LI> Saving an algorithm that uses global variables may cause problems
+if those variables are undefined when the object is later reloaded and
+run. Its usually safest to save algorithms in a text file as you
+develop them in a text editor.
+
+</OL>
+<P>
+
+<A HREF="s07.html"><i>Next Chapter</i></A><BR>
+<A HREF="s05.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+<P>
+
+
+  Last Modified:  5-Mar-1998
+</BODY>
+</HTML>     
+

@@ -1,0 +1,1 @@
+sr=22050kr=2205ksmps=10nchnls=1instr	2kenv	linen	16000, .05, 10, .05aosc oscili kenv, 440, 1out aoscendininstr 3kenv	linen	p4, p6, p3, p7aosc	oscili	kenv, p5, p8out aoscendin

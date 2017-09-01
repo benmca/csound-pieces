@@ -1,0 +1,1 @@
+sr=22050kr=2205ksmps=10nchnls=1	instr	1k1	linseg	50, p3*.5, 5, p3*.5, 1000	; xdensk2	linseg	.1, p3, .05k3	linseg	2, p3*.5, 5, p3*.5, .1a1	grain		p4*k3, 1, k1, 0, 2, k2, 1, 2, 1	out		a1	endin

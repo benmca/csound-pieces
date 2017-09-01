@@ -1,0 +1,209 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Csound"=.\Csound\Csound.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "CsoundConsole"=.\CsoundConsole\CsoundConsole.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Csound
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CsoundMathLink"=.\CsoundMathLink\CsoundMathLink.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Csound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CsoundVST
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SSound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CsoundConsole
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CsoundWindows
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SSoundConsole
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name csoundFreeverb
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name csoundStk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CsoundVST"=.\CsoundVST\CsoundVST.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Csound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SSound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name csoundFreeverb
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name csoundStk
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CsoundWindows"=.\CsoundWindows\CsoundWindows.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Csound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CsoundVST
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SSound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name csoundFreeverb
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name csoundStk
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CsoundConsole
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SSoundConsole
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "SSound"=.\SSound\SSound.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Csound
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "SSoundConsole"=.\SSoundConsole\SSoundConsole.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Csound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SSound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name CsoundVST
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "csoundFreeverb"=.\csoundFreeverb\csoundFreeverb.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Csound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SSound
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "csoundStk"=.\csoundStk\csoundStk.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Csound
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name SSound
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

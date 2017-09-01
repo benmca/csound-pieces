@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="clock-mode.fun">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>clock-mode &amp;optional<I> mode</I></B></TT>
+<TD align="right" valign="top">
+[Function]<TR>
+</TABLE><P>
+
+Returns the system's current clock mode, or sets the clock mode
+if <i>mode</i> is specified. <i>mode</I> may be specified as
+<tt>:seconds</tt>, <tt>:milliseconds</tt>, or the integer
+number of divions per second: 1 or 1000</tt>.
+<p> The system clock mode determines
+how time is managed during event processing, and what type of values
+are returned by <TT>rhythm</tt> and <tt>rhythms</tt>. Two clock
+modes are currently supported, <tt>:seconds</tt>
+and <tt>:milliseconds</tt>. When the clock mode is
+<tt>:seconds</tt> (the default), values for rhythm, start,
+duration, etc. may be expressed as rational or floating point
+time values, where 1.0 equals 1 second. If the clock mode is
+<tt>:milliseconds</tt>, time must be expressed in integer
+millisecond values, where 1000 milliseconds equals 1 second.
+<tt>:milliseconds</tt> time mode is slightly less intuitive
+but results in "consless" time calculations. This is critical
+if the scheduler is run in real time since "garbage collection"
+may cause dropouts during music processing if eohemeral consing
+occurs. In addition,  <tt>:milliseconds</tt> time mode may run
+significantly faster than floating point
+<tt>:seconds</tt> in some ports of Common Music. 
+<P>
+
+<P><B>Example:</B></P>
+
+<PRE>? (clock-mode)
+<I>:seconds</I>
+? (clock-mode :milliseconds)
+<I>:milliseconds</I>
+? (rhythm 4)
+<I>500</I>
+? (clock-mode 1)
+<I>:seconds</I>
+? (rhythm 4)
+<I>1.0</I>
+</PRE>
+<P><B>See Also:</B></P>
+
+<A HREF="in-tempo.fun.html"><TT>in-tempo</TT></A>,
+<A HREF="rhythm.fun.html"><TT>rhythm</TT></A> [Function],
+<A HREF="rhythms.mcr.html"><TT>rhythms</TT></A>,
+<A HREF="tempo.mcr.html"><TT>tempo</TT></A>
+<P>
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

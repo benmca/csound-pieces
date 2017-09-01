@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="definstrument.mcr">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>definstrument {<I>name</I> | (<I>name </I>{<I>keyword value</I>}*)}
+    ({<I>parameters</I>}+) {<I>form</I>}*</B></TT>
+<TD align="right" valign="top">
+[Macro]<TR>
+</TABLE><P>
+
+Defines a <TT>CLM</TT> instrument and a note class of the same name
+for composing with the instrument.  <I>name</I> is the name of the
+instrument, and may be specified as a list together with
+optional keywords that provide control over the exact
+behavior of <TT>definstrument</TT>.  In addtion to the keywords
+suported by CLM, Common Music adds three keywords of its own:<P>
+
+<DL>
+
+<DT><TT>:time-parameter {<I>name</I> | <I>position</I> | nil}</TT>
+
+<DD>Declares that the parameter <I>name</I> or the parameter
+at <I>position</I> (zero-based) in <I>parameters</I> is the
+"start time" of the instrument. The default value is 0, which means
+that time is to be passed as the first
+argument to the instrument. If <TT>:time-parameter</tt> is <tt>nil</tt>
+then no time value is passed.
+
+<DT><TT>:printer {<I>function</I>}</TT>
+
+<DD>Declares <i>function</i> to be the scorefile printer for the
+object.  The default printer is <tt>clm-print</tt>, which prints
+floating point numbers rounded to three places and precedes
+unquoted envelope lists with an explicit quote.  If specified, <i>function</i> is passed
+two arguments, the value to print and the stream.
+
+<DT><TT>:instrument-only {nil | t}</TT>
+
+<DD>Determines if a Common Music event class is defined for the instrument.
+The default value is <TT>nil</TT>, which means that an event class
+is defined.
+
+</DL>
+
+<P><B>See Also:</B></P>
+
+<A HREF="clm.stx.html"><TT>CLM</TT></A> [Syntax],
+<A HREF="../tutorials/stella/s11.html#Working_with_CLM"
+   TARGET="_parent">Working with CLM</A>,
+<A HREF="../tutorials/stella/fm.ins"
+   TARGET="_parent">tutorials/stella/fm.ins</A>
+<P>
+
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:    5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

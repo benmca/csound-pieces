@@ -1,0 +1,467 @@
+<HTML>
+<HEAD>
+<TITLE>Stella Tutorial (Loading, Browsing and Listening)</TITLE>
+<!-- Changed by: Tobias Kunze,  6-Mar-1998 -->
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<A NAME="Loading_Browsing_Listening"></A>
+<A HREF="s03.html"><i>Next Chapter</i></A><BR>
+<A HREF="s01.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+
+<H2>Loading, Browsing and Listening</H2>
+
+This chapter introduces a few basic editor operations.  See the help
+texts on <TT>load</TT>, <TT>list</TT>, <TT>show</TT> and <TT>mix</TT>
+for complete information.<p>
+
+<A HREF="../../dict/load.cmd.html"><H3><TT>Load</TT></H3></A>
+
+First, use <tt>load</tt> to load the first example into Stella.<p>
+
+<I>[The opus1.cm example file is located in the same directory as this
+tutorial. On a Macintosh you can load files using the
+"Load..." File menu item..  If you prefer
+typing file names  remember that the directory delimiter
+is `:' rather than `/' on the Mac.]</i><P>
+
+<PRE>Stella [Top Level]: <b>load /Lisp/cm/doc/tutorials/stella/opus1</b>
+Loading /Lisp/cm/doc/tutorials/stella/opus1.cm
+Syntax set to MIDI
+Stella [Top-Level]: 
+</PRE>
+
+<tt>load</tt> loads a Lisp file.  By default <tt>load</tt> looks for
+.cm archive files.  Archive files contain Lisp code that recreates the
+archived objects.<p>
+
+
+<H3><TT><A NAME="list"><A HREF="../../dict/list.html">List</A></TT></H3>
+
+Use <tt>list</tt> to display the current contents of the editor:<p>
+
+<PRE>Stella [Top-Level]: <b>list</b>
+Top-Level:
+      1.    #&lt;THREAD: Pulse&gt;
+      2.    #&lt;ALGORITHM: Sinus&gt;
+Stella [Top-Level]: 
+</PRE>
+
+If <tt>list</tt> is invoked without any arguments the current focus
+object is listed.  The current focus is Top-Level, a system container
+holding all the named objects currently defined.  There are currently
+two objects, a <TT>thread</TT> named <I>Pulse</I> and an
+<TT>algorithm</TT> named <I>Sinus</I>. <tt>list</tt> prints the name
+of the listed container in the first column, and each indented line
+shows the position and the object at that position in the listed
+container (the #&lt;&gt; delimiters always indicate an object of some sort.<p>
+
+
+<H3><a name="Show"><A HREF="../../dict/show.cmd.html"><TT>Show</TT></A></a></H3>
+
+Now take a closer look at each object:<p>
+
+<PRE>Stella [Top-Level]: <b>show pulse,sinus</b>
+
+Object:   Pulse
+Type:     Thread
+Status:   Normal
+Objects:  80
+Start:    unset
+
+Object:   Sinus
+Type:     Algorithm
+Status:   Normal
+Code:
+(algorithm sinus midi-note
+           (length 80 amplitude 0.5 rhythm 0.1 duration 0.1)
+  (setf note
+        (round (rescale (sin (* 2pi (/ count length) 4))
+                        -1
+                        1
+                        20
+                        100))))
+
+Stella [Top-Level]:
+</PRE>
+
+<tt>Show</tt> prints information about an object. The first three
+lines include the name of the object, its class and its current status
+(an object might be "hidden", "deleted" or "frozen", etc.)  Following
+the basic information comes information specific to the type of object
+shown.  For threads, this information includes the current output
+start time and the number of sub-objects that the thread contains.
+For algorithms, the information includes a "pretty printed" version of
+the algorithm's program.<p>
+
+
+<H3>
+<a name="Listening to Output">Listening to Output</a></H3>
+
+Next, listen to each of the objects separately:<P>
+
+<PRE>Stella [Top-Level]: <b>open midi port a</b>
+Stream: #&lt;Port: Midi to A&gt;.
+
+Stella [Top-Level]: <b>mix pulse</b>
+Start time offset: (&lt;cr&gt;=None) <b>1</b>
+Stella [Top-Level]:
+
+<i>[Sound starts after 1 second.  Wait until the example is though before continuing.]</i>
+Stella [Top-Level]: <b>mix sinus 1</b>
+<i>[Sound starts after 1 second.]</i>
+Stella [Top-Level]:
+</PRE>
+<P>
+
+
+<H3><a name="About_Open">
+<TT><A HREF="../../dict/open.cmd.html">Open</A></TT></a></H3>
+Common Music defines musical input and output in terms of "event
+streams".  An event stream is a named connection to some resource, for
+example a file on disk or a MIDI driver.  Use <tt>open</tt> to create
+or initialize a stream.  When a stream is opened it becomes the
+default destination for processing commands like <tt>Mix</tt> and
+<tt>Seq</tt>.  It is not necessary to open a stream each time musical
+material is sent to it.  It is also not necessary to <TT>close</TT> a
+stream after output has finished.  The system container Io-Streams
+holds all the event streams currently defined.  You can examine the
+contents of this container using the <tt>list</tt> command.  <p>
+
+Here are a few examples of using <TT>open</TT> to initialize various
+types of event streams: <P>
+
+<BLOCKQUOTE>
+<TABLE compact>
+<TD>Open MIDI on port A:<TD><TT> open midi port a</TT><TR>
+<TD>Open a CLM sound file:<TD><TT> open /zap/test.snd srate 44100</TT><TR>
+<TD>Open a CMN postscript file:
+    <TD><TT>open aaa.eps size 16 metronome 120</TT><TR>
+<TD>Open a CSound score file:
+    <TD><TT>open test.sco orchestra "test.orc"</TT><TR>
+<TD>Open a CLM score file:<TD><TT> open test.clm</TT><TR>
+</TABLE>
+</BLOCKQUOTE>
+<P>
+
+<H3>
+<a name="About Mix">
+<TT><A HREF="../../dict/mix.cmd.html">Mix</A></TT></a></H3>
+
+<tt>Mix</tt> sends musical output to the currently open output stream.
+<tt>Mix</tt> processes one or more containers in parallel such that
+their combined musical events are sent to the stream in the proper,
+time sorted order.  <tt>Mix</tt> uses a <tt>merge</tt> object to mix
+musical output.  You can use a <tt>merge</tt> explicitly as part of
+your own compositional structure.<p>
+
+There are several commands similar to <tt>mix</tt>.  <tt>Seq</tt>
+processes objects in sequential, rather than parallel, order.
+<tt>Seq</tt> prompts for the number of times to sequence the objects
+and an optional pause amount between repetitions.  As you may have
+guessed, <tt>seq</tt> uses a <tt>thread</tt> to process its material.
+The commands <tt>Write</tt>, <tt>Swrite</tt>, <tt>Listen</tt>, and
+<tt>Slisten</tt> are also similar to Mix and Seq.  They are available
+for historical reasons, and require that you distinguish between types
+of streams. Avoid using them because they will be removed in some
+future release.<p>
+
+
+<H4><a name="Listening to Multiple Containers">
+Listening to Multiple Containers</a></H4>
+
+Next, listen to both objects in parallel:<P>
+
+<PRE>Stella [Top-Level]: <b>mix pulse,sinus</b>
+Start time offset: (&lt;cr&gt;=None) <b><i>&lt;cr&gt;</i></b>
+<I>[output messages elided]</I>
+Stella [Top-Level]:
+</PRE>
+
+Now offset <I>Sinus</I> by two seconds relative to <I>Pulse</I>:<P>
+
+<PRE>Stella [Top-Level]: <b>mix pulse,sinus</b>
+Start time offset: (&lt;cr&gt;=None) <b>*</b>
+Start time offset for Pulse: (&lt;cr&gt;=None) <b><i>&lt;cr&gt;</i></b>
+Start time offset for Sinus: (&lt;cr&gt;=None) <b>2</b>
+<I>[output messages elided]</I>
+Stella [Top-Level]: 
+</PRE>
+
+Now repeat the example, but specify offsets directly on the command
+line:<P>
+
+<PRE>Stella [Top-Level]: <b>mix pulse,sinus 0,2</b>
+<I>[output messages elided]</I>
+Stella [Top-Level]: 
+</PRE>
+
+Start time offsets specified to <TT>Mix</TT> and <TT>Seq</TT> affect
+the current processing pass only. A single offset becomes the global
+offset for all the objects.  A sequence of offsets (delimited by
+comma) will be applied to a corresponding sequence of object in left
+to right order. If * is specified you will be prompted for each
+offset.  In addition to their obvious compositional role, offsets are
+useful for solving problems related to real time processing.
+Sometimes a complex algorithm will not be able to "keep up" with the
+speed at which it schedules output.  Providing a start time offset
+will give the algorithm that much "head start" before output starts
+sounding.  <P>
+
+<H3>
+<a name="About Time Management">About Time</a></H3>
+
+Common Music supports two clock modes, seconds and millisconds.
+When the clock mode is seconds (the default) then time is 
+expressed using floats or integers where 1.0 or 1
+means one second. In millisecond clock mode, time is expressed 
+using integers where 1000 means one second.  Millisecond clock
+mode is slightly less intuitive but results in "conless" time
+calculations when running the scheduler in real time.
+For more information abut clock modes see <a href="s14.html#real_time">
+Working with Algorithms in Real-Time</a>  and
+<a href="../../dict/clock-mode.fun.html">clock-mode</a> for more
+information.
+<p>
+In adddition to clock time, output streams may have time scalers
+associated with them.  This scaler is normally set to 1, so time can
+usually be thought of as clock time. 
+<p>
+When musical processing is initiated by commands
+like <tt>mix</tt> or <tt>seq</tt>, the associated event stream first
+resets its clock to zero before  musical events are processed.
+As each event is processed its <tt>time</tt> slot is "stamped" with the
+current time.  Every object in Stella has a <tt>time</tt> slot
+as one of its basic attributes.  Instead of setting <tt>time</tt>
+directly, the composer sets either start time offsets for containers
+or relative time increments for musical data, using the
+<tt>rhythm</tt> slot that all data objects possess.  A <tt>rest</tt>
+object may be used anywhere to increment time without sound output.<p>
+
+<H3>
+<a name="More About Referencing">More About Referencing</a></H3>
+
+The ability to select objects according to musically salient criteria
+is one of the nicest features of Stella.  
+We next use the <tt>list</tt> command to learn a bit about object
+referencing. See <A HREF="../../dict/command_references.tpc.html">
+Command References</A> for a complete discussion of referencing objects
+in commands.
+
+<P>
+In this next example we look inside <I>Pulse</I>, a thread containing
+eighty midi notes.<p>
+
+<PRE>Stella [Top-Level]: <b>list pulse</b>
+Pulse:
+      1.   #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.250| 0&gt;
+      2.   #&lt;MIDI-NOTE | D4| 0.100| 0.100| 0.321| 0&gt;
+
+<i>[listing elided]</i>
+
+     49.   #&lt;MIDI-NOTE | G4| 0.100| 0.100| 0.250| 0&gt; 
+     50.   #&lt;MIDI-NOTE |GS4| 0.100| 0.100| 0.321| 0&gt; 
+More unlisted objects.
+Stella [Top-Level]:
+</PRE>
+
+Note that when <tt>midi-note</tt> objects are listed they do not look like threads
+or algorithms. The format of a <tt>midi-note</tt> display is:<p>
+
+<PRE>    #&lt;MIDI-NOTE |<i>note</i>|<i>rhythm</i>|<i>duration</i>|<i>amplitude</i>|<i>channel</i>&gt;
+</PRE>
+
+<i>Note </i>is the frequency of the midi note, <i>rhythm</i> is the
+time increment to the next note, <i>duration</i> is the amount of time
+the note sounds, <i>amplitude</i> is a logical amplitude 0.0&lt;=1.0
+or MIDI velocity 0&lt;=127 and <i>channel</i> is its MIDI channel &gt;=0.
+See the <A HREF="../../dict/midi-note.cls.html">midi-note</A> for a full explanation
+of midi notes.<p>
+
+Only certain types of objects, called
+containers, have names.  Howver, all objects have a position relative to
+some container, if only the Top-Level container.  The focus object
+provides a context for selecting objects by position.  For example,
+the contents of <I>Pulse</I> can also be listed by specifying
+<I>Pulse</I>'s position in the current focus container (Top-Level):<p>
+
+<PRE>Stella [Top-Level]: <b>list 1</b>
+Pulse:
+      1.    #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.250| 0&gt;
+      2.    #&lt;MIDI-NOTE | D4| 0.100| 0.100| 0.321| 0&gt;
+<i>[listing elided]</i>
+Stella [Top-Level]:
+</PRE>
+
+In general, we can replace the name of an object by its path relative
+to another object.  So in the examples that follow the index 1 may be
+substituted for the name <I>Pulse</I> and 2 may be substituted for the
+name <I>Sinus</I> as long as we remain inside the Top-Level
+container.<p>
+
+
+<H4>
+<a name="Referencing Sub-Objects">Referencing Sub-Objects</a></H4>
+
+What if we only wanted to see a subset of Pulse, for example, just the
+first element?<p>
+
+<pRE>Stella [Top-Level]: <b>list 1[1]</b>
+Pulse:
+      1.    #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.250| 0&gt;
+Stella [Top-Level]:
+</PRE>
+
+Sub-object references are specified using an array-like syntax<P>
+
+<PRE>    <i>container</i>[<i>ref</i>]
+</PRe>
+
+where <i>container</i> is the name (or position) of a container and
+<i>ref</i> is the sub-object specification.  For example,
+<tt>Pulse[1]</tt>is a reference to the first object in Pulse, and
+<tt>Pulse[1:10,15]</tt> is a reference to objects 1 to 10 and 15.
+Each element of the reference inside [] can be specified using (up to)
+four fields delimited by colon: <P>
+
+<PRE>[<i>low</i>:<i>high</i>:<i>step</i>:<i>width</i>]
+</PRE>
+
+where <i>low</i> is the low bound of the reference, <i>high</i> is the
+inclusive upper bound, <i>step</i> is the stepping increment between
+<i>low</i> and <i>high</i>, and <i>width</i> is the number of
+sub-objects to reference in parallel.<P>
+
+It is only necessary to specify as many fields as are needed to
+adequately describe the reference. The editor currently distinguishes
+between five types of references: <p>
+
+<UL>
+
+<LI> An <i>index</i> references a single object at some position: <TT>[1]</TT>
+
+<LI> A <i>range</i>references all objects between a low and high
+bound: <TT>[1:100]</TT>
+
+<LI> An <i>iteration</i> references all the objects spaced some
+increment apart between a low and high bound: <TT>[1:100:2]</TT>
+
+<LI> A <i>grouping</i> references groups of objects spaced some
+increment apart between a low and high bound: <TT>[1:100:2:4]</TT>
+
+<LI> A <I>sequence</I> is a series or references delimited by comma or
+space: <TT>[1,5:15,16:20:3,22,76]</TT>
+
+</UL>
+<P>
+
+
+<H4><a name="Shorthand Notation">Shorthand Notation</a></H4>
+
+Because sub-object notation can get so complex, Stella supports a few
+notational shortcuts.  The character <tt>*</tt> is used to designate
+ either an upper index or all the sub-objects.  If <tt>*</tt> is used
+by itself it stands for all the sub-objects.  If <tt>*</tt> appears as
+the upper bound it stands for the last object.  The token <tt>end</tt>
+may also be used to refer to the last object in a container.
+<tt>End</tt> also supports "subtraction", i.e. <tt>end-4</tt>
+references the 4th-from-last object.<p>
+
+Reference fields may be elided if the default value for that field applies, in
+which case only the delimiter for that field need be specified.  The default
+values for the fields are <tt>1:*:1:1</tt>.  So, for example, <tt>::2</tt>
+means the same as <tt>1:*:2</tt> and defines an iteration over every other
+sub-object; <tt>:56::4</tt> defines a four element group ranging over the first
+fifty-six objects.<p>
+
+
+<H4><a name="RTFToC33">A Few Referencing Examples</a></H4>
+
+To see the first three elements of Pulse:<p>
+
+<PRE>Stella [Top-Level]: <b>list 1[1:3]</b>
+Pulse:
+     1. #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.250| 0&gt; 
+     2. #&lt;MIDI-NOTE | D4| 0.100| 0.100| 0.321| 0&gt; 
+     3. #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.393| 0&gt; 
+Stella [Top-Level]: 
+</PRE>
+
+To list every third element between the first and the tenth elements
+of Pulse:<p>
+
+<PRE>Stella [Top-Level]: <b>list Pulse[1:10:3]</b>
+Pulse:
+     1. #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.250| 0&gt; 
+     4. #&lt;MIDI-NOTE | G4| 0.100| 0.100| 0.464| 0&gt; 
+     7. #&lt;MIDI-NOTE |GS4| 0.100| 0.100| 0.679| 0&gt; 
+    10. #&lt;MIDI-NOTE | C4| 0.100| 0.100| 0.321| 0&gt; 
+Stella [Top-Level]: 
+</PRE>
+
+To list the first, fifth through tenth, and sixteenth element of
+Pulse:<p>
+
+<PRE>Stella [Top-Level]: <b>list Pulse[1,5:10,16]</b>
+Pulse:
+     1. #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.250| 0&gt; 
+Pulse:
+     5. #&lt;MIDI-NOTE | D4| 0.100| 0.100| 0.536| 0&gt; 
+     6. #&lt;MIDI-NOTE | G4| 0.100| 0.100| 0.607| 0&gt; 
+     7. #&lt;MIDI-NOTE |GS4| 0.100| 0.100| 0.679| 0&gt; 
+     8. #&lt;MIDI-NOTE |GS4| 0.100| 0.100| 0.750| 0&gt; 
+     9. #&lt;MIDI-NOTE | C4| 0.100| 0.100| 0.250| 0&gt; 
+    10. #&lt;MIDI-NOTE | C4| 0.100| 0.100| 0.321| 0&gt; 
+Pulse:
+    16. #&lt;MIDI-NOTE |GS4| 0.100| 0.100| 0.750| 0&gt; 
+Stella [Top-Level]: 
+</PRE>
+
+To compare the first two objects with the last two:<p>
+
+<PRE>Stella [Top-Level]: <b>list 1[1:2], 1[end-2:end]</b>
+Pulse:
+     1. #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.250| 0&gt; 
+     2. #&lt;MIDI-NOTE | D4| 0.100| 0.100| 0.321| 0&gt; 
+Pulse:
+    79. #&lt;MIDI-NOTE |AS4| 0.100| 0.100| 0.679| 0&gt; 
+    80. #&lt;MIDI-NOTE | G4| 0.100| 0.100| 0.750| 0&gt; 
+Stella [Top-Level]: 
+</PRE>
+
+To list from the seventy-fifth position to the end of Pulse:<p>
+
+<PRE>Stella [Top-Level]: <b>list Pulse[75:*]</b>
+Pulse:
+    75. #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.393| 0&gt; 
+    76. #&lt;MIDI-NOTE | G4| 0.100| 0.100| 0.464| 0&gt; 
+    77. #&lt;MIDI-NOTE |AS4| 0.100| 0.100| 0.536| 0&gt; 
+    78. #&lt;MIDI-NOTE | C5| 0.100| 0.100| 0.607| 0&gt; 
+    79. #&lt;MIDI-NOTE |AS4| 0.100| 0.100| 0.679| 0&gt; 
+    80. #&lt;MIDI-NOTE | G4| 0.100| 0.100| 0.750| 0&gt; 
+Stella [Top-Level]:
+</PRE>
+<P>
+
+
+<H4>
+<a name="RTFToC35">Referencing Containers vs. Sub-objects</a></H4>
+
+Some commands interpret unqualified container names as a reference to
+all the sub-objects.  For example, <TT>list</TT> treats <tt>pulse</tt>
+and <tt>pulse[*]</tt> identically.  Other commands operate on
+containers and their sub-objects independently.  For example,
+<tt>hide</tt> can mark either a container or its sub-objects as
+unavailable for output (it is much more efficient to hide a container
+than to hide all its sub-objects individually).<P>
+
+<A HREF="s03.html"><i>Next Chapter</i></A><BR>
+<A HREF="s01.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+<P>
+
+
+  Last Modified:   6-Mar-1998
+</BODY>
+</HTML>     

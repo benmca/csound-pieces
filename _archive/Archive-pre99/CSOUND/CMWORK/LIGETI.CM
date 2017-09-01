@@ -1,0 +1,338 @@
+;;;
+;;; File:         ligeti.cm
+;;;
+;;; Summary:      Algorithmic model of György Ligeti's Etude No. 1, "Désordre"
+;;;
+;;; Author:       Tobias Kunze
+;;; e-Mail:       tkunze@ccrma.stanford.edu
+;;; Org:          
+;;;
+;;; orig-Date:    07-Mar-99 at 19:38:40
+;;; Last-Mod:     17-Nov-02 at 23:35:43 by Tobias Kunze Briseño
+;;;
+;;; Revision:     
+;;;
+;;; Description:  This code requires Common Music 1.3 or higher.
+;;;
+;;; Changes:
+;;;   11-Mar-99   tk   released
+;;;   05-Apr-99   tk   fixed background modes, timing roundoff errors
+;;;   17-N0v-02   tk   re-ported to 1.3, fixed typos, added
+;;;                    set-output-stream example call 
+
+
+;;;
+;;; Adjust to your needs
+
+(set-output-stream (open-event-stream "test.midi" :default :tempo 60))
+
+;;;
+;;; Tempo
+;;;
+;;; Set as ratio in order to work around floating point rounding problems
+;;; in cm timing.
+
+(defparameter *eighth-note-pulse* (rationalize (rhythm 'e (tempo 76 w))))
+
+;;;
+;;; Allow the use of make-item-stream in constructor macros
+
+(defprop make-item-stream :item-expand t)
+
+;;;
+;;; Upper Foreground
+
+(defparameter *upper-mode* (transpose (mode white 2 2 1 2 2 2 1) 'c4))
+
+(defparameter *upper-fg-steps*
+  '( 0  0  1  0  2  1 -1			; Phrase a
+    -1 -1  2  1  3  2 -2			; Phrase a'
+     2  2  4  3  5  4 -1  0  3  2  6  5))	; Phrase b
+
+(defun make-upper-fg-notes (start-note)
+  (intervals (make-item-stream 'items 'cycle *upper-fg-steps*)
+	     from (steps 1 initially-from (modeify (degree start-note)
+						   *upper-mode*))))
+
+(defun make-upper-fg-rhythms ()
+  (items 3 5 3 5 5 3 7			; cycle 1
+	 3 5 3 5 5 3 7
+	 3 5 3 5 5 3 3 4 5 3 3 5
+	 3 5 3 4 5 3 8			; cycle 2
+	 3 5 3 4 5 3 8
+	 3 5 3 4 5 3 3 5 5 3 3 4
+	 3 5 3 5 5 3 7			; cycle 3
+	 3 5 3 5 5 3 7
+	 3 5 3 5 5 3 3 4 5 3 3 5
+	 3 5 3 4 5 2 7			; cycle 4
+	 2 4 2 4 4 2 5
+	 2 3 2 3 3 1 1 3 3 1 1 3
+	 1 2 1 2 2 1 3			; cycle 5
+	 1 2 1 2 2 1 3
+	 1 2 1 2 2 1 1 2 2 1 1 2
+	 1 2 1 2 2 1 3			; cycle 6
+	 1 2 1 2 2 1 3
+	 1 2 1 2 2 1 1 2 2 1 1 2
+	 1 2 1 2 2 1 3			; cycle 7
+	 1 2 1 2 2 1 2
+	 1 2 1 2 2 1 1 2 2 1 1 2
+	 1 2 1 2 2 1 2			; cycle 8
+	 1 2 1 2 2 1 2
+	 1 2 1 2 2 1 1 2 2 1 1 2
+	 1 2 1 2 2 1 2			; cycle 9
+	 1 2 1 2 1 1 2
+	 1 2 1 2 2 1 1 1 2 1 1 1
+	 1 2 1 1 1 1 2			; cycle 10
+	 1 1 1 1 1 1 2
+	 1 1 1 1 1 1 1 1 1 1 1 1
+	 (items (items 3 5 3 5 5 3 8	; cycle 11-14
+		       3 5 3 5 5 3 8
+		       3 5 3 5 5 3 3 5 5 3 3 5)
+		for 3)
+	 3 5 3 5 5 3 8			; cycle 14
+	 3 5 3 5 5 3 8
+	 3 5 3 5 5 3			;   cuts off here
+	 ))
+
+
+(algorithm upper-fg-mono midi-note ()
+  (vars (ntes (make-upper-fg-notes 'b4))
+	(rhys (make-upper-fg-rhythms)))
+  (setf note (unmodeify (item ntes) *upper-mode*)
+	rhythm (* *eighth-note-pulse*
+		  (item rhys :kill t))))
+
+;(mix-cmd "upper-fg-mono 0")
+
+
+;;;
+;;; Lower Foreground
+
+(defparameter *lower-mode* (transpose (mode black 2 3 2 2 3) 'cs4))
+
+(defparameter *lower-fg-steps*
+  '(0  0  1  0  2  2  0				; Phrase a
+    1  1  2  1 -2 -2 -1				; Phrase a'
+						; Phrase b
+    1  1  2  2  0 -1 -4 -3  0 -1  3  2  1 -1  0 -3 -2 -3 -5))
+
+
+(defun make-lower-fg-notes (start-note)
+  (let* ((cycle-length (length *lower-fg-steps*))
+	 (warp-point (+ (* cycle-length 7) 7 7 8)))
+    (intervals (intervals (make-item-stream 'items 'cycle *lower-fg-steps*
+					    :for 1)
+			  on (items (items 0 for warp-point)
+				    (items 20
+					   in sequence
+					   for most-positive-fixnum))
+			  for cycle-length)
+	       from (steps -2
+			   initially-from (modeify (degree start-note)
+						   *lower-mode*)))))
+
+(defun make-lower-fg-rhythms ()
+  (items 3 5 3 5 5 3 8			; cycle 1
+	 3 5 3 5 5 3 8
+	 3 5 3 5 5 3 3 5  5 3 3 5 3 5 3 5 5 3 8
+	 3 5 3 5 5 3 8			; cycle 2 (same)
+	 3 5 3 5 5 3 8
+	 3 5 3 5 5 3 3 5  5 3 3 5 3 5 3 5 5 3 8
+	 3 5 3 5 5 3 8			; cycle 3
+	 3 5 3 5 5 2 7
+	 3 4 3 4 4 2 2 4  4 2 2 3 2 3 1 3 3 1 4
+	 1 3 1 2 2 1 3			; cycle 4 starts in synch w/ cycle 5u
+	 1 2 1 2 2 1 3
+	 1 2 1 2 2 1 1 2  2 1 1 2 1 2 1 2 2 1 3
+	 1 3 1 2 2 1 3			; cycle 5
+	 1 2 1 2 2 1 3
+	 1 2 1 2 2 1 1 2  2 1 1 2 1 2 1 2 2 1 2
+	 1 2 1 2 2 1 2			; cycle 6
+	 1 2 1 2 2 1 2
+	 1 2 1 2 2 1 1 2  2 1 1 2 1 2 1 2 2 1 2
+	 1 2 1 2 2 1 2			; cycle 7
+	 1 2 1 2 2 1 2
+	 1 2 1 2 2 1 1 2  1 1 1 2 1 1 1 1 1 1 2
+	 1 1 1 1 1 1 2			; cycle 8
+	 1 1 1 1 1 1 2
+	 1 1 1 1 1 1 1 1  5 3 3 5 3 5 3 5 5 3 8
+	 3 5 3 5 5 3 8			; cycle 9
+	 3 5 3 5 5 3 8
+	 3 5 3 5 5 3 3 5  6 3 3 5 3 5 3 6 5 3 8
+	 3 6 3 5 5 3 9			; cycle 10
+	 3 5 3 5 6 3 8
+	 3 5 3 6 5 3 3 5  6 3 3 5 3 5 3 6 5 3 9
+	 3 7 3 8 9 3 13			; cycle 11
+	 3 11 3 21			;   cuts off here
+	 ))
+
+(algorithm lower-fg-mono midi-note ()
+  (vars (ntes (make-lower-fg-notes 'ds4))
+	(rhys (make-lower-fg-rhythms)))
+  (setf note (unmodeify (item ntes) *lower-mode*)
+	rhythm (* *eighth-note-pulse*
+		  (item rhys :kill t))))
+
+;(mix-cmd "lower-fg-mono 0")
+
+
+;;;
+;;; Both Foregrounds
+
+;(mix-cmd "upper-fg-mono,lower-fg-mono 0")
+
+;;;
+;;; Add Octaves and a fake background.
+;;;
+;;; Background notes are "muted" when the foreground is active.  To
+;;; accomplish this, the names of the background containers must follow the
+;;; foreground container names alphabetically.  Local variables are set up
+;;; to communicate information between containers.
+
+(defparameter *foreground-amplitude* .55)
+(defparameter *background-amplitude* .4)
+
+(merge desordre-v1.0 ()
+  (let ((upper-fg-time 0) (upper-fg-note 0) (upper-fg-eighths 0)
+	(lower-fg-time 0) (lower-fg-note 0) (lower-fg-eighths 0))
+
+    (algorithm 1a_upper-fg_v1 midi-note (amplitude *foreground-amplitude*
+					 channel 0)
+      (vars (ntes (make-upper-fg-notes 'b3))
+	    (rhys (make-upper-fg-rhythms)))
+      (if (evenp count)
+	  (setf upper-fg-time time
+		upper-fg-eighths (item rhys :kill t)
+		upper-fg-note (item ntes)
+		note (unmodeify upper-fg-note *upper-mode*)
+		duration (* *eighth-note-pulse* upper-fg-eighths) 
+		rhythm 0)
+	(setf note (+ note 12)
+	      rhythm duration)))
+
+    (algorithm 1b_upper-bg_v1 midi-note (length 1064 rhythm *eighth-note-pulse*
+					 channel 1)
+      (setf note (unmodeify
+		  (item (steps 1 (2 weight .33) (3 weight .15) (4 weight .05)
+			       in random
+			       for (expr upper-fg-eighths)
+			       from (expr upper-fg-note)))
+		  *upper-mode*)
+	    amplitude (if (= time upper-fg-time) 0 *background-amplitude*)))
+
+    (algorithm 2a_lower-fg_v1 midi-note (amplitude *foreground-amplitude*
+					 channel 2)
+      (vars (ntes (make-lower-fg-notes 'ds3))
+	    (rhys (make-lower-fg-rhythms)))
+      (if (evenp count)
+	  (setf lower-fg-time time
+		lower-fg-eighths (item rhys :kill t)
+		lower-fg-note (item ntes)
+		note (unmodeify lower-fg-note *lower-mode*)
+		duration (* *eighth-note-pulse* lower-fg-eighths) 
+		rhythm 0)
+	(setf note (+ note 12)
+	      rhythm duration)))
+
+    (algorithm 2b_lower-bg_v1 midi-note (length 1064 rhythm *eighth-note-pulse*
+					 channel 3)
+      (setf note (unmodeify
+		  (item (steps 1 (2 weight .2) (3 weight .05)
+			       in random
+			       for (expr lower-fg-eighths)
+			       from (expr lower-fg-note)))
+		  *lower-mode*)
+	    amplitude (if (= time lower-fg-time) 0 *background-amplitude*)))))
+
+;(mix-cmd "desordre-v1.0 1")
+
+
+;;;
+;;; Finally, add more realistic foreground voicings.
+
+(merge desordre-v2.0 ()
+  (let ((upper-fg-time 0) (upper-fg-note 0) (upper-fg-eighths 0)
+	(lower-fg-time 0) (lower-fg-note 0) (lower-fg-eighths 0))
+
+    (algorithm 1_upper-fg_v2 midi-note (amplitude *foreground-amplitude*
+					channel 0)
+      (vars (ntes (make-upper-fg-notes 'b3))
+	    (rhys (make-upper-fg-rhythms))
+	    voicing)
+      (setf upper-fg-time time
+	    upper-fg-eighths (item rhys :kill t)
+	    rhythm (* *eighth-note-pulse* upper-fg-eighths)
+	    upper-fg-note (item ntes)
+	    note (unmodeify upper-fg-note *upper-mode*)
+	    )
+      ;; add:         upper octave until  1 after  cycle 11 ...
+      (if (< count 261)			
+	  (sprout
+	   (object midi-note start time
+		   note (+ note 12) rhythm rhythm channel 0))
+	;; ... then add:  2 voices until  2 before cycle 12
+	;;                3 voices until 11 after  cycle 12
+	;;                4 voices thereafter
+	(loop with nvoices = (if (< count 284) 1 (if (< count 297) 2 3))
+	      with voicing = (read-items (intervals 1 2 3 4 5 6
+						    in heap
+						    for (expr nvoices)
+						    from (expr upper-fg-note)))
+	      for degree in voicing
+	      do (sprout
+		  (object midi-note start time
+			  note (unmodeify degree *upper-mode*)
+			  rhythm rhythm channel 0)))))
+
+    (algorithm 2_upper-bg_v2 midi-note (length 1064 rhythm *eighth-note-pulse*
+					channel 1)
+      (setf note (unmodeify 
+		  (item (steps 1 (2 weight .33) (3 weight .15) (4 weight .05)
+			       in random
+			       for (expr upper-fg-eighths)
+			       from (expr upper-fg-note)))
+		  *upper-mode*)
+	    amplitude (if (= time upper-fg-time) 0 *background-amplitude*)))
+
+    (algorithm 3_lower-fg_v2 midi-note (amplitude *foreground-amplitude*
+					channel 2)
+      (vars (ntes (make-lower-fg-notes 'ds3))
+	    (rhys (make-lower-fg-rhythms))
+	    voicing)
+      (setf lower-fg-time time
+	    lower-fg-eighths (item rhys :kill t)
+	    lower-fg-note (item ntes)
+	    note (unmodeify lower-fg-note *lower-mode*)
+	    rhythm (* *eighth-note-pulse* lower-fg-eighths))
+      ;; add:         upper octave until 23 after  cycle  8 ...
+      (if (< count 254)			
+	  (sprout
+	   (object midi-note start time
+		   note (+ note 12) rhythm rhythm channel 2))
+	;; ... then add:  2 voices until 22 after cycle   9
+	;;                3 voices thereafter
+	(loop with nvoices = (if (< count 286) 1 2)
+	      with voicing = (read-items (intervals 1 2 3 4
+						    in heap
+						    for (expr nvoices)
+						    from (expr lower-fg-note)))
+	      for degree in voicing
+	      do (sprout
+		  (object midi-note start time
+			  note (unmodeify degree *lower-mode*)
+			  rhythm rhythm channel 2)))))
+
+    (algorithm 4_lower-bg_v2 midi-note (length 1064 rhythm *eighth-note-pulse*
+					channel 3)
+      (setf note (unmodeify (item (steps 1 (2 weight .2) (3 weight .05)
+					 in random
+					 for (expr lower-fg-eighths)
+					 from (expr lower-fg-note)))
+			    *lower-mode*)
+	    amplitude (if (= time lower-fg-time) 0 *background-amplitude*)))))
+
+(mix-cmd "desordre-v2.0 0")
+
+;;;
+;;; EOF
+

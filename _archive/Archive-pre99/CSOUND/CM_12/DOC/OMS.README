@@ -1,0 +1,71 @@
+CM's OMS interface is new and currently undocumented. This file is provided
+to help you get an initial OMS connection working in CM with the least amount
+of trouble, by establishing a "default MIDI connection". 
+
+In OMS, its possible to have a number of routes for incoming and outgoing MIDI
+messages. You can have lots of these connections active at one time. These
+connections can also be specified dynamically in CM.  But you very likly have a
+"typical" MIDI configuration that you use most of the time, for example receiving
+and sending data to your external synth.  In this case, its easiest to save this
+configuration so that -- unless you specify otherwise -- it is automatically
+established whenever you Open MIDI. A default connection for OMS will cause CM to
+behave as it did in previous releases when it used Apple's MIDI Manager.
+
+------------------------------------------------------------------------------------
+
+Directions for installing a default MIDI connection:
+
+o Get and install OMS, then design your OMS studio document.  You can download
+  OMS from http://www.opcode.com/downloads/oms/mac/
+
+o Start Common Music, select Open from the MIDI submenu of the Common Music 
+  main menu. After a second you should see a printout in the Listener like:
+
+  Registering with OMS...
+  Done.
+  #<Midi Driver: Open> 
+
+o Once MIDI is open, select "MIDI System Info" from the MIDI submenu. This will
+  print a list of available input and output interfaces according to your OMS
+  Studio Setup document. Inputs are marked by a left-arrow "<-" and outputs are
+  marked by a right-arrow "->". This is what the printout looks like on my Mac:
+
+  Configured MIDI Interfaces:
+    <-  "K2500"
+    ->  "K2500"
+    ->  "QuickTime Music"
+
+o Open the cminit.lisp file located in the same folder as the CM application.
+  If you built CM from sources you may have to create this file.
+
+o Add the following form to the cminit.lisp file, replacing the <INPUT> and <OUTPUT>
+  placeholders with the actual string values from your MIDI System Info display.
+  
+  (setf *midi-default-connections* '(( <INPUT>  <OUTPUT> )))
+
+  For example, this is what this form looks like in my cminit.lisp file:
+
+  (setf *midi-default-connections* '(( "K2500"  "K2500"  ))) 
+ 
+o Save the cminit.lisp file, then quit and restart Common Music and open MIDI again.
+  (You can open MIDI using the keyboard shortcut COMMAND-M instead of using the
+  menu).
+
+o Test MIDI output by hitting COMMAND-`  (` is the backquote key). You should hear
+  sound on your synth.
+
+o Test MIDI input by starting Stella with COMMAND-= (the equal key), then selecting
+  "Receive..." in the MIDI menu, then selecting Print in the pop-up dialog, then 
+   click on Start. As you play your keyboard you should see the incoming messages
+   printed in the Listener window.
+
+
+OMS is very complex and the CM interface is new, so expect some problems while
+the dust settles.
+
+Known Bugs
+-----------
+1  The OPEN command displays an annoying warning if MIDI is opened more than once.
+   Ignore it.
+2  There is a bug in the MIDI environment Info display that does not list inputs.
+

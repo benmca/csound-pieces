@@ -1,0 +1,1415 @@
+Release Notes for v3.46
+=======================
+
+Version 3.46 is a large collection of corrections, and some additions
+including the Whittle table opcodes, FOG and a more flexible version
+of soundin.
+
+Summary
+=======
+
+a) Changes in a number of MIDI opcodes (ipchmidib, ioctmidib,
+icpsmidib, kpchmidib, koctmidib, kcpsmidib, imidictrl, kmidictrl) to
+add additional optional argument, mainly for scaled pitchbend; new
+opcode midisetb (Mike Berry)
+
+b) Large number of bug fixes; mainly minor and to do with igoto (many
+people).  Corrected writing to log file on PC (mega dyslexia!)
+
+c) Negative p3 in score nolonger confuses other references to that
+note in the score (JPff/RWD)
+
+d) Attempt to fix LINUX precision problem in large table sizes etc
+
+e) Correction of my fiasco in opcode listing
+
+f) Correction of HRTF code on PCs and other machines with that byte
+order.
+
+g) New opcode, diskin.  Like soundin except allows variable rate of reading
+sound file. (Mike Berry)
+
+h) Fixes to -o dac on Windows95
+
+i) Improved pvoc with optional last argument (Richard Karpen)
+
+j) Defaults for sr/kr/ksmps such that one can omit one.  Defaults if
+all omitted made CD level.
+
+k) Robin Whittle's table reading opcodes included
+
+l) Missing endin now noticed
+
+m) New opcode fog from Michael Clarke (still needs a little tweaking)
+
+n) Fixed cscore main program for dribble files
+
+o) Number of tables is no longer fixed, but expands as required.
+
+
+
+DOCUMENTATION ON NEW/REVISED OPCODES
+====================================
+
+MIDI CONVERTERS
+
+ival	notnum 
+ival	veloc 
+icps	cpsmidi 
+icps	cpsmidib
+kcps	cpsmidib [irange] 
+ioct	octmidi 
+ioct	octmidib
+koct	octmidib [irange]
+ipch	pchmidi 
+ipch	pchmidib
+kpch	pchmidib [irange] 
+iamp	ampmidi	iscal[, ifn]
+kaft	aftouch	iscal 
+kchpr	chpress	iscal
+kbend	pchbend	iscal 
+ival	midictrl inum[, initial]
+kval	midictrl inum[, initial] 
+kval	midictrlsc inum[,iscal] [, ioffset] [, initial]
+
+Get a value from the MIDI event that activated this instrument, or from a
+continuous MIDI controller, and convert it to a locally useful format.
+
+INITIALIZATION
+
+iscal - I-time scaling factor.
+
+ifn (optional) - function table number of a normalized translation
+table, by which the incoming value is first interpreted.  The default
+value is 0, denoting no translation.
+
+inum - MIDI controller number.
+
+initial - the initial value of the controller.
+
+irange - the pitch bend range in semitones.
+
+PERFORMANCE
+
+notnum, veloc - get the MIDI byte value (0 - 127) denoting the note
+number or velocity of the current event.
+
+cpsmidi, octmidi, pchmidi - get the note number of the current MIDI
+event, expressed in cps, oct, or pch units for local processing.
+
+cpsmidib, octmidib, pchmidib - get the note number of the current MIDI
+event, modify it by the current pitch-bend value, and express the
+result in cps, oct, or pch units.  Available as an I-time value or as
+a continuous ksig value.
+
+ampmidi - get the velocity of the current MIDI event, optionally pass
+it through a normalized translation table, and return an amplitude
+value in the range 0 - iscal.
+
+aftouch, chpress, pchbend - get the current after-touch, channel
+pressure, or pitch-bend value for this channel, rescaled to the range
+0 - iscal.  Note that this access to pitch-bend data is independent of
+the MIDI pitch, enabling the value here to be used for any arbitrary
+purpose.
+
+midictrl - get the current value (0 - 127) of a specified MIDI
+controller.
+
+midictrlsc - get a scaled and offset value of a controller.
+
+
+SIGNAL INPUT & OUTPUT
+
+
+a1		in
+a1,a2		ins
+a1, a2, a3, a4	inq
+a1		soundin	ifilcod[,iskptim][, iformat]
+a1,a2		soundin	ifilcod[,iskptim][, iformat]
+a1, a2, a3, a4	soundin	ifilcod[,iskptim][,iformat] 
+a1[,a2[,a3,a4]] diskin 	ifilcod, kpitch[,iskiptim][, iwraparound] [,iformat] 
+		out		asig 
+		outs1		asig 
+		outs2		asig
+		outs		asig1, asig2
+		outq1		asig 
+		outq2 		asig
+		outq3		asig 
+		outq4		asig 
+		outq		asig1, asig2, asig3,asig4
+
+These units read/write audio data from/to an external device or stream.
+
+INITIALIZATION
+
+filcod - integer or character-string denoting the source soundfile
+name.  An integer denotes the file soundin.filcod ; a character-string
+(in double quotes, spaces permitted) gives the filename itself,
+optionally a full pathname.  If not a full path, the named file is
+sought first in the current directory, then in that given by the
+environment variable SSDIR (if defined) then by SFDIR.  See also
+GEN01.
+
+iskptim (optional) - time in seconds of input sound to be skipped.
+The default value is 0.
+
+iformat (optional) - specifies the audio data file format: 1 = 8-bit
+signed char (high-order 8 bits of a 16-bit integer), 2 = 8-bit A-law
+bytes, 3 = 8-bit U-law bytes, 4 = 16-bit short integers, 5 = 32-bit
+long integers, 6 = 32-bit floats).  If iformat = 0 it is taken from
+the soundfile header, and if no header from the csound -o command
+flag.  The default value is 0.
+
+kpitch - can be any real number. a negative number signifies backwards
+playback.  The given number is a pitch ratio, where: 1= norm pitch,
+2=oct higher, 3=12th higher,etc; .5= oct lower, .25=2oct lowr, etc;
+-1= norm pitch backwards,-2=oct higher backwrds,etc..
+
+iwraparound - 1=on, 0=off (wraps around to end of file either
+direction)
+
+PERFORMANCE
+
+in, ins, inq - copy the current values from the standard audio input
+buffer.  If the command-line flag -i is set, sound is read
+continuously from the audio input stream (e.g. stdin or a soundfile)
+into an internal buffer.  Any number of these units can read freely
+from this buffer.
+
+soundin is functionally an audio generator that derives its signal
+from a pre-existing file.  The number of channels read in is
+controlled by the number of result cells, a1, a2, etc., which must
+match that of the input file.  A soundin unit opens this file whenever
+the host instrument is initialized, then closes it again each time the
+instrument is turned off.  There can be any number of soundin units
+within a single instrument or orchestra; also, two or more of them can
+read simultaneously from the same external file.
+
+diskin is identical to soundin, except that it can alter the pitch of
+the sound that is being read.
+
+out, outs, outq send audio samples to an accumulating output buffer
+(created at the beginning of performance) which serves to collect the
+output of all active instruments before the sound is written to disk.
+There can be any number of these output units in an instrument.  The
+type (mono, stereo, or quad) must agree with nchnls, but units can be
+chosen to direct sound to any particular channel: outs1 sends to
+stereo channel 1, outq3 to quad channel 3, etc.
+
+------------------------------------------------------------------------
+ar	fog	xamp, xdens, xtrans, xspd, koct, kband, kris, kdur, kdec, 
+			iolaps, ifna, ifnb, itotdur[, iphs][, itmode]
+
+Audio output is a succession of grains derived from data in a stored
+function table ifna.  The local envelope of these grains and their
+timing is based on the model of fof synthesis and permits detailed
+control of the granular synthesis.
+
+INITIALIZATION
+
+iolaps - number of pre-located spaces needed to hold overlapping grain
+data.  Overlaps are density dependent, and the space required depends
+on the maximum value of xdens* kdur.  Can be over-estimated at no
+computation cost.  Uses less than 50 bytes of memory per iolaps.
+
+ifna, ifnb - table numbers of two stored functions.  The first is the
+data used for granulation, usually from a soundfile (GEN01).  The
+second is a rise shape, used forwards and backwards to shape the grain
+rise and decay; this is normally a sigmoid (GEN19) but may be linear
+(GEN07).
+
+itotdur - total time during which this fog will be active.  Normally
+set to p3.  No new grain is created if it cannot complete its kdur
+within the remaining itotdur.
+
+iphs (optional) - initial phase of the fundamental, expressed as a
+fraction of a cycle (0 to 1).  The default value is 0.
+
+itmode (optional) - transposition mode.  If zero, each grain keeps the
+xtrans value it was launched with.  if non-zero, each is influenced by
+xtrans continuously.  The default value is 0.
+
+PERFORMANCE
+
+xamp - amplitude factor.  Amplitude is also dependent on the number of
+overlapping grains, the interaction of the rise shape (ifnb) and the
+exponential decay (kband), and the scaling of the grain waveform
+(ifna).  The actual amplitude may therefore exceed xamp.
+
+xdens - density.  The frequency of grains per second.
+
+xtrans - transposition factor.  The rate at which data from the stored
+function table ifna is read within each grain.  This has the effect of
+transposing the original material.  A value of 1 produces the original
+pitch. Higher values transpose upwards, lower values downwards.
+Negative values result in the function table being read backwards.
+
+xspd - speed.  The rate at which successive grains advance through the
+stored function table ifna.  xspd is in the form of an index (0 to 1)
+to ifna.  This determines the movement of a pointer used as the
+starting point for reading data within each grain. (xtrans determines
+the rate at which data is read starting from this pointer.)
+
+koct - octaviation index.  The operation of this parameter is
+identical to that in fof.
+
+kband, kris, kdur, kdec - grain envelope shape.  These parameters
+determine the exponential decay (kband), and the rise (kris), overall
+duration (kdur,) and decay (kdec ) times of the grain envelope.  Their
+operation is identical to that of the local envelope parameters in
+fof.
+
+The Csound fog generator is by Michael Clarke, extending his earlier
+work based on IRCAM's fof algorithm.
+
+Example:
+;p4 = transposition factor
+;p5 = speed factor
+;p6 = function table for grain data
+i1 	= 	sr/ftlen(p6) ;scaling to reflect sample rate and table length
+a1 	phasor	i1*p5	  ;index for speed
+a2 	fog 	5000, 100, p4, a1, 0, 0, ,.01, .02, .01, 2, p6, 1, p3, 0, 1
+
+------------------------------------------------------------------------
+>>> 1 - TABLE WRITE
+===================
+
+This works on existing function tables, changing their contents.  
+There could be all sorts of uses for this.  Assuming that users (.orc 
+and .sco programmers) know what they are doing, then there should be 
+no more trouble than the use of global variables.
+
+As when using global variables, the user must consider how the code is 
+run.  
+
+In each k cycle, instruments are executed, in order of instrument 
+number, and within instruments, in order of the instances of the 
+instrument.  I presume the instance order depends on their starting 
+time.
+
+As execution proceeds, each ugen is run once at k time.  For k type 
+ugens, they do their job once.  For a rate ugens, they process one or 
+more arrays of a rate variables.  For instance a table read at a rate, 
+with ksmps = 7, uses a 7 long array of indexes to read into a table, 
+retrieving 7 different values and writing them to a 7 long array for 
+the output.
+
+So 
+
+ablah table azot, 5
+
+will read from table 5, a set of values pointed to by an array of 
+indexes pointed to by azot, and write them to an array pointed to by 
+ablah.
+
+We may conceive of an idea of writing successive a rate values to a 
+single table location, and subsequently reading them from that 
+location.  This would not work with ksmps = 7 - only the last written 
+value would remain by the time execution passed to the next ugen.
+
+So table write is a means of patching i or k rate signals to 
+particular locations in function tables, where they can be read by 
+table read ugens.  However this does not work for a rate signals, 
+unless you conspire to use a range of the table, and organise your 
+indexes very carefully.
+
+Patching of i, k and a rate signals under .orc program control is best 
+achieved with arrays - which do not yet exist.  See the zak system for 
+a next best solution with ugens.  
+
+So the main purpose of a table write ugen is to refashion function 
+tables on the fly under program control.  tablemix, tablecopy, tablera 
+and tablewa can also be used for such purposes.
+
+Applications are diverse.  One is to generate a waveshaping table with 
+ .orc code.   A loop could be created and an instrument could spend 
+some time with k rate operations looping to address each table 
+location - rewriting the table, before letting performance proceed.  
+This would probably be too slow to work with real-time music 
+production.
+
+Another application is to continuously sculpt tables while they are 
+being used.  Each k or a cycle, one or a few locations are changed a 
+little.
+
+
+With these applications in mind, lets look at the tablew and itablew 
+code.  
+
+Firstly , itabelw is just the same as k rate tablew, except it only 
+happens once at the initialisation of the ugen.  (I must investigate 
+what happens if an i rate ugen is executed first, via an if goto, some 
+time after the instrument is initialised.)
+
+The Csound orchestra loader decides whether this is k or a rate 
+operation, and fires up the appropriate subroutine in the unit 
+generator code.
+
+There is no output variable.
+
+
+itablew, tablew and tablewkt
+----------------------------
+
+        itablew isig, indx, ifn [,ixmode] [,ixoff] [,iwgmode]
+
+
+Use itablew when all inputs are init time variables or constants and
+you only want to run it at the initialisation of the instrument. 
+
+tablew is for writing at k or at a rates, with the table number being
+specified at init time.
+
+tablewkt is the same, but uses a k rate variable for selecting the 
+table number.  The valid combinations of variable types are shown by 
+the first letter of the variable names:
+ 
+        itablew   isig, indx, ifn [,ixmode] [,ixoff] [,iwgmode]
+
+        tablew    ksig, kndx, ifn [,ixmode] [,ixoff] [,iwgmode] 
+        tablew    asig, andx, ifn [,ixmode] [,ixoff] [,iwgmode] 
+
+        tablewkt  ksig, kndx, kfn [,ixmode] [,ixoff] [,iwgmode] 
+        tablewkt  asig, andx, kfn [,ixmode] [,ixoff] [,iwgmode] 
+
+  isig, ksig,   The value to be written into the table.
+  asig          
+
+  indx, kndx,   Index into table, either a positive number range
+  andx          matching the table length (ixmode = 0) or a 0 to 1 
+                range (ixmode != 0)
+  ifn, kfn      Table number. Must be >= 1. Floats are rounded down to 
+                an integer.  If a table number does not point to a 
+                valid table, or the table has not yet been loaded 
+                (gen01) then an error will result and the instrument 
+                will be de-activated.
+
+  ixmode        Default 0  ==0  xndx and ixoff ranges match the length 
+                                of the table.
+
+                           !=0  xndx and ixoff have a 0 to 1 range.
+
+
+  ixoff         Default 0  ==0  Total index is controlled directly by
+                                xndx.  ie. the indexing starts from the
+                                start of the table.
+ 
+                           !=0  Start indexing from somewhere else in 
+                                the table. Value must be positive and
+                                less than the table length (ixmode = 0) 
+                                or less than 1 (ixmode !=0
+ 
+  iwgmode       Default 0  ==0  Limit mode      } See below
+                           ==1  Wrap mode       } 
+                           ==2  Guardpoint mode }       
+ 
+0 = Limit mode
+--------------
+        
+Limit the total index (ndx + ixoff) to between 0 and the guard
+point.
+ 
+For a table of length 5, this means that locations 0 to 3 and location
+4 (the guard point) can be written.  A negative total index writes to
+location 0.  Total indexes > 4 write to location 4.      
+
+1 = Wrap mode
+-------------
+
+Wrap total index value into locations 0 to E, where E is one less 
+than either the table length or the factor of 2 number which is one 
+less than the table length. For example, wrap into a 0 to 3 range - so 
+that total index 6 writes to location 2.
+
+
+2 = Guardpoint mode
+-------------------
+
+The guardpoint is written at the same time as location 0 is written 
+- with the same value.  
+
+This facilitates writing to tables which are intended to be read with 
+interpolation for producing smooth cyclic waveforms. In addition, 
+before it is used, the total index is incremented by half the range 
+between one location and the next, before being rounded down to the 
+integer address of a table location.
+
+Normally (igwmode = 0 or 1) for a table of length 5 - which has 
+locations 0 to 3 as the main table and location 4 as the guard point, 
+a total index in the range of 0 to 0.999 will write to location 0.  
+("0.999" means just less than 1.0.)  1.0 to 1.999 will write to 
+location 1 etc. 
+ 
+A similar pattern holds for all total indexes 0 to 4.999 (igwmode = 0) 
+or to 3.999 (igwmode = 1). igwmode = 0 enables locations 0 to 4 to be 
+written - with the guardpoint (4) being written with a potentially 
+different value from location 0.
+
+With a table of length 5 and the iwgmode = 2, then when the total 
+index is in the range 0 to 0.499, it will write to locations 0 and 4.
+Range 0.5 to 1.499 will write to location 1 etc. 3.5 to 4.0 will 
+_also_ write to locations 0 and 4.  
+
+This way, the writing operation most closely approximates the results 
+of interpolated reading. Guard point mode should only be used with
+tables that have a guardpoint.
+
+Guardpoint mode is accomplished by adding 0.5 to the total index, 
+rounding to the next lowest integer, wrapping it modulo the factor of 
+two which is one less than the table length, writing the the table 
+(locations 0 to 3 in our example) and then writing to the guard point 
+if index == 0.
+
+tablew has no output value.  The last three parameters are optional and
+have default values of 0.
+
+
+Caution with k rate table numbers
+---------------------------------
+
+The following notes also apply to the tablekt and tableikt ugens which 
+can now have their table number changed at k rate.
+
+At k rate or a rate, if a table number of < 1 is given, or the table
+number points to a non-existent table, or to one which has a length of
+0 (it is to be loaded from a file later) then an error will result and 
+the instrument will be deactivated.
+
+
+>>> 2 - tablegpw, tableleng, tablemix and tablecopy
+===================================================
+
+tableleng
+---------
+
+ir      itableng ifn    
+kr      tableng  kfn
+
+  ifn   i rate number of function table
+  kfn   k rate number of function table
+ 
+These return the length of the specified table.  This will be a power
+of two number in most circumstances - it will not show whether
+a table has a guardpoint or not - it seems this information is not 
+available in the table's data structure. If table is not found, then
+0 will be returned.
+
+Likely to be useful for setting up code for table manipulation 
+operations, such as tablemix and tablecopy.
+
+
+tablgpw
+-------
+
+        itablegpw ifn
+        tablegpw  kfn
+
+For writing the table's guard point, with the value which is in
+location 0.  Does nothing if table does not exist.
+
+Likely to be useful after manipulating a table with tablemix or
+tablecopy.
+
+
+tablemix
+--------
+
+        tablemix  kdft, kdoff, klen, ks1ft, ks1off, ks1g, ks2ft, ks2off, ks2g
+        itablemix idft, idoff, ilen, is1ft, is1off, is1g, is2ft, is2off, is2g
+
+This ugen mixes from two tables, with separate gains into the 
+destination table.  Writing is done for klen locations, usually
+stepping forward through the table - if klen is positive.
+If it is negative, then the writing and reading order is backwards - 
+towards lower indexes in the tables.  This bidirectional option makes
+it easy to shift the contents of a table sideways by reading from it 
+and writing back to it with a different offset.
+
+If klen is 0, no writing occurs. Note that the internal integer value 
+of klen is derived from the ANSI C floor() function - which returns
+the next most negative integer.  Hence a fractional negative klen
+value of -2.3 would create an internal length of 3, and cause 
+the copying to start from the offset locations and proceed for 
+two locations to the left.
+
+The total index for table reading and writing is calculated from the
+starting offset for each table, plus the index value, which starts
+at 0 and then increments (or decrements) by 1 as mixing proceeds.
+
+These total indexes can potentially be very large, since there is no
+restriction on the offset or the klen. However each total index for
+each table is ANDed with a length mask (such as 0000 0111 for a table
+of length 8) to form a final index which is actually used for 
+reading or writing.  So no reading or writing can occur outside
+the tables. 
+        
+This is the same as "wrap" mode in table read and write. These ugens
+do not read or write the guardpoint.
+ 
+If a table has been rewritten with one of these, then if it has a 
+guardpoint which is supposed to contain the same value as the 
+location 0, then call tablegpw afterwards.
+
+The indexes and offsets are all in table steps - they are not
+normalised to 0 - 1.  So for a table of length 256, klen should be
+set to 256 if all the table was to be read or written.  
+
+The tables do not need to be the same length - wrapping occurs 
+individually for each table.
+
+  kdft          Destination function table.
+ 
+  kdoff         Offset to start writing from. Can be negative.
+ 
+  klen          Number of write operations to perform. Negative means
+                work backwards.
+ 
+  ks1ft ks2ft   Source function tables. These can be the same as the
+                destination table, if care is exercised about direction
+                of copying data.  
+ 
+  ks1off ks2off Offsets to start reading from in source tables.
+ 
+  ks1g ks2g     Gains to apply when reading from the source tables.  The 
+                results are added and the sum is written to the destination
+                table.
+        
+tablecopy
+--------- 
+
+        tablecopy  kdft, ksft   
+        itablecopy idft, isft
+
+Simple, fast table copy ugens.  Takes the table length from the 
+destination table, and reads from the start of the source table. 
+For speed reasons, does not check the source length - just copies
+regardless - in "wrap" mode.  This may read through the source 
+table several times.  A source table with length 1 will cause
+all values in the destination table to be written to its value.
+
+Table copy cannot read or write the guardpoint.  To read it 
+use table read, with ndx = the table length.  Likewise use
+table write to write it.
+
+To write the guardpoint to the value in location 0, use tablegpw.
+
+This is primarily to change function tables quickly in a real-time
+situation.
+
+  kdft          Number of destination function table.
+ 
+  ksft          Number of source function table.
+
+
+
+>>> 3 - tablera and tablewa
+===========================
+
+These ugens read and write tables in sequential locations to and from 
+an a rate variable.  Some thought is required before using them.  They 
+have at least two major, and quite different, applications which are 
+discussed below.  
+
+
+ar      tablera  kfn, kstart, koff
+
+kstart  tablewa  kfn, asig, koff        
+
+
+  ar            a rate distination for reading ksmps values from a 
+                table.
+
+  kfn           i or k rate number of the table to read or write.
+ 
+  kstart        Where in table to read or write.
+ 
+  asig          a rate signal to read from when writing to the table.   
+ 
+  koff          i or k rate offset into table. Range unlimited - see 
+                explanation at end of this section.
+ 
+In one application, these are intended to be used in pairs, or with 
+several tablera ugens before a tablewa - all sharing the same kstart 
+variable.
+
+These read from and write to sequential locations in a table at audio
+rates, with ksmps floats being written and read each cycle.
+
+tablera starts reading from location kstart.  
+tablewa starts writing to location kstart, and then writes to kstart
+with the number of the location one more than the one it last wrote.
+(Note that for tablewa, kstart is both an input and output variable.)
+If the writing index reaches the end of the table, then no further
+writing occurs and zero is written to kstart.
+
+For instance, if the table's length was 16 (locations 0 to 15), and
+ksmps was 5. Then the following steps would occur with repetitive
+runs of the tablewa ugen, assuming that kstart started at 0.
+
+Run no. Initial Final   locations written
+                kstart  kstart  
+                
+1       0       5       0  1  2  3  4
+
+2       5      10       5  6  7  8  9
+
+3      10      15      10 11 12 13 14       
+
+4      15       0      15
+
+This is to facilitate processing table data using standard a rate 
+orchestra code between the tablera and tablewa ugens:
+
+;--------------------------------
+                                ;
+        kstart = 0              ;
+                                ; Read 5 values from table into an 
+                                ; a rate variable.
+                                
+lab1:   atemp  tablera ktabsource, kstart, 0
+
+                                ; Process the values using a rate code.
+atemp = log(atemp)              ;
+                                ; Write it back to the table
+
+kstart  tablewa ktabdest, atemp, 0      
+        
+                                ; Loop until all table locations have 
+                                ; been processed.
+if ktemp > 0 goto lab1          ;
+                                ;
+;--------------------------------
+ 
+The above example shows a processing loop, which runs every k cycle, 
+reading each location in the table ktabsource, and writing the log
+of those values into the same locations of table ktabdest.
+
+This enables whole tables, parts of tables (with offsets and different
+control loops) and data from several tables at once to be manipulated
+with a rate code and written back to another (or to the same) table.
+This is a bit of a fudge, but it is faster than doing it with 
+k rate table read and write code.
+
+Another application is:
+
+;--------------------------------
+                                ;
+kzero = 0                       ;
+kloop = 0                       ;
+                                ;       
+kzero tablewa 23, asignal, 0    ; ksmps a rate samples written into 
+                                ; locations 0 to (ksmps -1) of table 23.
+                                ;
+lab1: ktemp table kloop, 23     ; Start a loop which runs ksmps times, 
+                                ; in which each cycle processes one of 
+  [ Some code to manipulate ]   ; table 23's values with k rate orchestra 
+  [ the value of ktemp.     ]   ; code.
+                                ; 
+                                ;       
+        tablew ktemp, kloop, 23 ; Write the processed value to the table.
+                                ;
+kloop = kloop + 1               ; Increment the kloop, which is both the
+                                ; pointer into the table and the loop 
+if kloop < ksmps goto lab1      ; counter.  Keep looping until all values
+                                ; in the table have been processed.
+                                ;
+asignal tablera 23, 0, 0        ; Copy the table contents back to an a rate     
+                                ; variable.
+;--------------------------------
+                                                                
+
+  koff  This is an offset which is added to the sum of kstart and the internal
+        index variable which steps through the table.  The result is then
+        ANDed with the lengthmask (000 0111 for a table of length 8 - or 
+        9 with guardpoint) and that final index is used to read or write to
+        the table.  koff can be any value.  It is converted into a long using
+        the ANSI floor() function so that -4.3 becomes -5.  This is what we
+        would want when using offsets which range above and below zero.
+ 
+        Ideally this would be an optional variable, defaulting to 0, however
+        with the existing Csount orchestra read code, such default parameters
+        must be init time only.  We want k rate here, so we cannot have a 
+        default.
+ 
+
+Notes on tablera and tablewa
+----------------------------    
+
+These are a fudge, but they allow all Csounds k rate operators to be
+used (with caution) on a rate variables - something that would only
+be possible otherwise by ksmps = 1, downsamp and upsamp.   
+                                                                        
+        Several cautions:
+        
+1 -     The k rate code in the processing loop is really running at a 
+        rate, so time dependant functions like port and oscil work
+        faster than normal - their code is expecting to be running at 
+        k rate.
+
+2 -     This system will produce undesirable results unless the ksmps
+        fits within the table length.  For instance a table of length 
+        16 will accomodate 1 to 16 samples, so this example will work 
+        with ksmps = 1 to 16.
+  
+        Both these ugens generate an error and deactivate the 
+        instrument if a table with length < ksmps is selected. 
+        Likewise an error occurs if kstart is below 0 or greater than 
+        the highest entry in the table - if kstart >= table length.
+ 
+3 -     kstart is intended to contain integer values between 0 and 
+        (table length - 1).  Fractional values above this should not 
+        affect operation but do not achieve anything useful.
+ 
+4 -     These ugens do not do interpolation and the kstart and koff 
+        parameters always have a range of 0 to (table length - 1) - 
+        not 0 to 1 as is available in other table read/write ugens.  
+        koff can be outside this range but it is wrapped around by the 
+        final AND operation.  
+ 
+5 -     These ugens are permanently in wrap mode.  When koff is 0, no 
+        wrapping needs to occur, since the kstart++ index will always 
+        be within the table's normal range.  koff != 0 can lead to 
+        wrapping. 
+ 
+6 -     The offset does not affect the number of read/write cycles 
+        performed, or the value written to kstart by tablewa.
+ 
+7 -     These ugens cannot read or write the guardpoint.  Use tablegpw 
+        to write the guardpoint after manipulations have been done 
+        with tablewa.
+ 
+
+
+>>> 4 - The "zak" system for patching signals
+=============================================
+
+"zak" means a or k rate patching, (i rate too), with a z at the start 
+of the names of the ugens.
+
+This is a fudge to do the work until arrays are implemented.  I want 
+to use such facilities and will use zak for the time being.
+
+The zak system uses one area of memory as a global i or k rate 
+patching area, and another for audio rate patching. 
+
+These are establised by a ugen which must be called once only:
+
+        zakinit isizea, isizek
+
+isizea  The number of audio rate "locations" for a rate patching.
+        Each "location" is actually an array which is ksmps long.
+
+isizek  The number of locations we want to reserve for floats
+        in the zk space.  These can be written and read at i and 
+        k rates.
+ 
+eg. zakinit 10 30 reserves memory for locations 0 to 30 of zk space 
+and for locations 0 to 10 of a rate za space. With ksmps = 8, this
+would take 31 floats for zk and 80 floats for za space.
+        
+At least one location is always allocated for both za and zk spaces.
+There is nothing wrong with having za and zk ranges thousands or tens 
+of thousands, but most pieces probably only need a few dozen to patch 
+their signals around. 
+ 
+These patching locations can be referred to by number with the 
+following ugens.  
+
+The easiest way to run zakinit just once is to put it outside any 
+instrument definition.  Typically this would be at the start of the 
+orchestra file, with the sr etc. definitions.  All code outside the 
+instrument definitions is treated as instrument one and is given an 
+init run at time = 0.
+
+
+zir, zkr, zkw
+-------------
+
+There are two short, simple, fast opcodes which read a location in 
+zk space, at either i time or at the k rate.
+
+ir      zir     indx                    
+kr      zkr     kndx                    
+
+Likewise, two write to a location in zk space at i time or at the k
+rate. 
+
+        ziw     isig, indx              
+        zkw     ksig, kndx              
+
+These are fast and always check that the index is within the 
+range of zk space.  If it is out of range, an error is reported 
+and 0 is returned, or no writing takes place.
+
+  isig          i rate      } Value to write to the zk  
+  ksig          i or k rate } location.
+        
+  indx          i rate      } Which zk location to write it to. 
+  kndx          i or k rate }
+
+For instance,
+
+        zkw     kzoom, p8
+
+can be used so that parameter 8 of the instrument's command line could 
+control where in zk space the output is written.
+
+        zkw     kzoom, 7
+                
+This will always write it to zk location 7.
+
+kxxx    phasor 1
+
+kdest   = 40 + kxxx * 16
+        zkw     kzoom, kdest
+
+This will write kzoom to locations 40 to 55 on a one second scan 
+cycle.          
+
+
+
+zar, zaw
+--------
+
+For a rate reading and writing, we use similar opcodes:
+
+
+ar      zar     kndx                            
+
+Reads number kndx array of floats which are the ksmps number of 
+audio rate floats to be processed in a k cycle.
+
+
+        zaw     asig, kndx                      
+
+Writes into the array specified by kndx.
+
+In both cases, the ugen figures out where the array is and auto 
+indexes through it to get each of the ksmps number of samples.
+
+The za space is separate from the zk space.  
+
+These are the basic zk and za read and write ugens. However there are 
+a number of luxuriant variants:
+
+
+ziwm, zkwm
+----------
+
+        ziwm    isig, indx [,imix]              
+        zkwm    ksig, kndx [,imix]              
+
+Like ziw and zkw above, except that they can mix - add the sig to the 
+current value of the variable.  If no imix is specified, they mix, but 
+if imix is used, then 0 will cause writing (like ziw and zkw) any 
+other value will cause mixing.
+
+
+
+zkmod
+-----
+
+kr      zkmod   ksig, kzkmod
+
+zkmod is a unit generator intended to facilitate the modulation of one 
+signal by another, where the modulating signal comes from a zk 
+variable.  Either additive or mulitiplicative modulation is provided.
+
+ksig    is the input signal, to be modulated and sent to the output of 
+        the zkmod unit generator.
+
+kzkmod  controls which zk variable is used for modulation.  A positive 
+        value means additive modulation, a negative value means 
+        multiplicative modulation.  A value of 0 means no change to 
+        ksig - it is transferred directly to the output.
+
+        For instance kzkmod = 23 will read from zk variable 23, and 
+        add the value it finds there to ksig.  If kzkmod = -402, then 
+        ksig is multiplied by the value read from zk location 402. 
+
+kskmod  can be an i or a k rate value.
+
+
+
+zkcl
+----
+ 
+        zkcl    kfirst, klast
+ 
+This will clear to zero one or more variables in the zk space. Useful 
+for those variables which are accumulators for mixing things during 
+the processing for each cycle, but which must be cleared to zero 
+before the next set of calculations.
+
+
+
+zar, zarg, zaw, zawm
+--------------------
+
+For a rate reading and writing, in the za space, we use similar 
+opcodes:
+
+ar      zar     kndx                            
+
+  kndx  Points to which za variable to read.  
+
+This reads the number kndx array of floats in za space which are the 
+ksmps number of audio rate floats to be processed in a k cycle.
+
+
+ar      zarg    kndx, kgain                             
+
+Similar to zar, but multiplies the a rate signal by a k rate value 
+kgain.
+
+
+        zaw     asig, kndx                      
+ 
+Writes asig into the za variable specified by kndx.
+
+
+        zawm    asig, kndx [,imix]              
+
+Like zaw above, except that it can mix - add the asig to the current 
+value of the destination za variable.  If no imix is specified, it 
+mixes, but if imix is used, then 0 will cause a simple write (like 
+zaw) and any other value will cause mixing. 
+
+
+zamod
+-----
+
+        zamod   asig, kzamod
+ 
+Modulation of one audio rate signal by a second one - which comes from 
+a za variable.  The location of the modulating variable is controlled 
+by the i or k rate variable kzamod.  This is the audio rate version of 
+zkmod described above.  
+
+
+zacl
+----
+
+        zacl    kfirst, klast
+
+This will clear to zero one or more variables in the za space. Useful 
+for those variables which are accumulators for mixing things during 
+the processing for each cycle, but which must be cleared to zero 
+before the next set of calculations.
+
+
+
+Summary of zak ugens
+--------------------
+
+What types of input variables are used? 
+
+                                        Runs at time
+ir      zir     indx                    i
+kr      zkr     kndx                            k
+
+        ziw     isig, indx              i
+        zkw     ksig, kndx                      k
+
+        ziwm    isig, indx, imix        i
+        zkwm    ksig, kndx, kmix                k
+
+        zkcl    kfirst, klast                   k
+
+ar      zar     kndx                            k but does arrays
+ar      zarg    kndx, kgain                     k but does arrays
+ 
+        zaw     asig, kndx                      k but does arrays
+
+        zawm    asig, kndx, kmix                k but does arrays
+
+        zacl    kfirst, klast                   k but does arrays
+
+
+isig    }
+indx    } Known at init time
+imix    }
+
+ksig    }
+kndx    }
+kmix    } k rate variables 
+kfirst  }
+klast   }
+kgain   }
+
+asig    } a rate variable - an array of floats.
+
+
+Known bugs in zak system
+------------------------
+
+When using the mix function of zkwm or zawm, care must be taken that 
+the variables mixed to are zeroed at the end (or start) of each k 
+cycle.  The same applies to any variables to which signals are mixed.  
+If you keep adding signals to them, their values can drift to 
+astronomical figures - which is probably not what you want.
+
+My intention is to have certain ranges of za and zk variables used for 
+mixing - I use zkcl and zacl in the last instrument to clear those 
+ranges.
+
+
+
+>>> 5 - Six simple time reading ugens
+=====================================
+
+timek, timek, times, itimes
+---------------------------
+
+These read absolute time since the start of the performance - in two 
+formats.
+
+One is timek or itimek for time in krate cycles.  So with:
+
+        sr = 44100
+        kr = 6300
+        ksmps = 7
+
+then after half a second, the timek or itimek ugen would report 3150.  
+It will always report an integer.
+
+Time in seconds is available with times or itimes.
+
+These would return 0.5 after half a second.     
+
+
+kr      timek
+kr      times
+
+Both the above expect a k rate variable for output.
+
+There are no input parameters.
+
+
+For similar ugens which only operate at the start of the instance
+of the instrument:
+        
+ir      itimek
+ir      itimes
+
+Both these expect an i rate variable (starting with i or gi) as their 
+output.
+
+
+instimek, instimes
+------------------
+
+kr      instimek
+kr      instimes
+
+These are similar to timek and times, except they return the time 
+since the start of this instance of the instrument.
+
+
+
+6 - Printing k rate variables on the screen as numbers
+======================================================
+
+I hate debugging - these ugens are intended to facilitate the 
+debugging of orchestra code.
+
+
+printk
+------
+
+printk prints one k rate value on every k cycle, every second or at 
+intervals specified.  First the instrument number is printed, then the 
+absolute time in seconds, then a specified number of spaces, then the 
+value.  The variable number of spaces enables different values to be 
+spaced out across the screen - so they are easier to view. 
+
+
+        printk  kval, ispace [, itime]
+
+kval    The number to be printed. 
+
+ispace  How many spaces to insert before it is printed.  (Max 130.)
+
+itime   How much time in seconds is to elapse between printings.  
+        (Default 1 second.) 
+ 
+        The first print is on the first k cycle of the instance of the 
+        instrument.  This may not be 0.000 seconds, but the first
+        k cycle afterwards.  I want to investigate this - I thought
+        that k rate code should run from time 0.
+
+
+printks
+-------
+
+printks is a completely different ugen - similar to printf() in C.
+
+It is highly flexible, and if used together with cursor positioning 
+codes, could be used to write specific values to locations in the 
+screen as the Csound processing proceeds.  With MSDOS, a colour screen 
+and ANSI.SYS, it would be possible to have multiple colours, flashing 
+displays - looking like NASA mission control, with k rate
+variables controlling the values displayed, the location on the screen 
+where they are displayed, their colour etc.
+
+There is also a special mode where a float variable is rounded to the 
+next lowest integer, and ANDed with 0 1111 1111 to produce a character 
+between 0 and 255 to be sent to be printed.
+
+This elaborate use is a bit over the top - a hacker's paradise. But 
+printks can be used simply, just to print variables for debugging.
+
+
+printks prints numbers and text, with up to four printable numbers 
+- which can be i or k rate values.
+
+        printks "txtstring", itime, kval1, kval2, kval3, kval4
+
+  txtstring     Text to be printed first - can be up to 130 characters 
+                at least.  _Must_ be in double quotes.
+                
+                The string is printed as is, but standard printf %f 
+                etc. codes are interpreted to print the four parameters.
+        
+                However (at least with DJGPP) the \n style of 
+                character codes are not interpreted by printf.  
+                This ugen therefore provides certain specific codes 
+                which are expanded:
+
+                \n or \N        Newline
+
+                \t or \T        Tab
+
+                ^               Escape character
+
+                ^^              ^
+
+                ~               Escape and '[' These are the lead in 
+                                codes for MSDOS ANSI.SYS screen 
+                                control characters.
+
+                ~~              ~
+
+                An init error is generated if the first parameter is 
+                not a string of length > 0 enclosed in double quotes.
+
+                [For some reason (at least with the DJGPP version, the
+                program crashes if a null string - "" - is given.  
+                This seems not to be due to this ugen.  This should be 
+                tidied up sometime.]
+
+
+                A special mode of operation allows this ugen to convert 
+                kval1 input parameter into a 0 to 255 value and to use 
+                it as the first character to be printed.  
+
+                This enables a Csound program to send arbitrary 
+                characters to the console - albeit with a little 
+                awkwardness.  
+
+                [printf() does not have a format specifier to read a 
+                float and turn it into a byte for direct output. 
+                We could add extra code to do this if we really wanted 
+                to put arbitrary characters out with ease.]
+
+                To acheive this, make the first character of the string a
+                # and then, if desired continue with normal text and format
+                specifiers.  Three more format specifers may be used - they
+                access kval2, kval3 and kval4. 
+                
+  itime         How much time in seconds is to elapse between 
+                printings.  (Default 1 second.) 
+
+  kvalx         The k rate values to be printed. Use 0 for those which 
+                are not used.   
+
+For instance:
+
+        printks "Volume = %6.2f  Freq = %8.3f\n", 0.1, kvol, kfreq, 0, 0
+
+This would print:
+
+Volume = 1234.56 Freq = 12345.678       
+
+
+        printks "#x\\y = %6.2\n", 0.1, kxy, 0, 0, 0
+
+This would print a tab character followed by:
+
+x\y = 1234.56   
+
+
+Discussion
+----------
+
+Both these printing ugens can be made to run on every k cycle - or at 
+least every k cycle they are run in the instrument.  Conditional goto 
+statements can be used to run them only at certain times or when 
+something goes wrong.  To make them run on every k cycle like this, 
+set itime to 0.
+
+
+When itime is not 0, then (if the orchestra code runs the ugen on 
+every k cycle) then the ugen will decide when to print.  It will 
+always print on the first k cycle it is called.  This means that if 
+you set one of these to print only every 10 seconds, and conditional 
+code in the instrument causes it to be run for the very first time at 
+3 seconds, then it will print at 3 seconds.
+
+Subsequent runs of the ugen at between 3 and 9.999 seconds would not 
+cause it to print.  This could be very useful - set the time to longer 
+than the piece and conditional code in the instrument can be used to 
+report a bug just once, on its first occurrence.  You almost certainly 
+do not want a print operation happening every k cycle - it slows the 
+program down too much.
+
+Staying with the 10 second cycle example, if such a printk or printks 
+ugen was called every k cycle, then it would print at 0 seconds 
+(actually the first k cycle after 0), at 10.0 seconds, at 20.0 seconds 
+etc.
+
+
+
+The time cycles start from the time the ugen is initialized - 
+typically the initialisation of the instrument. 
+ 
+
+Damien Miller pointed out an interesting application of these ugens - 
+get the output of the program and sort the lines with a line sorter.  
+The result would be the printed lines sorted first by instrument 
+number, and then by time - for printk. However printks can be made to 
+produce almost anything.  The instrument is available as p1 and the 
+time can easily be found and made available as a printks parameter.
+
+
+One option I have considered but not implemented is for these printed 
+lines to be written to a file as well as to the screen.  Let me know 
+if you like this idea, or have any other ideas about debugging.
+
+
+printf() style %f formatting
+----------------------------
+
+One of the less enjoyable parts of C programming is trying to figure 
+out what magic incantations to offer to printf()
+
+All the parameters are floats, so this reduces our decisions to two 
+main issues:
+
+1 -     How many decimal points of precision do we want?  (0 means
+        no decimal point.)
+
+2 -     How many digits (or spaces) do we want printed in total - 
+        _including_ those after the decimal point?
+
+
+%f      Just prints with full precision - 123.123456
+
+%6.2f   Prints 1234.12
+
+%5.0f   Prints 12345
+
+There is more to the printf() codes than this - see an ANSI C library 
+reference.  Instead of 'f', you can use 'e' to get scientific 
+notation. Using any other format specifiers than f, e, g, E and G will 
+cause unpredictable results, because the parameters are always 
+floating point numbers. 
+
+
+
+
+>>> 7 - Why arrays or "zak" are so important for some applications
+==================================================================
+
+A major theme of my approach to making music is to set up processes 
+and let them interact and be affected by random occurrences.  This can 
+be expensive in analog hardware - but a load of fun too.
+
+Setting up a garden of interacting processes and then tweaking them to 
+whatever state of control or chaos I like is my idea of fun!
+
+Lets say I want to set up a musical cellular automata - with 100 
+similar cells.
+
+Each one produces sound and has various internal states stored as i, 
+k or a rate variables.  The behaviour of each cell is at least 
+partially dependant on that of its neighbours.  Typically, each cell 
+would make some of its own internal state - including sound output - 
+_readable_ by its neigbours or other things.
+
+There could be a global matron function who tries to control the 
+cells' level of friskiness if they individually or collectively incur 
+her wrath by becoming too obstreperous.
+
+So I have a 10 x 10 array of cells, and their internal state is made 
+available as global variables - with different names for the same 
+variable in different cells.
+
+This could be done with 100 carefully written instruments, but life is 
+too short.
+
+The only alternative is to use one instrument and have each instance 
+decide where its interal states are written to for others to read.  
+It should decide which of the 99 other instances it will read the 
+states of.
+
+The ideal way is if we could write global variables as:
+
+gahuey[p7] = afoo * abar
+
+or 
+
+gahuey[kdest] = afoo * abar
+
+In either case, one element of an array huey[] of a rate variables is 
+written.  (Actually each variable is an array of ksmps floats.)
+
+[ Interlude 1 - from what are the popular C variables foo and bar 
+[ derived?  See the end of the file.  
+
+Likewise we want to be able to write these array specifications in the 
+right hand of equations.
+
+gaduey[kdest] = huey[ksource] * (ablah + p4)
+
+So that is the first thing about arrays - make them easy and direct to 
+use with i or k rate indexing.
+
+Secondly, make them multidimensional:
+ 
+galouey[4, 10] 
+Is a two dimensional array of global audio rate variables.
+
+gkblah[2, 4, 10] 
+Is a three dimensional array of global k rate variables.
+
+Thirdly, we want them to be either global or local to the instance of 
+the instrument.
+
+This is quite a tall order, since the core of Csound is not perfect 
+and is largely devoid of comments. Such facilities are obviously 
+beyond what Csound was originally conceived to do, but now that CPUs 
+are so much faster, many people will be writing more sophisticated 
+programs.  Since PCs with dual Pentiums exist today, and in a year or 
+two will be available with up to four P6 processors, lets think big!
+
+
+In principle, the global aspect of arrays can be acheived with the zak 
+system, but it is trickier.
+
+zak ugens do not go on the left or right of equations, they have their 
+own line.  They must write to normal variables and be fed by normal 
+variables.  Arrays, and multi dimensional arrays can all be done with 
+offsets and multiplications to arrive at the final number of the 
+location in za or zk space - but it this involves bulky, hard do debug 
+and understand .orc code, and there is no prospect for building 
+mnemonic names into the way these variables are accessed.
+
+I intend to do some cellular automatata or use multiple reverb and 
+sound source instruments with varying delay times between them, all 
+mixed with my binaural model - with the instruments, reverb points 
+(and hence their connecting time delays) potentially moving around.
+
+There are great prospects for many hours of programming work, bogging 
+down the CPU, and probably horrible results - but I am intrigued.
+

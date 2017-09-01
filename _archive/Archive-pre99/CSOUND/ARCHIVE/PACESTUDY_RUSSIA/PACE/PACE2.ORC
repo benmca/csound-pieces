@@ -1,0 +1,1 @@
+sr=44010kr=4401ksmps=10nchnls=2instr 1idur=p3iamp=p4*10ipitch=p5;simple envelope for attack;decent cheap polish texturekenv	linen		iamp, .05, p3, p3*.3avib	oscili	10, 2, 1asig	buzz		kenv, ipitch, 2, 1asig2 oscili	kenv*1.1, ipitch+avib, 1outs asig+asig2, asig+asig2endin

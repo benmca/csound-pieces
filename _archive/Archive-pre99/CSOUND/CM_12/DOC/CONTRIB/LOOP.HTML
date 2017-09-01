@@ -1,0 +1,316 @@
+<HTML>
+<HEAD>
+<TITLE>Iteration and the LOOP Macro</TITLE>
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+<CENTER>
+<P>
+<H1>Iteration and the <TT>loop</TT> Macro</H1>
+</CENTER>
+
+<H2>Introduction</H2>
+<P>
+To iterate means to perform an action more than once, or until some terminating condition has been meet. Iteration may also be referred to as looping or mapping, depending on the context in which it occurs.  Mapping means to apply a function (the action) to individual elements in a sequence of data.  For a discussion of sequences and mapping functions in Lisp, consult the <A HREF="http://www.harlequin.com/education/books/HyperSpec/Body/sec_17-1.html"> Lisp HyperSpec</A> or <A HREF="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/cltl2.html">Common Lisp the Language</A>, chapters 14-17.
+<P>
+Iteration lends itself to tasks that can be broken down into the repetition of a series of steps. Consider this program that counts the number of even integers from 0 to 3. Without using iteration, the program looks like:
+
+<PRE>(setf int 0 sum 0)
+(when (evenp int) (setf sum (1+ sum)))
+(setf int (1+ int))
+(when (evenp int) (setf sum (1+ sum)))
+(setf int (1+ int))
+(when (evenp int) (setf sum (1+ sum)))
+(setf int (1+ int))
+(when (evenp int) (setf sum (1+ sum)))
+(setf int (1+ int))
+</PRE>
+
+Except for the first line, the example consists of two actions performed over and over again: testing the current value of the stepping variable <TT>int</TT> and incrementing <TT>sum</TT> if it is even; then incrementing <TT>int</TT>. This program works but it has a number drawbacks.  First, it is a tedious textual repetion of two ideas. Second, changing the program (to count oddness, say) means making  changes in four different places. Third, the program is not a genenal solution; it cannot test the numbers 0 to 9, even though the same basic idea applies.
+<P>
+These deficiencies can be eliminated if we express the task using iteration. Most languages like C and Lisp provide "interation constructs", or "templates" for describing repetative tasks. These templates typically handle everything but the actual task definition:
+<UL>
+<LI>Establishing variables and incrementing values
+<LI>Repeatedly execting the task steps.
+<LI>Testing for completion and returning values.
+</UL>
+
+Here are three different solutions to the program using the interative constucts discussed in this document:
+
+<PRE>(setf sum 0)
+(dotimes (int 4) (when (evenp int) (incf sum)))
+
+(setf sum 0)
+(dolist (int '(0 1 2 3)) (when (evenp int) (incf sum)))
+
+(setf sum 0)
+(loop for int below 4 when (evenp int) do (incf sum))
+
+</PRE>
+
+<P>
+<A HREF="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/clm/node89.html"> <H2>Simple Iteration using <TT>dotimes</TT> and <TT>dolist</TT></H2></A>
+<P>
+
+Common Lisp provides the <TT>dotimes</TT> and <TT>dolist</TT> macros for performing simple iteration.
+<P>
+
+<A NAME="dotimes">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>dotimes (<I>var</I> <I>times</I> <I>[value]</I>) <I>{forms}*</I></B></TT>
+<TD align="right" valign="top">
+[Macro]<TR>
+</TABLE><P>
+
+<TT>dotimes</TT> executes <I>forms</I> in its body <I>times</I>
+number of times. <I>var</I> is a variable that <TT>dotimes</TT> sets to the current iteration count, from 0 to <I>times-1</I>. <I>value</I> is an optional value to return as the result of the <TT>dotimes</TT> expression. <TT>dotimes</TT> returns <TT>nil</TT> if <I>value</I> is not supplied.
+<P>
+<H4>Examples:</H4>
+<PRE>;; print the value of i ten times.
+(dotimes (i 10) (print i))
+
+;; return the number of times i equals random number choice
+(setf sum 0 max 50)
+(dotimes (i max sum) (when (= i (random max)) (incf sum)))
+</PRE>
+<P>
+
+<A NAME="dolist">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>dolist (<I>var</I> <I>list</I> <I>[value]</I>) <I>{forms}*</I></B></TT>
+<TD align="right" valign="top">
+[Macro]<TR>
+</TABLE><P>
+
+<TT>dolist</TT> is similar to <TT>dotimes</TT>, except that the 
+variable <I>var</I> receives succesive elements from <I>list</I>. 
+Iteration stops when all the elements from <I>list</I> have been enumerated.
+
+<P>
+<A HREF="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/clm/node235.html#LOOP"><H2>The <TT>loop</TT> macro</H2></A>
+<P>
+
+The <TT>loop</TT> macro is the most flexible facility for defining iterative processes in Lisp. A <TT>loop</TT> expression consists of a series of clauses strung together in an English-like syntax; each clause combines a loop operator with expressions that produce values. <TT>loop</TT> supports several types of clauses. The three most important are <A
+HREF="#iteration_clauses">iteration clauses</A>, <A
+HREF="#action_clauses">action clauses</A>, and <A
+HREF="#conditional_clauses">conditional clauses</A>.  An iteration clause
+establishes local variables and their starting and/or ending conditions. An action clause executes task statements and (possibly) gathers values to return as the result of the loop expression. Conditional clauses allows contraints to be placed on the scope of the iteration or on the applicability of action clauses. 
+
+<P>
+<A NAME="iteration_clauses">
+<H3>Iteration Clauses</H3>
+
+<P>
+An iteration clause declares local varibles and/or establish limits for the iterative process. If iteration limits are not established a loop process will never stop.
+For example, this loop will print random numbers until the process
+was explicitily aborted by typing Command-. (MCL) or C-c C-c (ACL, Clisp).
+
+<PRE>(loop do (print (random 1000)))
+</PRE>
+
+
+<H4>Iteration Clause Syntax</H4>
+Here are the most common iteration clauses:
+<DL>
+<DT><B><TT>repeat <I>times</I></TT></B>
+<DD>Causes loop to iterate <I>times</I> number of times.
+<H4>Example:</H4>
+<PRE>(loop repeat 10 collect (random 40))
+</PRE>
+
+<DT><B><TT>for <I>var</I> in <I>list</I> [by <I>fn</I>]</TT></B>
+<DD>Maps variable <I>var</I> over the elements in <I>list</I>.
+Iteration stops when the elements have been enumerated.  <TT>by</TT>
+is an optional clause that allows a specific increment function to be supplied.
+The default value of <TT>by</TT>is <TT>#'cdr</TT>, which means that
+every element in the list is enumerated.
+<H4>Example:</H4>
+<PRE>(loop for v in '(a c b d) collect (list v v))
+</PRE>
+
+<DT><B><TT>for <I>var</I> on <I>list</I> [by <I>fn</I>]</TT></B>
+<DD>Like the preceding, except that <I>var</I> is set to
+successive tails (cdrs) of the list, rather than elements.
+<H4>Example:</H4>
+<PRE>(loop for v on '(a c b d) by #'cddr collect v)
+</PRE>
+
+
+<DT><B><TT>for <I>var</I> [from <i>start</i>] [below  | to | above | downto <i>end</i>] [by <i>step</i>]</B></TT>
+<DD>Maps variable <I>var</I> over numbers as specified by the optional
+<i>start</i>, <i>end</i> and <i>step</i> clauses. Each clause is
+optional. If <TT>from</TT> is not specidied <I>start</I> defaults to
+0; if <TT>by</TT> is not specified it defaults to 1.
+The end point for iteration can be expressed in four ways:
+  <DL>
+  <DT><TT><B>below <I>end</I></B></TT>
+      <DD>Increments <I>var</I> while <I>var</I> is less than <I>limit</I>.
+  <DT><TT><B>to <I>end</I></B></TT>
+      <DD>Increments <I>var</I> until <I>var</I> is greater than <I>limit</I>.
+  <DT><TT><B>above <I>end</I></B></TT>
+      <DD>Decrements <I>var</I> while <I>var</I> is greater than <I>limit</I>.
+  <DT><TT><B>downto <I>end</I></B></TT>
+      <DD>Decrements <I>var</I> until <I>var</I> is less than <I>limit</I>.
+  </DL>
+<H4>Examples:</H3>
+<PRE>(loop for i below 10 collect i)<BR>
+(loop for i from 1 to 2 by .1 collect i)<BR>
+(loop for i from 10 downto 0 collect i)<BR>
+(loop for i from 10 by .5 above 8 collect i)
+</PRE>
+
+<DT><B><TT>for <I>var</I> = <I>form</I></B></TT>
+<DD>Sets <I>var</I> to the value of <I>form</I> at each iteration. Does not
+terminate looping!
+<H4>Example:</H3>
+<PRE>(loop for x = (random 10) repeat 5 collect x)
+</PRE>
+
+
+</DL>
+
+<A NAME="actionl_clauses">
+<H3>Action Clauses</H3>
+
+Action clauses perform tasks and (possibly) return values from
+the <TT>loop</TT> expression when it terminates.
+
+<DL>
+<DT><B><TT>do <I>form</I></TT></B>
+<DD>Evaluates <I>form</I> at each iteration.
+   	<H4>Example:</H4>
+    <PRE>(loop repeat 10 do (print (random 50)))
+    </PRE>
+
+<DT><B><TT>collect <I>form</I></TT></B>
+<DD>Collects <I>form</I> at each iteration and returns the list
+    as the value of the loop expression.
+    <H4>Example:</H4>
+    <PRE>(loop repeat 10 collect (random 50))
+    </PRE>
+
+<DT><B><TT>count <I>form</I></TT></B>
+<DD>Returns the number of times <I>form</I> is true.
+    <H4>Example:</H4>
+    <PRE>(loop repeat 10 count (evenp (random 50)))
+    </PRE>
+
+<DT><B><TT>sum <I>form</I></TT></B>
+<DD>Returns the sum of <I>form</I>.
+    <H4>Example:</H4>
+    <PRE>(loop repeat 10 sum (random 50))
+    </PRE>
+  
+<DT><B><TT>minimize <I>form</I></TT></B>
+<DD>Returns the smallest value of <I>form</I>.
+    <H4>Example:</H4>
+    <PRE>(loop repeat 10 minimize (random 50))
+    </PRE>
+
+<DT><B><TT>maximize <I>form</I></TT></B>
+<DD>Returns the largest value of <I>form</I>.
+    <H4>Example:</H4>
+    <PRE>(loop repeat 10 maximize (random 50))
+    </PRE>
+</DL>
+
+
+<A NAME="conditional_clauses">
+<H3>Conditional Clauses</H3>
+
+Conditional clauses place contraints on the applicability of action clauses, 
+or on how many times the loop itself will iterate.
+
+<DL>
+<DT><B><TT>when <I>form</I></TT></B>
+<DD>Executes action clause if <I>form</I> is true.
+    <H4>Example:</H3>
+    <PRE>(loop for i below 10 when (evenp n) collect i)
+    </PRE>
+
+<DT><B><TT>unless <I>form</I></TT></B>
+<DD>Executes action clause if <I>form</I> is false.
+    <H4>Example:</H3>
+    <PRE>(loop for i below 0 unless (evenp n) collect i)
+    </PRE>
+
+<DT><B><TT>while <I>form</I></TT></B>
+<DD>Terminates looping if <I>form</I> is false.
+    <H4>Example:</H3>
+    <PRE>(loop for n = (random 10) while (evenp n) collect n)
+    </PRE>
+
+<DT><B><TT>until <I>form</I></TT></B>
+<DD>Terminates looping if <I>form</I> is true.
+    <H4>Example:</H3>
+    <PRE>(loop for n = (random 10) until (evenp n) collect n)
+    </PRE>
+
+</DL>
+
+<H2>Advanced <TT>loop</TT> Features</H2>
+The iteration possibilities afforded by <TT>loop</TT> are almost limitless. The following discussion points out some of the more common ones.
+
+<H3>Declaring Local Variables</H3>
+The <TT>with</TT> clause allows local loop variables to be declared and initialized.
+<DL>
+<DT><TT>with <I>var</I> [= <I>form</I>] [and ...]</TT>
+<DD>Declares <I>var</I> to be a local loop variable. <I>var</I> is initialized
+to nil unless explicitly qualified by the <TT>= <I>form</I></TT> tag.
+Use the conjunction <TT>and</TT> to declare more than one variable.
+<H4>Example:</H4>
+<PRE>(loop with i = 10 and j and k = (random 100000)
+      repeat i
+      for r = (random i)
+      collect (list r j k))
+</PRE>
+</DL>
+<H3>Parallel Clauses</H3>
+A single loop expression may contain more than one iteration and/or action clause.
+The first clause that terminates defines the scope of the iteration. 
+
+<PRE>(loop for i below 10
+      for j = (random 10)
+      collect i collect j)
+</PRE>
+
+<TT>do</TT> clauses are often used in conjunction with other actions:
+</PRE>
+
+<PRE>(loop with i = -100
+      for j below 10
+      do (decf i j)
+      collect (list j i))
+</PRE>
+Parallel  clauses may be made dependant on a single condition using
+the <TT>and</TT> conjunction:
+<PRE>(loop for i below 10
+      for j = (random 10)
+      when (evenp j) collect i and collect j)
+</PRE>
+
+<H3>The <TT>finally</TT> Clause</H3>
+If specified, a <TT>finally</TT> clause is executed after the iteration has
+terminated.  Use an explicit <TT>return</TT> expression to force <TT>loop</TT>
+to return a value from its <TT>finally</TT> clause. <TT>finally</TT>
+is often used in conjunction with the <TT>into</TT> modifier for action
+clauses that accumulate values.
+<DL>
+<DT><TT>finally <I>form</I></TT>
+<DD>Executes <I>form</I> after the iteration is over.
+<H4>Example:</H4>
+<PRE>(loop repeat 10
+      collect (random 10) into res
+      finally (return (remove 3 res))
+</PRE>
+</DL>
+
+
+
+
+
+
+<HR>
+</BODY>
+</HTML>

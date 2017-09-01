@@ -1,0 +1,32 @@
+sr = 22050
+kr = 2205
+ksmps = 10
+nchnls = 2
+
+ga1 init 0
+ga2 init 0
+ga3 init 0
+ga4 init 0
+
+instr 	1
+ifreq = p4	   (crowd1 1 5 30 3
+iamp = 3500
+iloc=p5
+idist=p6
+irpct=p7
+kbal=p8
+
+asig	pluck	1, ifreq, ifreq, 0, 1
+;
+kamps	linen	iamp, .1, p3, .1
+
+as1,as2	locsig	asig, iloc, idist, irpct
+ar1,ar2	locsend
+
+ga3=ga3+(ar1*(1-kbal))
+ga4=ga4+(ar2*(1-kbal))
+
+outs as1*kamps*kbal, as2*kamps*kbal
+;
+
+endin

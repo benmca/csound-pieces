@@ -1,0 +1,636 @@
+Release Notes for 3.49
+======================
+
+These are the release notes for version 3.49, which is a large
+collection of bug-fixes and new code. These notes should be read in
+conjunction with earlier release notes.  Note that this incorporates
+all changes since 3.48, including sub-releases.
+
+Language Changes
+----------------
+
+-J option selects IRCAM format in the same was as -W and -A
+
+Improved diagnostics in orchestra reading
+
+b opcode in score to reset the clock
+
+Increase number of arguments to about 800 (still not dynamic)
+
+Improved recognition of # at start of line
+
+Stop redrawing of graphs in some circumstances
+
+strset now works, and unlimited in number; can ne used in pv, lpc,
+adsyn amd convolve cases as well.
+
+Removed a large number of 'namespace polution' opcodes to other names
+	eg itable is now table
+	   kgauss is now gauss
+	   ktableseg and ktablexseg renamed as tableseg and tablexseg 
+
+Use of large instrument numbers now correct
+
+Corrected use of [] in scores
+
+Freed space problem in GEN20
+
+Digits allowed in macros names except at start
+
+-z option does not report internal opcodes
+
+AIFC supported at least for floats
+
+Included files in orchestra us a pathname look-up
+
+v opcode in scores for local textual varying of time
+
+Allow Mac, Unix or PC files to be read on other platforms
+
+Ouput file null is thrown away (ie no sound file generated)
+
+MIDI control message PROGRAM_TYPE recognised
+
+Rewrite us of \ as line continuation in orchestra
+
+New ramp functions in score introduced by { and } give ramps driven by
+expon rather than line
+
+The ramp function ~ gives a random value (uniform distribution) in
+range on the ramp
+
+Opcode Fixes
+------------
+
+Internal bug in cross2 fixed which could confuse a second note
+
+wgflute improved so as not to reinitialise so much
+
+diskin and soundin fixed a little
+
+aftertouch had wrong arguments
+
+shaker has argument removed which was not used
+
+Skip initialisation in physical model instruments if lowest frequency
+is negative (for legato sounds)
+
+Arguments to specptrk and specdisp now agree with manual
+
+envlpr code included -- omitted by mistake earlier
+
+New Opcodes 
+-----------
+
+dcblockr -- DC Blocking filter
+
+flanger -- as it says
+
+lowres, lowresx and vlowres -- lowpass resonent filters
+
+tonex atonex resonx -- more multiple filters
+
+spectrum -- calculate w variables
+
+mirror, wrap -- actions on large amplitudes
+
+ntrpol -- interpolation
+
+trigger -- trigger events
+
+ftsr -- sample rate of a f-table
+
+wguide1, wguide2 -- primitive wave guides
+
+GEN23 -- read a table of numbers
+
+adsr and madsr -- classical ADSR envelope
+
+biquad -- a new filter
+
+moogvcf -- another one
+
+rezzy -- and another
+
+Other Changes:
+-------------
+
+Solaris audio corrected
+
+Bug in line events for score fixed
+
+voscili opcode removed as did not work well and the functionality
+exists elsewhere
+
+Scot removed
+ 
+Windows GUI Changes
+-------------------
+
+Made buffer sizes in extras window independednt and remembered
+
+Stop redrawing of graphs
+
+OK button renamed Render
+
+Remove references to Pedal
+
+Added project button to set orc/sco/wav in one go
+
+Experimental control opcodes with non-MIDI sliders
+
+------------------------------------------------------------------------
+==John ff
+  1998 Oct 18
+========================================================================
+
+dcblockr
+
+	aout	dcblockr	ain[, igain]
+
+INITIALISATION
+
+igain -- the gain of teh filter, which defaults to 0.99
+
+PERFORMANCE
+
+Implements the DC blocking filter
+	Y[i] = X[i] - X[i-1] + (igain * Y[i=1])
+This is due to P.Cook, and coded by JPff
+------------------------------------------------------------------------
+
+flanger
+
+ar	flanger		asig, adel, kfeedback, imaxd 
+
+DESCRIPTION
+
+a user controlled flanger 
+
+INITALIZATION
+
+imaxd - maximum delay in seconds (needed for inital memory allocation)
+
+PERFORMANCE
+
+ar - output signal
+asig - input signal
+adel - delay in seconds
+kfeedback - feedback amount (in normal tasks this should not exceed 1, 
+		even if bigger values are allowed)
+
+This unit is useful for generating chourses and flangers. The delay
+must be varied at a-rate connecting adel to an oscillator output. Also
+the feedback can vary at k-rate.  This opcode is implemented to allow
+kr different than sr (else delay could not be lower than ksmps)
+enhancing realtime performance. (BtW: this unit is very similar to
+wguide1, the only difference is flanger does not have the lowpass
+filter.).
+
+------------------------------------------------------------------------
+lowres, lowresx 
+
+ar	lowres	asig, kcutoff, kresonance [,istor]
+ar	lowresx	asig, kcutoff, kresonance [, inumlayer, istor]
+
+
+DESCRIPTION 
+
+lowres is a resonant lowpass filter. 
+lowresx is equivalent to more layer of  lowres, with the same
+	arguments, serially connected. 
+
+INITIALIZATION
+
+inumlayer - number of elements of lowresx stack. Default value is
+4.  There is no maximum.
+
+istor - initial disposition of internal data space. 
+        A zero value will clear the space; a non-zero value will allow
+	previous information to remain. The default value is 0.
+
+PERFORMANCE
+
+ar - output signal
+asig  - input signal
+kcutoff - filter cutoff frequency point
+kresonance - resonance amount
+
+
+lowres is a resonant lowpass filter derived from a Hans Mikelsons
+orchestra.  This implementation is very much faster than implementing
+it in Csound language, and it allows kr lower than sr.  kcutoff is not
+in cps and kresonance is not in dB, so experiment for finding best
+results.
+
+lowresx is equivalent to more layer of lowres, with the same
+arguments, serially connected.  Using a stack of more filters allows a
+sharper freqency cutoff.  It is very faster than using more lowres
+instances in Csound orchestra, because only one initialization and 'k'
+cycle are needed at time, and the audio loop falls enterely inside the
+cache memory of processor.
+
+
+------------------------------------------------------------------------
+vlowres
+
+	ar	vlowres 	asig,  kfco, kres, iord, ksep;
+
+DESCRIPTION
+a bank of filters in which freqency cutoff can be separated under user control
+
+INITIALIZATION
+
+iord - total nuber of filter (1 to 10)
+
+PERFORMANCE
+
+ar - output signal
+asig - input signal
+kfco - frequency cutoff (not in cps)
+ksep - frequency cutoff separation for each filter
+
+
+vlowres (variable resonant lowpass filter) allow a variable response
+curve in resonant filters.  It can be thinked as a bank of lowpass
+resonant filters with the same resonance, serially connected.  The
+frequency cutoff of each filter can vary with the kcutoff and ksep
+parameters. 
+
+------------------------------------------------------------------------
+tonex atonex resonx
+
+ar	tonex	asig, khp[, inumlayer, istor]
+ar	atonex	asig, khp[, inumalayer, istor]
+ar	resonx	asig, kcf, kbw[, inumlayer, iscl, istor]
+
+INITALIZATION
+
+inumlayer - number of elements of filter stack. Default value is 4.
+
+isig - some as tone, atone and reson
+istor - some as tone, atone and reson
+iscl - some as reson
+
+
+PERFORMANCE
+
+ar - output signal
+asig - input signal
+khp - some as tone, atone 
+kcf - some as reson
+kbw - some as reson
+
+
+tonex, atonex and resonx are equivalent to more layer of tone, atone
+and reson, with the same arguments, serially connected.  Using a stack
+of more filters allows a sharper frequency cutoff.  They are very
+faster than using  more instances in Csound orchestra of old opcodes,
+because only one initialization and 'k' cycle are needed at time, and
+the audio loop falls enterely inside the cache memory of processor. 
+
+------------------------------------------------------------------------
+spectrum
+
+wsig	spectrum xsig, iprd, iocts, ifrqs, iq[,ihann, idbout, idsprd, idsinrs]
+
+Generate a constant-Q, exponentially-spaced DFT across al octaves of a
+multiply-downsampled control or audio input signal.
+
+INITIALIZATION
+
+ihann (optional) - apply a hamming or hanning window to the input.
+The default is 0 (hamming window)
+
+idbout (optional) - coded conversion of the DFT output: 0 = magnitude,
+1 = dB, 2 = mag squared, 3 = root magnitude.  The default value is 0
+(magnitude).
+  
+idisprd (optional) - if non-zero, display the composite downsampling
+buffer every idisprd seconds.  The default value is 0 (no display).
+
+idsines (optional) - if non-zero, display the hamming or hanning
+windowed sinusoids used in DFT filtering.  The default value is 0 (no
+sinusoid display).
+
+PERFORMANCE
+
+This unit first puts signal asig or ksig through iocts of successive
+octave decimation and downsampling, and preserves a buffer of
+down-sampled values in each octave (optionally displayed as a
+composite buffer every idisprd seconds).  Then at every iprd seconds,
+the preserved samples are passed through a filter bank (ifrqs parallel
+filters per octave, exponentially spaced, with frequency/bandwidth Q
+of iq), and the output magnitudes optionally converted (idbout ) to
+produce a band-limited spectrum that can be read by other units.
+
+The stages in this process are computationally intensive, and
+computation time varies directly with iocts, ifrqs, iq, and inversely
+with iprd.  Settings of ifrqs = 12, iq = 10, idbout = 3, and iprd =
+.02 will normally be adequate, but experimentation is encouraged.
+ifrqs currently has a maximum of 120 divisions per octave.  For audio
+input, the frequency bins are tuned to coincide with A440.
+
+This unit produces a self-defining spectral datablock wsig, whose
+characteristics used (iprd, iocts, ifrqs, idbout) are passed via the
+data block itself to all derivative wsigs.  There can be any number of
+spectrum units in an instrument or orchestra, but all wsig names must
+be unique.
+
+
+Example:
+
+asig  in				; get external audio
+wsig  spectrum  asig,.02,6,12,33,0,1,1	; downsample in 6 octs & calc a 72 pt
+					;   dft (Q 33, dB out) every 20 msecs
+
+------------------------------------------------------------------------
+mirror, wrap -- 
+
+idest	wrap	isig, ilow, ihigh 
+kdest	wrap	ksig, klow, khigh
+adest	wrap	asig, klow, khigh
+		
+idest	mirror	isig, ilow, ihigh
+kdest	mirror	ksig, klow, khigh
+adest	mirror	asig, klow, khigh
+
+DESCRIPTION
+Wraps the signal in various ways (similar to limit opcode by Robin Whittle).
+
+INITIALIZATION - PERFORMANCE
+
+xdest - output signal
+xsig - input ignal
+xlow - low threshold
+xhigh - high threshold
+
+mirror "reflects" the signal that exceeds low and high thresholds.
+wrap wraps-around the signal that exceeds low and high thresholds.
+
+These opcodes are useful in several situations, such as for table
+indexing and for clipping and modeling irate, krate or arate signals. 
+wrap is also useful for wrapping-around tables data when maximum index
+is not a power of two (see table and tablei). 
+Another use of wrap is in cyclical event repeating with arbirary cycle
+length. 
+
+------------------------------------------------------------------------
+ntrpol 
+
+ir	ntrpol isig1, isig2, ipoint [, imin, imax]
+kr	ntrpol	ksig1, ksig2, kpoint [, imin, imax]
+ar	ntrpol asig1, asig2, kpoint [, imin, imax]
+
+DESCRIPTION
+
+calculates the weighted mean value (i.e. linear interpolation) of two
+input signals 
+
+INITALIZATION
+imin - minimum xpoint value (optional, default 0)
+imax - maximum xpoint value (optional, default 1)
+
+PERFORMANCE
+xr - output signal
+xsig1, xsig2 - input signals
+xpoint - interpolation point beetween the two values
+
+nterpol opcode outputs the linear interpolation beetween two input
+values. xpoint is the distance of evaluation point from the first
+value. With the default values of imin and imax, (0 and 1) a zero
+value indicates no distance from the first value and the maximum
+distance from the second one. With a 0.5 ntrpol value will output the
+mean value of the two inputs, indicating the exact half point beetween
+xsig1 and xsig2. A 1 value indicates the maximum distance from the
+first value and no distance from the second one. 
+The range of xpoint can be also defined with imin and imax to make
+easier its management. 
+These opcodes are useful for crossfading two signals.
+------------------------------------------------------------------------
+trigger
+
+kout	trigger	ksig, kthreshold, kmode
+
+DESCRIPTION
+
+informs when a krate signal crosses a threshold
+
+PERFORMANCE
+kout -	output signal (a stream of zeroes with some 1)
+ksig - input signal
+kthreshold - trigger threshold
+kmode - can be 0 , 1 or 2 
+
+
+Normally trigger outputs zeroes: only each time ksig crosses
+kthreshold 'trig' outputs a 1.  There are three modes of using ktrig: 
+kmode = 0  - (down-up) ktrig outputs a 1 when current value of ksig is
+	higher than kthreshold while old value of ksig was equal or
+	lower than kthreshold 
+kmode = 1  - (up-down) ktrig outputs a 1 when current value of ksig is
+	lower than kthreshold while old value of ksig was equal or
+	higher than kthreshold 
+kmode = 2  - (both) ktrig outputs a 1 in both the two previous cases.
+
+------------------------------------------------------------------------
+ftsr(x)
+
+DESCRIPTION
+
+this function returns the sampling-rate of a GEN01 or GEN22 generated
+table. The sampling-rate is determined from the header of the original
+file. If the original file has no header, or the table was not created
+by these two GENs ftsr returns 0.
+
+------------------------------------------------------------------------
+wguide1, wguide2
+
+DESCRIPTION
+
+simple waveguide blocks
+
+ar	wguide1	asig, kfreq, kcutoff, kfeedback;
+ar	wguide2	asig, kfreq1, kfreq2, kcutoff1, kcutoff2, kfeedback1, kfeedback2
+
+PERFORMANCE
+
+wguide1 is the most elemental waveguide model consisting of one delay
+line and one first-order lowpass filter. 
+wguide2 is a model of beaten plate consisting of two parallel delay
+lines and two first-order lowpass filters. The two feedabak lines are
+mixed and sent to the delay again each cycle.
+
+asig is the input of excitation noise, kfreq the frequency (i.e. the
+inverse of delay time), kcutoff is the filter cutoff frequency in Hz
+and kfeedback is the feedback factor. 
+Implementing waveguide algoritms as opcodes, instead of as orc instr,
+allows the  user to set kr different than sr, allowing better
+performance particulary when using real-time.
+
+------------------------------------------------------------------------
+GEN23
+
+This subroutine reads numeric values from an external ascii file
+
+f# time size -23 "filename.txt"
+
+The numeric values contained in "filename.txt" (which indicates the
+complete pathname of the character file to be read), can be separated
+by spaces, tabs, newline characters or commas.  Also words that
+contains non-numeric characters can be used as comments since they are
+ignored. 
+
+All characters following ';' (comment) are ignored until next line
+(numbers too). 
+
+------------------------------------------------------------------------
+adsr, madsr
+
+kr	adsr	iatt, idec, islev, irel[, idelay]
+ar	adsr	iatt, idec, islev, irel[, idelay]
+
+DESCRIPTION
+
+Calculates the classical ADSR envelope
+
+INITALIZATION
+
+iatt - duration of attack phase
+idec - duration of decay
+islev - level for sustain phase
+irel - duration of release phase
+idel - period of zero before the envelope starts
+
+PERFORMANCE
+The envelope is the range 0 to 1 and may need to be scaled further.
+The envelope may be described as
+
+
+1
+              -'-_
+            _'    '-_
+           .         '-_
+          -             '-.
+        _'                 '-.
+       .                      '---------------------._
+      -                                ^              '-._
+    _'                                 |islev             '-._
+   .                                   |                      '-._
+ _-____________|______________|________v____________|_____________'-|______
+ |             |              |                     |               |
+ <---iatt----><---idec------>                      <---irel-------->
+
+The length of the sustain is calculated from then length of the note.
+This means adsr is not suitable for use with MIDI events.  The opcode
+madsr uses the linsegr mechanism and so can be used in MIDI applications
+
+------------------------------------------------------------------------
+Sweepable Filters
+
+        ar biquad asig, kb0, kb1, kb2, ka0, ka1, ka2
+
+        ar rezzy asig, kfco, kres
+
+        ar moogvcf asig, kfco, kres
+
+Implementation of a sweepable general purpose filter and two sweepable
+resonant low-pass filters.
+
+PERFORMANCE
+
+biquad is a general purpose biquadratic digital filter of the form:
+
+a0*y(n) + a1*y[n-1] + a2*y[n-2] = b0*x[n] + b1*x[n-1] + b2*x[n-2]
+
+This filter has the following frequency response:
+
+                       -1      -2 
+       B(Z)   b0 + b1*Z  + b2*Z 
+H(Z) = ---- = ------------------
+                       -1      -2
+       A(Z)   a0 + a1*Z  + a2*Z
+
+ 
+
+This type of filter is often encountered in digital signal processing
+literature. It allows six user defined k-rate coefficients.
+
+ 
+
+rezzy is a resonant low-pass filter created empirically by Hans Mikelson.
+
+kfco is the filter cut-off frequency in Hz
+
+kres is the amount of resonance. Values of 1 to 100 are
+typical. Resonance should be one or greater.
+
+ 
+
+moogvcf is a digital emulation of the Moog diode ladder filter
+configuration. This emulation is based loosely on the paper "Analyzing
+the Moog VCF with Considerations for Digital Implemnetation" by
+Stilson and Smith (CCRMA). This version was originally coded in Csound
+by Josep Comajuncosas. Some modifications and conversion to C were
+done by Hans Mikelson.
+
+Note: This filter requires that the input signal be normalized to one.
+
+kfco is the filter cut-off frequency in Hz.
+
+kres is the amount of resonance with self oscillation occurring when
+kres is approximately one.
+
+Examples
+
+;biquad example
+kfcon   =      2*3.14159265*kfco/sr
+kalpha  =      1-2*krez*cos(kfcon)*cos(kfcon)+krez*krez*cos(2*kfcon)
+kbeta   =      krez*krez*sin(2*kfcon)-2*krez*cos(kfcon)*sin(kfcon)
+kgama   =      1+cos(kfcon)
+km1     =      kalpha*kgama+kbeta*sin(kfcon)
+km2     =      kalpha*kgama-kbeta*sin(kfcon)
+kden    =      sqrt(km1*km1+km2*km2)
+kb0     =      1.5*(kalpha*kalpha+kbeta*kbeta)/kden
+kb1     =      kb0
+kb2     =      0
+ka0     =      1
+ka1     =     -2*krez*cos(kfcon)
+ka2     =      krez*krez
+ayn     biquad axn, kb0, kb1, kb2, ka0, ka1, ka2
+        outs   ayn*iamp/2, ayn*iamp/2
+
+;   Sta  Dur  Amp    Pitch Fco   Rez
+i14 8.0  1.0  20000  6.00  1000  .8
+i14 +    1.0  20000  6.03  2000  .95
+ 
+;rezzy example
+kfco    expseg 100+.01*ifco, .2*idur, ifco+100, .5*idur, ifco*.1+100, .3*idur, .001*ifco+100
+apulse1 buzz   1,ifqc, sr/2/ifqc, 1 ; Avoid aliasing
+asaw    integ  apulse1
+axn     =      asaw-.5
+ayn     rezzy  axn, kfco, krez
+        outs   ayn*iamp, ayn*iamp
+
+;    Sta  Dur  Amp    Pitch  Fco   Rez
+i10  0.0  1.0  20000  6.00   1000  2
+i10  +    1.0  20000  6.03   2000  10
+
+;moogvcf example
+apulse1 buzz    1,ifqc, sr/2/ifqc, 1 ; Avoid aliasing
+asaw    integ   apulse1
+ax      =       asaw-.5
+ayn     moogvcf ax, kfco, krez
+        outs    ayn*iamp, ayn*iamp
+
+;     Sta  Dur  Amp    Pitch  Fco   Rez
+i11   4.0  1.0  20000  6.00   1000  .4
+i11   +    1.0  20000  6.03   2000  .7
+ 
+
+Author
+
+Hans Mikelson
+
+October 1998
+------------------------------------------------------------------------

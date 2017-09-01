@@ -1,0 +1,737 @@
+(IN-SYNTAX 'MIDI T)
+((LAMBDA (%CONTAINER%)
+   (ADD-OBJECTS (LIST (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C4
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C4
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'DS4
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'DS4
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'F4
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C4
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'F4
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'F4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'F4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'F4
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'DS4
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'DS4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'DS4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'DS4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'F4
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'D4
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'DS4
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'GS4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'F4
+                                   :AMPLITUDE
+                                   0.25
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'F4
+                                   :AMPLITUDE
+                                   0.3214285714285714
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.39285714285714285
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.4642857142857143
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.5357142857142857
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'C5
+                                   :AMPLITUDE
+                                   0.6071428571428571
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'AS4
+                                   :AMPLITUDE
+                                   0.6785714285714286
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1)
+                      (MAKE-OBJECT 'MIDI-NOTE
+                                   :NOTE
+                                   'G4
+                                   :AMPLITUDE
+                                   0.75
+                                   'DURATION
+                                   0.1
+                                   'RHYTHM
+                                   0.1))
+                %CONTAINER%
+                NIL
+                :COPY-FIRST
+                NIL)
+   %CONTAINER%)
+ (MAKE-OBJECT '(THREAD PULSE) 'ID 'PULSE))
+(ALGORITHM SINUS
+           MIDI-NOTE
+           (LENGTH 80 AMPLITUDE 0.5 RHYTHM 0.1 DURATION 0.1)
+           (SETF NOTE
+                 (ROUND (RESCALE (SIN (* 2PI (/ COUNT LENGTH) 4))
+                                 -1
+                                 1
+                                 20
+                                 100))))

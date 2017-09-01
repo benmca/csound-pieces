@@ -1,0 +1,218 @@
+<HTML>
+<HEAD>
+  <!-- Created with AOLpress/2.0 -->
+  <TITLE>DirectCsound GUI</TITLE>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<H1>
+  <FONT COLOR="#800000"><B>DirectCsound GUI</B></FONT>
+</H1>
+<H6>
+  by Gabriel Maldonado, January 2000 <BR>
+  <A HREF="mailto:g.maldonado@agora.stm.it">g.maldonado@agora.stm.it</A>
+</H6>
+<P>
+This document treats about using the GUI of DirectCsound. GUI has been introduced
+starting from version 4.0 of DirectCsound.<BR>
+Notice that previous versions of DirectCsound were console-based, whereas
+present version is a true Win32 program. So something has been changed.
+<P>
+The usage of this version should be easier than previous versions. This document
+takes it for granted that the reader already knows older versions of Csound.
+See the main Csound Manual for more information. <BR>
+Main Csound Manual can be downloaded at the following urls:
+<P>
+<A HREF="http://hem.passagen.se/rasmuse/Csound.htm">http://hem.passagen.se/rasmuse/Csound.htm</A>
+(WinHelp format, RECOMMENDED);
+<P>
+<A HREF="http://www.lakewoodsound.com/csound">http://www.lakewoodsound.com/csound</A>
+(pdf format);<BR>
+<H2>
+  <B>1. Starting DirectCsound</B>
+</H2>
+<P>
+There are several ways to start DirectCsound program:<BR>
+<OL>
+  <LI>
+    by double clicking the executable icon or a shortcut;
+  <LI>
+    by dragging a <B>.csd </B>file to the executable icon;
+  <LI>
+    by typing the command-line arguments directly into a DOS console window and
+    by pressing &lt;return&gt;;
+  <LI>
+    by writing a batch file which contains the command-line arguments;
+  <LI>
+    by using another program such as VMCI
+</OL>
+<P>
+Since methods 3-4-5 could also be possible with older versions of Csound,
+I treat only the methods 1 and 2 in this document.
+<H3>
+  1.1 Double clicking the executable icon
+</H3>
+<P>
+This is the standard method of starting most windows programs. However, in
+older versions, this way of running Csound caused an error; in fact, in order
+to be correctly run, older versions required additional command-line arguments
+(at least the orchestra and the score file names).
+<P>
+Now things have changed: by double-clicking the program icon a dialog box
+will be opened, expecting the user to fill the empty text-fields:
+<P>
+<IMG SRC="pict0.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="473" HEIGHT="365">
+<P>
+Notice that not always all fields have to be filled. In realtime session
+"<B>Ouput File</B>" field must be left blank. Using realtime-oriented orchestras
+with <B>.rto </B>extension, both "<B>Ouput File</B>" and "<B>Sco File</B>"
+fields can be left blank. Furthermore, when using <B>.csd </B>file, the only
+field to be filled is "<B>Orc File</B>". This can be obtained very fastly
+by dragging a <B>.csd </B>file directly towards this dialog box, dropping
+it and pressing &lt;return&gt;. Also, dragging an<B> .orc </B>file to this
+window produces the same result. In this case the user must be sure that
+the command line flags are those desired.
+<P>
+Notice that file-related text-fields have a "Browse..." button, in order
+to allow the user to search the complete pathname of the corresponding file
+by browsing it with a common-dialog-box:
+<P>
+<IMG SRC="pict2.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="432" HEIGHT="295">
+<P>
+Notice that, if you leave all fields blank, this error message will occur:
+<P>
+<IMG SRC="pict3.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="361" HEIGHT="118">
+<P>
+indicating that some command-line arguments are needed. However this action
+doesn't terminate the program, i.e. even after closing this message-box you
+are still able to operate with DirectCsound, but the program will be in
+<I><B>stop</B></I> state, waiting the user to choose some action in order
+to start a realtime or deferred-time session.
+<H3>
+  1.2 Dragging a .csd file
+</H3>
+<P>
+The second way to start DirectCsound is by dragging a .csd file directly
+to the program icon, or to a shortcut to it.
+<P>
+Notice that, in realtime sessions, if the flags don't specify the audio and
+midi port number, new message boxes can appear, listing currently installed
+devices and asking the user to select one of them.
+<P>
+For example:
+<P>
+<IMG SRC="pict4.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="417" HEIGHT="338">
+<P>
+In this case the user has to type the MIDI IN port number and press
+&lt;Return&gt;. For example, to choose the <I>"SB Live! MIDI In [B800]"
+</I>port the user must type<I> "0" </I>and press return.
+<P>
+<H2>
+  2. The main window of DirectCsound
+</H2>
+<P>
+<IMG SRC="pict6.jpg" ALIGN="Bottom" ALT="[Image]" WIDTH="617" HEIGHT="456">
+<P>
+The main window of DirectCsound has a set of command buttons allowing several
+actions:<BR>
+<OL>
+  <LI>
+    starting/stopping a Csound session;
+  <LI>
+    opening/closing an audio file for hard-disk recording (without header);
+  <LI>
+    starting/pausing a hard-disk recording of current realtime session;
+  <LI>
+    toggling on/off the <I>Sleep</I> mode;
+  <LI>
+    enabling/disabling Csound console message display;
+  <LI>
+    restarting a session with new command-line arguments;
+  <LI>
+    changing buffer size without stopping a realtime perfomance
+  <LI>
+    exiting the program
+</OL>
+<H3>
+  <BR>
+  2.1 Starting/Stopping a Csound session
+</H3>
+<P>
+To stop a Csound session, just click the "<B>Stop</B>" button. Current session
+will stop and the button label will be changed into "<B>Start</B>". To restart
+Csound with the same command line arguments, just click this button again.
+<H3>
+  2.2 Opening/Closing an Audio File for hard-disk recording
+</H3>
+<P>
+Version 4.0 allows to start/pause the hard-disk recording of a realtime session
+of Csound.
+<P>
+In order to enable recording, user must open a file by filling the corresponding
+text-field with the name of the file to be created and by clicking the
+"<B>Open/Close File</B>" check-box (notice that the check-box cannot be checked
+until the text-field has been filled with the file name).
+<P>
+Then user must start recording by clicking the "<B>Start</B>" button. He
+can pause recording without stopping realtime session by clicking the
+"<B>Pause</B>" button. Notice that the "Start" and "Pause" buttons are disabled
+if the audio file is not already opened (i.e. when the check-box is not checked).
+<P>
+You can close the file without stopping current session of Csound by clicking
+the "Open/Close File" check-box again.
+<P>
+An audio-file generated by hard-disk recording has no header, even if the
+extension is <I>.wav</I> or <I>.aif</I>
+<H3>
+  2.3 Toggling on/off the Sleep mode
+</H3>
+<P>
+The "<B>Sleep</B>" check-box allows to enable/disable the corresponding
+<I>sleep-mode </I>during a realtime session.
+<P>
+Sleep mode raises the priority of current DirectCsound process, in order
+to reduce sound-interruptions and tics due to interactions with other programs
+running in parallel with DirectCsound, such as, for example, VMCI. The drawback
+of using "Sleep" mode is that the buffer lenght must be at least 300 or more,
+so latency delay is bigger than normal mode.
+<P>
+You can try to switch on/off this feature (and to raise/lower buffer length)
+during a session, in order to find the best obtainable performance.
+<H3>
+  2.4 Enabling/Disabling Csound console message display
+</H3>
+<P>
+By clicking "<B>Suppress Display</B>" button it is possible to suppress
+console-text-messages of Csound. The label of this button will turn "<B>Enable
+Display</B>", and, by clicking it again, it is possible to restore console
+message display.
+<P>
+It is highly recommended to suppress console display during realtime session
+in order to avoid sound-flow interruptions causing clicks and noise.
+<H3>
+  2.5 Restarting a session with new command-line arguments
+</H3>
+<P>
+The "<B>Restart with new cmd-line args...</B>" button stops current
+eventually-running session of Csound and displays the command arguments
+dialog-box which allows the user to fill text-fields and to run Csound with
+new arguments.
+<H3>
+  2.6 Changing buffer size without stopping a realtime perfomance
+</H3>
+<P>
+The horizontal slider near the top of console-area allows to modify buffer
+length during a realtime session. <BR>
+This can be used to interactively find the best obtainable buffer length.
+This feature should be tuned-up together with the "<B>Sleep</B>" check-box
+to find the optimal configuration for realtime performance of current orchestra
+.
+<P>
+<P>
+<P>
+<P>
+<P>
+<P>
+<P>
+<P>
+<P>
+</BODY></HTML>

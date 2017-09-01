@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="retrograde.mcr">&nbsp;</A>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0"><TR>
+<TD align="left" valign="top">
+<TT><B>retrograde <I>stream</I></B></TT>
+<TD align="right" valign="top">
+[Macro]<TR>
+</TABLE><P>
+
+Produces each period of the item stream <I>stream</I> in its strict
+retrograde form, no matter what pattern <I>stream</I> implements.<P>
+
+
+<P><B>Example:</B></P>
+
+<PRE>? (setf x (retrograde (steps 1 2 in random for 8 from 'c4 returning note)))
+<I>#&lt;FUNCTIONAL-ITEM-STREAM 131442261&gt;</I>
+
+? (read-items x)
+<I>(GS4 G4 FS4 F4 DS4 D4 CS4 C4)</I>
+
+? (read-items x)
+<I>(C5 AS4 GS4 FS4 E4 D4 CS4 C4)</I>
+
+? (read-items x)
+<I>(AS4 A4 G4 F4 E4 DS4 CS4 C4)</I>
+</PRE>
+
+<P><B>See Also:</B></P>
+
+<A HREF="mirror.mcr.html"><TT>mirror</TT></A>,
+<A HREF="repeat.mcr.html"><TT>repeat</TT></A>
+<P>
+
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:  5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

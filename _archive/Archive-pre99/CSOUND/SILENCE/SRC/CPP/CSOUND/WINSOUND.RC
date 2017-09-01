@@ -1,0 +1,447 @@
+//
+// Resource file for CWIN.                   Copyright (C) Codemist Ltd, 1995
+//                                           J P Fitch
+//
+
+
+CWIN              ICON          "winsound.ico"
+DREAM             ICON          "dream.ico"
+MTRC              ICON          "mtrc.ico"
+
+#include <windows.h>
+#include "dialogs.h"
+
+DIALOG_1 DIALOG FIXED IMPURE  7, 7, 210, 212
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "Csound Arguments"
+FONT 12, "Times New Roman"
+BEGIN
+        LTEXT           "Orchestra", 101, 10, 8, 39, 8, NOT WS_GROUP
+        EDITTEXT        ORCH, 71, 6, 120, 11, ES_AUTOHSCROLL
+        PUSHBUTTON      "O", BUTTON_OF, 58, 6, 11, 11, WS_GROUP
+        PUSHBUTTON      ">", BUTTON_EO, 190, 6, 11, 11, WS_GROUP
+        LTEXT           "Score", 102, 10, 23, 39, 8, NOT WS_GROUP
+        EDITTEXT        SCORE, 71, 21, 120, 11, ES_AUTOHSCROLL
+        PUSHBUTTON      "MIDI", BUTTON_MIDI, 42, 21, 15, 11, WS_GROUP
+        PUSHBUTTON      "S", BUTTON_SF, 58, 21, 11, 11, WS_GROUP
+        PUSHBUTTON      ">", BUTTON_ES, 190, 21, 11, 11, WS_GROUP
+        LTEXT           "Output File", 114, 10, 38, 45, 8, NOT WS_GROUP
+        EDITTEXT        SOUND, 71, 36, 120, 11, ES_AUTOHSCROLL
+        PUSHBUTTON      "DAC", BUTTON_DAC, 42, 36, 15, 11, WS_GROUP
+        PUSHBUTTON      "Sn", BUTTON_Sn, 58, 36, 11, 11, WS_GROUP
+        AUTOCHECKBOX    ">", BUTTON_EW, 192, 36, 20, 11
+        GROUPBOX        "Format", 100, 9, 72, 52, 74, WS_GROUP
+        AUTOCHECKBOX    "Peak Chunks", BUTTON_PK, 9, 150, 52, 11
+        AUTORADIOBUTTON "AIFF", BUTTON_A, 17, 85, 40, 10,  WS_GROUP
+        AUTORADIOBUTTON "WAV", BUTTON_B, 17, 100, 40, 10
+        AUTORADIOBUTTON "IRCAM", BUTTON_C, 17, 115, 40, 10
+        AUTORADIOBUTTON "Raw", BUTTON_D, 17, 130, 40, 10
+        GROUPBOX        "Size", 103, 78, 72, 55, 94, WS_GROUP
+        AUTORADIOBUTTON "8un bit", BUTTON_U8, 85, 80, 40, 10
+        AUTORADIOBUTTON "8sig bit", BUTTON_8, 85, 95, 40, 10
+        AUTORADIOBUTTON "16 bit", BUTTON_16, 85, 110, 40, 10
+        AUTORADIOBUTTON "32 bit", BUTTON_32, 85, 125, 40, 10
+        AUTORADIOBUTTON "24 bit packed", BUTTON_24, 85, 140, 47, 10
+        AUTORADIOBUTTON "Floats", BUTTON_FL, 85, 155, 40, 10
+        GROUPBOX        "Graphics", 108, 148, 72, 50, 46, WS_GROUP
+        AUTORADIOBUTTON "None", BUTTON_NG, 158, 85, 31, 10, WS_GROUP
+        AUTORADIOBUTTON "ASCII ", BUTTON_AG, 158, 95, 33, 10
+        AUTORADIOBUTTON "Full", BUTTON_FG, 158, 105, 33, 10
+        AUTOCHECKBOX    "PostScript", BUTTON_PS, 148, 120, 51, 10, WS_GROUP
+        AUTOCHECKBOX    "Play At End", BUTTON_PLY, 148, 63, 52, 10, WS_GROUP
+        AUTOCHECKBOX    "Remain Active", BUTTON_CNT, 78, 63, 68, 10, WS_GROUP
+        AUTOCHECKBOX    "Write Log File", BUTTON_LOG, 9, 63, 64, 10, WS_GROUP
+        PUSHBUTTON      "Help", BUTTON_HLP, 150, 133, 40, 14, WS_GROUP
+        PUSHBUTTON      "Extra", OTHERS, 150, 153, 40, 14, WS_GROUP
+        PUSHBUTTON      "Utilities", UTIL, 150, 170, 40, 14, WS_GROUP
+        DEFPUSHBUTTON   "&Render", IDOK, 9, 170, 40, 14, NOT WS_TABSTOP
+        PUSHBUTTON      "Project", PROJ, 55, 170, 26, 14, NOT WS_TABSTOP
+        PUSHBUTTON      "<=>", SLIDE, 84, 170, 14, 14, NOT WS_TABSTOP
+        PUSHBUTTON      "Env", ENVIRON, 102, 170, 14, 14, NOT WS_TABSTOP
+        PUSHBUTTON      "Cancel", IDCANCEL, 120, 170, 22, 14, NOT WS_TABSTOP
+        ICON            "CWIN",  -1, 11, 195, 20, 18
+        ICON            "DREAM", -1, 180, 195, 20, 18
+        ICON            "MTRC", -1, 160, 195, 20, 18
+        LTEXT           "© Barry Vercoe, MIT Media Laboratory", -1, 34, 196, 120, 8
+        LTEXT           "Output Device",IDC_WAVEOUTTXT, 10, 53, 60, 8
+        COMBOBOX        IDC_WAVEOUTDEV,71,51,132,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+END
+
+DIALOG_2 DIALOG FIXED IMPURE  20, 20, 234, 195
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "Additional Arguments"
+FONT 8, "Times New Roman"
+BEGIN
+        AUTOCHECKBOX    "CScore processing (-C)", X_CSCORE, 8, 15, 90, 10, WS_GROUP
+        AUTOCHECKBOX    "I time only (-I)", X_INITTIME, 8, 25, 55, 10, WS_GROUP
+        AUTOCHECKBOX    "No sound to disk (-n)", X_NOSOUND, 8, 35, 80, 10, WS_GROUP
+        AUTOCHECKBOX    "Verbos (-v)", X_VERBOS, 8, 45, 47, 10, WS_GROUP
+        AUTOCHECKBOX    "Rewrite Header (-R)", X_REWRITE, 8, 65, 79, 10, WS_GROUP
+        AUTOCHECKBOX    "Scot score (-S)", X_SCOT, 8, 55, 60, 10, WS_GROUP
+        EDITTEXT        X_HEART, 8, 75, 28, 10, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Heartbeat (-H)", X_T0, 40, 75, 59, 10, WS_GROUP
+        AUTOCHECKBOX    "Notify (-N)", X_NOTIFY, 8, 85, 50, 10, WS_GROUP
+        LTEXT           "SRate override (-r)", X_T1, 120, 15, 67, 8
+        EDITTEXT        X_SRATE, 196, 15, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Krate override (-k)", X_T2, 120, 30, 65, 8
+        EDITTEXT        X_KRATE, 196, 30, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Message level (-m)", X_T3, 120, 45, 67, 8
+        EDITTEXT        X_MSGLEV, 196, 45, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Beats (-t)", X_T4, 120, 60, 34, 11
+        EDITTEXT        X_BEATS, 196, 60, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "MIDI File input (-M)", X_T5, 25, 134, 65, 8
+        PUSHBUTTON      "#", X_MIDIFILE, 92, 132, 16, 14
+        EDITTEXT        X_MIDI, 8, 146, 100, 12,  ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Extract to file (-x)", X_T7, 23, 105, 64, 8
+        PUSHBUTTON      "*", X_XTRFILE, 92, 105, 16, 14
+        EDITTEXT        X_EXTRACT, 8, 117, 100, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        EDITTEXT        X_BUFFER, 196, 75, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Samples/Hardware (-B)", X_T8, 120, 75, 76, 8
+        EDITTEXT        X_LBUFFER, 196, 90, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Samples/Hardware (-b)", X_T10, 120, 90, 76, 8
+        EDITTEXT        X_INPUT, 123, 146, 105, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Sound input (-i)", X_T9, 129, 133, 54, 8
+        PUSHBUTTON      "In", X_IN, 209, 132, 19, 14
+        DEFPUSHBUTTON   "&OK", IDOK, 32, 174, 40, 14, WS_GROUP
+        PUSHBUTTON      "Cancel", IDCANCEL, 148, 174, 40, 14, WS_GROUP
+        COMBOBOX        X_MIDIINDEV, 123, 117, 105, 10,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+        AUTOCHECKBOX    "Terminate at Midi End", X_TRKEND, 8, 95, 83, 8
+        LTEXT           "MIDI Device", -1, 125, 105, 102, 8
+        AUTOCHECKBOX    "Keep Sorted Score (-t0)", X_KEEPTMP, 8, 160, 65, 10, WS_GROUP
+END
+
+DIALOG_3 DIALOG 95, 48, 140, 155
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "Utilities"
+FONT 8, "Times New Roman"
+BEGIN
+        AUTORADIOBUTTON "Hetrodyne Analysis", U_HETRO, 15, 10, 77, 10
+        AUTORADIOBUTTON "LPC Analysis", U_LPANAL, 15, 25, 55, 10
+        AUTORADIOBUTTON "Phase Vocoding Analysis", U_PVANAL, 15, 40, 97, 10
+        AUTORADIOBUTTON "Convolution Analysis", U_CVANAL, 15, 55, 82, 10
+        AUTORADIOBUTTON "Sound File Info", U_SNDINFO, 15, 70, 61, 10
+        AUTORADIOBUTTON "Phase Vocoder File Info", U_PVLOOK, 15, 85, 97 10
+        AUTORADIOBUTTON "List Opcodes", U_OPCODES, 15, 100, 61, 10
+        AUTORADIOBUTTON "Opcode Details", U_ALLCODES, 15, 115, 61, 10
+        DEFPUSHBUTTON   "&OK", IDOK, 15, 130, 40, 14, WS_GROUP
+        PUSHBUTTON      "Cancel", IDCANCEL, 80, 130, 40, 14, WS_GROUP
+END
+
+DIALOG_CV DIALOG 86, 48, 220, 210
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "Convolution Analysis"
+FONT 8, "Times New Roman"
+BEGIN
+        LTEXT           "File input", C_T1, 169, 11, 45, 8
+        PUSHBUTTON      "#", C_INPUT, 4, 7, 16, 14, WS_TABSTOP
+        EDITTEXT        C_IN, 20, 8, 140, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "File output", C_T2, 168, 41, 45, 8
+        EDITTEXT        C_OUT, 20, 38, 140, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        PUSHBUTTON      "O", C_OUTPUT, 4, 36, 16, 14, WS_TABSTOP
+        EDITTEXT        C_SAMPLE, 5, 75, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Sample Rate (-s)", C_T3, 45, 78, 59, 8
+        EDITTEXT        C_BEGIN, 5, 100, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Begin time (-b)", C_T4, 45, 103, 52, 8
+        EDITTEXT        C_DUR, 5, 125, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Duration (-d)", C_T5, 45, 128, 45, 8
+        GROUPBOX        "Channel", C_FF, 123, 63, 83, 80
+        AUTORADIOBUTTON "All Channels", C_C5, 135, 70, 60, 10, WS_GROUP
+        AUTORADIOBUTTON "Channel 1", C_C1, 135, 85, 56, 10
+        AUTORADIOBUTTON "Channel 2", C_C2, 135, 100, 56, 10
+        AUTORADIOBUTTON "Channel 3", C_C3, 135, 115, 56, 10
+        AUTORADIOBUTTON "Channel 4", C_C4, 135, 130, 56, 10
+        DEFPUSHBUTTON   "&OK", IDOK, 5, 162, 40, 14, WS_GROUP
+        PUSHBUTTON       "Cancel", IDCANCEL, 168, 162, 40, 14, WS_GROUP
+        ICON    "CWIN", -1, 7, 185, 20, 18
+        ICON    "DREAM", -1, 196, 185, 20, 18
+        ICON    "MTRC", -1, 160, 185, 20, 18
+        LTEXT   "Greg Sullivan", 10, 86, 185, 56, 8
+END
+
+DIALOG_HET DIALOG FIXED IMPURE  86, 48, 188, 248
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "Heterodyne Analysis"
+FONT 8, "Times New Roman"
+BEGIN
+        LTEXT           "File input", C_T1, 140, 10, 45, 8
+        PUSHBUTTON      "#", C_INPUT, 4, 7, 16, 14, WS_TABSTOP
+        EDITTEXT        C_IN, 20, 8, 115, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "File output", C_T2, 140, 40, 45, 8
+        EDITTEXT        C_OUT, 20, 37, 115, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        PUSHBUTTON      "O", C_OUTPUT, 4, 36, 16, 14, WS_TABSTOP
+        EDITTEXT        C_SAMPLE, 4, 60, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Sample Rate (-s)", C_T3, 38, 62, 59, 8
+        EDITTEXT        C_BEGIN, 4, 80, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Begin time (-b)", C_T4, 38, 82, 52, 8
+        EDITTEXT        C_DUR, 4, 100, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Duration (-d)", C_T5, 38, 102, 45, 8
+        GROUPBOX        "Channel", C_FF, 98, 55, 85, 86
+        AUTORADIOBUTTON "All Channels", C_C5, 118, 66, 60, 10, WS_GROUP
+        AUTORADIOBUTTON "Channel 1", C_C1, 118, 81, 56, 10
+        AUTORADIOBUTTON "Channel 2", C_C2, 118, 96, 56, 10
+        AUTORADIOBUTTON "Channel 3", C_C3, 118, 111, 56, 10
+        AUTORADIOBUTTON "Channel 4", C_C4, 118, 126, 56, 10
+        DEFPUSHBUTTON   "&OK", IDOK, 4, 205, 40, 14, WS_GROUP
+        PUSHBUTTON      "Cancel", IDCANCEL, 135, 205, 40, 14, WS_GROUP
+        EDITTEXT        C_FUND, 4, 120, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Fundamental (-f)", 107, 38, 122, 59, 8
+        EDITTEXT        C_HARM, 4, 140, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Harmonic (-h)", 108, 38, 142, 46, 8
+        EDITTEXT        C_MAX, 4, 160, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Max (-M)", 109, 38, 162, 31, 8
+        EDITTEXT        C_MIN, 4, 180, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Min (-m)", 110, 38, 182, 29, 8
+        EDITTEXT        C_NUM, 99, 150, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Number (-n)", 111, 132, 152, 43, 8
+        EDITTEXT        C_FILTER, 99, 180, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Filters (-l)", 112, 132, 182, 34, 8
+        ICON            "CWIN", -1, 6, 226, 20, 18
+        ICON            "DREAM", -1, 158, 225, 20, 18
+        ICON            "MTRC", -1, 84, 205, 20, 18
+        LTEXT           "© Barry Vercoe, MIT Media Laboratory", -1, 30, 229, 140, 8, NOT WS_GROUP
+END
+
+DIALOG_PV DIALOG FIXED IMPURE  86, 48, 197, 240
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "Phase Vocoding Analysis"
+FONT 8, "Times New Roman"
+BEGIN
+        LTEXT           "File input", P_T1, 148, 10, 45, 8
+        PUSHBUTTON      "#", P_INPUT, 4, 7, 16, 14, WS_TABSTOP
+        EDITTEXT        P_IN, 20, 8, 124, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "File output", P_T2, 147, 40, 45, 8
+        EDITTEXT        P_OUT, 20, 37, 123, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        PUSHBUTTON      "O", P_OUTPUT, 4, 36, 16, 14, WS_TABSTOP
+        EDITTEXT        P_SAMPLE, 4, 60, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Sample Rate (-s)", P_T3, 38, 62, 59, 8
+        EDITTEXT        P_BEGIN, 4, 80, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Begin time (-b)", P_T4, 38, 81, 52, 8
+        EDITTEXT        P_DUR, 4, 100, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Duration (-d)", P_T5, 38, 102, 45, 8
+        GROUPBOX        "Channel", P_FF, 107, 63, 85, 75
+        AUTORADIOBUTTON "Channel 1", P_C1, 118, 75, 56, 10, WS_GROUP
+        AUTORADIOBUTTON "Channel 2", P_C2, 118, 90, 56, 10, NOT WS_GROUP
+        AUTORADIOBUTTON "Channel 3", P_C3, 118, 105, 56, 10, NOT WS_GROUP
+        AUTORADIOBUTTON "Channel 4", P_C4, 118, 120, 56, 10, NOT WS_GROUP
+        DEFPUSHBUTTON   "&OK", IDOK, 4, 185, 40, 14, WS_TABSTOP
+        PUSHBUTTON      "Cancel", IDCANCEL, 143, 185, 40, 14, WS_TABSTOP
+        EDITTEXT        P_FRAME, 4, 120, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Frame Size (-n)", P_T6, 38, 122, 59, 8
+        EDITTEXT        P_WIND, 4, 140, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Wind factor (-w)", P_T7, 38, 144, 57, 8
+        EDITTEXT        P_HOP, 4, 160, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Hop size (-h)", P_T8, 38, 163, 44, 8
+        EDITTEXT        P_LATCH, 99, 160, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Latch Graphics (-G)", P_T9, 136, 161, 60, 8
+        AUTOCHECKBOX    "Display (-g)", P_DISP, 122, 140, 60, 20
+        ICON            "CWIN", -1, 6, 215, 20, 18
+        ICON            "DREAM", -1, 166, 216, 20, 18
+        ICON            "MTRC", -1, 85, 185, 20, 18
+        LTEXT           "© Barry Vercoe, MIT Media Laboratory", -1, 34, 219, 131, 8
+END
+
+DIALOG_LPC DIALOG FIXED IMPURE  86, 48, 188, 233
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "Linear Predictive Coding Analysis"
+FONT 8, "Times New Roman"
+BEGIN
+        LTEXT           "File input", C_T1, 140, 10, 45, 8
+        PUSHBUTTON      "#", C_INPUT, 4, 7, 16, 14
+        EDITTEXT        C_IN, 20, 8, 115, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "File output", C_T2, 140, 40, 45, 8
+        EDITTEXT        C_OUT, 20, 37, 115, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        PUSHBUTTON      "O", C_OUTPUT, 4, 36, 16, 14
+        EDITTEXT        C_SAMPLE, 4, 60, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Sample Rate (-s)", C_T3, 38, 62, 59, 8
+        EDITTEXT        C_BEGIN, 4, 80, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Begin time (-b)", C_T4, 38, 82, 52, 8
+        EDITTEXT        C_DUR, 4, 100, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Duration (-d)", C_T5, 38, 102, 45, 8
+        GROUPBOX        "Channel", C_FF, 112, 56, 71, 80
+        AUTORADIOBUTTON "Channel 1", C_C1, 118, 75, 56, 10, WS_GROUP
+        AUTORADIOBUTTON "Channel 2", C_C2, 118, 90, 56, 10
+        AUTORADIOBUTTON "Channel 3", C_C3, 118, 105, 56, 10
+        AUTORADIOBUTTON "Channel 4", C_C4, 118, 120, 56, 10
+        DEFPUSHBUTTON   "&OK", IDOK, 4, 185, 40, 14, WS_GROUP
+        PUSHBUTTON      "Cancel", IDCANCEL, 143, 185, 40, 14, WS_GROUP
+        EDITTEXT        C_POLES, 4, 120, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Number of Poles (-p)", 108, 38, 122, 73, 8
+        EDITTEXT        C_SLICE, 4, 140, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Hop size (-h)", 109, 38, 145, 44, 8
+        EDITTEXT        C_PCHLOW, 4, 160, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Low Pitch (-P)", 110, 38, 162, 50, 8
+        EDITTEXT        C_PCHHIGH, 99, 160, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "High Pitch (-Q)", 112, 132, 162, 52, 8
+        AUTOCHECKBOX    "Verbose", C_VERBOSE, 99, 137, 40, 10
+        AUTOCHECKBOX    "Debug", C_DEBUG, 99, 146, 40, 10
+        AUTOCHECKBOX    "Graphics",C_GRAPHICS, 99, 137, 40, 10
+        AUTOCHECKBOX    "Old Format",C_OLDFORM, 140, 148, 45, 10
+        ICON            "CWIN", -1, 6, 205, 20, 18
+        ICON            "DREAM", -1, 163, 205, 20, 18
+        ICON            "MTRC", -1, 85, 185, 20, 18
+        LTEXT           "© Barry Vercoe, MIT Media Laboratory", -1, 35, 209, 140, 8, NOT WS_GROUP
+END
+
+IDD_SLIDERS DIALOG DISCARDABLE  0, 0, 242, 155
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dynamic Controls"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,185,6,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,185,24,50,14
+    SCROLLBAR       IDC_SLIDER1,7,6,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT1,123,6,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON1,155,6,27,12
+    SCROLLBAR       IDC_SLIDER2,7,20,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT2,123,20,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON2,155,20,27,12
+    SCROLLBAR       IDC_SLIDER3,7,34,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT3,123,34,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON3,155,34,27,12
+    SCROLLBAR       IDC_SLIDER4,7,48,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT4,123,48,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON4,155,48,27,12
+    SCROLLBAR       IDC_SLIDER5,7,62,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT5,123,62,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON5,155,62,27,12
+    SCROLLBAR       IDC_SLIDER6,7,76,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT6,123,76,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON6,155,76,27,12
+    SCROLLBAR       IDC_SLIDER7,7,90,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT7,123,90,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON7,155,90,27,12
+    SCROLLBAR       IDC_SLIDER8,7,104,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT8,123,104,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON8,155,104,27,12
+    SCROLLBAR       IDC_SLIDER9,7,118,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT9,123,118,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON9,155,118,27,12
+    SCROLLBAR       IDC_SLIDER10,7,132,115,12, SBS_HORZ | WS_GROUP | WS_TABSTOP
+    EDITTEXT        IDC_EDIT10,123,132,30,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Config",IDC_BUTTON10,155,132,27,12
+END
+
+IDD_SETSLIDER DIALOG DISCARDABLE  0, 0, 124, 90
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Set Slider"
+FONT 8, "MS Sans Serif"
+BEGIN
+    LTEXT           "Parameters for Slider ",-1,7,1,68,9,NOT
+                    WS_GROUP
+    EDITTEXT        RG_NAME,84,1,11,12,ES_READONLY | NOT WS_TABSTOP
+    EDITTEXT        RG_MIN,47,16,64,17,ES_AUTOHSCROLL
+    EDITTEXT        RG_MAX,47,34,64,17,ES_AUTOHSCROLL
+    EDITTEXT        RG_VAL,47,52,64,17,ES_AUTOHSCROLL
+    LTEXT           "Minimum",-1,7,21,29,10,NOT WS_GROUP
+    LTEXT           "Maximum",-1,7,38,30,10,NOT WS_GROUP
+    LTEXT           "Value",-1,7,57,24,10,NOT WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,8,70,40,14
+    PUSHBUTTON      "Cancel",IDCANCEL,80,70,40,14
+END
+
+DIALOG_ENV DIALOG DISCARDABLE  0, 0, 150, 85
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Settings"
+FONT 10, "MS Sans Serif"
+BEGIN
+    LTEXT           "SSDIR", -1, 7, 10, 30, 10, NOT WS_GROUP
+    LTEXT           "SFDIR", -1, 7, 30, 30, 10, NOT WS_GROUP
+    LTEXT           "SADIR", -1, 7, 50, 30, 10, NOT WS_GROUP
+//    LTEXT         "MIDIOUTDEV", -1, 7, 70, 40, 10, NOT WS_GROUP
+//    LTEXT         "CSNOSTOP", -1, 7, 90, 40, 10, NOT WS_GROUP
+    EDITTEXT        SE_SSDIR, 48, 8, 90, 10, ES_AUTOHSCROLL
+//    PUSHBUTTON      "Browse",SE_SSBUTTON,120,8,14,10
+    EDITTEXT        SE_SFDIR, 48, 28, 90, 10, ES_AUTOHSCROLL
+//    PUSHBUTTON      "Browse",SE_SFBUTTON,120,28,14,10
+    EDITTEXT        SE_SADIR, 48, 48, 90, 10, ES_AUTOHSCROLL
+//    PUSHBUTTON      "Browse",SE_SABUTTON,120,48,14,10
+//    EDITTEXT        SE_MIDIDEV, 48, 68, 70, 10,ES_AUTOHSCROLL
+//    EDITTEXT        SE_NOSTOP, 48, 88, 70, 10, ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,8,68,40,14
+    PUSHBUTTON      "Cancel",IDCANCEL,100,68,40,14
+END
+
+
+DIALOG_PVL DIALOG FIXED IMPURE  86, 48, 197, 180
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "Phase Vocoding Information"
+FONT 8, "Times New Roman"
+BEGIN
+        LTEXT           "File input", P_T1, 148, 10, 45, 8
+        PUSHBUTTON      "#", P_INPUT, 4, 7, 16, 14, WS_TABSTOP
+        EDITTEXT        P_IN, 20, 8, 124, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        EDITTEXT        P_FFRAME, 20, 25, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "First frame", -1, 58, 27, 50, 8
+        EDITTEXT        P_LFRAME, 20, 40, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Last frame", -1, 58, 42, 50, 8
+        EDITTEXT        P_FBIN, 20, 55, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "First bin", -1, 58, 57, 50, 8
+        EDITTEXT        P_LBIN, 20, 70, 32, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "Last frame", -1, 58, 72, 50, 8
+        AUTOCHECKBOX    "PrintInts", P_PINT, 20, 85, 90, 20
+        LTEXT           "File output", -1, 148, 106, 45, 8
+        PUSHBUTTON      "#", P_OUTPUT, 4, 107, 16, 14, WS_TABSTOP
+        EDITTEXT        P_OUT, 20, 108, 124, 12, ES_AUTOHSCROLL | WS_TABSTOP
+        DEFPUSHBUTTON   "&OK", IDOK, 4, 125, 40, 14, WS_TABSTOP
+        PUSHBUTTON      "Cancel", IDCANCEL, 143, 125, 40, 14, WS_TABSTOP
+        ICON            "CWIN", -1, 6, 145, 20, 18
+        ICON            "DREAM", -1, 166, 145 20, 18
+        ICON            "MTRC", -1, 160, 50, 20, 18
+        LTEXT           "© Barry Vercoe, MIT Media Laboratory", -1, 34, 155, 131, 8
+END
+
+IDD_BUTTONS DIALOG DISCARDABLE  0, 0, 142, 155
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dynamic Buttons"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,85,6,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,85,24,50,14
+    LTEXT           IDC_EDIT1,85,6,50,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "1", IDC_BUTTON1,7,6,50,14
+    PUSHBUTTON      "2", IDC_BUTTON2,7,20,50,14
+    PUSHBUTTON      "3", IDC_BUTTON3,7,34,50,14
+    PUSHBUTTON      "4", IDC_BUTTON4,7,48,50,14
+    PUSHBUTTON      "5", IDC_BUTTON5,7,62,50,14
+    PUSHBUTTON      "6", IDC_BUTTON6,7,76,50,14
+    PUSHBUTTON      "7", IDC_BUTTON7,7,90,50,14
+    PUSHBUTTON      "8", IDC_BUTTON8,7,104,50,14
+    PUSHBUTTON      "9", IDC_BUTTON9,7,118,50,14
+    PUSHBUTTON      "10", IDC_BUTTON10,7,132,50,14
+END
+
+IDD_CHECKS DIALOG DISCARDABLE  0, 0, 120, 155
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dynamic Checkboces"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,60,6,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,60,24,50,14
+    LTEXT           IDC_EDIT1,60,6,50,14,ES_AUTOHSCROLL
+    AUTOCHECKBOX     "1", IDC_BUTTON1,7,6,50,14
+    AUTOCHECKBOX     "2", IDC_BUTTON2,7,20,50,14
+    AUTOCHECKBOX     "3", IDC_BUTTON3,7,34,50,14
+    AUTOCHECKBOX     "4", IDC_BUTTON4,7,48,50,14
+    AUTOCHECKBOX     "5", IDC_BUTTON5,7,62,50,14
+    AUTOCHECKBOX     "6", IDC_BUTTON6,7,76,50,14
+    AUTOCHECKBOX     "7", IDC_BUTTON7,7,90,50,14
+    AUTOCHECKBOX     "8", IDC_BUTTON8,7,104,50,14
+    AUTOCHECKBOX     "9", IDC_BUTTON9,7,118,50,14
+    AUTOCHECKBOX     "10", IDC_BUTTON10,7,132,50,14
+END
+
+DIALOG_MIDI DIALOG FIXED IMPURE  20, 20, 234, 105
+STYLE DS_MODALFRAME | WS_CAPTION | WS_POPUP | WS_VISIBLE
+CAPTION "MIDI Arguments"
+FONT 8, "Times New Roman"
+BEGIN
+        LTEXT           "MIDI File input (-M)", X_T5, 8, 10, 65, 8
+        PUSHBUTTON      "#", X_MIDIFILE, 80, 10, 16, 14
+        EDITTEXT        X_MIDI, 100, 10, 104, 12,  ES_AUTOHSCROLL | WS_TABSTOP
+        LTEXT           "MIDI Device", -1, 8, 32, 50, 8
+        COMBOBOX        X_MIDIINDEV, 100, 30, 104, 12,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+        AUTOCHECKBOX    "Terminate at Midi End", X_TRKEND, 8, 58, 83, 8
+        DEFPUSHBUTTON   "&OK", IDOK, 32, 80, 40, 14, WS_GROUP
+        PUSHBUTTON      "Cancel", IDCANCEL, 148, 80, 40, 14, WS_GROUP
+END
+

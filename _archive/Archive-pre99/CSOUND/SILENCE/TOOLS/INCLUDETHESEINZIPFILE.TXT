@@ -1,0 +1,3 @@
+*.dll *.c* *.h* *.java *.htm* *.dsp Make* *.mak *.dsw *.jpg *.gif *.png *.txt *.msg *.mml *.jp* *.asm *.exe *.f *.am 
+
+configure *.all *.sh *.bat *.mml *.orc *.dll *.jar *.smf *.jpx *.txt *.ico *.rc *.tbl *.def *.bmp

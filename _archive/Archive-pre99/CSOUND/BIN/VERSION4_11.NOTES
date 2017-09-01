@@ -1,0 +1,92 @@
+Release Notes for 4.11
+======================
+
+This is realy a bug-fix releas with very little new.  
+
+Bug Fixes
+---------
+
+In the console version selecting devaudio/dac was broken.  Also fixes
+dac1, dac2 etc 
+
+rtclock and ftlen were wrongly specified in the tables
+
+Some oddities in AIFC fixed
+
+
+Language Changes
+----------------
+
+The control/TCL interaction can now allow a text message (see opcodes)
+
+
+Opcode Fixes
+------------
+
+None
+
+
+New Opcodes 
+-----------
+
+waveset -- a simple time stretch by repeating cycles
+
+flashtxt -- allows text to be displayed from instruments like sliders
+etc. (only on Unix and Windows at present)
+
+
+Other Changes:
+-------------
+
+None
+
+
+Windows GUI Changes
+-------------------
+
+Mone
+
+------------------------------------------------------------------------
+==John ff
+  2001 February
+========================================================================
+ar      waveset   ain, krep
+
+The input is read and each complete cycle (two zero-crossings) is
+repeated krep times.
+
+There is an internal buffer as the output is clearly slower that the
+input.  Some care is taken if the buffer is too short, but there may
+be strange effects.
+
+            instr       1
+  asig      soundin     "input.wav"
+
+  a2        waveset     asig, p4
+            out         a2
+            endin       
+
+
+John ffitch
+2001 February
+------------------------------------------------------------------------
+        flashtxt  iwhich, String
+
+A window is created, identified by the iwhich argument, with the text
+string displayed.  If the text is replaced by a number then teh window
+id deleted.  Note that the text windows are globally numbered so
+different instruments can change the text, and teh window survives the
+instance of teh instrument.
+
+Example:
+
+instr 1
+    flashtext     1, "Instr 1 live"
+ ao oscil         4000, 1
+    out           ao
+endin
+
+instr 2
+    flashtext     1, 0
+endin
+

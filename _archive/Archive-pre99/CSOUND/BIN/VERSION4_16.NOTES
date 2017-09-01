@@ -1,0 +1,433 @@
+Release Notes for 4.16
+======================
+
+A great deal of internal reorganisation, and catching up on opcodes
+and gens in use elsewhere.  And of course the usual collection of bug
+fixes and bug introductions.
+
+Bug Fixes
+---------
+
+Bad characters in score introduced by the sorting process fixed.
+Off-by-one error in score macros fixed
+Bug fix in piped input and output; may improve things a little
+Off-by-one error in reading input sounds with skipping
+Writing EPS graphs was not correct for macintosh
+IRCAM format should be OK again
+
+Language Changes
+----------------
+
+Sound fonts are looked for in current directory sample director and
+analysis directory.
+
+Scores can now have an x opcode which skips the rest of the current
+section.
+
+
+Opcode Fixes
+------------
+
+Obscure bugs in jitter/jitters and jitter2 fixed
+Minor bugs in pv on-the-fly
+rezzy now not a disaster if rez is set to zero.
+Similar in moogvf and svf (and code optimised)
+A rounding error problem in k-rate linseg fixed
+
+New Opcodes 
+-----------
+
+cuserrnd -- 
+urd -- (function)
+grain2, grain3 -- New granular synthesis opcodes
+rnd31 -- 31-bit bipolar random opcodes with controllable distribution
+
+New Gens
+--------
+
+Gen24
+Gen30 (Istvan Varga)
+Gen31 (Istvan Varga)
+Gen40
+Gen41
+Gen42
+
+
+Other Changes:
+-------------
+
+Improved error messages when sfont fails
+
+Improve phase calculation in oscbnk
+
+musmon re-organised to allow for external use
+
+Significant optimisations in deltap3 and vdelay3
+
+resonz and resonr optimised
+
+Known Bugs
+==========
+
+The following bugs are known but not yet fixed
+
+2: ADSR can go wrong
+5: Bug in linseg at k-rate (mail of Wed, 15 Aug 2001 19:59:48 +0100)
+6: PVOC can glitch (mail of Mon, 19 Jun 2000 00:45:23 +0200)
+7. FOG fails with too few overlaps (mail of Wed, 03 Oct 2001 08:10:53 +0100)
+8. Spaces in arguments to opcodes can be ignored, giving oddities
+9. Mismatched closing bracket can give crash (mail of Fri, 19 Oct 2001
+   19:00:56 +0100) 
+
+
+Windows GUI Changes
+-------------------
+
+Added DAC button
+
+-----------------------------------------------------------------------
+==John ff
+  2001 September
+========================================================================
+GEN30
+=====
+
+f # time size  30  src  minh maxh  [ref_sr]
+
+GEN30 extracts a range of harmonic partials from an existing
+waveform.
+
+src - source ftable
+
+minh - lowest harmonic number
+
+maxh - highest harmonic number
+
+ref_sr (optional) - maxh is scaled by (sr / ref_sr). The
+default value of ref_sr is sr.
+
+GEN31
+=====
+
+f # time size  31  src  pna stra phsa  pnb strb phsb  ...
+
+This routine is similar to GEN09, but allows mixing any
+waveform specified in an existing table.
+
+src - source table number
+
+pna, pnb, ... - partial number, must be a positive integer
+
+stra, strb, ... - amplitude scale
+
+phsa, phsb, ... - start phase (0 to 1)
+
+[Istvan Varga]
+------------------------------------------------------------------------
+
+ar      grain2  kcps, kfmd, kgdur, iovrlp, kfn, iwfn[, irpow[, iseed[, imode]]]
+
+ar      grain3  kcps, kphs, kfmd, kpmd, kgdur, kdens, imaxovr, kfn, iwfn,   \
+                kfrpow, kprpow[, iseed[, imode]]
+
+INITIALIZATION
+==============
+
+iovrlp - (fixed) number of overlapping grains in grain2.
+
+imaxovr - maximum number of overlapping grains in grain3. The number of
+  overlaps can be calculated by (kdens * kgdur); however, it can be
+  overestimated at no cost in rendering time, and a single overlap uses
+  (depending on system) 16 to 32 bytes of memory.
+
+iwfn - function table containing window waveform (GEN20).
+
+irpow - this value controls the distribution of grain frequency variation.
+  If irpow is positive, the random distribution (x is in the range -1 to 1) is
+  abs(x) ^ ((1 / irpow) - 1); for negative irpow values, it is
+  (1 - abs(x)) ^ ((-1 / irpow) - 1). Setting irpow to -1, 0, or 1 will result
+  in uniform distribution (this is also faster to calculate). The image
+  "grain2_rand.png" shows some examples for irpow.
+  The default value of irpow is 0.
+
+iseed - seed value for random number generator (positive integer in the range
+  1 to 2147483646 (2^31 - 2)). Zero or negative value seeds from current time
+  (this is also the default).
+
+imode - sum of the following values:
+
+  64: (grain3 only) synchronize start phase of grains to kcps.
+  32: (grain3 only) start all grains at integer sample location. This may be
+      faster in some cases, however it also makes the timing of grain envelopes
+      less accurate.
+  16: (grain3 only) do not render grains with start time less than zero (see
+      the image "grain3_1.png"; this option turns off grains marked with red
+      on the image).
+   8: interpolate window waveform (slower).
+   4: do not interpolate grain waveform (fast, but lower quality).
+   2: grain frequency is continuously modified by kcps and kfmd (by default,
+      each grain keeps the frequency it was launched with). This may be
+      slower at high control rates. In grain3 it also controls phase
+      modulation (kphs).
+   1: skip initialization.
+  The default value is 0.
+
+PERFORMANCE
+===========
+
+ar - output signal.
+
+kcps - grain frequency in Hz.
+
+kphs - (grain3 only) grain phase.
+
+kfmd - random variation (bipolar) in grain frequency in Hz.
+
+kpmd - (grain3 only) random variation (bipolar) in start phase.
+
+kgdur - grain duration in seconds.
+
+kdens - (grain3 only) number of grains per second. In grain2, this is fixed to
+  (iovrlp / kgdur).
+
+kfrpow - (grain3 only) distribution of random frequency variation (see irpow).
+
+kprpow - (grain3 only) distribution of random phase variation (see irpow).
+  Setting kphs and kpmd to 0.5, and kprpow to 0 will emulate grain2.
+
+kfn - function table containing grain waveform. Table number can be changed at
+  k-rate (this is useful to select from a set of band-limited tables generated
+  by GEN30, to avoid aliasing).
+
+AUTHOR
+======
+
+Istvan Varga
+2001
+------------------------------------------------------------------------
+
+ix	rnd31 iscl, irpow[, iseed]
+kx	rnd31 kscl, krpow[, iseed]
+ax	rnd31 kscl, krpow[, iseed]
+
+DESCRIPTION
+===========
+
+31-bit bipolar random opcodes with controllable distribution. These
+units are portable, i.e. using the same seed value will generate the
+same random sequence on all systems. The distribution of generated
+random numbers can be varied at k-rate.
+
+INITIALIZATION
+==============
+
+irpow - this value controls the distribution of random numbers.
+  If irpow is positive, the random distribution (x is in the range -1 to 1) is
+  abs(x) ^ ((1 / irpow) - 1); for negative irpow values, it is
+  (1 - abs(x)) ^ ((-1 / irpow) - 1). Setting irpow to -1, 0, or 1 will result
+  in uniform distribution (this is also faster to calculate). The image
+  "grain2_rand.png" shows some examples for irpow.
+
+iseed - seed value for random number generator (positive integer in the range
+  1 to 2147483646 (2^31 - 2)). Zero or negative value seeds from current time
+  (this is also the default). Seeding from current time is guaranteed to
+  generate different random sequences, even if multiple random opcodes are
+  called in a very short time.
+  In the a- and k-rate version the seed is set at opcode initialization. With
+  i-rate output, if iseed is zero or negative, it will seed from current time
+  in the first call, and return the next value from the random sequence in
+  successive calls; positive seed values are set at all i-rate calls.
+  The seed is local for a- and k-rate, and global for i-rate units.
+Notes:
+ - although seed values up to 2147483646 are allowed, it is recommended
+  to use smaller numbers (< 1000000) for portability, as large integers may
+  be rounded to a different value if 32-bit floats are used.
+ - i-rate rnd31 with a positive seed will always produce the same output
+  value (this is not a bug). To get different values, set seed to 0 in
+  successive calls, which will return the next value from the random sequence.
+
+iscl - output scale. The generated random numbers are in the range -iscl to
+  iscl.
+
+ix - i-rate output value.
+
+PERFORMANCE
+===========
+
+krpow - same as irpow, but can be varied at k-rate.
+
+kscl - same as iscl, but can be varied at k-rate.
+
+kx - k-rate output value.
+
+ax - a-rate output value.
+
+EXAMPLES
+========
+
+; a-rate random numbers in the range -2 to 2 with triangle distribution,
+; seed from current time
+
+a1	rnd31 2, -0.5
+
+; k-rate random numbers in the range -1 to 1 with uniform distribution,
+; seed=10
+
+k1	rnd31 1, 0, 10
+
+; i-rate random numbers with linear distribution, seed=7
+; (note that seed was used only in the first call)
+
+i1	rnd31 1, 0.5, 7
+i2	rnd31 1, 0.5
+i3	rnd31 1, 0.5
+
+; same with seeding from current time
+
+i1	rnd31 1, 0.5, 0
+i2	rnd31 1, 0.5
+i3	rnd31 1, 0.5
+
+AUTHOR
+======
+
+Istvan Varga
+Nov 2001
+
+------------------------------------------------------------------------
+GEN40
+
+This subroutine generates a continuous random distribution function starting
+from the shape of a user-defined distribution histogram.
+
+f# time size -40 shapetab
+
+The shape of histogram must be stored in a previously defined table, in fact
+shapetab argument must be filled with the number of such table.
+Histogram shape can be generated with any other GEN routines. Since no
+interpolation is used when GEN40 processes the translation, it is suggested
+that the size of the table containing the histogram shape to be reasonably
+big, in order to obtain more precision (however after the processing the
+shaping-table can be destroyed in order to re-gain memory). In DirectCsound
+it is possible to generate tables having non-power-of-two length by giving
+a negative value to size argument.
+
+This subroutine is designed to be used together with Cusrnd opcode
+(see Cusrnd for more information). 
+
+------------------------------------------
+GEN41
+
+This subroutine generates a discrete random distribution function by giving
+a list of numerical pairs.
+
+f# time size -41 value1 prob1 value2 prob2 value3 prob3 ... valueN
+probN
+
+The first number of each pair is a value, and the second is the probability
+of that value to be chosen by a random algorithm. Even if any number can
+be assigned to the probability element of each pair, it is suggested to give
+it a percent value, in order to make it clearer for the user. In DirectCsound
+it is possible to generate a table having a non-power-of-two length by giving
+a negative value to size argument.
+
+This subroutine is designed to be used together with Dusrnd and
+urd opcodes (see Dusrnd for more information). 
+------------------------------------------------------------------------
+GEN42
+
+This subroutine generates a random distribution function of discrete ranges
+of values by giving a list of groups of three numbers.
+
+f# time size -42  min1 max1 prob1 min2 max2 prob2 min3 max3 prob3 ...  minN maxN probN
+
+The first number of each group is a the minimum value of the first range,
+the second is the maximum value and the third is the probability of that
+an element belonging to that range of values can be chosen by a random
+algorithm. Even if any number can be assigned to the probability element
+of each group, it is suggested to give it a percent value, in order to make
+it clearer to the user. In DirectCsound it is possible to generate a table
+having a non-power-of-two length by giving a negative value to
+size argument.
+
+This subroutine is designed to be used together with Dusrnd and
+urd opcodes (see Dusrnd for more information). Since both
+Dusrnd and urd do not use any interpolation, it is suggested
+to give a size reasonably big.
+
+------------------------------------------------------------------------
+
+duserrnd, cuserrnd
+
+
+iout duserrnd itableNum
+kout duserrnd ktableNum
+aout duserrnd atableNum
+
+iout = urd(itableNum)
+kout = urd(ktableNum)
+aout = urd(atableNum)
+
+iout cuserrnd imin, imax, itableNum
+kout cuserrnd kmin, kmax, ktableNum
+aout cuserrnd amin, amax, atableNum
+
+DESCRIPTION
+
+Output is a controlled pseudo-random number series. In these cases, the random
+distributions are created by the user.
+
+INITIALIZATION
+
+itableNum - number of table containing the random-distribution function.
+Such table is generated by the user. See GEN40, GEN41 and GEN42. The table
+length does not need to be a power of 2
+
+imin - minimum range limit 
+imax - maximum range limit
+
+PERFORMANCE
+
+ktableNum - number of table containing the random-distribution function.
+Such table is generated by the user. See GEN40, GEN41 and GEN42. The table
+length does not need to be a power of 2
+
+kmin - minimum range limit 
+kmax - maximum range limit
+
+duserrnd (discrete user-defined-distribution random generator) generates
+random values according to a discrete random distribution created by the
+user. The user can create the discrete distribution histogram by using
+GEN41. In order to create that table, the user has to define an arbitrary
+amount of number pairs, the first number of each pair representing a value
+and the second representing its probability (see GEN41 for more details).
+urd is the same opcode as duserrnd, but can be used in function
+fashion. When used  as a function, the rate of generation depends by
+the rate type of input variable XtableNum. In this case it
+can be embedded into any formula. Table number can be varied at k-rate, allowing
+to change the distribution histogram during the performance of a single note.
+duserrnd is designed be used in algorithmic music generation.
+
+duserrnd can also be used to generate values following a set of ranges
+of probabilities by using distribution functions generated by GEN42
+(See GEN 42 for more details). In this case, in order to simulate
+continuous ranges, the length of table XtableNum should be
+reasonably big, as duserrnd does not interpolate between table elements.
+
+cuserrnd (continuous user-defined-distribution random generator)
+generates random values according to a continuous random distribution
+created by the user. In this case the shape of the distribution histogram
+can be drawn or generated by any GEN routine. The table containing the shape
+of such histogram must then be translated to a distribution function by means
+of GEN40 (see GEN40 for more details). Then such function must
+be assigned to the XtableNum argument of cuserrnd.
+The output range can then be rescaled according to the Xmin
+and Xmax arguments. cuserrnd linearly interpolates between
+table elements, so it is not recommended for discrete distributions (GEN41
+and GEN42).
+
+For a tutorial about random distribution histograms and functions see:
+
+D. Lorrain. "A panoply of stochastic cannons". In C. Roads, ed. 1989. Music
+machine. Cambridge, Massachusetts: MIT press, pp. 351 - 379.
+------------------------------------------------------------------------

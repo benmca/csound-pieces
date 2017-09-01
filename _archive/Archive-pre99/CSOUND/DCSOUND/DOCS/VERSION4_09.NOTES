@@ -1,0 +1,365 @@
+Release Notes for 4.09
+======================
+
+
+Bug Fixes
+---------
+
+Some internal strings had been changed by mistake, confusing some
+operating systems.
+
+On Windows there was a bug in sfont stuff, now fixed
+
+
+Language Changes
+----------------
+
+It is more likely that // and /* */ comments will work in .csd files
+
+Peak chunks can be switched off with a -K option
+
+There is a new form in a .csd file which allows version checking.  One
+can police whether the version of Csound can run a particular piece.
+Format is
+<CsVersion>
+Before #.#      or After #.#    or #.#
+</CsVersion>
+The last two forms are equivalent
+
+There was a simple but devistating bug in reading AIFF files
+
+
+Opcode Fixes
+------------
+
+The 31-bit pseudo random number generators are now bipolar as they
+should have been.
+
+The sliders can now have text labels, which can be set with setctrl
+opcode, which is extended to allow case 4 (label)
+
+In sfont opcode there is a filter to stop teh printing of unprintabel
+characters which was upsetting xterms on some unixes.
+
+There was a bug in expseg which I had never seen but could occur if a
+structure was reused internally.
+
+There was a fence-post problem in looping oscilators.
+
+The whole of wgpluck has been reworked.  The bug whereby teh first use
+was quiet has been fixed, and the excitation of the string moved to
+the correct place (it used to be added to outout of string not the
+input).  The loop filter has been reworked, for simpler and shorter
+code, but i am still not convinced that it is correct.  It is at least
+no worse.
+
+
+
+New Opcodes 
+-----------
+
+babo -- Ball in a Box resonator (note copyright on this)
+
+sense -- Check is a (computer) key has been pressed [Unix only at present]
+
+transeg -- a mixed linear and exponential envelope opcode, rather like
+in cmusic.
+
+GEN16 -- new gen to do the same as transeg
+
+
+
+Other Changes:
+-------------
+
+vreverb revised significantly to allow a more flexible structure
+
+The entry table has been split into two to make it more manageable,
+and in particular to allow a M68K system to be created.
+
+Incorporation of BeOS patches
+
+Windows GUI Changes
+-------------------
+
+
+
+------------------------------------------------------------------------
+==John ff
+  2000 October
+========================================================================
+en      ar	nreverb	asig, krvt, khdif [, iskip] [,inumCombs, ifnCombs] [,inumAlpas, ifnAlpas]
+
+
+INITIALIZATION
+
+inumCombs - number of filter constants in comb filter. If omitted, the
+values default to the nreverb constants.
+
+ifnCombs - function table with inumCombs comb filter time values
+directly followed the same number of comb gain values. The ftable
+should not be rescaled (use negative fgen number).
+	Positive time values are in seconds. The given time is
+converted internally into number of samples, and then set to the
+nearest greater prime number.
+	If time is negative, it is interpreted directly as time in
+sample frames, and no processing is done (except negation).
+
+inumAlpas, ifnAlpas - same as inumCombs/ifnCombs, for allpass filter.
+
+
+PERFORMANCE
+
+This is a revision of nreverb which adds the possibility of reading
+any number of comb and allpass filter constants from a ftable.
+
+
+EXAMPLES
+
+Orchestra:
+a1	soundin	"neopren.wav"
+a2	nreverb	a1, 1.5, .75, 0, 8, 71, 4, 72
+	out	a1 + a2 * .4
+
+Score:
+; freeverb time constants, as direct (negative) sample, with arbitrary gains
+f71 0 16   -2  -1116 -1188 -1277 -1356 -1422 -1491 -1557 -1617  0.8  0.79  0.78  0.77  0.76  0.75  0.74  0.73  
+f72 0 16   -2  -556 -441 -341 -225  0.7  0.72  0.74  0.76
+
+
+i1   0     7
+e
+------------------------------------------------------------------------
+BABO(Csound)                                         BABO(Csound)
+
+
+Babo
+       ar,al babo asig,ksrcx,ksrcy,ksrcz,irx,iry,irz[,idiff[,ifno]]
+
+DESCRIPTION
+       Babo  stands  for  BAll-within-the-BOx.   It is a physical
+       model reverberator based on the paper by Davide  Rocchesso
+       "The  Ball  within  the Box: a sound-processing metaphor",
+       Computer Music Journal,  Vol  19,  N.4,  pp.45-47,  Winter
+       1995.
+
+       A  short  description of the opcode should mention that it
+       allows to define the resonator geometry along with some of
+       its response characteristics, the position of the listener
+       within the resonator, and the position of  the  source  of
+       sound.   Babo  then calculates early and later reflections
+       by means of a tapped delay line and a  circulant  feedback
+       delay network.
+
+INITIALIZATION
+       irx,iry,irz - the  coordinates of the geometry of the res
+                     onator (length of the edges in meters)
+
+       idiff -       is  the  coefficient  of  diffusion  at  the
+                     walls,  which regulates the amount of diffu
+                     sion (0-1, where 0 = no diffusion, 1 = maxi
+                     mum diffusion - default: 1)
+
+       ifno -        expert  values  function:  a function number
+                     that holds all the additional parameters  of
+                     the resonator
+
+INITIALIZATION (Expert Values)
+       These  values  are  contained  in  a function, typically a
+       GEN2--type function used in non-rescaling mode.
+
+       decay -       main decay of the resonator (default: 0.99)
+
+       hydecay -     high  frequency  decay  of   the   resonator
+                     (default: 0.1)
+
+       rcvx,rcvy,rcvz -
+                     the  coordinates  of  the  position  of  the
+                     receiver (=the listener) (in  meters;  0,0,0
+                     is the resonator center)
+
+       rdistance -   is  the  distance  in meters between the two
+                     pickups (i.e. your ears,  for  example...  -
+                     default: 0.3)
+
+       direct -      is  the  attenuation  of  the  direct signal
+                     (0-1, default: 0.5)
+
+       early_diff -  is the attenuation coefficient of the  early
+                     reflections (0-1, default: 0.8)
+
+PERFORMANCE
+       ar,al -       the stereo output signal
+
+       asig -        the input signal
+
+       ksrcx,ksrcy,ksrcz -
+                     the  virtual  coordinates  of  the source of
+                     sound (i.e. the  input  signal);  these  are
+                     allowed  to  move  at k-rate and provide all
+                     the  necessary  variations   in   terms   of
+                     response of the resonator
+
+EXAMPLES
+   Orchestra File - Simple usage
+                   ;
+                   ; minimal babo instrument
+                   ;
+                   instr 1
+                   ix     =p5          ; x position of source
+                   iy     =p6          ; y position of source
+                   iz     =p7          ; z position of source
+                   ixsize =p8          ; width  of the resonator
+                   iysize =p9          ; depth  of the resonator
+                   izsize =p10         ; height of the resonator
+
+       ainput      soundin p4
+
+       al,ar       babo    ainput*0.9, ix, iy, iz, ixsize, iysize, izsize
+
+                   outs    al,ar
+
+                   endin
+
+   Score File - Simple Usage
+       ;
+       ; simple babo usage:
+       ;
+       ;p4     : soundin number
+       ;p5     : x position of source
+       ;p6     : y position of source
+       ;p7     : z position of source
+       ;p1     : width  of the resonator
+       ;p12    : depth  of the resonator
+       ;p13    : height of the resonator
+       ;
+       i1  0 10 1  6  4  3     14.39 11.86 10
+       ;           ^^^^^^^     ^^^^^^^^^^^^^^
+       ;           |||||||     ++++++++++++++: optimal room dims according to
+       ;           |||||||                     Milner and Bernard JASA 85(2), 1989
+       ;           +++++++++: source position
+       e
+
+   Orchestra File - Expert usage
+                   ;
+                   ; full blown babo instrument with movement
+                   ;
+                   instr 2
+                   ixstart=p5          ; start x position of source (left-right)
+                   ixend  =p8          ; end   x position of source
+                   iystart=p6          ; start y position of source (front-back)
+                   iyend  =p9          ; end   y position of source
+                   izstart=p7          ; start z position of source (up-down)
+                   izend  =p10         ; end   z position of source
+                   ixsize =p11         ; width  of the resonator
+                   iysize =p12         ; depth  of the resonator
+                   izsize =p13         ; height of the resonator
+                   idiff  =p14         ; diffusion coefficient
+                   iexpert=p15         ; power user values stored in this function
+
+       ainput      soundin p4
+       ksource_x   line    ixstart, p3, ixend
+       ksource_y   line    iystart, p3, iyend
+       ksource_z   line    izstart, p3, izend
+
+       al,ar       babo    ainput*0.9, ksource_x, ksource_y, ksource_z,                    ixsize, iysize, izsize, idiff, iexpert
+
+                   outs    al,ar
+
+                   endin
+
+   Score File - Expert Usage
+       ; full blown instrument
+       ;p5         : start x position of source (left-right)
+       ;p6         : end   x position of source
+       ;p7         : start y position of source (front-back)
+       ;p8         : end   y position of source
+       ;p9         : start z position of source (up-down)
+       ;p10        : end   z position of source
+       ;p11        : width  of the resonator
+       ;p12        : depth  of the resonator
+       ;p13        : height of the resonator
+       ;p14        : diffusion coefficient
+       ;p15        : power user values stored in this function
+
+       ;         decay  hidecay rx ry rz rdistance direct early_diff
+       f1  0 8 -2  0.95   0.95   0  0  0    0.3     0.5      0.8  ; brighter
+       f2  0 8 -2  0.95   0.5    0  0  0    0.3     0.5      0.8  ; default (to be set as)
+       f3  0 8 -2  0.95   0.01   0  0  0    0.3     0.5      0.8  ; darker
+       f4  0 8 -2  0.95   0.7    0  0  0    0.3     0.1      0.4  ; to hear the effect of diffusion
+       f5  0 8 -2  0.9    0.5    0  0  0    0.3     2.0      0.98 ; to hear the movement
+       f6  0 8 -2  0.99   0.1    0  0  0    0.3     0.5      0.8  ; default vals
+       ;        ^
+       ;         ----- gen. number: negative to avoid rescaling
+
+
+       i2   10 10 1  6  4  3   6   4  3  14.39  11.86  10   1   6 ; defaults
+       i2   +   4 2  6  4  3   6   4  3  14.39  11.86  10   1   1 ; hear brightness 1
+       i2   +   4 2  6  4  3  -6  -4  3  14.39  11.86  10   1   2 ; hear brightness 2
+       i2   +   4 2  6  4  3  -6  -4  3  14.39  11.86  10   1   3 ; hear brightness 3
+       i2   +   3 2  .6 .4 .3 -.6 -.4 .3  1.439  1.186  1.0 0.0 4 ; hear diffusion 1
+       i2   +   3 2  .6 .4 .3 -.6 -.4 .3  1.439  1.186  1.0 1.0 4 ; hear diffusion 2
+       i2   +   4 2 12  4  3 -12  -4 -3  24.39  21.86  20   1   5 ; hear movement
+       ;
+       i2   +   4 1  6  4  3   6   4  3  14.39  11.86   10  1   1 ; hear brightness 1
+       i2   +   4 1  6  4  3  -6  -4  3  14.39  11.86   10  1   2 ; hear brightness 2
+       i2   +   4 1  6  4  3  -6  -4  3  14.39  11.86   10  1   3 ; hear brightness 3
+       i2   +   3 1  .6 .4 .3 -.6 -.4 .3  1.439  1.186  1.0 0.0 4 ; hear diffusion 1
+       i2   +   3 1  .6 .4 .3 -.6 -.4 .3  1.439  1.186  1.0 1.0 4 ; hear diffusion 2
+       i2   +   4 1 12  4  3 -12  -4 -3  24.39  21.86   20  1   5 ; hear movement
+       ;            ^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^  ^   ^
+       ;            |||||||||||||||||||  |||||||||||||||||  |    --: expert values function
+       ;            |||||||||||||||||||  |||||||||||||||||  +--: diffusion
+       ;            |||||||||||||||||||  ----------------: optimal room dims according to Milner and Bernard JASA 85(2), 1989
+       ;            |||||||||||||||||||
+       ;            --------------------: source position start and end
+       e
+
+AUTHORS
+       Davide  Rocchesso  (rocchesso@sci.univr.it) invented Babo,
+       Padova 1994.
+
+       Paolo Filippi (paolfili@tiscalinet.it)  coded  the  csound
+       implementation, Padova 1999
+
+       Nicola   Bernardini (nicb@axnet.it) wrote the  manual page
+       and cleaned up the code, Rome 2000.
+
+------------------------------------------------------------------------
+ksig    sense
+
+Returns the ascii code of one of the keys that has been pressed, or -1
+if no key.
+
+Note that this is not properly verified, and seems not to work at all
+on Windows.
+
+(JPff)
+
+------------------------------------------------------------------------
+
+ar      transeg     istart, idur, itype, ivalue, [idur, itype, ivalue,]*
+kr      transeg     istart, idur, itype, ivalue, [idur, itype, ivalue,]*
+
+Constructs an envelope between istart and ivalue for a duration of
+idur seconds.  If itype is 0 then a straight line is produced;
+otherwise is creates the curve 
+    istart + (ivalue - istart) * (1 - exp( i*itype/(n-1) )) / (1 - exp(itype))
+for n steps
+
+Thus if itype > 0  there is a slowly rising, fast decaying (convex)
+curve, while is itype < 0  the curve is fast rising, slowly decaying
+(concave).
+
+(JPff -- with assistance from a number of people)
+------------------------------------------------------------------------
+
+GEN16 
+        f # time size 16 start dur type end [dur type end ....]
+
+Creates a table from start to end of dur steps. It typoe is 0 this is
+a straight line.  Otherwise it is 
+        start + (end - start)*(1 - exp(i*type/(N-1)))/(1 - exp(type))
+
+(JPff -- with assistance from a number of people)
+------------------------------------------------------------------------

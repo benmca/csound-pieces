@@ -1,0 +1,1 @@
+(defun write-cs (container &key (filename "drum2.sco"))	(open-cmd filename)	(mix-cmd container))

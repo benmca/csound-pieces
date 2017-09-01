@@ -1,0 +1,898 @@
+Release Notes for 3.48
+======================
+
+These are the release notes for version 3.48, which is mainly a
+bug-fix release. These notes should be read in conjunction with
+earlier release notes.  The main non-bug-fix material is described in
+the language changes.
+
+Language Changes
+----------------
+
+The input or output file in -i and -o can start with a | to indicate a
+process which is started to create or process audio files.  This works
+on Windows and Unix, but not (yet) DOS.
+ 
+WAV format now supports floating samples correctly. (Richard Dobson)
+
+Macros in orchestra and scores [Notes 1 and 2]
+
+Repeat sections in Scores [Note 1]
+
+#include available in orchestra and score [Notes 1 and 2]
+
+/* */ comments allowed in orchestra and score
+
+Removal of limit on orchestra size (ARGSPACE and ORTEXT problems)
+
+The opcodes asin, acos and atan renamed as sininv, cosinv and taninv
+so as to avoid name-space polution.
+
+_ allowed as part of a word.  Words case significant.
+
+Limited evaluation of expressions in the score [Note 6]
+
+Opcode Fixes
+------------
+
+reverb2 was tuned to one particular sampling rate.  Replaced by
+nreverb opcode. (Richard Karpen)
+
+wgbow, flute and brass fixed in various ways
+
+Fixes in fof2 and fog (Ekman)
+
+shaker used to ignore krequency; now fixed
+
+New Opcodes
+-----------
+pvadd (Richard Karpen) [Note 3]
+
+taninv2 in kk and aa contexts (equivalent to atan2 in C)
+
+printk2 which prints when a k-value changes (Gabriel Maldanado) [Note 0]
+
+locsig, locsend, space, spsend, spdist (Richard Karpen) for locating sound
+[Notes 7 and 8]
+
+New GEN function 28 to read x,y values direct from a file
+
+Other Changes:
+-------------
+
+On Windows permissions of output files could be wrong.
+
+Problem on SUN fixed, which gave silence sometimes and other errors
+
+emacs modes have new opcodes added, and some support for macros.
+
+Pipes allowed in -L inputs, using a | as the first character of the
+'filename'
+
+-H2 and -H3 options to display heartbeat in a different way.  -H1 is
+equivalent to -H and -H0 is equivalent to no -H option. [Note 5]
+
+ 
+Windows GUI Changes
+-------------------
+
+Output device selectable by menu (Richard Dobson).  No equivalent code
+for input yet.
+
+Reading MIDI files fixed in interface
+
+xyin implemented in windows [Note 4]
+
+Heartbeat option on Extras dialog allows numbers now. [Note 5]
+
+
+------------------------------------------------------------------------
+==John ff
+  1998 Apr 14
+========================================================================
+Note 0:
+printk2
+
+	printk2	kvar [, numspaces]
+
+INITIALIZATION
+
+numspaces - number of space characters printed before the value of kvar
+
+PERFORMANCE
+
+kvar -	signal to be printed
+
+Derived from Robin Whittle's printk, prints a new value of kvar each
+time kvar changes. Useful for monitoring MIDI control changes when
+using sliders.  Warning! don't use this opcode with normal,
+continuously variant k-signals, because it can hang the computer, as
+the rate of printing is too fast.
+------------------------------------------------------------------------
+Note 1:
+
+Changes to the Score Language
+
+John ffitch April 1998
+
+The 3.48 version of Csound introduces a number of changes in the
+language in which scores are presented to the system.  These are all
+upward compatible, and so do not require any changes in existing
+scores.  These changes should allow for simpler score writing, and
+provide an elementary alternative to the full score-generation
+systems.  Similar changes have been made in the orchestra language.
+
+Simple Macros 
+
+Macros are textual replacements which are made in the score as it is
+being read.  The macro system in Csound is a very simple one, and uses
+two special characters to indicate the presence of macros, the
+characters # and $.
+
+To define a macro one uses the # character.
+
+#define NAME  # replacement text#
+
+The name of the macro can be any made from letters, upper or lower
+case.  Digits are not allowed.  The replacement text is any character
+string (not containing a #) and can extend over more than one line.
+The replacement text is enclosed within the # characters, which
+ensures that additional characters are not inadvertently captured.
+
+To use a macro the name is used following a $ character.  The name is
+terminated by the next non-letter.  If the need is to have the name
+without a space a period can be used to terminate the name, which is
+ignored.  The string $NAME. is replaced by the replacement text from
+the definition.  Of course the replacement text can also include macro
+calls.
+
+If a macro is not required any longer it can be undefined with
+
+#undef NAME
+
+Example:
+   If a note-event has a set of p-fields which are repeated
+
+#define ARGS # 1.01 2.33 138#
+i1 0 1 8.00	1000 $ARGS
+i1 0 1 8.01 	1500 $ARGS
+i1 0 1 8.02	1200 $ARGS
+i1 0 1 8.03	1000 $ARGS
+
+This will get expanded before sorting into
+i1 0 1 8.00	1000 1.01 2.33 138
+i1 0 1 8.01 	1500 1.01 2.33 138
+i1 0 1 8.02	1200 1.01 2.33 138
+i1 0 1 8.03	1000 1.01 2.33 138
+
+This can save typing and is easier to change if for example one needed
+to change one of the parameters.  If there were two sets of p-fields
+one could have a second macro (there is no real limit on the number of
+macros one can define).
+
+#define ARGS1 # 1.01 2.33 138#
+#define ARGS2 # 1.41 10.33 1.00#
+i1 0 1 8.00	1000 $ARGS1
+i1 0 1 8.01 	1500 $ARGS2
+i1 0 1 8.02	1200 $ARGS1
+i1 0 1 8.03	1000 $ARGS2
+
+An alternative would be to use the second form of the macro, described below.
+
+Note: some care is needed with textual macros as they can sometimes do
+strange things.  They take no notice of any meaning, and so spaces are
+significant, which is why the definition has the replacement text
+surrounded by # characters, unlike that in the C programming language.
+Used carefully simply macros are a powerful concept, but they can be
+abused.
+
+Advanced Macros
+
+Macros can also be defined with parameters.  This can be used in more
+complex situations.  In order to define a macro with arguments the
+syntax is
+
+#define NAME(A#B#C)  #replacement text#
+
+Within the replacement text the arguments can be substituted by the
+form $A.  In fact the implementation defines the arguments as simple
+macros.  There may be up to 5 arguments, and the names can be any
+choice of letters.  Case is significant in macro names.
+
+In use the argument form for example
+ 
+#define ARG(A) # 2.345   1.03   $A   234.9#
+i1 0 1 8.00 1000 $ARG(2.0)
+i1  + 1 8.01 1200 $ARG(3.0)
+
+which expands to
+
+i1 0 1 8.00 1000 2.345   1.03   2.0   234.9
+i1  + 1 8.01 1200 2.345   1.03   3.0   234.9
+
+As with the simple macros, these macros can also be undefined with
+
+#undef NAME
+
+
+
+Another Use For Macros
+
+When writing a complex score it is sometimes all too easy to forget to
+what the various instrument numbers refer.  One can use macros to give
+names to the numbers.  For example
+
+#define Flute	#i1#
+#define Whoop	#i2#
+
+$Flute.	0	10	4000	440
+$Whoop.	5	1
+
+
+Multiple File Score
+
+It is sometimes convenient to have the score in more than one file.
+This use is supported by the #include facility which is part of the
+macro system.  A line containing the text
+
+#include :filename:
+
+where the character : can be replaced by any suitable character.  For
+most uses the double quote symbol will probably be the most
+convenient.
+
+This takes input from the named file until it ends, when input reverts
+to the previous input.  There is currently a limit of 20 on the depth
+of included files and macros.
+
+A suggested use of #include would be to define a set of macros which
+are part of the composer's style.  It could also be used to provide
+repeated sections.
+
+s
+#include :section1:
+;; Repeat that
+s
+#include :section1:
+
+However there is an alternative way of doing repeats, described below.
+
+
+Repeated Sections
+
+Sections can be repeated by using #include or by editing the text.  An
+alternative is the new r directive in the score language.
+
+r3	NN
+
+starts a repeated section, which lasts until the next s, r or e
+directive.  The section is repeated 3 times in this example.  In order
+that the sections may be more flexible than simple editing, the macro
+NN is given the value of 1 for the first time through the section, 2
+for the second, and 3 for the third.  This can be used to change
+p-field parameters, or indeed ignored.
+
+Warning: because of serious problems of interaction with macro
+expansion, sections must start and end in the same file, and not in a
+macro.
+
+
+Evaluation of Expressions
+
+In earlier versions of Csound the numbers presented in a score were
+used as given.  There are occasions when some simple evaluation would
+be easier.  This need is increased when there are macros.  To assist
+in this area the syntax of an arithmetic expressions within square
+brackets [] has been introduced.  Expressions built from the
+operations +, -, *, and / are allowed, together with grouping with ().
+The expressions can include numbers, and naturally macros whose values
+are numeric or arithmetic strings.  All calculations are made in
+floating point numbers.  Note that unary minus is not yet supported.
+
+Example:
+
+r3	CNT
+
+i1	0	[0.3*$CNT.]
+i1	+	[($CNT./3)+0.2]
+
+e
+
+As the three copies of the section have the macro $CNT. with the
+different values of 1, 2 and 3, this expands to
+
+s
+i1	0	0.3
+i1	0.3	0.533333
+s
+i1	0	0.6
+i1	0.6	0.866667
+s
+i1	0	0.9
+i1	0.9	1.2
+e
+
+This is an extreme form, but the evaluation system can be used to
+ensure that repeated sections are subtly different.  
+------------------------------------------------------------------------
+Note 2:
+Changes to the Orchestra Language
+
+John ffitch April 1998
+
+In version 3.48 a macro and multiple file system has been incorporated
+into the orchestra language.  This is similar to the macro system in
+the score language, but is independent.
+
+Simple Macros 
+
+Macros are textual replacements which are made in the orchestra as it
+is being read.  The macro system in Csound is a very simple one, and
+uses two special characters to indicate the presence of macros, the
+characters # and $.
+
+To define a macro one uses the # character.
+
+#define NAME  # replacement text#
+
+The name of the macro can be any made from letters, upper or lower
+case.  Digits are not allowed.  The replacement text is any character
+string (not containing a #) and can extend over more than one line.
+The replacement text is enclosed within the # characters, which
+ensures that additional characters are not inadvertently captured.
+
+To use a macro the name is used following a $ character.  The name is
+terminated by the next non-letter.  If the need is to have the name
+without a space a period can be used to terminate the name, which is
+ignored.  The string $NAME. is replaced by the replacement text from
+the definition.  Of course the replacement text can also include macro
+calls.
+
+If a macro is not required any longer it can be undefined with
+
+#undef NAME
+
+Example:
+   
+#define REVERB #ga = ga+a1
+	out a1#
+
+instr 1
+  a1		oscil
+  $REVERB.
+endin
+
+instr 2
+  a1		repluck
+  $REVERB.
+endin
+
+This will get expanded before compilation into
+
+instr 1
+  a1		oscil
+  ga = ga+a1
+	out a1
+endin
+
+instr 2
+  a1		repluck
+  ga = ga+a1
+	out a1
+endin
+
+
+This can save typing, and in the case, for example, of a general
+effects processing sequence, it can lead to a coherent and consistent
+use.
+
+This form is limiting in at least having the variable names fixed.  An
+alternative would be to use the second form of the macro, described
+below.
+
+Note: some care is needed with textual macros as they can sometimes do
+strange things.  They take no notice of any meaning, and so spaces are
+significant, which is why the definition has the replacement text
+surrounded by # characters, unlike that in the C programming language.
+Used carefully simply macros are a powerful concept, but they can be
+abused.
+
+Advanced Macros
+
+Macros can also be defined with parameters.  This can be used in more
+complex situations.  In order to define a macro with arguments the
+syntax is
+
+#define NAME(A#B#C)  #replacement text#
+
+Within the replacement text the arguments can be substituted by the
+form $A.  In fact the implementation defines the arguments as simple
+macros.  There may be up to 5 arguments, and the names can be any
+choice of letters.  Case is significant in macro names.
+
+In use the argument form for example
+ 
+#define REVERB(A) #ga = ga+$A.
+	out $A.#
+instr 1
+  a1		oscil
+  $REVERB(a1)
+endin
+
+instr 2
+  a2		repluck
+  $REVERB(a2)
+endin
+
+to which expands
+
+instr 1
+  a1		oscil
+  ga = ga+a1
+	out a1
+endin
+
+instr 2
+  a2		repluck
+  ga = ga+a2
+	out a2
+endin
+
+As with the simple macros, these macros can also be undefined with
+
+#undef NAME
+
+Multiple File Orchestras
+
+It is sometimes convenient to have the orchestra arranged in a number
+of files, for example with each instrument in a separate file.  This
+style is supported by the #include facility which is part of the macro
+system.  A line containing the text
+
+#include :filename:
+
+where the character : can be replaced by any suitable character.  For
+most uses the double quote symbol will probably be the most
+convenient.
+
+This takes input from the named file until it ends, when input reverts
+to the previous input.  There is currently a limit of 20 on the depth
+of included files and macros.
+
+Another suggested use of #include would be to define a set of macros
+which are part of the composer's style.
+
+An extreme form would be to have each instrument defines as a macro,
+with the instrument number as a parameter.  Then an entire orchestra
+could be constructed from a number of #include statements followed by
+macro calls.
+
+#include :clarinet:
+#include :flute:
+#include :bassoon:
+$CLARINET(1)
+$FLUTE(2)
+$BASSOON(3)
+
+It must be stressed that these changes are at the textual level and so
+take no cognisance of any meaning.
+
+------------------------------------------------------------------------
+Note 3:
+pvadd
+Created by Richard Karpen, 1998
+
+a2   pvadd        ktimpnt, kfmod, ifile, ifn, ibins [, ibinoffset, ibinincr]
+  
+DESCRIPTION
+
+pvadd reads from a pvoc file and uses the data to perform additive
+synthesis using an internal array of interpolating oscillators. The
+user supplies the wave table (usually one period of a sine wave), and
+can choose which analysis bins will be used in the re-synthesis.
+
+
+PERFORMANCE
+
+ktimpnt, kfmod, and ifile are used in the same way as in pvoc.
+
+ifn is the table number of a stored function containing a sine wave. 
+
+ibins is the number of bins that will be used in the resynthesis (each
+bin counts as one oscillator in the re-synthesis).
+
+ibinoffset is the first bin used (it is optional and defaults to 0). 
+
+ibinincr sets an increment by which pvadd counts up from ibinoffset
+for ibins components in the re-synthesis (see below for a further
+explanation).
+
+EXAMPLE:
+
+
+	ktime line  0, p3, p3
+	asig  pvadd ktime, 1, "oboe.pvoc", 1, 100, 2
+
+
+In the above, ibins is 100 and ibinoffset is 2. Using these settings
+the resynthesis will contain 100 components beginning with bin #2
+(bins are counted starting with 0). That is, resynthesis will be done
+using bins 2-101 inclusive. It is usually a good idea to begin with
+bin 1 or 2 since the 0th and often 1st bin have data that is neither
+necessary nor even helpful for creating good clean resynthesis.
+
+
+	ktime line  0, p3, p3
+	asig  pvadd ktime, 1, "oboe.pvoc", 1, 100, 2, 2
+
+
+The above is the same as the previous example with the addition of the
+value 2 used for the optional ibinincr argument. This result will
+still result in 100 components in the resynthesis, but pvadd will
+count through the bins by 2 instead of by 1. It will use bins 2, 4, 6,
+8, 10, and so on. For ibins=10, ibinoffset=10, and ibinincr=10, pvadd
+would use bins 10, 20, 30, 40, up to and including 100.
+
+USEFUL HINTS:
+ By using several pvadd units together, one can gradually fade in
+different parts of the resynthesis, creating various "filtering"
+effects. The author uses pvadd to synthesis one bin at a time to have
+control over each separate component of the re-synthesis.
+
+If any combination of ibins, ibinoffset, and ibinincr, creates a
+situation where pvadd is asked to used a bin number greater than the
+number of bins in the analysis, it will just use all of the available
+bins and give no complain.  So to use every bin just make ibins a big
+number (ie. 2000).
+
+Expect to have to scale up the amplitudes by factors of 10-100 by the
+way.
+------------------------------------------------------------------------
+
+Note 4:
+
+When xyin is called the position of the mouse within the output window
+is used to reply to the request.  This simple mechanism does mean that
+only one xyin can be used accurately at once.  The position of the
+mouse is reported in the output window
+
+------------------------------------------------------------------------
+Note 5:
+
+-H1 generates a 'rotating line' progress report.
+-H2 generates a . everytime a buffer is written.
+-H3 reports the size in seconds of the output.
+-H4 sounds a bell for every buffer of the output written.
+
+------------------------------------------------------------------------
+Note 6:
+
+Expressions enclosed in square brackets [] are evaluated at read-time
+for scores.  This allows 4-function arithmetic and brackets (no unary
+minus yet) on numbers and macros whose values are numbers.  It can be
+used with repeats to change timing or dynamics.
+
+------------------------------------------------------------------------
+Note 7:
+
+a1, a2          locsig     asig, kdegree, kdistance, kreverbsend     
+a1, a2, a3, a4  locsig     asig, kdegree, kdistance, kreverbsend 
+a1, a2          locsend
+a1, a2, a3, a4  locsend
+
+
+
+DESCRIPTION
+
+locsig takes an input signal and distributes it among 2 or 4 channels
+using values in degrees to calculate the balance between adjacent
+channels. It also takes arguments for distance (used to attenuate
+signals that are to sound as if they are some distance further than
+the loudspeaker itself), and for the amount the signal that will be
+sent to reverberators. This unit is based upon the example in the
+Charles Dodge/Thomas Jerse book, "Computer Music," page 320.
+
+locsend depends upon the existence of a previously defined locsig. The
+number of output signals must match the number in the previous
+locsig. The output signals from locsend are derived from the values
+given for distance and reverb in the locsig and are ready to be sent
+to local or global reverb units (see example below). The reverb amount
+and the balance between the 2 or 4 channels are calculated in the same
+way as described in the Dodge book (an essential text!).
+
+PERFORMANCE
+
+kdegree - value between 0 and 360 for placement of the signal in a 2
+or 4 channel space configured as: a1=0, a2=90, a3=180, a4=270
+(kdegree=45 would balanced the signal equally between a1 and
+a2). locsig maps kdegree to sin and cos functions to derive the signal
+balances (ie.: asig=1, kdegree=45, a1=a2=.707).
+
+kdistance - value >= 1 used to attenuate the signal and to calculate
+reverb level to simulate distance cues.  As kdistance gets larger the
+sound should get softer and somewhat more reverberant (assuming the
+use of locsend in this case).
+
+kreverbsend - the percentage of the direct signal that will be
+factored along with the distance and degree values to derive signal
+amounts that can be sent to a reverb unit such as reverb, or reverb2.
+
+EXAMPLE:
+
+asig some audio signal
+kdegree line 0, p3, 360
+kdistance line 1, p3, 10
+a1, a2, a3, a4 locsig asig, kdegree, kdistance, .1
+ar1, ar2, ar3, ar4 locsend
+       
+ga1 = ga1+ar1
+ga2 = ga2+ar2
+ga3 = ga3+ar3
+ga4 = ga4+ar4
+
+outq a1, a2, a3, a4
+endin
+        
+instr 99 ; reverb instrument
+        
+a1 reverb2 ga1, 2.5, .5
+a2 reverb2 ga2, 2.5, .5
+a3 reverb2 ga3, 2.5, .5
+a4 reverb2 ga4, 2.5, .5
+
+outq a1, a2, a3, a4
+ga1=0
+ga2=0
+ga3=0
+ga4=0
+
+In the above example, the signal, asig, is sent around a complete
+circle once during the duration of a note while at the same time it
+becomes more and more "distant" from the listeners' location. locsig
+sends the appropriate amount of the signal internally to locsend. The
+outputs of the locsend are added to global accumulators in a common
+Csound style and the global signals are used as inputs to the reverb
+units in a separate instrument.
+
+locsig is useful for quad and stereo panning as well as fixed placed
+of sounds anywhere between two loudspeakers. Below is an example of
+the fixed placement of sounds in a stereo field.
+
+instr 1
+...
+a1, a2 locsig asig, p4, p5, .1
+ar1, ar2 locsend
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+outs a1, a2
+endin
+
+instr 99 ; reverb....
+....
+endin
+
+A few notes
+;place the sound in the left speaker and near
+i1 0 1 0 1
+;place the sound in the right speaker and far
+i1 1 1 90 25
+;place the sound equally between left and right and in the middle ground distance
+i1 2 1 45 12
+e
+
+
+The next example shows a simple intuitive use of the distance value to
+simulate doppler shift. The same value is used to scale the frequency
+as is used as the distance input to locsig.
+
+kdistance line 1, p3, 10
+kfreq = (ifreq * 340) / (340 + kdistance)
+asig oscili iamp, kfreq, 1
+kdegree line 0, p3, 360
+
+a1, a2, a3, a4 locsig asig, kdegree, kdistance, .1
+ar1, ar2, ar3, ar4 locsend
+
+------------------------------------------------------------------------
+Note 8:
+
+a1, a2, a3, a4  space     asig, ifn, ktime, kreverbsend [,kx, ky]  
+a1, a2, a3, a4  spsend
+k1              spdist   ifn, ktime, [,kx, ky] 
+
+
+
+DESCRIPTION
+
+space takes an input signal and distributes it among 4 channels using
+cartesian xy coordinates to calculate the balance of the outputs. The
+xy coordinates can be defined in a separate text file and accessed
+through a Function statement in the score using Gen28 (description of
+Gen28 given below), or they can be specified using the optional kx, ky
+arguments. There advantages to the former are: 1. A graphic user
+interface can be used to draw and edit the trajectory through the
+cartesian plane; 2. The file format is in the form time1 X1 Y1 time2
+X2 Y2 time3 X3 Y3 allowing the user to define a time-tagged
+trajectory. space then allows the user to specify a time pointer (much
+as is used for pvoc, lpread and some other units) to have detailed
+control over the final speed of movement.
+
+spsend depends upon the existence of a previously defined space. The
+output signals from spsend are derived from the values given for XY
+and reverb in the space and are ready to be sent to local or global
+reverb units (see example below).
+
+spdist uses the same xy data as space, also either from a text file
+using Gen28 or from x and y arguments given to the unit directly. The
+purpose of this unit is to make available the values for distance that
+are calculated from the xy coordinates. In the case of space the xy
+values are used to determine a distance which is used to attenuate the
+signal and prepare it for use in spsend. But it is also useful to have
+these values for distance available to scale the frequency of the
+signal before it is sent to the space unit.
+
+PERFORMANCE
+
+The configuration of the XY coordinates in space places the signal in
+the following way: a1 is -1, 1; a2 is 1, 1; a3 is -1, -1; a4 is 1,
+-1. This assumes a loudspeaker set up as a1 is left front, a2 is right
+front, a3 is left back, a4 is right back. Values greater than 1 will
+result in sounds being attenuated as if in the distance. space
+considers the speakers to be at a distance of 1; smaller values of XY
+can be used, but space will not amplify the signal in this case. It
+will, however balance the signal so that it can sound as if it were
+within the 4 speaker space.  x=0, y=1, will place the signal equally
+balanced between left and right front channels, x=y=0 will place the
+signal equally in all 4 channels, and so on. Although there must be 4
+output signal from space, it can be used in a 2 channel orchestra. If
+the XY's are kept so that Y>=1, it should work well to do panning and
+fixed localization in a stereo field.
+
+ifn - number of the stored function created using Gen28. This function
+generator reads a text file which contains sets of three values
+representing the xy coordinates and a time-tag for when the signal
+should be placed at that location. The file should look like:
+
+        0       -1       1
+        1        1       1
+        2        4       4
+        2.1     -4      -4
+        3       10      -10
+        5       -40      0
+
+If that file were named "move" then the Gen28 call in the score would like: 
+
+        f1 0 0 "move"
+
+Gen28 takes 0 as the size and automatically allocates memory. It
+creates values to 10 milliseconds of resolution. So in this case there
+will be 500 values created by interpolating X1 to X2 to X3 and so on,
+and Y1 to Y2 to Y3 and so on, over the appropriate number of values
+that are stored in the function table. In the above example, the sound
+will begin in the left front, over 1 second it will move to the right
+front, over another second it move further into the distance but still
+in the left front, then in just 1/10th of a second it moves to the
+left rear, a bit distant. Finally over the last .9 seconds the sound
+will move to the right rear, moderately distant, and it comes to rest
+between the two left channels (due west!), quite distant. Since the
+values in the table are accessed through the use of a time-ponter in
+the space unit, the actual timing can be made to follow the file's
+timing exactly or it can be made to go faster or slower through the
+same trajectory. If you have access to the GUI that allows one to draw
+and edit the files, there is no need to create the text files
+manually. But as long as the file is ASCII and in the format shown
+above, it doesn't matter how it is made!  IMPORTANT: If ifn is 0 then
+space will take its values for the xy coordinates from kx and ky.
+
+ktime - index into the table containing the xy coordinates. If used
+like:
+
+        ktime line 0, 5, 5
+        a1, a2, a3, a4 space asig, 1, ktime, ...
+
+with the file "move" described above, the speed of the signal's
+movement will be exactly as desribed in that file. However:
+
+        ktime line 0, 10, 5
+
+the signal will move at half the speed specified. Or in the case of: 
+
+        ktime line 5, 15, 0
+
+the signal will move in the reverse direction as specified and 3 times
+slower! Finally:
+
+        ktime line 2, 10, 3
+
+will cause the signal to move only from the place specified in line 3
+of the text file to the place specified in line 5 of the text file,
+and it will take 10 seconds to do it.
+
+kreverbsend - the percentage of the direct signal that will be
+factored along with the distance as derived from the XY coordinates to
+calculate signal amounts that can be sent to reverb units such as
+reverb, or reverb2.
+
+kx, ky - when ifn is 0, space and spdist will use these values as the
+XY coordinates to localize the signal. They are optional and both
+default to 0.
+
+EXAMPLE:
+
+asig some audio signal
+ktime line 0, p3, p10
+a1, a2, a3, a4 space asig,1, ktime, .1
+ar1, ar2, ar3, ar4 spsend
+        
+ga1 = ga1+ar1
+ga2 = ga2+ar2
+ga3 = ga3+ar3
+ga4 = ga4+ar4
+
+outq a1, a2, a3, a4
+endin
+        
+instr 99 ; reverb instrument
+        
+a1 reverb2 ga1, 2.5, .5
+a2 reverb2 ga2, 2.5, .5
+a3 reverb2 ga3, 2.5, .5
+a4 reverb2 ga4, 2.5, .5
+
+outq a1, a2, a3, a4
+ga1=0
+ga2=0
+ga3=0
+ga4=0
+
+In the above example, the signal, asig, is moved according to the data
+in Function #1 indexed by ktime. space sends the appropriate amount of
+the signal internally to spsend. The outputs of the spsend are added
+to global accumulators in a common Csound style and the global signals
+are used as inputs to the reverb units in a separate instrument.
+
+space can useful for quad and stereo panning as well as fixed placed
+of sounds anywhere between two loudspeakers. Below is an example of
+the fixed placement of sounds in a stereo field using XY values from
+the score instead of a function table.
+
+instr 1
+...
+a1, a2, a3, a4 space asig, 0, 0, .1, p4, p5
+ar1, ar2, ar3, ar4 spsend
+
+ga1=ga1+ar1
+ga2=ga2+ar2
+outs a1, a2
+endin
+
+instr 99 ; reverb....
+....
+endin
+
+A few notes: p4 and p5 are the X and Y values
+;place the sound in the left speaker and near
+i1 0 1 -1 1
+;place the sound in the right speaker and far
+i1 1 1 45 45
+;place the sound equally between left and right and in the middle ground distance
+i1 2 1 0 12
+e
+
+The next example shows a simple intuitive use of the distance values
+returned by spdist to simulate doppler shift.
+
+ktime line 0, p3, 10
+kdist spdist 1, ktime
+kfreq = (ifreq * 340) / (340 + kdist)
+asig oscili iamp, kfreq, 1
+
+a1, a2, a3, a4 space asig, 1, ktime, .1
+ar1, ar2, ar3, ar4 spsend
+
+The same function and time values are used for both spdist and
+space. This insures that the distance values used internally in the
+space unit will be the same as those returned by spdist to give the
+impression of a doppler shift!
+------------------------------------------------------------------------

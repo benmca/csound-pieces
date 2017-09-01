@@ -1,0 +1,300 @@
+<HTML>
+<HEAD>
+<TITLE>Lisp Style Tips</TITLE>
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<CENTER>
+<BR><BR><BR><H1><FONT size=7>Lisp Style Tips for the Beginner</FONT></H1>
+
+<H4>Heinrich Taube</H4>
+
+<H4>Composition/Theory -- School of Music -- University of Illinois<BR>
+<TT>hkt@cmp-nxt.music.uiuc.edu, hkt@zkm.de, hkt@ccrma.stanford.edu</TT></H4>
+</CENTER>
+<HR>
+<BR>
+This document is an informal compendium of beginner's tips on how to develop an efficient,
+legible style of Lisp coding.<p>
+
+
+<b>Evaluation</b><p>
+
+<UL>
+
+<LI> Avoid using <tt>eval</tt>.  The evaluation process is built
+into Lisp so there is almost no reason to call the evaluator yourself.  If
+you use <tt>eval</tt> to implement something then stop and reconsider
+the problem because you are almost certainly going about it the wrong way.
+
+<LI> Beware of macros.  They are a very important feature of Lisp but
+a poorly implemented macro can cause bugs that are very difficult for a
+beginner to solve.  Avoid writing macros until you understand
+how the Lisp reader and evaluator work.  Never write a macro to make
+things "more efficient".
+
+</UL>
+
+
+<b>Functions</b><p>
+
+<UL>
+
+<LI>Don't implement a Lisp function as you would a C or Pascal program.
+In general,  keep each Lisp function 
+as small as possible.  A function should accomplish only one task.
+By implementing many small functions instead of a few large ones
+you increase the clarity, modularity and reusability of your code.
+
+<LI>Before you implement a function, make sure that Lisp doesn't
+already provide it!  Common Lisp provides  hundreds of functions, macros
+and special forms, acquaint yourself with relevant sections in 
+<A HREF="http://www.cs.cmu.edu/afs/cs.cmu.edu/project/ai-repository/ai/html/cltl/cltl2.html">
+Common Lisp: the Language (2nd Edition)</A> before you start a programming task.
+
+<LI>If you implement a function that returns more than one result,
+uses <tt>values</tt> rather than returning the results in a list.  If
+your function returns no results (like a void in C), use
+<tt>(values)</tt> to return no values.
+
+<LI>Don't add declarations to your code until you are a seasoned Lisp
+programmer and you are absolutely certain how the variables will be used.
+
+<LI>Avoid writing huge <tt>case</tt> or <tt>cond</tt> statements.
+Consider other strategies such as data-driven programming or
+hash-tables.
+
+</UL>
+
+
+<b>Symbols and Variables</b><p>
+
+<UL>
+
+<LI>Lisp programmers  tend to use just lower case letters.  Use the hyphen to
+form multi-word symbols, as in <tt>multi-word-symbol</tt>.  Lisp tends to be verbose,
+so get used to typing long symbol names!
+
+<LI>Delimit global variable names with <tt>*</tt>, as in
+<tt>*standard-output*</tt>.
+
+<LI>Delimit global constants with <tt>+</tt>, as in
+<tt>+default-number+</tt>.
+
+<LI>Use <tt>setf</tt> rather than <tt>setq</tt>.
+<tt>setf</tt> stands for SET Field.  <tt>setf</tt> is a more general
+form of <tt>setq</tt> that sets almost anything you can "point to", or
+reference, in Lisp.  This includes variables, array locations, list
+elements, hash table entries, structure fields, and object slots.
+
+</UL>
+
+
+<b>Lists</b><p>
+
+<UL>
+
+<LI>Use <tt>first</tt>, <tt>rest</tt>, <tt>second</tt>, etc. 
+rather than their <tt>car</tt>, <tt>cdr</tt>, <tt>cadr</tt>
+equivalents.
+
+<LI>Beware of destructive list operations.  They are efficient but
+can be the source of obscure bugs in your code.
+
+<LI>Remember that <tt>length</tt> must follow pointers to find the end
+of a list.  If you refer to the length of something more than once,
+save the value in a variable rather than calling <tt>length</tt>
+several times.
+
+<LI>Remember that <tt>append</tt> copies its arguments.  Avoid using
+<tt>append</tt> inside a loop to add elements to the back of a list.
+Use the <tt>collect</tt> clause in <tt>loop</tt>, or <tt>push</tt>
+elements onto a list and then <tt>nreverse</tt> the list to return the
+original ordering.<P>
+Bad:
+<PRE>(let ((result ()))
+  (dolist (x list)
+    (setf result (append result (list x))))
+  result)
+</PRE>
+Better:
+<PRE>(let ((result ()))
+  (dolist (x list)
+    (push x result))
+  (nreverse result))
+</PRE>
+Best:
+<PRE> (loop for x in list collect x)
+</PRE>
+
+<LI>Remember that <tt>copy</tt> only copies the outer-most level of a
+list.  Use <tt>copy-tree</tt> to copy all levels of a list.
+
+</UL>
+
+
+<b>Conditionals</b><p>
+
+<UL>
+
+<LI>Use <tt>when</tt> and <tt>unless</tt> if there is no else clause and you do
+not depend on the value of the conditional expression.  Otherwise, use
+<tt>if</tt> when the conditional expression is simple, else use
+<tt>cond</tt>.  Always supply a final <tt>t</tt> clause for <tt>cond</tt>.
+
+<LI>Lisp programmers often use the functions <tt>and</tt> and <tt>or</tt> to
+implement simple conditional evaluation.  For example,
+
+<PRE>(and x (setf y t))
+</PRE>
+
+is equivalent to
+
+<PRE>(when x
+  (setf y t))
+</PRE>
+
+and
+
+<PRE>(or x (setf y t))
+</PRE>
+
+is equivalent to
+
+<PRE>(unless x
+  (setf y t))
+</PRE>
+
+</UL>
+
+
+<b>Iteration</b><p>
+
+Avoid using <tt>do</tt>, which is almost impossible to read.
+<tt>dotimes</tt> and <tt>dolist</tt> are fine for simple iteration.
+If you need to save, store or modify results of an iteration, then
+<tt>loop</tt> is probably the most legible and efficient construct to
+use.  Some Lisp programmers avoid <tt>loop</tt> because it does not
+"look like lisp".  Loop is nevertheless a convenient and very powerful
+facility.  After 10 minutes of working with <tt>do</tt>, most Lisp
+programmers are glad to have <tt>loop</tt> around!<p>
+
+
+<b>Comments</b><p>
+
+Provide them.  Document overall functionality and explain sections of
+code that are a bit tricky (you will forget how you implemented
+something in about 2 week's time.)  Lisp provides two different types
+of comments.  The semi-colon <tt>;</tt> introduces a line-oriented
+comment.  Lisp ignores whatever follows a semi-colon until the end of
+the line that the semi-colon is on.  The semi-colon does not have to
+be the first character in the line.  Here are two examples:
+
+<PRE>; this is a comment
+(abs x) ; need absolute value here!
+</PRE>
+
+By convention, Lisp programmers distinguish between one, two or three
+semi-colon comments.  A comment introduced by a single semi-colon
+explains code on the same line as the comment.  Two semi-colons mean
+that the comment is a description about the state of the program at
+that point, or an explanation of the next section of code.  A two
+semi-colon comment should start at the same indentation column as the
+code it documents.  A three semi-colon comment provides a global
+explanation and always starts at the left margin.  Here is an example
+containing all three types:
+
+<PRE>;;;  the next 20 functions do various sorts of frobbing
+(defun frob1 (num)
+  ;; return double frob of num
+  (let ((tmp (random num)))      ; breaks if 0, fix!
+    (double-frob tmp num :with-good-luck t)))
+</PRE>
+
+Block comments are made by placing text within <tt>#| </tt>and<tt>
+|#</tt>.   Lisp ignores anything between the balancing delimiters no matter how
+may lines of text are included.  <tt>#| |#</tt> pairs are often used to comment
+out large sections of program code in a file or function.  For
+example:
+
+<PRE>#|
+;;; i think this function is obsolete.
+(defun frob2 (list)
+  (frob-aux (first list)))
+|#
+</PRE>
+
+comments out a function definition that is no longer used.<p>
+
+
+<b>Formatting and Indentation</b><p>
+
+Poorly formatted Lisp code is difficult to read.  The most important
+prerequisite for legible Lisp code is a simple, consistent style of
+indentation.  Some text editors, such as Emacs or Fred, understand
+Lisp syntax and will automatically perform this task for you.  Other
+text editors, such as NeXTStep's Edit.app, have no understanding of
+Lisp beyond parentheses matching.  Even if you use a text editor that
+cannot perform Lisp indentation, you should take the time to format
+your code properly.  Here are a few simple rules to follow:<p>
+
+<UL>
+
+<LI>If your editor supports multiple fonts, always display Lisp code in a
+fixed-width family like Courier.
+
+<LI>Avoid writing lines longer than 70 characters.  Don't assume your
+reader can shape a window as large as you can, and wrap-around text is
+almost impossible to read on hard-copy.
+
+<LI>Indent forms in the body of a <tt>defun</tt>, <tt>defmacro</tt> or
+<tt>let</tt> clause two spaces to the right of the column in which the
+clause starts.  In the following example, both forms in the
+<tt>defun</tt> are indented two columns.  The forms in the body of the
+let are indented two columns to the right of where the <tt>let</tt>
+starts:
+
+<PRE>(defun foo (a b &amp;aux c)
+  (setf c (* a b))
+  (let ((d 1)
+        (e (if (zerop b) t nil)))
+    (check-compatibility d c)
+    (foo-aux a b c d e)))
+</PRE>
+
+<LI>If the arguments to a function occupy more than a single line, indent
+subsequent lines to the same column position as the first argument.  In the
+following example the indentation clearly shows that there are three arguments
+to <tt>compute-closure</tt>.
+
+<PRE>(setf s (compute-closure this-function
+                         (list other-function my-method)
+                         56))
+</PRE>
+
+<LI>Don't use tab to indent and don't close parenthesis on a single line.  C
+style formatting looks silly in Lisp.  The example code:
+
+<PRE>(defun my_Foo (x)
+    (let ((y (* x 5))
+         )
+        (values y x)
+    )
+)
+</PRE>
+
+looks much better (to a Lisp programmer) when formatted so:
+
+<PRE>(defun my-foo (x)
+  (let ((y (* x 5)))
+    (values y x)))
+</PRE>
+</UL>
+
+<HR>
+&copy;MCMXCV <I>by <A HREF="mailto:hkt@ccrma.stanford.edu">
+hkt@ccrma.stanford.edu</A></I>
+
+</BODY>
+</HTML>
+

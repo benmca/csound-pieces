@@ -1,0 +1,1 @@
+;notelist for sec 4.8a amp modf1 0 16384 10 1f2 0 16385 9 .5 1 0si1 1 5 100 1000e

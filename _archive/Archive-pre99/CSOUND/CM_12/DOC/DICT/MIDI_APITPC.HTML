@@ -1,0 +1,619 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Frameset//EN">
+<HTML>
+<HEAD>
+  <TITLE>
+  </TITLE>
+  <!-- Created by: Tobias Kunze, 26-Feb-1998 -->
+  <!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+  <BASE TARGET=manpage>
+  <META name="author" content="Rick Taube">
+</HEAD>
+
+<BODY bgcolor="#ffffff" vlink="#008844" link="#004488">
+
+<!-- ---------------------------BEGIN ENTRY------------------------------- -->
+<!-- HR -->
+
+
+<A NAME="midi_api.tpc">
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B>MIDI API</B>
+    </TD>
+    <TD align="right" valign="top">
+      [Topic]
+    </TD>
+  </TR>
+</TABLE>
+
+<H3>Opening and Closing MIDI</H3>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="midi-open">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-open &amp;key 
+	          (</TT><I>max-logical-channels</I><TT> *midi-default-max-logical-channels*)
+		  (</TT><I>max-routes</I><TT> *midi-default-max-routes*)
+		  (</TT><I>max-connections</I><TT> *midi-default-max-connections*)
+		  (</TT><I>max-mappings</I><TT> *midi-default-max-mappings*)
+		  (</TT><I>queue-size</I><TT> *midi-default-queue-size*)
+		  (</TT><I>channel-map</I><TT> *midi-default-channel-map*)
+		  (</TT><I>route-map</I><TT> *midi-default-route-map*)
+		  (</TT><I>connections</I><TT> *midi-default-connections*)
+		       </TT><I>port</I></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+ 
+<P>Open or re-initialize the MIDI environment.  The first five keyword 
+  arguments specify size limits for various data structures internal to the 
+  environment and hence force an implicit shutdown and re-opening if re-set 
+  in runtime.  More precisely. <I>max-logical-channels</I>,
+  <I>max-routes</I> and <I>max-connections</I> determine the dimensions of 
+  the internal channel and route maps, <I>max-mappings</I> the maximal 
+  number of mappings that may be established across both maps, and 
+  <I>queue-size</I> the number of events that may be queued for output
+  before calls to
+  <TT><A HREF="midi_api.tpc.html#midi-write-message">midi-write-message</A></TT>
+  block.
+</P>
+
+<P>
+  <I>channel-map</I>, <I>route-map</I> and <I>connections</I> initialize or 
+  re-set the internal data structures.  <I>port</I> is provided for
+  backwards compatibility only and its use is deprecated.
+</P>
+
+<P>
+  All keyword parameters take their defaults from global variables that may
+  (and should) be customized by users to simplify opening MIDI.  See their
+  respective documentation for more info on the data expected by each 
+  parameter.
+</P>
+
+<P>Calling <TT>midi-open</TT> while MIDI is already open closes MIDI first,
+then re-opens it again.
+</P>
+
+<P> <TT>midi-open</TT> returns <TT>t</TT> if MIDI is open or <TT>nil</TT> if 
+  it is not (i.e., the updated value of 
+  <TT><A HREF="midi-openqm.fun.html">midi-open?</A></TT>.)
+</P>
+
+<H4>See Also:</H4>
+
+<BLOCKQUOTE>
+  <TT><A HREF="midi-default-max-lc.var.html">*midi-default-max-logical-channels*</A></TT>,
+  <TT><A HREF="midi-default-max-rt.var.html">*midi-default-max-routes*</A></TT>,
+  <TT><A HREF="midi-default-max-cn.var.html">*midi-default-max-connections*</A></TT>,
+  <TT><A HREF="midi-default-max-mp.var.html">*midi-default-max-mappings*</A></TT>,
+  <TT><A HREF="midi-default-queue-size.var.html">*midi-default-queue-size*</A></TT>,
+  <TT><A HREF="midi-default-chanmap.var.html">*midi-default-channel-map*</A></TT>,
+  <TT><A HREF="midi-default-routemap.var.html">*midi-default-route-map*</A></TT>,
+  <TT><A HREF="midi-default-conns.var.html">*midi-default-connections*</A></TT>,
+  <TT><A HREF="midi-openqm.fun.html">midi-open?</A></TT>
+</BLOCKQUOTE>
+
+<!-- --------------------------------------------------------------- -->
+<A NAME="midi-close">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-close ()</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+Close MIDI and dispose of all internal data structures.  Returns
+the updated return value of 
+<TT><A HREF="midi-openqm.fun.html">midi-open?</A></TT>.
+<P>
+
+<H4>See Also:</H4>
+
+<BLOCKQUOTE>
+  <TT><A HREF="midi-openqm.fun.html">midi-open?</A></TT>
+</BLOCKQUOTE>
+
+
+<H3>MIDI Environment</H3>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-update-system-info">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-update-system-info ()</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+  Use this function to update the MIDI environment if you've added new 
+  devices to the system such as a new MIDI client that you want to receive
+  messages.
+</P>
+
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-print-environment">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-print-environment &optional 
+           (</TT><I>verbosity</I><TT> 1) (</TT><I>stream</I> :stderr)</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+  Print a summary of the current MIDI environment to <I>stream</I>.  
+  <I>verbosity</I> may be one of 0 (terse), 1 (default), or 2 (technical).
+  <I>stream</I> must be either <TT>:stdout</TT> or <TT>:stderr</TT>,
+  requesting output on either <TT>*standard-output*</TT> or 
+  <TT>*standard-error</TT>, respectively.
+</P>
+
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-get-environment-info">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-get-environment-info &rest </TT><I>selectors</I></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+  <TT>midi-get-environment-info</TT> takes as arguments any number of 
+  keyword info selectors in <I>selectors</I> and returns the query results
+  for each selector as multiple values.
+</P>
+
+<P>
+  Possible information selectors are:
+</P>  
+
+<DL>
+  <DT><TT>:mi_d-max-logical-channels</TT></DT>
+  <DD>maximum number of channels</DD>
+  <DT><TT>mi_d-max-routes</TT></DT>
+  <DD>maximum number of routes</DD>
+  <DT><TT>mi_d-max-connections</TT></DT>
+  <DD>maximum number of connections</DD>
+  <DT><TT>mi_d-max-map-cells</TT></DT>
+  <DD>total number of mapping cells to disposal. Note that this number is
+    <B>twice</B> the number specified in the <I>max-mappings</I> parameter
+    to <TT><A HREF="#midi-open">midi-open</A></TT>, since each mapping is
+    registered in both, a standard map and its inverse map.</DD>
+  <DT><TT>mi_d-map-cells-in-use</TT></DT>
+  <DD>maximum number of mapping cells currently in use</DD>
+  <DT><TT>:mi_d-queue-size</TT></DT>
+  <DD>maximum number of events in the queue</DD>
+  <DT><TT>:mi_d-nr-of-interfaces</TT></DT>
+  <DD>number of interfaces currently known to the system</DD>
+  <DT><TT>:mi_d-interface-info</TT></DT>
+  <DD>list of each interface name string and its direction: 1 (input), 
+    2 (output) or 3 (bidirectional)</DD>
+  <DT><TT>:mi_d-input-interfaces</TT></DT>
+  <DD>list of configured input interfaces</DD>
+  <DT><TT>:mi_d-output-interfaces</TT></DT>
+  <DD>list of configured output interfaces</DD>
+  <DT><TT>:mi_d-channel-map</TT></DT>
+  <DD>list of current mappings in the channel map</DD>
+  <DT><TT>:mi_d-inv-channel-map</TT></DT>
+  <DD>list of current mappings in the inverse channel map</DD>
+  <DT><TT>:mi_d-route-map</TT></DT>
+  <DD>list of current mappings in the route map</DD>
+  <DT><TT>:mi_d-inv-route-map</TT></DT>
+  <DD>list of current mappings in the inverse route map</DD>
+</DL>
+
+
+<H4>Example:</H4>
+
+<BLOCKQUOTE>
+  <PRE>? (midi-get-environment-info :mi_d-max-logical-channels
+	                     :mi_d-max-routes
+		             :mi_d-max-connections
+			     :mi_d-max-map-cells
+			     :mi_d-queue-size)
+<I>120
+10
+10
+400
+20000</I>
+  </PRE>
+</BLOCKQUOTE>
+
+<H4>See Also:</H4>
+
+<BLOCKQUOTE>
+  <TT><A HREF="#midi-open">midi-open</A></TT>
+</BLOCKQUOTE>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-check-environment">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-check-environment ()</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>
+  Performs an environment consistency check.  Returns <TT>t</TT> if no
+  inconsistencies were found, <TT>nil</TT> otherwise.
+</P>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-connect">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-connect</TT> <I>connection interface direction</I></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Associate connection <I>connection</I> with the interface named by 
+  <I>interface</I>.  <I>direction</I> will be one of <TT>:input</TT>,
+  <TT>:output</TT> or <TT>:bidirectional</TT>.
+</P>
+
+<H4>See Also:</H4>
+
+<BLOCKQUOTE>
+  <TT><A HREF="midi-set-connections.fun.html">midi-set-connections</A></TT>
+</BLOCKQUOTE>
+
+
+<H3>MIDI I/O</H3>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-write-message">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-write-message msg &amp;optional (</TT><I>time</I><TT> 0)</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Schedules the message encoded in msg for output at time <I>time</I>.  
+If <I>time</I> is not specified, it defaults to 0, i.e.  the message 
+is sent immediately.
+</P>
+
+<H4>See Also:</H4>
+
+<BLOCKQUOTE>
+  <TT><A HREF="midi_api.tpc.html#midi-write-note">midi-write-note</A></TT>,
+  <TT><A HREF="midi_api.tpc.html#midi-write-sysex">midi-write-sysex</A></TT>,
+  <TT><A HREF="midi-sysex-refcounter.var.html">*midi-sysex-refcounter*</A></TT>
+</BLOCKQUOTE>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-write-sysex">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-write-sysex </TT><I>vector</I><TT> &amp;key </TT>
+	<I>msg route length</I><TT> (</TT><I>time</I>
+	<TT> 0) (</TT><I>refcount</I><TT> *midi-sysex-refcounter*)</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Schedules a system exclusive message for output at 
+  time <I>time</I>.  <I>vector</I> contains a complete system exclusive
+  message in form of an array of type
+
+  <BLOCKQUOTE>
+    <TT>(simple-array (unsigned-byte 8) (*))</TT>
+  </BLOCKQUOTE>
+
+  and <I>length</I> indicates the length of the message in bytes.  The route
+  on which to output the message may be given either explicitly via 
+  <I>route</I> or implicitly by passing the first return value of 
+  <TT><A HREF="midi_messages.tpc.html#make-sysex-message">make-sysex-message</A></TT>
+  in <I>msg</I>.
+</P>
+
+<P>If the client wishes to free sysex data after sending it, she is
+  encouraged to pass a refcounter object in <I>refcounter</I> whose value
+field may be initialized to any number that is meaningful to the
+client--typically 0.  <TT>write-sysex</TT> increments the counter, schedules
+the message, and returns immediately, i.e., the message is written out
+asynchronously.  The counter is decremented as soon as the message is
+written out completely.  This mechanism allows the client to write a sysex
+message to different destinations at different times, while sharing the
+message's data across calls.  After the counter has been decremented it will
+be safe to deallocate the data.  <I>refcounter</I> defaults to 
+<TT><A HREF="midi-sysex-refcounter.var.html">*midi-sysex-refcounter*</A></TT>.
+Additional refcounter 
+objects may be constructed by calling
+
+<BLOCKQUOTE>
+  <TT>mi_d:make-refcounter </TT><I>initial-value</I>
+</BLOCKQUOTE>
+</P>
+
+<H4>See Also:</H4>
+
+<BLOCKQUOTE>
+  <TT><A HREF="midi-sysex-refcounter.var.html">*midi-sysex-refcounter*</A></TT>,
+  <TT><A HREF="midi_messages.tpc.html#make-sysex-message">make-sysex-message</A></TT>
+</BLOCKQUOTE>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-write-note">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-write-note </TT><I>channel keynum velocity duration</I>
+	<TT>&amp;optional (</TT><I>time</I><TT> 0) (</TT>
+	<I>off-velocity</I><TT> 64)</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Convenience function that schedules a note-on and note-off
+  message pair given a note description.
+</P>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-read-messages">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-read-messages &optional (</TT><I>fun</I> 
+	<TT> *midi-read-hook*) &amp;key </TT><I>skip-data</I></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Remove pending messages from the input queue and optionally map
+  the function <I>fun</I> over each message.  <I>fun</I>'s lambda list
+  must be compatible with 
+
+  <BLOCKQUOTE>
+    <TT>(</TT><I>msg</I><TT> &amp;optional </TT><I>time</I>
+    <TT>&amp;key </TT><I>data length</I><TT> &amp;allow-other-keys)</TT>
+  </BLOCKQUOTE>
+
+  and will be passed each message and its millisecond time in <TT>msg</TT>
+  and <I>time</I>.  Sysex data and its length will be passed to <I>fun</I>
+  via its <TT>data</TT> and <TT>length</TT> keywords unless <I>skip-data</I>
+  is <TT>t</TT>.
+</P>
+
+<H4>Example</H4>
+<BLOCKQUOTE>
+<PRE> ? (midi-read-messages #'midi-print-message)
+</PRE>
+</BLOCKQUOTE>
+
+<H4>See Also:</H4>
+
+<BLOCKQUOTE>
+  <TT><A HREF="midi-read-hook.var.html">*midi-read-hook*</A></TT>,
+  <TT><A HREF="midi-receive.fun.html">midi-receive</A></TT>,
+  <TT><A HREF="midi-print-message.fun.html">midi-print-message</A></TT>
+</BLOCKQUOTE>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-flush-input">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-flush-input ()</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Discards ("flushes") events pending in the input queue.
+</P>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-flush-output">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-flush-output ()</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Discards ("flushes") events pending in the output queue.
+</P>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-all-notes-off">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-all-notes-off ()</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Broadcast "All Notes Off", "All Sound Off", and "Reset All Controllers"
+  control messages on all active output connections.  
+  Note that this does not work
+  with some older MIDI devices that are unaware of these messages.  These
+  devices continue to need note-off messages on every channel and key
+  number.
+</P>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-get-time">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-get-time ()</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Return the current MIDI time in milliseconds.
+</P>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-set-time">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-set-time </TT><I>ms</I></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Set the MIDI timer to <I>ms</I> milliseconds.
+</P>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-stop-timer">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-stop-timer</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Provided for backwards compatibility.  This function does not do 
+anything.
+</P>
+
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-start-timer">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-start-timer ()</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Start the MIDI timer.   Equivalent to 
+<TT>(<A HREF="midi_api.tpc.html#midi-set-time">midi-set-time</A> 0)</TT>.
+</P>
+<!-- --------------------------------------------------------------- -->
+
+<A NAME="midi-c-print-message">&nbsp;</A><HR>
+<TABLE width="100%" border="0" cellspacing="0" cellpadding="0">
+  <TR>
+    <TD align="left" valign="top">
+      <B><TT>midi-c-print-message </TT><I>msg</I><TT> &amp;optional </TT>
+	<I>time</I><TT> &amp;key </TT><I>data length</I><TT> (</TT>
+	<I>maxlines</I><TT> 0) </TT><I>stream time-format</I>
+	<TT>&amp;allow-other-keys</TT></B>
+    </TD>
+    <TD align="right" valign="top">
+      [Mi_D API Function]
+    </TD>
+  </TR>
+</TABLE>
+
+<P>Prints MIDI messages in a slightly different format than 
+  <TT><A HREF="midi-print-message.fun.html">midi-print-message</A></TT>onto 
+  <TT>*standard-output*</TT>
+</P>
+
+<H4>See Also:</H4>
+
+<BLOCKQUOTE>
+  <TT><A HREF="midi-print-message.fun.html">midi-print-message</A></TT>
+</BLOCKQUOTE>
+
+
+
+<!-- ----------------------------END ENTRY-------------------------------- -->
+<HR>
+<DIV ALIGN="RIGHT">
+  <FONT color="#808080" size="2">
+    <!-- Inserted by XEmacs - Do not remove -->
+    Last Modified:   5-Mar-1998
+    <!--MODIFIED-->
+  </FONT>
+</DIV>
+
+</BODY>
+</HTML>
+

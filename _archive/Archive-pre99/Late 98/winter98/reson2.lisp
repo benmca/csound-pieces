@@ -1,0 +1,35 @@
+(in-package :stella)
+
+
+
+(defobject hmm (csound-note)
+  ((instr :initform "i1") dur amp freq noise bw)
+  (:parameters instr time dur amp freq noise bw))
+
+(defun note1 (mystart)
+  (algorithm nil hmm (start mystart length 20)
+    (setf freq 110)
+    (setf amp 1)
+    (setf noise 20000)
+    (setf dur (between 1 5))
+    (setf rhythm dur)
+    (setf bw 100)
+    ))
+;
+(defun note2 (mystart)
+  (algorithm nil hmm (start mystart length 20)
+    (setf freq (between 440 1660))
+    (setf amp 1)
+    (setf noise 100)
+    (setf dur (between 1 5))
+    (setf rhythm dur)
+    (setf bw (interpl count 0 1000.0 20 1.0))
+    ))
+;
+(defun make-score (&key (start-time 1.)(my-scorefile "reson2.sco"))
+  (let* ((myheader (header "f 1 0 16384 10 1")))
+    (fheader my-scorefile myheader)
+    (merge all ()
+      (note1 1)
+      (note2 20))
+    (write-cs "all" :filename my-scorefile)))

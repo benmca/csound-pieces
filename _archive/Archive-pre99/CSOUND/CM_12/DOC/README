@@ -1,0 +1,26 @@
+The doc/ directory contains all documentation, the CM home page (doc/cm.html) and
+the installation guide (doc/install.html).  System documentation is stored in HTML (Hyper Text Markup Language) format.  If you do not already have a Web client, there are several excellent (and free) ones available on the Internet:
+
+  NCSA Mosaic (Macintosh, X Windows, Windows)
+    www: http://www.ncsa.uiuc.edu
+    ftp: ftp.ncsa.uiuc.edu
+
+  Netscape (Macintosh, X Windows, Windows)
+    www: http://www.netscape.com
+    ftp: ftp.netscape.com
+
+-------------------------------------------------------------------------
+doc/:
+
+api.text                    Programming interface to Common Music
+cm.html                     Common Music home page.
+changes.text                History of enhancements and bug-fixes.
+dict/Intro.html             Common Music Dictionary.
+install.html                Installation guide.
+install.text                Ascii version of installation guide.
+items.html                  Introduction to Item Streams.
+midi.html                   Overview and dictionary of mid-level MIDI routines.
+tutorials/stella/toc.html   Stella Tutorial
+help/                       On-line help texts for Stella and Capella.
+contrib/                    Papers, examples, related topics.
+

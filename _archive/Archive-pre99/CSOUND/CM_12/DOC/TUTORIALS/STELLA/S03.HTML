@@ -1,0 +1,61 @@
+<HTML>
+<HEAD>
+<TITLE>Stella Tutorial (Duplicating Material)</TITLE>
+<!-- Changed by: Tobias Kunze,  5-Mar-1998 -->
+</HEAD>
+<BODY bgcolor="#ffffff" vlink="#008833" link="#003388">
+
+<a name="Duplicating_Material"></A>
+<A HREF="s04.html"><i>Next Chapter</i></A><BR>
+<A HREF="s02.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+
+<H2>Duplicating Material</H2>
+<H3>
+<a name="duplicate"><TT><A HREF="../../dict/duplicate.cmd.html">
+Duplicate</TT></a></H3>
+
+<tt>Duplicate</tt> copies a container and its contents to a new
+object.  The new object is automatically placed in Top-Level.  If a
+name for the duplicate is not specified it is generated from the name
+of the original object.  <p>
+
+The next example copies Pulse to a new thread named Pulse2:<p>
+
+<PRE>Stella [Top-Level]: <b>duplicate pulse pulse2</b>
+Pasted Pulse2 to Top-Level.
+Stella [Top-Level]: <b>list</b>
+Top-Level:
+     1. #&lt;THREAD: Pulse&gt; 
+     2. #&lt;ALGORITHM: Sinus&gt; 
+     3. #&lt;THREAD: Pulse2&gt; 
+Stella [Top-Level]:
+</PRE>
+
+<H3>Other Ways to Create Material</H3>
+
+There are a numberof different ways to create musical material in addtion to duplicate:
+it can be loaded from files using 
+<A HREF="../../dict/load.cmd.html">load</A>
+ or <A HREF="../../dict/import.cmd.html">import</A>,
+specified using <A HREF="../../dict/new.cmd.html">new</A>,
+copied using 
+<A HREF="../../dict/copy.cmd.html">copy</A> / 
+<A HREF="../../dict/paste.cmd.html">paste</A>
+and captured by <A HREF="../../dict/receive.cmd.html">receive</A>.
+<P>
+
+<A HREF="s04.html"><i>Next Chapter</i></A><BR>
+<A HREF="s02.html"><i>Previous Chapter</i></A><BR>
+<A HREF="toc.html#Toc"><i>Table of Contents</i></A>
+<P>
+
+
+  Last Modified:  5-Mar-1998
+</BODY>
+</HTML>     
+
+
+
+
+
