@@ -1,12 +1,8 @@
-import csnd6
-from Tkinter import *
-from ttk import *
-import random
-from thuja.itemstream import Itemstream
-
-
-
-orc = """
+<CsoundSynthesizer>
+<CsOptions>
+-odac0 -b128 -B1024  -M0
+</CsOptions>
+<CsInstruments>
 sr=44100
 kr=441
 nchnls=1
@@ -18,11 +14,9 @@ import random
 from thuja.itemstream import Itemstream
 
 random.seed()
-
-
 class PitchQueue:
     curdx = 0;
-    rhythm_stream = Itemstream(['s','s','s', 's', '32', '32', '32', '32'],'heap', tempo=60)
+    rhythm_stream = Itemstream(['s','s','s', 's', '32', '32', '32', '32'],'sequence', tempo=60)
     rhythm_stream.notetype = 'rhythm'
 
     def __init__(self):
@@ -36,7 +30,7 @@ class PitchQueue:
         if len(self.items) >= self.max_size:
             self.dequeue()
         self.items.append(item)
-        #print 'enqueue: ' + str(item) + ', items: ' + str(self.items)
+        print 'enqueue: ' + str(item) + ', items: ' + str(self.items)
 
     def dequeue(self):
         return self.items.pop(0)
@@ -72,7 +66,7 @@ ktrig init 1
 ifreq 	cpsmidi
 iamp 	ampmidi 	10000
 if (ktrig == 0) goto contin
-		;printks 	"new note", .01
+		printks 	"new note", .01
 		pycall		"pitches.enqueue", ifreq
 		event 		"i", 10, 0, .5, iamp, ifreq
 ktrig = 0
@@ -102,24 +96,12 @@ aout 	oscil 		kenv*iveloc, inote, 1
 		out 		aout
 endin
 
-"""
-
-sco = """
+</CsInstruments>
+<CsScore>
+;f 1  0  256  -17   0  0  
 f0 3600
 f1 0 16384 10 1 
 i2 0 1
-"""
-
-
-# create & compile instance
-cs = csnd6.Csound()
-cs.SetOption("-odac0")
-cs.SetOption("-b128")
-cs.SetOption("-B1024")
-cs.SetOption("-M1")
-cs.SetOption("--m-amps=0")
-cs.CompileOrc(orc)
-cs.ReadScore(sco)
-cs.Start()
-cs.Perform()
-cs.Stop()
+e
+</CsScore>
+</CsoundSynthesizer>
