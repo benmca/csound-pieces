@@ -1,1 +1,0 @@
-;Score to test FM Trumpet instrumentf1 0 16384 9 1 1 0f2 0 4097 9 .5 1 0f3 0 4097 7 0 2048 1 2048 .8;p4 = amp;p5=freq;p6=index;p1     p2     p3     p4      p5   p6i8     1.0    .5     .5     440    1.i8     2.0    1.0    .5     522    1.i8     4.0    1.0    .5     440   1.5i8     5.0    2.5    .5     522   1.5e

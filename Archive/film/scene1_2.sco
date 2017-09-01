@@ -1,1 +1,0 @@
-; Chel polynomialf1	0	513	13	1	1	4	5	6	5	2	1				;partials:  ^ on...f2	0	513	10	1;sinef3	0	513	20	9;half sine/sine window funcf4	0	513	20	6;gaussian window (narrow 1/2sine)f5	0	131072	1	"gnawa22.aiff"		0	0	0;p6	p7	p8;pan dist pcti1	1	30	4000 	50	0	45	.25i2	1	30	7000	60	90	5	.1i3	10	20	10000	1	50	50	.01i99	1	35	e

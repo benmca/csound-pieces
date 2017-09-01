@@ -1,1 +1,0 @@
-; Common Music output of 7-May-98 18:31:36f 1 0 16384 10 1f 2 0 32768 1 "miro22.aiff" 0 0 0f 3 0 16384 9 .5 1 0si3 1 1 1 110 0 4 0 0 1e

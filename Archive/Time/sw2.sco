@@ -1,1 +1,0 @@
-; Common Music output of 28-Sep-98 19:47:23f 1 0 16384 10 1si1 1 12.0 2866 880i99 0 40 100e

@@ -1,1 +1,0 @@
-;Notelist to test instruments in "reson.orc"f1 0 16384 10 1i1 1 10 10000 440i2 11 10 10000 440i3 22 10 10000 440e

@@ -1,1 +1,0 @@
-; Common Music output of 4-Oct-98 15:21:38f 1 0 16384 10 1f 2 0 262144 1 "medium.aif" 0 0 0f 3 0 16384 9 .5 1 0si1 1 12.0 3818 880 4e
