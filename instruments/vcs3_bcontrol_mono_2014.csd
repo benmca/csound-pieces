@@ -12,7 +12,7 @@
 <CsInstruments>
 sr=44100
 ksmps=128
-nchnls=1
+nchnls=2
 
 ;-------------------------------------------------------------------------------
 ; EMS VCS3 / Synthi A Emulator originally by Steven Cook - steve@babcom.u-net.com
@@ -1768,7 +1768,7 @@ ga16     = 0                              ; Clear global ch.16
 ;kbut downsamp ga12
 ;printk2 kbut
 ;printk2 gkenv_sig
-/*
+
 alevl1   limit ilevl1 * almod1+gkOffset1, 0, 1      ; Limit level modulation ch.1
 alevl2   limit ilevl2 * almod2+gkOffset2, 0, 1      ; Limit level modulation ch.2
 aout1    = ain1*alevl1*gkVolume                    ; VCA ch.1
@@ -1778,8 +1778,8 @@ outch   2,aout1*sqrt(1 - ipan1) + aout2*sqrt(ipan2) ; Output and pan ch.2
 aout1 = ain1*gkVolume
 aout2 = ain2*gkVolume
 outch   1,aout1
-outch   2,aout1*/
-out ain1*gkVolume
+outch   2,aout1
+;out ain1*gkVolume
 
 	endin
 

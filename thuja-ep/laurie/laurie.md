@@ -7,3 +7,6 @@ play along with the pulse laid out after several notes are entered. The rhythmic
 	    rhythm_stream = Itemstream(['s','s','s', 's', '32', '32', '32', '32'],'heap', tempo=60)
 	    rhythm_stream.notetype = 'rhythm'
 
+#laurie-5
+
+evolve #4 to allow for successive lines. 
