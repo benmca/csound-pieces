@@ -120,7 +120,7 @@ gkoutput1,gihoutput1		FLtext	" ", 0, 1, .05, 1,        80, 20, 110, 185+$tabsYof
 gkloop1,gihbut1		FLbutton	" ", 1, 0, 3, 		20, 20, 190, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 1
 gkloopread1,gihbutread1	FLbutton	" ", 1, 0, 3, 		20, 20, 190, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
 gihrate1			FLvalue 	" ",			80, 25, 110, 425+$tabsYoffset
-gkrate1,gihtap1		FLslider	" ", 0, gidelsize, 0 ,2, gihrate1, 20,200, 140, 220+$tabsYoffset
+gkrate_in1,gihtap1		FLslider	" ", 0, gidelsize, 0 ,2, gihrate1, 20,200, 140, 220+$tabsYoffset
 gihregen1			FLvalue 	" ",			80, 25, 110, 525+$tabsYoffset
 gkregen1, gihregknob1	FLknob  	" ", 0.001, 1, 0, 1, gihregen1, 80, 110, 450+$tabsYoffset
 gkinput2,gihinput2		FLtext	" ", 0, 1, .05, 1,        80, 20, 210, 135+$tabsYoffset
@@ -128,7 +128,7 @@ gkoutput2,gihoutput2		FLtext	" ", 0, 1, .05, 1,        80, 20, 210, 185+$tabsYof
 gkloop2,gihbut2	FLbutton	" ", 1, 0, 3, 		20, 20, 290, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 2
 gkloopread2,gihbutread2	FLbutton	" ", 1, 0, 3, 		20, 20, 290, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
 gihrate2		FLvalue 	" ",		80, 25, 210, 425+$tabsYoffset
-gkrate2,gihtap2	FLslider	" ", 0, gidelsize, 0 ,2, gihrate2, 20,200, 240, 220+$tabsYoffset
+gkrate_in2,gihtap2	FLslider	" ", 0, gidelsize, 0 ,2, gihrate2, 20,200, 240, 220+$tabsYoffset
 gihregen2			FLvalue 	" ",			80, 25, 210, 525+$tabsYoffset
 gkregen2, gihregknob2	FLknob  	" ", 0.001, 1,0, 1, gihregen2, 80, 210, 450+$tabsYoffset
 gkinput3,gihinput3		FLtext	" ", 0, 1, .05, 1,        80, 20, 310, 135+$tabsYoffset
@@ -136,7 +136,7 @@ gkoutput3,gihoutput3		FLtext	" ", 0, 1, .05, 1,        80, 20, 310, 185+$tabsYof
 gkloop3,gihbut3	FLbutton	" ", 1, 0, 3, 		20, 20, 390, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 3
 gkloopread3,gihbutread3	FLbutton	" ", 1, 0, 3, 		20, 20, 390, 185+$tabsYoffset,  		0, 5, 0, 1, 0, 1
 gihrate3		FLvalue 	" ",		80, 25, 310, 425+$tabsYoffset
-gkrate3,gihtap3	FLslider	" ", 0, gidelsize, 0 ,2, gihrate3, 20,200, 340, 220+$tabsYoffset
+gkrate_in3,gihtap3	FLslider	" ", 0, gidelsize, 0 ,2, gihrate3, 20,200, 340, 220+$tabsYoffset
 gihregen3			FLvalue 	" ",			80, 25, 310, 525+$tabsYoffset
 gkregen3, gihregknob3	FLknob  	" ", 0.001, 1, 0, 1, gihregen3, 80, 310, 450+$tabsYoffset
 gkinput4,gihinput4		FLtext	" ", 0, 1, .05, 1,        80, 20, 410, 135+$tabsYoffset
@@ -144,7 +144,7 @@ gkoutput4,gihoutput4		FLtext	" ", 0, 1, .05, 1,        80, 20, 410, 185+$tabsYof
 gkloop4,gihbut4	FLbutton	" ", 1, 0, 3, 		20, 20, 490, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 3
 gkloopread4,gihbutread4	FLbutton	" ", 1, 0, 3, 		20, 20, 490, 185+$tabsYoffset,  		0, 5, 0, 1, 0, 4
 gihrate4		FLvalue 	" ",		80, 25, 410, 425+$tabsYoffset
-gkrate4,gihtap4	FLslider	" ", 0, gidelsize, 0,2, gihrate4, 20,200, 440, 220+$tabsYoffset
+gkrate_in4,gihtap4	FLslider	" ", 0, gidelsize, 0,2, gihrate4, 20,200, 440, 220+$tabsYoffset
 gihregen4			FLvalue 	" ",			80, 25, 410, 525+$tabsYoffset
 gkregen4, gihregknob4	FLknob  	" ", 0.001, 1, 0, 1, gihregen4, 80, 410, 450+$tabsYoffset
 ; reset button - reinit
@@ -255,7 +255,7 @@ gkfilestop,ihgkfilestart		FLbutton	"Start Guide Track", 1, 0, 1, 		100, 50, 20, 
 gkfilestop,ihgkfilestop		FLbutton	"Stop Guide Track", 1, 0, 1, 		100, 50, 200, 350,	 		0, 5, 0, 1, 1212, 1
 gkmiditap,ihgkmiditap		FLbutton	"Midi Tempo Tap off", 1, 0, 2, 	100, 50, 20, 450,	 		0, 5, 0, 1, 0, 1
 ihfilter	  			FLvalue 	" ",				50, 50,330,500
-gkfilter,ihgkfilter			FLslider	"lopass filter for krate signals", 1, 2500, 0 ,5, ihfilter, 300,50, 20, 500
+gkfilter,ihgkfilter			FLslider	"lopass filter for krate signals", .01, 1, 0 ,5, ihfilter, 300,50, 20, 500
 ; reset button - reinit
 gkresetbutton2,ihresetbutton2	FLbutton	"RESET", 1, 0, 1, 		100, 100, 0, 550+$tabsYoffset,  		0, 12, 0, 1, 1
 FLsetVal_i	 	1, ihmintap
@@ -302,26 +302,26 @@ if	gksliderinst = 4 kgoto track4pedal
 kgoto done
 track1pedal:
 ;printks	"track1pedal - gkrate = %f\\n",1,gkrate
-gkrate1 = gkrate
-FLsetVal	1, gkrate1, gihtap1
+gkrate_in1 = gkrate
+FLsetVal	1, gkrate_in1, gihtap1
 gkrate = 0
 kgoto done
 track2pedal:
 ;printks	"track2pedal\\n",1
-gkrate2 = gkrate
-FLsetVal	1, gkrate2, gihtap2
+gkrate_in2 = gkrate
+FLsetVal	1, gkrate_in2, gihtap2
 gkrate = 0
 kgoto done
 track3pedal:
 ;printks	"track3pedal\\n",1
-gkrate3 = gkrate
-FLsetVal	1, gkrate3, gihtap3
+gkrate_in3 = gkrate
+FLsetVal	1, gkrate_in3, gihtap3
 gkrate = 0
 kgoto done
 track4pedal:
 ;printks	"track4pedal\\n",1
-gkrate4 = gkrate
-FLsetVal	1, gkrate4, gihtap4
+gkrate_in4 = gkrate
+FLsetVal	1, gkrate_in4, gihtap4
 gkrate = 0
 kgoto done
 checkkeys:
@@ -343,7 +343,6 @@ end:
 
 	instr 6	;track 1
 ;printks	"track 1 called\\n", 3600
-;gkrate1	tonek	gkrate1, gkfilter
 ;
 ;	if delay flag == 0, no delay :)
 ;
@@ -356,8 +355,9 @@ ainputsig 		inch kchan
 ainputsig = ainputsig * gkinput1
 noread:
 ;
-;	todo: click filter should go here
+;	click filter
 ;
+gkrate1	portk gkrate_in1, .0001
 ;
 ;	if sus pedal is not pressed, no repeat
 ;
@@ -397,7 +397,6 @@ out:
 
 	instr 7	;track 2
 ;printks	"track 2 called\\n", 3600
-;gkrate2	tonek	gkrate2, gkfilter
 ;
 ;	if delay flag == 0, no delay :)
 ;
@@ -409,8 +408,9 @@ ainputsig 		inch kchan
 ainputsig = ainputsig * gkinput2
 noread:
 ;
-;	todo: click filter should go here
+;	click filter
 ;
+gkrate2	portk gkrate_in2, .0001
 ;
 ;	if sus pedal is not pressed, no repeat
 ;
@@ -461,8 +461,9 @@ ainputsig 		inch kchan
 ainputsig = ainputsig * gkinput3
 noread:
 ;
-;	todo: click filter should go here
+;	click filter
 ;
+gkrate3	portk gkrate_in3, .0001
 ;
 ;	if sus pedal is not pressed, no repeat
 ;
@@ -513,8 +514,9 @@ ainputsig 		inch kchan
 ainputsig = ainputsig * gkinput4
 noread:
 ;
-;	todo: click filter should go here
+;	click filter
 ;
+gkrate4	portk gkrate_in4, .0001
 ;
 ;	if sus pedal is not pressed, no repeat
 ;
