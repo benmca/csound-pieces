@@ -11,7 +11,8 @@
 
 <CsInstruments>
 sr=44100
-ksmps=1
+kr=44100
+;ksmps=1
 nchnls=1
 
 #define guideTrackFile	#"D:\\Audio\\Ben\\Guitar Improvs\\Finished\\AcousticScratch.wav"#
@@ -34,23 +35,46 @@ nchnls=1
 ;***********************************************************
 ;
 ;***********************************************************
-;gkpedalval		init	0
 gkmaxdel	init $totalDelayLineTime
 gidelsize init i(gkmaxdel)
+
+gicrossfadetime init 1
+
+gkcrossfade_before_1 init 0
+gkcrossfade_after_1 init 0
+gafadein_1 init 0
+gafadeout_1 init 1
+gkchange_1 init 0
+
+gkcrossfade_before_2 init 0
+gkcrossfade_after_2 init 0
+gafadein_2 init 0
+gafadeout_2 init 1
+gkchange_2 init 0
+
+gkcrossfade_before_3 init 0
+gkcrossfade_after_3 init 0
+gafadein_3 init 0
+gafadeout_3 init 1
+gkchange_3 init 0
+
+gkcrossfade_before_4 init 0
+gkcrossfade_after_4 init 0
+gafadein_4 init 0
+gafadeout_4 init 1
+gkchange_4 init 0
+
+
 gasig	init 0
 gaout1	init 0
 gaout2	init 0
 gaout1_1	init 0
-gaout2_1	init 0
 gaout1_2	init 0
-gaout2_2	init 0
 gaout1_3	init 0
-gaout2_3	init 0
 gaout1_4	init 0
-gaout2_4	init 0
 gkfileflag init 0
 gkfileopen init 0
-gkguidefilestopflag init 0;
+gkguidefilestopflag init 0
 gkregen 	init 1.0
 gkrate	init 0
 gkmod	init 1
@@ -69,37 +93,32 @@ gkcomptime3_flag init 0
 gkcomptime4_flag init 0
 garegensig init 0
 garegensig2 init 0
+
 ; this is set to 1 by reset button event
 gkturnoff init 0
+
 ;
 ; this turns off midi keys as tap tempos
 ;
 gkmiditap init 0
+
 ;
 ; for multitracks
-
+;
 garegensig1_1 init 0
-garegensig2_1 init 0
 garegensig1_2 init 0
-garegensig2_2 init 0
 garegensig1_3 init 0
-garegensig2_3 init 0
 garegensig1_4 init 0
-garegensig2_4 init 0
+
 ;
 ;temp values
 ;
-;gkregen init 1
 gkmintap init .1
-;gkrate init 16
-;gksineflag init 1
-;gkdelayflag init 1
-;gktapdelayflag init 1
-;iwidth,iheight,ibpp bmopen	"allblack.bmp",1 ,1
-gkloop1 init 0
-gkloopread1 init 0
-	FLpanel	"Delay",510, 900;***** start of container
-	FLtabs	510, 900, 0, 0
+gkloop_1 init 0
+gkloopread_1 init 0
+
+FLpanel	"Delay",510, 900;***** start of container
+FLtabs	510, 900, 0, 0
 ;****************************************************
 ;	Tracks page	
 ;****************************************************
@@ -109,46 +128,46 @@ ihandle2  FLbox  "1", 1, 1, 20, 100, 100, 100, 0+$tabsYoffset
 ihandle3  FLbox  "2", 1, 1, 20, 100, 100, 200, 0+$tabsYoffset
 ihandle4  FLbox  "3", 1, 1, 20, 100, 100, 300, 0+$tabsYoffset
 ihandle5  FLbox  "4", 1, 1, 20, 100, 100, 400, 0+$tabsYoffset
-;
-;
 ihandle6  FLbox  "Input", 1, 1, 16, 100, 50, 0, 125+$tabsYoffset
 ihandle7  FLbox  "Output", 1, 1, 16, 100, 50, 0, 175+$tabsYoffset
 ihandle8  FLbox  "Delay Time", 1, 1, 16, 100, 100, 0, 300+$tabsYoffset
 ihandle9  FLbox  "Regeneration", 1, 1, 16, 100, 100, 0, 450+$tabsYoffset
-gkinput1,gihinput1		FLtext	" ", 0, 1, .05, 1,        80, 20, 110, 135+$tabsYoffset
-gkoutput1,gihoutput1		FLtext	" ", 0, 1, .05, 1,        80, 20, 110, 185+$tabsYoffset
-gkloop1,gihbut1		FLbutton	" ", 1, 0, 3, 		20, 20, 190, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 1
-gkloopread1,gihbutread1	FLbutton	" ", 1, 0, 3, 		20, 20, 190, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gkinput_1,gihinput1		FLtext	" ", 0, 1, .05, 1,        80, 20, 110, 135+$tabsYoffset
+gkoutput_1,gihoutput1		FLtext	" ", 0, 1, .05, 1,        80, 20, 110, 185+$tabsYoffset
+gkloop_1,gihbut1		FLbutton	" ", 1, 0, 3, 		20, 20, 190, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gkloopread_1,gihbutread1	FLbutton	" ", 1, 0, 3, 		20, 20, 190, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
 gihrate1			FLvalue 	" ",			80, 25, 110, 425+$tabsYoffset
-gkrate_in1,gihtap1		FLslider	" ", 0, gidelsize, 0 ,2, gihrate1, 20,200, 140, 220+$tabsYoffset
+gkrate_in_1,gihtap1		FLslider	" ", 0, gidelsize, 0 ,2, gihrate1, 20,200, 140, 220+$tabsYoffset
 gihregen1			FLvalue 	" ",			80, 25, 110, 525+$tabsYoffset
-gkregen1, gihregknob1	FLknob  	" ", 0.001, 1, 0, 1, gihregen1, 80, 110, 450+$tabsYoffset
-gkinput2,gihinput2		FLtext	" ", 0, 1, .05, 1,        80, 20, 210, 135+$tabsYoffset
-gkoutput2,gihoutput2		FLtext	" ", 0, 1, .05, 1,        80, 20, 210, 185+$tabsYoffset
-gkloop2,gihbut2	FLbutton	" ", 1, 0, 3, 		20, 20, 290, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 2
-gkloopread2,gihbutread2	FLbutton	" ", 1, 0, 3, 		20, 20, 290, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
+gkregen_1, gihregknob1	FLknob  	" ", 0.001, 1, 0, 1, gihregen1, 80, 110, 450+$tabsYoffset
+gkinput_2,gihinput2		FLtext	" ", 0, 1, .05, 1,        80, 20, 210, 135+$tabsYoffset
+gkoutput_2,gihoutput2		FLtext	" ", 0, 1, .05, 1,        80, 20, 210, 185+$tabsYoffset
+gkloop_2,gihbut2	FLbutton	" ", 1, 0, 3, 		20, 20, 290, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 2
+gkloopread_2,gihbutread2	FLbutton	" ", 1, 0, 3, 		20, 20, 290, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
 gihrate2		FLvalue 	" ",		80, 25, 210, 425+$tabsYoffset
-gkrate_in2,gihtap2	FLslider	" ", 0, gidelsize, 0 ,2, gihrate2, 20,200, 240, 220+$tabsYoffset
+gkrate_in_2,gihtap2	FLslider	" ", 0, gidelsize, 0 ,2, gihrate2, 20,200, 240, 220+$tabsYoffset
 gihregen2			FLvalue 	" ",			80, 25, 210, 525+$tabsYoffset
-gkregen2, gihregknob2	FLknob  	" ", 0.001, 1,0, 1, gihregen2, 80, 210, 450+$tabsYoffset
-gkinput3,gihinput3		FLtext	" ", 0, 1, .05, 1,        80, 20, 310, 135+$tabsYoffset
-gkoutput3,gihoutput3		FLtext	" ", 0, 1, .05, 1,        80, 20, 310, 185+$tabsYoffset
-gkloop3,gihbut3	FLbutton	" ", 1, 0, 3, 		20, 20, 390, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 3
-gkloopread3,gihbutread3	FLbutton	" ", 1, 0, 3, 		20, 20, 390, 185+$tabsYoffset,  		0, 5, 0, 1, 0, 1
+gkregen_2, gihregknob2	FLknob  	" ", 0.001, 1,0, 1, gihregen2, 80, 210, 450+$tabsYoffset
+gkinput_3,gihinput3		FLtext	" ", 0, 1, .05, 1,        80, 20, 310, 135+$tabsYoffset
+gkoutput_3,gihoutput3		FLtext	" ", 0, 1, .05, 1,        80, 20, 310, 185+$tabsYoffset
+gkloop_3,gihbut3	FLbutton	" ", 1, 0, 3, 		20, 20, 390, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 3
+gkloopread_3,gihbutread3	FLbutton	" ", 1, 0, 3, 		20, 20, 390, 185+$tabsYoffset,  		0, 5, 0, 1, 0, 1
 gihrate3		FLvalue 	" ",		80, 25, 310, 425+$tabsYoffset
-gkrate_in3,gihtap3	FLslider	" ", 0, gidelsize, 0 ,2, gihrate3, 20,200, 340, 220+$tabsYoffset
+gkrate_in_3,gihtap3	FLslider	" ", 0, gidelsize, 0 ,2, gihrate3, 20,200, 340, 220+$tabsYoffset
 gihregen3			FLvalue 	" ",			80, 25, 310, 525+$tabsYoffset
-gkregen3, gihregknob3	FLknob  	" ", 0.001, 1, 0, 1, gihregen3, 80, 310, 450+$tabsYoffset
-gkinput4,gihinput4		FLtext	" ", 0, 1, .05, 1,        80, 20, 410, 135+$tabsYoffset
-gkoutput4,gihoutput4		FLtext	" ", 0, 1, .05, 1,        80, 20, 410, 185+$tabsYoffset
-gkloop4,gihbut4	FLbutton	" ", 1, 0, 3, 		20, 20, 490, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 3
-gkloopread4,gihbutread4	FLbutton	" ", 1, 0, 3, 		20, 20, 490, 185+$tabsYoffset,  		0, 5, 0, 1, 0, 4
+gkregen_3, gihregknob3	FLknob  	" ", 0.001, 1, 0, 1, gihregen3, 80, 310, 450+$tabsYoffset
+gkinput_4,gihinput4		FLtext	" ", 0, 1, .05, 1,        80, 20, 410, 135+$tabsYoffset
+gkoutput_4,gihoutput4		FLtext	" ", 0, 1, .05, 1,        80, 20, 410, 185+$tabsYoffset
+gkloop_4,gihbut4	FLbutton	" ", 1, 0, 3, 		20, 20, 490, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 3
+gkloopread_4,gihbutread4	FLbutton	" ", 1, 0, 3, 		20, 20, 490, 185+$tabsYoffset,  		0, 5, 0, 1, 0, 4
 gihrate4		FLvalue 	" ",		80, 25, 410, 425+$tabsYoffset
-gkrate_in4,gihtap4	FLslider	" ", 0, gidelsize, 0,2, gihrate4, 20,200, 440, 220+$tabsYoffset
+gkrate_in_4,gihtap4	FLslider	" ", 0, gidelsize, 0,2, gihrate4, 20,200, 440, 220+$tabsYoffset
 gihregen4			FLvalue 	" ",			80, 25, 410, 525+$tabsYoffset
-gkregen4, gihregknob4	FLknob  	" ", 0.001, 1, 0, 1, gihregen4, 80, 410, 450+$tabsYoffset
+gkregen_4, gihregknob4	FLknob  	" ", 0.001, 1, 0, 1, gihregen4, 80, 410, 450+$tabsYoffset
+
 ; reset button - reinit
 ;gkresetbutton,ihresetbutton	FLbutton	"RESET", 1, 0, 1, 		100, 100, 0, 550+$tabsYoffset,  		0, 12, 0, 1, 1
+
 gk_tempo_1,ih_tempo_1	FLtext	"tempo", 20, 400, 1, 1,        80, 20, 110, 570+$tabsYoffset
 gk_w_1,ih_w_1		FLbutton	"w", 1, 0, 3, 		20, 20, 100, 600+$tabsYoffset, 		0, 5, 0, 1, 0, 1
 gk_h_1,ih_h_1		FLbutton	"h", 1, 0, 3, 		20, 20, 100, 620+$tabsYoffset, 		0, 5, 0, 1, 0, 1
@@ -241,13 +260,17 @@ FLsetVal_i	 	1, gihoutput4
 ;****************************************************
 	FLgroup	"Config",500,700,0,0+$tabsYoffset,0
 ; delay time - hit reset to activate
+
 ;ihdelinitsize 	FLvalue 	" ", 100,50,330,100
 ;gkmaxdel,ihmaxdel	FLslider	"Max Delay Time - hit reset to activate", 1, 100, 0 ,5, ihdelinitsize, 300,15, 20, 100
+
 gkpedalinst, ihpedalinst	FLcount 	"Sus Pedal = Tap Tempo instrument", 1, 4, 1, 3, 0, 	200, 50, 20, 100, -1
 gksliderinst, ihsliderinst	FLcount 	"Slider = Tap Point instrument", 0, 4, 1, 3, 0, 	200, 50, 250, 100, -1
+
 ; min tap slider
 ; sus pedal - tap tempo for which track
 ; slider - tap point for which track
+
 ihdelsize  	FLvalue 	"Min Delay Time",25, 25,330,200
 gkmintap,ihmintap	FLslider	"Min Delay Time (secs)", 0.000001, 1, 0 ,5, ihdelsize, 300,15, 20, 200
 gkfileflag,ihgkfileflag		FLbutton	"File Output", 1, 0,2, 		300, 50, 20, 250,	 		0, 5, 0, 1, 0, 1
@@ -256,8 +279,10 @@ gkfilestop,ihgkfilestop		FLbutton	"Stop Guide Track", 1, 0, 1, 		100, 50, 200, 3
 gkmiditap,ihgkmiditap		FLbutton	"Midi Tempo Tap off", 1, 0, 2, 	100, 50, 20, 450,	 		0, 5, 0, 1, 0, 1
 ihfilter	  			FLvalue 	" ",				50, 50,330,500
 gkfilter,ihgkfilter			FLslider	"lopass filter for krate signals", .01, 1, 0 ,5, ihfilter, 300,50, 20, 500
+
 ; reset button - reinit
 gkresetbutton2,ihresetbutton2	FLbutton	"RESET", 1, 0, 1, 		100, 100, 0, 550+$tabsYoffset,  		0, 12, 0, 1, 1
+
 FLsetVal_i	 	1, ihmintap
 FLsetVal_i	 	1, ihpedalinst
 FLsetVal_i	 	1, ihsliderinst
@@ -268,10 +293,7 @@ FLsetVal_i	 	2500, ihgkfilter
 	FLrun		;***** runs the widget thread, it is always required!
 
 
-
-
-
-
+/*
 	instr 3	;midi messages
 ;
 ;	get midi message
@@ -302,32 +324,33 @@ if	gksliderinst = 4 kgoto track4pedal
 kgoto done
 track1pedal:
 ;printks	"track1pedal - gkrate = %f\\n",1,gkrate
-gkrate_in1 = gkrate
-FLsetVal	1, gkrate_in1, gihtap1
+gkrate_in_1 = gkrate
+FLsetVal	1, gkrate_in_1, gihtap1
 gkrate = 0
 kgoto done
 track2pedal:
 ;printks	"track2pedal\\n",1
-gkrate_in2 = gkrate
-FLsetVal	1, gkrate_in2, gihtap2
+gkrate_in_2 = gkrate
+FLsetVal	1, gkrate_in_2, gihtap2
 gkrate = 0
 kgoto done
 track3pedal:
 ;printks	"track3pedal\\n",1
-gkrate_in3 = gkrate
-FLsetVal	1, gkrate_in3, gihtap3
+gkrate_in_3 = gkrate
+FLsetVal	1, gkrate_in_3, gihtap3
 gkrate = 0
 kgoto done
 track4pedal:
 ;printks	"track4pedal\\n",1
-gkrate_in4 = gkrate
-FLsetVal	1, gkrate_in4, gihtap4
+gkrate_in_4 = gkrate
+FLsetVal	1, gkrate_in_4, gihtap4
 gkrate = 0
 kgoto done
 checkkeys:
 done:
 
 	endin
+*/
 
 	instr 5	;button handler
 igotcalled = 0
@@ -338,54 +361,60 @@ iset = p5
 if p4 != 1212 kgoto end
 gkguidefilestopflag 	linseg	1, .1, 1, .001, 0, p3-.101, 0
 end:
-
 	endin
 
 	instr 6	;track 1
-;printks	"track 1 called\\n", 3600
-;
-;	if delay flag == 0, no delay :)
-;
+icrossinstr = 101
+
 ainputsig = 0
 
-if	gkloop1 = 0 kgoto noread
+if	gkloop_1 = 0 kgoto noread
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
 ainputsig 		inch kchan
-ainputsig = ainputsig * gkinput1
+ainputsig = ainputsig * gkinput_1
 noread:
-;
-;	click filter
-;
-gkrate1	portk gkrate_in1, .0001
-;
-;	if sus pedal is not pressed, no repeat
-;
-;if	gkpedalval = 0	kgoto noadd
-;
-;	repeat and hold - scale repeat with gkregen
-;
-asig = ainputsig +  (garegensig1_1 * gkregen1)
-kgoto done
-noadd:
-asig = ainputsig
-;printk 	.25,gkrate
-;
-;	this binds the lower range of gkrate to gkmintap
-;
-if	gkrate1 > gkmintap 	kgoto done
-gkrate1 = gkmintap
-done:
-aout vdelay	asig, gkrate1*1000, gidelsize*1000
+
+if (gkcrossfade_before_1 == 0) then
+    gkcrossfade_before_1 = gkrate_in_1
+    gkcrossfade_after_1 = gkrate_in_1
+endif
+
+
+asig = ainputsig +  (garegensig1_1 * gkregen_1)
+
+if  (gkcrossfade_before_1 != gkrate_in_1) then
+    if (gkchange_1 = 0) then
+        gkcrossfade_after_1 = gkrate_in_1
+        gkchange_1 = 1
+        gafadein_1 = 0
+        gafadeout_1 = 1
+        event "i", icrossinstr, 0, gicrossfadetime
+    endif
+
+    if  (k(gafadein_1) >= 1.0) then
+        gkchange_1 = 0
+        gafadein_1 = 1
+        gafadeout_1 = 0
+        gkcrossfade_before_1 = gkcrossfade_after_1
+    endif
+endif
+
+aout_total   delayr     gidelsize
+aoutnew   deltapi     gkcrossfade_after_1
+aoutold   deltapi     gkcrossfade_before_1
+delayw      asig
+aout = (aoutnew * gafadein_1) + (aoutold * gafadeout_1)
+
 ;
 ;	send out to regensig's for optional addition if sus pedal is pressed
 ;
 garegensig1_1 = aout
 readquery:
-if 	gkloopread1 = 0	kgoto off
-read:
+if 	gkloopread_1 = 0	kgoto off
 
-out	aout*gkoutput1
+read:
+out	aout*gkoutput_1
 gaout1_1 = aout
 kgoto out
 off:
@@ -395,171 +424,202 @@ out:
 
 	endin
 
+
 	instr 7	;track 2
-;printks	"track 2 called\\n", 3600
-;
-;	if delay flag == 0, no delay :)
-;
+icrossinstr = 102
+
 ainputsig = 0
-if	gkloop2 = 0 kgoto noread
+
+if	gkloop_2 = 0 kgoto noread
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
 ainputsig 		inch kchan
-ainputsig = ainputsig * gkinput2
+ainputsig = ainputsig * gkinput_2
 noread:
-;
-;	click filter
-;
-gkrate2	portk gkrate_in2, .0001
-;
-;	if sus pedal is not pressed, no repeat
-;
-;if	gkpedalval = 0	kgoto noadd
-;
-;	repeat and hold - scale repeat with gkregen
-;
-asig = ainputsig +  (garegensig1_2 * gkregen2)
-kgoto done
-noadd:
-asig = ainputsig
-;printk 	.25,gkrate
-;
-;	this binds the lower range of gkrate to gkmintap
-;
-if	gkrate2 > gkmintap 	kgoto done
-gkrate2 = gkmintap
-done:
-aout vdelay	asig, gkrate2*1000, gidelsize*1000
+
+if (gkcrossfade_before_2 == 0) then
+    gkcrossfade_before_2 = gkrate_in_2
+    gkcrossfade_after_2 = gkrate_in_2
+endif
+
+
+asig = ainputsig +  (garegensig1_2 * gkregen_2)
+
+if  (gkcrossfade_before_2 != gkrate_in_2) then
+    if (gkchange_2 = 0) then
+        gkcrossfade_after_2 = gkrate_in_2
+        gkchange_2 = 1
+        gafadein_2 = 0
+        gafadeout_2 = 1
+        event "i", icrossinstr, 0, gicrossfadetime
+    endif
+
+    if  (k(gafadein_2) >= 1.0) then
+        gkchange_2 = 0
+        gafadein_2 = 1
+        gafadeout_2 = 0
+        gkcrossfade_before_2 = gkcrossfade_after_2
+    endif
+endif
+
+aout_total   delayr     gidelsize
+aoutnew   deltapi     gkcrossfade_after_2
+aoutold   deltapi     gkcrossfade_before_2
+delayw      asig
+aout = (aoutnew * gafadein_2) + (aoutold * gafadeout_2)
+
 ;
 ;	send out to regensig's for optional addition if sus pedal is pressed
 ;
 garegensig1_2 = aout
 readquery:
-if 	gkloopread2 = 0	kgoto off
+if 	gkloopread_2 = 0	kgoto off
+
 read:
-out	aout*gkoutput2
+out	aout*gkoutput_2
 gaout1_2 = aout
 kgoto out
 off:
-gaout1_2 = 0
 ;turnoffk	gkturnoff
+gaout1_2 = 0
 out:
 
 	endin
 
+
+
 	instr 8	;track 3
-;printks	"track 3 called\\n", 3600
-;gkrate3	tonek	gkrate3, gkfilter
-;
-;	if delay flag == 0, no delay :)
-;
+icrossinstr = 103
+
 ainputsig = 0
-if	gkloop3 = 0 kgoto noread
+
+if	gkloop_3 = 0 kgoto noread
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
 ainputsig 		inch kchan
-ainputsig = ainputsig * gkinput3
+ainputsig = ainputsig * gkinput_3
 noread:
-;
-;	click filter
-;
-gkrate3	portk gkrate_in3, .0001
-;
-;	if sus pedal is not pressed, no repeat
-;
-;if	gkpedalval = 0	kgoto noadd
-;
-;	repeat and hold - scale repeat with gkregen
-;
-asig = ainputsig +  (garegensig1_3 * gkregen3)
-kgoto done
-noadd:
-asig = ainputsig
-;printk 	.25,gkrate
-;
-;	this binds the lower range of gkrate to gkmintap
-;
-if	gkrate3 > gkmintap 	kgoto done
-gkrate3 = gkmintap
-done:
-aout vdelay	asig, gkrate3*1000, gidelsize*1000
+
+if (gkcrossfade_before_3 == 0) then
+    gkcrossfade_before_3 = gkrate_in_3
+    gkcrossfade_after_3 = gkrate_in_3
+endif
+
+
+asig = ainputsig +  (garegensig1_3 * gkregen_3)
+
+if  (gkcrossfade_before_3 != gkrate_in_3) then
+    if (gkchange_3 = 0) then
+        gkcrossfade_after_3 = gkrate_in_3
+        gkchange_3 = 1
+        gafadein_3 = 0
+        gafadeout_3 = 1
+        event "i", icrossinstr, 0, gicrossfadetime
+    endif
+
+    if  (k(gafadein_3) >= 1.0) then
+        gkchange_3 = 0
+        gafadein_3 = 1
+        gafadeout_3 = 0
+        gkcrossfade_before_3 = gkcrossfade_after_3
+    endif
+endif
+
+aout_total   delayr     gidelsize
+aoutnew   deltapi     gkcrossfade_after_3
+aoutold   deltapi     gkcrossfade_before_3
+delayw      asig
+aout = (aoutnew * gafadein_3) + (aoutold * gafadeout_3)
+
 ;
 ;	send out to regensig's for optional addition if sus pedal is pressed
 ;
 garegensig1_3 = aout
 readquery:
-if 	gkloopread3 = 0	kgoto off
+if 	gkloopread_3 = 0	kgoto off
+
 read:
-out	aout*gkoutput3
+out	aout*gkoutput_3
 gaout1_3 = aout
 kgoto out
 off:
-gaout1_3 = 0
 ;turnoffk	gkturnoff
+gaout1_3 = 0
 out:
 
 	endin
 
+
 	instr 9	;track 4
-;printks	"track 4 called\\n", 3600
-;gkrate4	tonek	gkrate4, gkfilter
-;
-;	if delay flag == 0, no delay :)
-;
+icrossinstr = 104
+
 ainputsig = 0
-if	gkloop4 = 0 kgoto noread
+
+if	gkloop_4 = 0 kgoto noread
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
 ainputsig 		inch kchan
-ainputsig = ainputsig * gkinput4
+ainputsig = ainputsig * gkinput_4
 noread:
-;
-;	click filter
-;
-gkrate4	portk gkrate_in4, .0001
-;
-;	if sus pedal is not pressed, no repeat
-;
-;if	gkpedalval = 0	kgoto noadd
-;
-;	repeat and hold - scale repeat with gkregen
-;
-asig = ainputsig + (garegensig1_4 * gkregen4)
-kgoto done
-noadd:
-asig = ainputsig
-;printk 	.25,gkrate
-;
-;	this binds the lower range of gkrate to gkmintap
-;
-if	gkrate4 > gkmintap 	kgoto done
-gkrate4 = gkmintap
-done:
-aout vdelay	asig, gkrate4*1000, gidelsize*1000
-aout = ainputsig+aout
+
+if (gkcrossfade_before_4 == 0) then
+    gkcrossfade_before_4 = gkrate_in_4
+    gkcrossfade_after_4 = gkrate_in_4
+endif
+
+
+asig = ainputsig +  (garegensig1_4 * gkregen_4)
+
+if  (gkcrossfade_before_4 != gkrate_in_4) then
+    if (gkchange_4 = 0) then
+        gkcrossfade_after_4 = gkrate_in_4
+        gkchange_4 = 1
+        gafadein_4 = 0
+        gafadeout_4 = 1
+        event "i", icrossinstr, 0, gicrossfadetime
+    endif
+
+    if  (k(gafadein_4) >= 1.0) then
+        gkchange_4 = 0
+        gafadein_4 = 1
+        gafadeout_4 = 0
+        gkcrossfade_before_4 = gkcrossfade_after_4
+    endif
+endif
+
+aout_total   delayr     gidelsize
+aoutnew   deltapi     gkcrossfade_after_4
+aoutold   deltapi     gkcrossfade_before_4
+delayw      asig
+aout = (aoutnew * gafadein_4) + (aoutold * gafadeout_4)
+
 ;
 ;	send out to regensig's for optional addition if sus pedal is pressed
 ;
 garegensig1_4 = aout
 readquery:
-if 	gkloopread4 = 0	kgoto off
+if 	gkloopread_4 = 0	kgoto off
+
 read:
-out	aout*gkoutput4
+out	aout*gkoutput_4
 gaout1_4 = aout
 kgoto out
 off:
-gaout1_4 = 0
 ;turnoffk	gkturnoff
+gaout1_4 = 0
 out:
 
 	endin
+
+
+
 
 	instr 14	;file output
 if	gkfileflag = 0 	kgoto done
 
 ainputsig = 0
 ;ainputsig2 = 0
-;if	gkloop1 = 0 kgoto noread
+;if	gkloop_1 = 0 kgoto noread
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
 
@@ -584,8 +644,8 @@ itempo = i(gk_tempo_1)
 idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
 if idur == 0 kgoto done
 inewlength = (60/itempo) * idur
-gkrate1 = gk_mult_1*inewlength
-FLsetVal	1, gkrate1, gihtap1
+krate1 = gk_mult_1*inewlength
+FLsetVal	1, krate1, gihtap1
 done:
 
 	endin
@@ -600,8 +660,8 @@ itempo = i(gk_tempo_2)
 idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
 if idur == 0 kgoto done
 inewlength = (60/itempo) * idur
-gkrate2 = gk_mult_2*inewlength
-FLsetVal	1, gkrate2, gihtap2
+krate2 = gk_mult_2*inewlength
+FLsetVal	1, krate2, gihtap2
 done:
 
 	endin
@@ -616,8 +676,8 @@ itempo = i(gk_tempo_3)
 idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
 if idur == 0 kgoto done
 inewlength = (60/itempo) * idur
-gkrate3 = gk_mult_3*inewlength
-FLsetVal	1, gkrate3, gihtap3
+krate3 = gk_mult_3*inewlength
+FLsetVal	1, krate3, gihtap3
 done:
 
 	endin
@@ -633,323 +693,12 @@ itempo = i(gk_tempo_4)
 idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
 if idur == 0 kgoto done
 inewlength = (60/itempo) * idur
-gkrate4 = gk_mult_4*inewlength
-FLsetVal	1, gkrate4, gihtap4
+krate4 = gk_mult_4*inewlength
+FLsetVal	1, krate4, gihtap4
 done:
 
 	endin
 
-	instr 19	;track 5
-;printks	"track 1 called\\n", 3600
-gkrate1	tonek	gkrate1, gkfilter
-;
-;	if delay flag == 0, no delay :)
-;
-ainputsig = 0
-ainputsig2 = 0
-;if	gkloop1 = 0 kgoto noread
-kchan = $IOBaseChannel
-kchanout = $IOBaseChannel
-ainputsig 		inch kchan
-ainputsig2 	inch kchan+1
-ainputsig = ainputsig * gkinput1
-ainputsig2 = ainputsig2 * gkinput1
-noread:
-;
-;	todo: click filter should go here
-;
-;
-;	if sus pedal is not pressed, no repeat
-;
-;if	gkpedalval = 0	kgoto noadd
-;
-;	repeat and hold - scale repeat with gkregen
-;
-asig = ainputsig +  (garegensig1_1 * gkregen1)
-asig2 = ainputsig2 +  (garegensig2_1 * gkregen1)
-kgoto done
-noadd:
-asig = ainputsig
-asig2 = ainputsig2
-;printk 	.25,gkrate
-;
-;	this binds the lower range of gkrate to gkmintap
-;
-if	gkrate1 > gkmintap 	kgoto done
-gkrate1 = gkmintap
-done:
-aout vdelay	asig, gkrate1*1000, gidelsize*1000
-aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
-;
-;	send out to regensig's for optional addition if sus pedal is pressed
-;
-garegensig1_1 = aout
-garegensig2_1 = aout2
-readquery:
-;if 	gkloopread1 = 0	kgoto off
-read:
-outch	kchanout, aout*gkoutput1
-outch	kchanout+1, aout2*gkoutput1
-gaout1_1 = aout
-gaout2_1 = aout2
-kgoto out
-off:
-;turnoffk	gkturnoff
-gaout1_1 = 0
-gaout2_1 = 0
-out:
-
-	endin
-
-	instr 20	;track 6
-;printks	"track 1 called\\n", 3600
-gkrate1	tonek	gkrate1, gkfilter
-;
-;	if delay flag == 0, no delay :)
-;
-ainputsig = 0
-ainputsig2 = 0
-;if	gkloop1 = 0 kgoto noread
-kchan = $IOBaseChannel
-kchanout = $IOBaseChannel
-ainputsig 		inch kchan
-ainputsig2 	inch kchan+1
-ainputsig = ainputsig * gkinput1
-ainputsig2 = ainputsig2 * gkinput1
-noread:
-;
-;	todo: click filter should go here
-;
-;
-;	if sus pedal is not pressed, no repeat
-;
-;if	gkpedalval = 0	kgoto noadd
-;
-;	repeat and hold - scale repeat with gkregen
-;
-asig = ainputsig +  (garegensig1_1 * gkregen1)
-asig2 = ainputsig2 +  (garegensig2_1 * gkregen1)
-kgoto done
-noadd:
-asig = ainputsig
-asig2 = ainputsig2
-;printk 	.25,gkrate
-;
-;	this binds the lower range of gkrate to gkmintap
-;
-if	gkrate1 > gkmintap 	kgoto done
-gkrate1 = gkmintap
-done:
-aout vdelay	asig, gkrate1*1000, gidelsize*1000
-aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
-;
-;	send out to regensig's for optional addition if sus pedal is pressed
-;
-garegensig1_1 = aout
-garegensig2_1 = aout2
-readquery:
-;if 	gkloopread1 = 0	kgoto off
-read:
-outch	kchanout, aout*gkoutput1
-outch	kchanout+1, aout2*gkoutput1
-gaout1_1 = aout
-gaout2_1 = aout2
-kgoto out
-off:
-;turnoffk	gkturnoff
-gaout1_1 = 0
-gaout2_1 = 0
-out:
-
-	endin
-
-	instr 21	;track 7
-;printks	"track 1 called\\n", 3600
-gkrate1	tonek	gkrate1, gkfilter
-;
-;	if delay flag == 0, no delay :)
-;
-ainputsig = 0
-ainputsig2 = 0
-;if	gkloop1 = 0 kgoto noread
-kchan = $IOBaseChannel
-kchanout = $IOBaseChannel
-ainputsig 		inch kchan
-ainputsig2 	inch kchan+1
-ainputsig = ainputsig * gkinput1
-ainputsig2 = ainputsig2 * gkinput1
-noread:
-;
-;	todo: click filter should go here
-;
-;
-;	if sus pedal is not pressed, no repeat
-;
-;if	gkpedalval = 0	kgoto noadd
-;
-;	repeat and hold - scale repeat with gkregen
-;
-asig = ainputsig +  (garegensig1_1 * gkregen1)
-asig2 = ainputsig2 +  (garegensig2_1 * gkregen1)
-kgoto done
-noadd:
-asig = ainputsig
-asig2 = ainputsig2
-;printk 	.25,gkrate
-;
-;	this binds the lower range of gkrate to gkmintap
-;
-if	gkrate1 > gkmintap 	kgoto done
-gkrate1 = gkmintap
-done:
-aout vdelay	asig, gkrate1*1000, gidelsize*1000
-aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
-;
-;	send out to regensig's for optional addition if sus pedal is pressed
-;
-garegensig1_1 = aout
-garegensig2_1 = aout2
-readquery:
-;if 	gkloopread1 = 0	kgoto off
-read:
-outch	kchanout, aout*gkoutput1
-outch	kchanout+1, aout2*gkoutput1
-gaout1_1 = aout
-gaout2_1 = aout2
-kgoto out
-off:
-;turnoffk	gkturnoff
-gaout1_1 = 0
-gaout2_1 = 0
-out:
-
-	endin
-
-	instr 22	;track 8
-;printks	"track 1 called\\n", 3600
-gkrate1	tonek	gkrate1, gkfilter
-;
-;	if delay flag == 0, no delay :)
-;
-ainputsig = 0
-ainputsig2 = 0
-;if	gkloop1 = 0 kgoto noread
-kchan = $IOBaseChannel
-kchanout = $IOBaseChannel
-ainputsig 		inch kchan
-ainputsig2 	inch kchan+1
-ainputsig = ainputsig * gkinput1
-ainputsig2 = ainputsig2 * gkinput1
-noread:
-;
-;	todo: click filter should go here
-;
-;
-;	if sus pedal is not pressed, no repeat
-;
-;if	gkpedalval = 0	kgoto noadd
-;
-;	repeat and hold - scale repeat with gkregen
-;
-asig = ainputsig +  (garegensig1_1 * gkregen1)
-asig2 = ainputsig2 +  (garegensig2_1 * gkregen1)
-kgoto done
-noadd:
-asig = ainputsig
-asig2 = ainputsig2
-;printk 	.25,gkrate
-;
-;	this binds the lower range of gkrate to gkmintap
-;
-if	gkrate1 > gkmintap 	kgoto done
-gkrate1 = gkmintap
-done:
-aout vdelay	asig, gkrate1*1000, gidelsize*1000
-aout2 vdelay	asig2, gkrate1*1000, gidelsize*1000
-;
-;	send out to regensig's for optional addition if sus pedal is pressed
-;
-garegensig1_1 = aout
-garegensig2_1 = aout2
-readquery:
-;if 	gkloopread1 = 0	kgoto off
-read:
-outch	kchanout, aout*gkoutput1
-outch	kchanout+1, aout2*gkoutput1
-gaout1_1 = aout
-gaout2_1 = aout2
-kgoto out
-off:
-;turnoffk	gkturnoff
-gaout1_1 = 0
-gaout2_1 = 0
-out:
-
-	endin
-
-	instr 23	;update tempo 5
-iwhole = i(gk_w_1)
-ihalf = i(gk_h_1)
-iquarter = i(gk_q_1)
-ieighth = i(gk_e_1)
-isixteenth = i(gk_s_1)
-itempo = i(gk_tempo_1)
-idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
-if idur == 0 kgoto done
-inewlength = (60/itempo) * idur
-gkrate1 = gk_mult_1*inewlength
-FLsetVal	1, gkrate1, gihtap1
-done:
-
-	endin
-
-	instr 24	;update tempo 6
-iwhole = i(gk_w_1)
-ihalf = i(gk_h_1)
-iquarter = i(gk_q_1)
-ieighth = i(gk_e_1)
-isixteenth = i(gk_s_1)
-itempo = i(gk_tempo_1)
-idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
-if idur == 0 kgoto done
-inewlength = (60/itempo) * idur
-gkrate1 = gk_mult_1*inewlength
-FLsetVal	1, gkrate1, gihtap1
-done:
-
-	endin
-
-	instr 25	;update tempo 7
-iwhole = i(gk_w_1)
-ihalf = i(gk_h_1)
-iquarter = i(gk_q_1)
-ieighth = i(gk_e_1)
-isixteenth = i(gk_s_1)
-itempo = i(gk_tempo_1)
-idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
-if idur == 0 kgoto done
-inewlength = (60/itempo) * idur
-gkrate1 = gk_mult_1*inewlength
-FLsetVal	1, gkrate1, gihtap1
-done:
-
-	endin
-
-	instr 26	;update tempo 8
-iwhole = i(gk_w_1)
-ihalf = i(gk_h_1)
-iquarter = i(gk_q_1)
-ieighth = i(gk_e_1)
-isixteenth = i(gk_s_1)
-itempo = i(gk_tempo_1)
-idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth * .25)
-if idur == 0 kgoto done
-inewlength = (60/itempo) * idur
-gkrate1 = gk_mult_1*inewlength
-FLsetVal	1, gkrate1, gihtap1
-done:
-
-	endin
 
 	instr 27	;update tempo 1 button
 if	gkcomptime1 > 0 	kgoto compare
@@ -959,8 +708,8 @@ kgoto done
 compare:
 if	gk_update_tap_1 == 1 kgoto done
 ktemptime times
-gkrate1 = ktemptime - gkcomptime1
-FLsetVal	1, gkrate1, gihtap1
+krate1 = ktemptime - gkcomptime1
+FLsetVal	1, krate1, gihtap1
 gkcomptime1 = 0
 kgoto done
 done:
@@ -975,8 +724,8 @@ kgoto done
 compare:
 if	gk_update_tap_2 == 1 kgoto done
 ktemptime times
-gkrate2 = ktemptime - gkcomptime2
-FLsetVal	1, gkrate2, gihtap2
+krate2 = ktemptime - gkcomptime2
+FLsetVal	1, krate2, gihtap2
 gkcomptime2 = 0
 kgoto done
 done:
@@ -991,8 +740,8 @@ kgoto done
 compare:
 if	gk_update_tap_3 == 1 kgoto done
 ktemptime times
-gkrate3 = ktemptime - gkcomptime3
-FLsetVal	1, gkrate3, gihtap3
+krate3 = ktemptime - gkcomptime3
+FLsetVal	1, krate3, gihtap3
 gkcomptime3 = 0
 kgoto done
 done:
@@ -1007,183 +756,25 @@ kgoto done
 compare:
 if	gk_update_tap_4 == 1 kgoto done
 ktemptime times
-gkrate4 = ktemptime - gkcomptime4
-FLsetVal	1, gkrate4, gihtap4
+krate4 = ktemptime - gkcomptime4
+FLsetVal	1, krate4, gihtap4
 gkcomptime4 = 0
 kgoto done
 done:
-
-	endin
-
-	instr 31	;bcontrol midi switchboard
-kstatus, kchan, kdata1, kdata2 midiin
-;
-; cc msgs from b-control
-;
-;if	kstatus != 176 kgoto end
-inputknobs:
-if	kdata1 != 1 kgoto knob2
-gkinput1 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkinput1, gihinput1
-knob2:
-if	kdata1 != 2 kgoto knob3
-gkinput2 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkinput2, gihinput2
-knob3:
-if	kdata1 != 3 kgoto knob4
-gkinput3 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkinput3, gihinput3
-knob4:
-if	kdata1 != 4 kgoto outputknobs
-gkinput4 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkinput4, gihinput4
-
-outputknobs:
-outknob1:
-if	kdata1 != 81 kgoto outknob2
-gkoutput1 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkoutput1, gihoutput1
-outknob2:
-if	kdata1 != 82 kgoto outknob3
-gkoutput2 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkoutput2, gihoutput2
-outknob3:
-if	kdata1 != 83 kgoto outknob4
-gkoutput3 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkoutput3, gihoutput3
-outknob4:
-if	kdata1 != 84 kgoto delaytimeknobs
-gkoutput4 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkoutput4, gihoutput4
-
-delaytimeknobs:
-delaytimeknob1:
-if	kdata1 != 89 kgoto delaytimeknob2
-gkrate1 = (kdata2 * 0.00787401574) * gkmaxdel
-FLsetVal  1, gkrate1, gihtap1
-delaytimeknob2:
-if	kdata1 != 90 kgoto delaytimeknob3
-gkrate2 = (kdata2 * 0.00787401574) * gkmaxdel
-FLsetVal  1, gkrate2, gihtap2
-delaytimeknob3:
-if	kdata1 != 91 kgoto delaytimeknob4
-gkrate3 = (kdata2 * 0.00787401574) * gkmaxdel
-FLsetVal  1, gkrate3, gihtap3
-delaytimeknob4:
-if	kdata1 != 92 kgoto regenknobs
-gkrate4 = (kdata2 * 0.00787401574) * gkmaxdel
-FLsetVal  1, gkrate4, gihtap4
-
-
-regenknobs:
-regenknob1:
-if	kdata1 != 97 kgoto regenknob2
-gkregen1 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkregen1, gihregknob1
-regenknob2:
-if	kdata1 != 98 kgoto regenknob3
-gkregen2 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkregen2, gihregknob2
-regenknob3:
-if	kdata1 != 99 kgoto regenknob4
-gkregen3 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkregen3, gihregknob3
-regenknob4:
-if	kdata1 != 100 kgoto inputbuttons
-gkregen4 = (kdata2 * 0.00787401574)
-FLsetVal  1, gkregen4, gihregknob4
-
-inputbuttons:
-inputbutton1:
-if	kdata1 != 65 kgoto inputbutton2
-event "i",32,.001,.01,1
-if kdata2 != 0 kgoto inputnext1
-gkloop1 = 0
-inputnext1:
-if kdata2 != 127 kgoto inputbutton2
-gkloop1 = 1
-
-inputbutton2:
-if	kdata1 != 66 kgoto inputbutton3
-event "i",32,.001,.01,1
-if kdata2 != 0 kgoto inputnext2
-gkloop2 = 0
-inputnext2:
-if kdata2 != 127 kgoto inputbutton3
-gkloop2 = 1
-
-inputbutton3:
-if	kdata1 != 67 kgoto inputbutton4
-event "i",32,.001,.01,1
-if kdata2 != 0 kgoto inputnext3
-gkloop3 = 0
-inputnext3:
-if kdata2 != 127 kgoto inputbutton4
-gkloop3 = 1
-
-inputbutton4:
-if	kdata1 != 68 kgoto inputbutton5
-event "i",32,.001,.01,1
-if kdata2 != 0 kgoto inputnext4
-gkloop4 = 0
-inputnext4:
-if kdata2 != 127 kgoto inputbutton5
-gkloop4 = 1
-
-inputbutton5:
-if	kdata1 != 73 kgoto inputbutton6
-event "i",32,.001,.01,1
-if kdata2 != 0 kgoto inputnext5
-gkloopread1 = 0
-inputnext5:
-if kdata2 != 127 kgoto inputbutton6
-gkloopread1 = 1
-
-inputbutton6:
-if	kdata1 != 74 kgoto inputbutton7
-event "i",32,.001,.01,1
-if kdata2 != 0 kgoto inputnext6
-gkloopread2 = 0
-inputnext6:
-if kdata2 != 127 kgoto inputbutton7
-gkloopread2 = 1
-
-inputbutton7:
-if	kdata1 != 75 kgoto inputbutton8
-event "i",32,.001,.01,1
-if kdata2 != 0 kgoto inputnext7
-gkloopread3 = 0
-inputnext7:
-if kdata2 != 127 kgoto inputbutton8
-gkloopread3 = 1
-
-
-inputbutton8:
-if	kdata1 != 76 kgoto end
-event "i",32,.001,.01,1
-if kdata2 != 0 kgoto inputnext8
-gkloopread4 = 0
-inputnext8:
-if kdata2 != 127 kgoto end
-gkloopread4 = 1
-end:
-
-
-
 	endin
 
 	instr 32	;button switcher
 ;printks	"button handler got called\\n", 1
 
 
-i1 = i(gkloop1)
-i2 = i(gkloop2)
-i3 = i(gkloop3)
-i4 = i(gkloop4)
-i5 = i(gkloopread1)
-i6 = i(gkloopread2)
-i7 = i(gkloopread3)
-i8 = i(gkloopread4)
+i1 = i(gkloop_1)
+i2 = i(gkloop_2)
+i3 = i(gkloop_3)
+i4 = i(gkloop_4)
+i5 = i(gkloopread_1)
+i6 = i(gkloopread_2)
+i7 = i(gkloopread_3)
+i8 = i(gkloopread_4)
 iset = p4
 FLsetVal_i i1, gihbut1
 FLsetVal_i i2, gihbut2
@@ -1195,6 +786,27 @@ FLsetVal_i i7, gihbutread3
 FLsetVal_i i8, gihbutread4
 
 	endin
+
+
+    instr 101
+gafadein_1   linseg    0, p3, 1.01
+gafadeout_1   linseg    1.0, p3, 0
+    endin
+
+    instr 102
+gafadein_2   linseg    0, p3, 1.01
+gafadeout_2   linseg    1.0, p3, 0
+    endin
+
+    instr 103
+gafadein_3   linseg    0, p3, 1.01
+gafadeout_3   linseg    1.0, p3, 0
+    endin
+
+    instr 104
+gafadein_4   linseg    0, p3, 1.01
+gafadeout_4   linseg    1.0, p3, 0
+    endin
 
 
 </CsInstruments>
