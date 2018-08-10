@@ -137,7 +137,7 @@ gkoutput_1,gihoutput1		FLtext	" ", 0, 1, .05, 1,        80, 20, 110, 185+$tabsYo
 gkloop_1,gihbut1		FLbutton	" ", 1, 0, 3, 		20, 20, 190, 135+$tabsYoffset, 		0, 5, 0, 1, 0, 1
 gkloopread_1,gihbutread1	FLbutton	" ", 1, 0, 3, 		20, 20, 190, 185+$tabsYoffset, 		0, 5, 0, 1, 0, 1
 gihrate1			FLvalue 	" ",			80, 25, 110, 425+$tabsYoffset
-gkrate_in_1,gihtap1		FLslider	" ", 0, gidelsize, 0 ,2, gihrate1, 20,200, 140, 220+$tabsYoffset
+gkrate_in_1_temp,gihtap1		FLslider	" ", 0, gidelsize, 0 ,2, gihrate1, 20,200, 140, 220+$tabsYoffset
 gihregen1			FLvalue 	" ",			80, 25, 110, 525+$tabsYoffset
 gkregen_1, gihregknob1	FLknob  	" ", 0.001, 1, 0, 1, gihregen1, 80, 110, 450+$tabsYoffset
 gkinput_2,gihinput2		FLtext	" ", 0, 1, .05, 1,        80, 20, 210, 135+$tabsYoffset
@@ -375,28 +375,49 @@ ainputsig 		inch kchan
 ainputsig = ainputsig * gkinput_1
 noread:
 
-if (gkcrossfade_before_1 == 0) then
-    gkcrossfade_before_1 = gkrate_in_1
-    gkcrossfade_after_1 = gkrate_in_1
-endif
+;if (gkcrossfade_before_1 = 0) then
+;    gkcrossfade_before_1 = gkrate_in_1
+;    gkcrossfade_after_1 = gkrate_in_1
+;endif
 
 
 asig = ainputsig +  (garegensig1_1 * gkregen_1)
 
-if  (gkcrossfade_before_1 != gkrate_in_1) then
-    if (gkchange_1 = 0) then
-        gkcrossfade_after_1 = gkrate_in_1
+
+;printk .1, gkchange_1
+
+kactive active k(icrossinstr)
+
+printk .01, kactive
+
+;if kactive > 0 then
+;	printks "setting", .01
+;	FLsetVal	1, gkcrossfade_after_1, gihtap1
+;	gkrate_in_1 = gkcrossfade_after_1
+;endif
+
+; so - you're basically trying to get the thing to ignore the ui when change is 
+; in progress, but it ain't workin so far...
+if  gkcrossfade_before_1 != gkrate_in_1_temp && kactive == 0 then
+	printks "checking....", .001
+    if (gkchange_1 == 0) then
+        gkcrossfade_after_1 = gkrate_in_1_temp
         gkchange_1 = 1
         gafadein_1 = 0
-        gafadeout_1 = 1
+        gafadeout_1 = 1.0
         event "i", icrossinstr, 0, gicrossfadetime
     endif
 
-    if  (k(gafadein_1) >= 1.0) then
+    ; this is why we line -> 1.01, remember:
+	if (gkchange_1 == 1) then
         gkchange_1 = 0
-        gafadein_1 = 1
+        gafadein_1 = 1.0
         gafadeout_1 = 0
         gkcrossfade_before_1 = gkcrossfade_after_1
+
+    	FLsetVal	1, gkcrossfade_before_1, gihtap1
+
+        ; try sending to an 'done state instr' and be done in .05 seconds... 
     endif
 endif
 
@@ -570,7 +591,9 @@ endif
 
 asig = ainputsig +  (garegensig1_4 * gkregen_4)
 
-if  (gkcrossfade_before_4 != gkrate_in_4) then
+
+
+if (gkcrossfade_before_4 != gkrate_in_4) then
     if (gkchange_4 = 0) then
         gkcrossfade_after_4 = gkrate_in_4
         gkchange_4 = 1
@@ -645,7 +668,7 @@ idur = (iwhole * 4) + (ihalf * 2) + (iquarter *1) + (ieighth * .5) + (isixteenth
 if idur == 0 kgoto done
 inewlength = (60/itempo) * idur
 krate1 = gk_mult_1*inewlength
-FLsetVal	1, krate1, gihtap1
+;FLsetVal	1, krate1, gihtap1
 done:
 
 	endin
@@ -709,7 +732,7 @@ compare:
 if	gk_update_tap_1 == 1 kgoto done
 ktemptime times
 krate1 = ktemptime - gkcomptime1
-FLsetVal	1, krate1, gihtap1
+;FLsetVal	1, krate1, gihtap1
 gkcomptime1 = 0
 kgoto done
 done:
@@ -789,8 +812,8 @@ FLsetVal_i i8, gihbutread4
 
 
     instr 101
-gafadein_1   linseg    0, p3, 1.01
-gafadeout_1   linseg    1.0, p3, 0
+gafadein_1   linseg    0, p3, 1.0
+gafadeout_1   linseg   1.0, p3, 0
     endin
 
     instr 102
