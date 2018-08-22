@@ -23,8 +23,21 @@ nchnls = 2
 garegensig1 init 0
 garegensig2 init 0
 
+
+gicrossfadetime init .01
+
+gkcrossfade_before init 0
+gkcrossfade_after init 0
+gafadein init 0
+gafadeout init 1
+gkchange init 0
+
+gkrate_in_temp init 0
+
 instr 1
 kdelaytime chnget "delaytime"
+gkrate_in_temp = kdelaytime
+
 kregen chnget "regen"
 kinputon chnget "inputon"
 koutputon chnget "outputon"
@@ -40,24 +53,66 @@ chnset kdelaytime, "delaytime"
 printks	"%d\\n", 10, kdelaytime
 no_lock:
 
+icrossinstr = 101
+
 
 ainputsig1 = 0
 ainputsig2 = 0
 if kinputon = 1 kgoto noread
 ainputsig1,ainputsig2  		inch 1,2
 
-adelaytime interp kdelaytime
+;adelaytime interp kdelaytime
 ;kdelaytime portk kdelaytime, kq
 ;adelaytime tone adelaytime, kcf
 
 noread:
 asig1 = ainputsig1 +  (garegensig1 * kregen)
 asig2 = ainputsig2 +  (garegensig2 * kregen)
+
+kactive active k(icrossinstr)
+;printk .01, kactive
+
 kgoto done
 noadd:
 done:
-aout1 vdelayx	asig1, adelaytime, 32, 1024
-aout2 vdelayx	asig2, adelaytime, 32, 1024
+if  gkcrossfade_before != gkrate_in_temp && kactive == 0 then
+	printks "checking....", .001
+    if (gkchange == 0) then
+        gkcrossfade_after = gkrate_in_temp
+        gkchange = 1
+        gafadein = 0
+        gafadeout = 1.0
+        event "i", icrossinstr, 0, gicrossfadetime
+    endif
+
+    ; this is why we line -> 1.01, remember:
+	if (gkchange == 1) then
+        gkchange = 0
+        gafadein = 1.0
+        gafadeout = 0
+        gkcrossfade_before = gkcrossfade_after
+
+        ; try sending to an 'done state instr' and be done in .05 seconds...
+    endif
+endif
+
+
+;aout1 vdelayx	asig1, adelaytime, 32, 1024
+;aout2 vdelayx	asig2, adelaytime, 32, 1024
+
+aout_total   delayr     24
+aoutnew1   deltapi     gkcrossfade_after
+aoutold1   deltapi     gkcrossfade_before
+delayw      asig1
+aout1 = (aoutnew1 * gafadein) + (aoutold1 * gafadeout)
+
+aout_total   delayr     24
+aoutnew2   deltapi     gkcrossfade_after
+aoutold2   deltapi     gkcrossfade_before
+delayw      asig2
+aout2 = (aoutnew2 * gafadein) + (aoutold2 * gafadeout)
+
+
 garegensig1 = aout1
 garegensig2 = aout2
 if 	koutputon = 1	kgoto off
@@ -66,24 +121,16 @@ outs	aout1,aout2
 off:
 endin
 
-instr 2
 
-kreinit chnget "reinit"
-
-if kreinit != 1 kgoto send
-kgoto done
-send:
-;send message
-chnset 1, "reinit"
-done:
-
-endin
+    instr 101
+gafadein   linseg    0, p3, 1.0
+gafadeout   linseg   1.0, p3, 0
+    endin
 
 
-</CsInstruments>  
+</CsInstruments>
 <CsScore>
 f1 0 4096 10 1
 i1 0 1000
-i2 0 1000
 </CsScore>
 </CsoundSynthesizer>
