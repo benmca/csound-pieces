@@ -53,16 +53,16 @@ endin
 instr 99
 klin 	linseg  p4, p3, p4
 kamp	linseg	1, p3, 1
-a1	reverb2	ga1, klin, 1
-a2	reverb2	ga2, klin, 1
+a1	reverb2	ga1, klin, 0
+a2	reverb2	ga2, klin, 0
 	outs	a1*kamp,a2*kamp
 ga1=0
 ga2=0
 
-fout "track1.wav", -1, gatrack1
-fout "track2.wav", -1, gatrack2
-fout "track3.wav", -1, gatrack3
-fout "track4.wav", -1, gatrack4
+;fout "track1.wav", -1, gatrack1
+;fout "track2.wav", -1, gatrack2
+;fout "track3.wav", -1, gatrack3
+;fout "track4.wav", -1, gatrack4
 
 gatrack1 = 0
 gatrack2 = 0

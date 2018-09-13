@@ -29,13 +29,13 @@ def post_process(note, context):
 
 g = Generator(
     streams=OrderedDict([
-        (keys.instrument, Itemstream([1])),
+        (keys.instrument, 1),
         (keys.duration, lambda note:note.pfields['orig_rhythm']),
-        (keys.amplitude, Itemstream([3])),
-        (keys.frequency, Itemstream([1], notetype='number')),
-        (keys.pan, Itemstream([45])),
-        (keys.distance, Itemstream([10])),
-        (keys.percent, Itemstream([.01]))
+        (keys.amplitude, 3),
+        (keys.frequency, 1),
+        (keys.pan, 45),
+        (keys.distance, 10),
+        (keys.percent, .1)
     ]),
     pfields=[
         keys.instrument,
@@ -56,9 +56,9 @@ g = Generator(
 
 def gen_rhythms(gen, l, opt=1):
     if opt == 1:
-        rhystrings = sum([['q'], ['s'] * 5, ['e'], ['e.'], ['h']], [])
+        rhystrings = ('q ' + 's '*5 + 'e e. h').split()
     else:
-        rhystrings = sum([['32'], ['s'] * 4, ['e'] * 4, ['e.'], ['h']], [])
+        rhystrings = ('32 ' + 's '*4 + 'e '*4+'e. h').split()
     gen.context['rhythms'] = []
     gen.context['indexes'] = []
     for x in range(l):
@@ -101,8 +101,6 @@ g.gen_lines = [';sine\n',
                'f 3 0 256 7 1 128 1 0 -1 128 -1\n']
 g.streams[keys.amplitude] = Itemstream([.5])
 g.generate_notes()
-
-
 
 g.end_lines = ['i99 0 ' + str(g.score_dur+10) + '\n']
 

@@ -3,21 +3,26 @@ from thuja.itemstream import Itemstream
 from thuja.generator import Generator
 from thuja.generator import keys
 from thuja.itemstream import streammodes
-from thuja.itemstream import notetypes
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 from collections import OrderedDict
-import numpy as np
-import csnd6
 import copy
 import random
-import dill
-import pickle
 import time
 
 
 seed = int(time.time())
-seed = 1528952907
+#voivod machine
+# seed = 1536186904
+
+#digipines
+# seed = 1536186845
+# 1536186994
+#break in the pines:
+#1536187056
+
+
+# seed = 1528952907
 random.seed(seed)
 filelen = 60
 tempo = 240
@@ -52,14 +57,14 @@ def post_process(note, context):
 
 g = Generator(
     streams=OrderedDict([
-        (keys.instrument, Itemstream([1])),
+        (keys.instrument, 1),
         (keys.duration, lambda note:note.pfields['orig_rhythm']),
-        (keys.amplitude, Itemstream([3])),
-        (keys.frequency, Itemstream(['a', 'a',  'c', 'c', 'd', 'd', 'd'])),
-        (keys.pan, Itemstream([45])),
-        (keys.distance, Itemstream([10])),
-        (keys.percent, Itemstream([.01])),
-        ('output_prefix', Itemstream([1]))
+        (keys.amplitude, 3),
+        (keys.frequency, Itemstream('a a c c d d d')),
+        (keys.pan, 45),
+        (keys.distance, 10),
+        (keys.percent, .01),
+        ('output_prefix', 1)
     ]),
     pfields=[
         keys.instrument,
@@ -82,16 +87,15 @@ g = Generator(
 
 def gen_rhythms(gen, l, opt=1):
     if opt == 1:
-        rhystrings = sum([['q'],['s']*5, ['e'], ['e.'], ['h']], [])
+        rhystrings = ('q ' + 's ' * 5 + 'e e. h').split()
     else:
-        rhystrings = sum([['32'], ['s']*4, ['e']*4, ['e.'], ['h']], [])
+        rhystrings = ('32 ' + 's ' * 4 + 'e ' * 4 + 'e. h').split()
     gen.context['rhythms'] = []
     gen.context['indexes'] = []
     for x in range(l):
         gen.context['rhythms'].append(rhystrings[random.randint(0, len(rhystrings)-1)])
         gen.context['indexes'].append(random.random()*filelen)
         gen.context['orig_rhythms'] = gen.context['rhythms']
-
 
 gen_rhythms(g, 30)
 g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],

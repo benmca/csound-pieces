@@ -16,8 +16,8 @@ import pickle
 import time
 
 
-# seed = int(time.time())
-seed = 1531254620
+seed = int(time.time())
+# seed = 1535157965
 random.seed(seed)
 filelen = 60
 tempo = 60
@@ -37,17 +37,17 @@ pitches_to_files = {
     'gs': 'gs.wav'
 }
 
-def post_process(note, context):
+def cleanup_strings(note, context):
+    note.pfields['inst_file'] = '"' + '/Users/ben/Music/Portfolio/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
+
+def parse_rhythms_from_tuplestream(note, context):
     item = context['tuplestream'].get_next_value()
     indx = context['indexes'].index(item[keys.index])
     orig_rhythm = context['orig_rhythms'][indx]
     note.rhythm = utils.rhythm_to_duration(item[keys.rhythm], context['tuplestream'].tempo)
     note.pfields[keys.index] = item[keys.index]
     note.pfields['orig_rhythm'] = utils.rhythm_to_duration(orig_rhythm, context['tuplestream'].tempo)
-    # note.pfields[keys.frequency] = context['tuplestream'].tempo / utils.quarter_duration_to_tempo(.697-.018)
-    note.pfields['inst_file'] = '"' + '/Users/ben/Music/Portfolio/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
-    # note.pfields[keys.frequency] = 1
-    pass
 
 
 g = Generator(
@@ -60,7 +60,7 @@ g = Generator(
         (keys.distance, Itemstream([10])),
         (keys.percent, Itemstream([.01])),
         ('output_prefix', Itemstream([1])),
-        ('filepitch', Itemstream(['a', 'a', 'c', 'c', 'd', 'd'])),
+        ('filepitch', Itemstream(['b'])),
         ('stretch', Itemstream(['1'])),
     ]),
     pfields=[
@@ -78,7 +78,7 @@ g = Generator(
         'output_prefix'
     ],
     note_limit=300,
-    post_processes=[post_process]
+    post_processes=[parse_rhythms_from_tuplestream,cleanup_strings]
 )
 
 
@@ -88,7 +88,7 @@ def gen_rhythms(gen, l, opt=1):
     if opt == 2:
         rhystrings = sum(['e q q q q e e e e e e e e e e e'.split()], [])
     else:
-        rhystrings = sum([['32'], ['s']*4, ['e']*4, ['e.'], ['h']], [])
+        rhystrings = sum([['32']*8, ['s']*4, ['e']*4, ['e.']*2, ['h']], [])
     gen.context['rhythms'] = []
     gen.context['indexes'] = []
     for x in range(l):
@@ -97,7 +97,7 @@ def gen_rhythms(gen, l, opt=1):
         gen.context['orig_rhythms'] = gen.context['rhythms']
 
 
-gen_rhythms(g, 6*4, 2)
+gen_rhythms(g, 6*4, 0)
 g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[g.context['rhythms'],
                                                      g.context['indexes']],
@@ -130,7 +130,7 @@ metronome.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.in
                                                      metronome.context['indexes']],
                                       tempo=tempo,
                                       seed=seed)
-g.add_generator(metronome)
+# g.add_generator(metronome)
 g.generate_notes()
 
 

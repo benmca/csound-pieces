@@ -12,22 +12,26 @@ import copy
 import random
 
 # random.seed(12)
-random.seed(11)
+# random.seed(11)
 
 filelen = 35
 tempo = 120
 
 pitches_to_files = {
-    'a':'a.wav',
     'a': 'a.wav',
-    'a': 'a.wav',
-    'a': 'a.wav',
-    'a': 'a.wav',
-    'a': 'a.wav',
-    'a': 'a.wav',
-    'a': 'a.wav',
-    'a': 'a.wav'
+    'as': 'as.wav',
+    'b': 'b.wav',
+    'c': 'c.wav',
+    'cs': 'cs.wav',
+    'd': 'd.wav',
+    'ds': 'ds.wav',
+    'e': 'e.wav',
+    'f': 'f.wav',
+    'fs': 'fs.wav',
+    'g': 'g.wav',
+    'gs': 'gs.wav'
 }
+
 
 # filelen = 162
 def post_process(note, context):
@@ -122,5 +126,5 @@ g.generate_notes()
 
 g.end_lines = ['i99 0 ' + str(g.score_dur+10) + '\n']
 
-# print(g.generate_score_string())
+print(g.generate_score_string())
 cs_utils.play_csound("generic-index.orc", g)

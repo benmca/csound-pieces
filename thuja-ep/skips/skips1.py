@@ -49,7 +49,7 @@ g.generate_notes()
 
 g.end_lines = ['i99 0 ' + str(g.score_dur+10) + '\n']
 
-with open ("/Users/benmca/src/thuja/pieces/sine.orc", "r") as f:
+with open ("../generative/sine.orc", "r") as f:
     orc_string=f.read()
 score_string = g.generate_score_string()
 cs = csnd6.Csound()
