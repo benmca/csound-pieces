@@ -92,7 +92,7 @@ def post_process(note, context):
     note.pfields[keys.index] = item[keys.index]
     note.pfields['orig_rhythm'] = utils.rhythm_to_duration(orig_rhythm, context['tuplestream'].tempo)
     # note.pfields[keys.frequency] = context['tuplestream'].tempo / utils.quarter_duration_to_tempo(.697-.018)
-    note.pfields['inst_file'] = '"' + '/Users/ben/Music/Portfolio/_gtrs/' + note.pfields[keys.frequency] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/ben/Music/Portfolio/snd/_gtrs/' + note.pfields[keys.frequency] + '.wav' + '"'
     note.pfields[keys.frequency] = 1
     pass
 
@@ -196,5 +196,6 @@ opening_l.end_lines = ['i99 0 ' + str(opening_l.score_dur+10) + ' 10\n']
 
 print(opening_l.generate_score_string())
 
-cs_utils.play_csound("generic-index.orc", opening_l, silent=True, args_list=['-o/Users/ben/Music/thuja-ep/index-study-2.wav', '-W'])
+# cs_utils.play_csound("generic-index.orc", opening_l, silent=True, args_list=['-o/Users/ben/Music/Portfolio/_csound/index-study-2.wav', '-W'])
+cs_utils.play_csound("generic-index.orc", opening_l, silent=True)
 

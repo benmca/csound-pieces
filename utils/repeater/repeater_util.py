@@ -45,6 +45,6 @@ g.generate_notes()
 g.end_lines = ['i99 0 ' + str(g.score_dur) + '\n']
 
 if args.outpath:
-    cs_utils.play_csound('repeater.orc', g, '-W -output='+args.outpath, string_values={'path_to_file':args.path})
+    cs_utils.play_csound('repeater.orc', g, args_list=['-W', '-o'+args.outpath], string_values={'path_to_file':args.path})
 else:
     cs_utils.play_csound('repeater.orc', g, string_values={'path_to_file': args.path})

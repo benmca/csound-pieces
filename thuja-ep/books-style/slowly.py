@@ -38,7 +38,7 @@ pitches_to_files = {
 }
 
 def cleanup_strings(note, context):
-    note.pfields['inst_file'] = '"' + '/Users/ben/Music/Portfolio/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/ben/Music/Portfolio/snd/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
 
 def parse_rhythms_from_tuplestream(note, context):

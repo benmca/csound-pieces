@@ -38,7 +38,7 @@ pitches_to_files = {
 
 
 def cleanup_strings(note, context):
-    note.pfields['inst_file'] = '"' + '/Users/ben/Music/Portfolio/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/ben/Music/Portfolio/_snd/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
 
 
@@ -185,4 +185,4 @@ pulse_l.end_lines = ['i99 0 ' + str(pulse_l.score_dur+10) + ' 5\n']
 print(pulse_l.generate_score_string())
 
 
-cs_utils.play_csound("generic-index.orc", pulse_l, silent=True, args_list=['-o/Users/ben/Music/thuja-ep/index-study-1.wav', '-W'])
+cs_utils.play_csound("generic-index.orc", pulse_l, silent=True, args_list=['-o/Users/ben/Music/Portfolio/_csound/index-study-1.wav', '-W'])
