@@ -15,7 +15,7 @@ import time
 
 
 seed = int(time.time())
-# seed = 1535157965
+seed = 1541470791
 random.seed(seed)
 filelen = 60
 tempo = 60
@@ -48,6 +48,11 @@ def parse_rhythms_from_tuplestream(note, context):
     note.pfields['orig_rhythm'] = utils.rhythm_to_duration(orig_rhythm, context['tuplestream'].tempo)
 
 
+def break_into_phrases(note, context):
+    note.pfields[keys.instrument] = note.pfields[keys.instrument]+.1
+    pass
+
+
 g = Generator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
@@ -58,7 +63,7 @@ g = Generator(
         (keys.distance, Itemstream([10])),
         (keys.percent, Itemstream([.01])),
         ('output_prefix', Itemstream([1])),
-        ('filepitch', Itemstream(['b'])),
+        ('filepitch', Itemstream(('b '*8 + 'ds '*8 + 'fs '*8).split())),
         ('stretch', Itemstream(['1'])),
     ]),
     pfields=[
@@ -76,7 +81,7 @@ g = Generator(
         'output_prefix'
     ],
     note_limit=300,
-    post_processes=[parse_rhythms_from_tuplestream,cleanup_strings]
+    post_processes=[parse_rhythms_from_tuplestream,cleanup_strings,break_into_phrases]
 )
 
 
@@ -95,7 +100,7 @@ def gen_rhythms(gen, l, opt=1):
         gen.context['orig_rhythms'] = gen.context['rhythms']
 
 
-gen_rhythms(g, 6*4, 0)
+gen_rhythms(g, 6*4, 1)
 g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[g.context['rhythms'],
                                                      g.context['indexes']],
@@ -144,3 +149,9 @@ print("g.context['indexes'] =", x.context['indexes'])
 print(x.context['tuplestream'].seed)
 
 cs_utils.play_csound("generic-index.orc", g, silent=True)
+
+# lilsten to the repeatign ds here -
+#        ('filepitch', Itemstream(('b '*8 + 'ds '*8 + 'fs '*8).split())),
+# g.context['rhythms'] = ['s', '32', '32', '32', '32', 'e', 'e.', '32', 'e', '32', 's', '32', 'h', 'e', 'e', 'e.', '32', '32', 'h', '32', '32', '32', '32', 's']
+# g.context['indexes'] = [41.09457734479521, 34.83612735669396, 4.125806261845879, 25.552187160672982, 19.26888478368347, 16.35334493262544, 3.6357973817001277, 53.13542471591472, 5.310456402096904, 5.833999653433175, 48.24784082534548, 26.98857063919712, 27.817313953211936, 10.920874533169657, 37.5951115787286, 4.581076584030113, 17.75646735953427, 20.95225347612351, 22.192846820178094, 17.535204288692963, 26.01652709020115, 31.78940154832977, 34.71990602843929, 7.868712245874406]
+# 1541470791
