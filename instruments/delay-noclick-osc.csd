@@ -116,16 +116,7 @@ ainputsig = ainputsig * gkinput_1
 
 noread:
 
-;if (gkcrossfade_before_1 = 0) then
-;    gkcrossfade_before_1 = gkrate_in_1
-;    gkcrossfade_after_1 = gkrate_in_1
-;endif
-
-
 asig = ainputsig +  (garegensig1_1 * gkregen_1)
-
-
-;printk .1, gkchange_1
 
 kactive active k(icrossinstr)
 ;if kactive > 0 then
