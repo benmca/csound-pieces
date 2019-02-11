@@ -14,12 +14,15 @@
   instr   1
     kf1 init 0
     kf2 init 0
-nxtmsg:
-    kk  OSClisten gihandle, "", "ff", kf1, kf2
+;nxtmsg:
+    printks "checking...", .1
+;    kk  OSClisten gihandle, "/ping", "ff", kf1, kf2
+    kk  OSClisten gihandle, "/1/faderA", "f", kf1
 if (kk == 0) goto ex
+    printks "got it\n", .1
     printk 0,kf1
-    printk 0,kf2
-    kgoto nxtmsg
+;    printk 0,kf2
+;    kgoto nxtmsg
 ex:
   endin
         

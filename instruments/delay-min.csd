@@ -15,6 +15,8 @@ kr=44100
 ;ksmps=1
 nchnls=1
 
+#define	totalDelayLineTime	#32#
+#define	IOBaseChannel	#1#
 
 gkmaxdel	init $totalDelayLineTime
 gidelsize init i(gkmaxdel)
@@ -76,10 +78,13 @@ garegensig1_4 init 0
 ;temp values
 ;
 gkmintap init .1
-gkloop_1 init 0
 gkloopread_1 init 0
 
 
+
+;min globals
+gkinput_1 init 0
+gkloop_1 init 0
 
 	instr 1	;track 1
 icrossinstr = 101
@@ -176,21 +181,7 @@ f4	0	513	20	6
 f6   0   8192   -20   8   1
 
 
-;i1 0 3600
-;midi in on instr 3
-;i3 0 3600
-i4 0 3600
-i6 0 3600
-i7 0 3600
-i8 0 3600
-i9 0 3600
-i14 0 3600
-
-;midi switchbd i31
-;i31 0 3600
-i32 0 3600
-
-
+i1 0 3600
 
 
 
