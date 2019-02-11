@@ -129,7 +129,7 @@ asig = ainputsig +  (garegensig1_1 * gkregen_1)
 
 kactive active k(icrossinstr)
 ;if kactive > 0 then
-printk .1, kactive
+;printk .1, kactive
 ;	printks "setting\n", .01
 ;	FLsetVal	1, gkcrossfade_after_1, gihtap1
 ;	gkrate_in_1 = gkcrossfade_after_1
