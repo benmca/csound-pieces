@@ -34,36 +34,11 @@ gidelsize init i(gkmaxdel)
 gimin 	init 	.001
 gicrossfadetime init .05
 
-gkcrossfade_before_1 init 0
-gkcrossfade_after_1 init 0
 gafadein_1 init 0
 gafadeout_1 init 1
-gkchange_1 init 0
-
-gasig	init 0
-gaout1	init 0
-gaout2	init 0
-gaout1_1	init 0
-
-
-
-
-
-gkinput_1 init 1	; input volume
-gkoutput_1 init 1	; output volume
-
-gkloop_1 init 1 	; input on/off
-gkloopread_1 init 1 	; output on/off
-
-garegensig1_1 init 0	; regenerated signal - added to delay output * regen setting 
-gkregen_1 init 0 	; regenerated signal scalar (see garegensig1_1)
-
-
-gkrate_in_1_temp init 0	; delay point in line - update w/osc 
-
-gkcomptime1 init 0 ; used in tap tempo
 
 gihandle OSCinit 8000
+
 
 
 
@@ -74,6 +49,25 @@ icrossinstr = 101
 ainputsig = 0
 kstarted = 0
 
+kcrossfade_before init 0
+kcrossfade_after init 0
+kcrossfade_in_progress init 0
+
+aout	init 0
+
+kinput_volume init 1	; input volume
+koutput_volume init 1	; output volume
+
+kinput_on_off init 1 	; input on/off
+koutput_on_off init 1 	; output on/off
+
+aregenerated_signal init 0	; regenerated signal - added to delay output * regen setting 
+kregeneration_scalar init 0 	; regenerated signal scalar (see aregenerated_signal)
+
+kdelay_tap_point init 0	; delay point in line - update w/osc 
+ktap_tempo_comp_time init 0 ; used in tap tempo
+
+
 kosc_delaytime init 0
 kosc_regentime init 0
 kosc_input_on init 0
@@ -83,12 +77,12 @@ kosc_outvolume init 0
 kosc_push1val init 0
 
 if kstarted == 0 then
-OSCsend 1, "10.0.0.180", 9000, "/1/fader1", "f", (gkrate_in_1_temp / (gkmaxdel - gimin)) + gimin
-OSCsend 1, "10.0.0.180", 9000, "/1/rotary1", "f", gkregen_1
-OSCsend 1, "10.0.0.180", 9000, "/1/toggle1", "f", gkloop_1
-OSCsend 1, "10.0.0.180", 9000, "/1/toggle2", "f", gkloopread_1
-OSCsend 1, "10.0.0.180", 9000, "/1/rotary2", "f", gkinput_1
-OSCsend 1, "10.0.0.180", 9000, "/1/rotary3", "f", gkoutput_1
+OSCsend 1, "10.0.0.180", 9000, "/1/fader1", "f", (kdelay_tap_point / (gkmaxdel - gimin)) + gimin
+OSCsend 1, "10.0.0.180", 9000, "/1/rotary1", "f", kregeneration_scalar
+OSCsend 1, "10.0.0.180", 9000, "/1/toggle1", "f", kinput_on_off
+OSCsend 1, "10.0.0.180", 9000, "/1/toggle2", "f", koutput_on_off
+OSCsend 1, "10.0.0.180", 9000, "/1/rotary2", "f", kinput_volume
+OSCsend 1, "10.0.0.180", 9000, "/1/rotary3", "f", koutput_volume
 kstarted = 1
 endif
 
@@ -96,106 +90,106 @@ osc_1:
 k1  OSClisten gihandle, "/1/fader1", "f", kosc_delaytime
 if (k1 == 0) goto osc_2
 	printks "kosc_delaytime: %f \n", .001, kosc_delaytime
-gkrate_in_1_temp = (kosc_delaytime * (gkmaxdel - gimin)) + gimin
+kdelay_tap_point = (kosc_delaytime * (gkmaxdel - gimin)) + gimin
 kgoto osc_1
 osc_2:
 k2  OSClisten gihandle, "/1/rotary1", "f", kosc_regentime
 if (k2 == 0) goto osc_3
 	printks "kosc_regentime: %f \n", .001, kosc_regentime
-gkregen_1 = kosc_regentime
+kregeneration_scalar = kosc_regentime
 kgoto osc_2
 osc_3:
 k3  OSClisten gihandle, "/1/toggle1", "f", kosc_input_on
 if (k3 == 0) goto osc_4
 	printks "kosc_input_on: %f \n", .001, kosc_input_on
-gkloop_1 = kosc_input_on
+kinput_on_off = kosc_input_on
 kgoto osc_3
 osc_4:
 k4  OSClisten gihandle, "/1/toggle2", "f", kosc_output_on
 if (k4 == 0) goto osc_5
 	printks "kosc_output_on: %f \n", .001, kosc_output_on
-gkloopread_1 = kosc_output_on
+koutput_on_off = kosc_output_on
 kgoto osc_4
 osc_5:
 k5  OSClisten gihandle, "/1/rotary2", "f", kosc_involume
 if (k5 == 0) goto osc_6
 	printks "kosc_involume: %f \n", .001, kosc_involume
-gkinput_1 = kosc_involume
+kinput_volume = kosc_involume
 kgoto osc_5
 osc_6:
 k6  OSClisten gihandle, "/1/rotary3", "f", kosc_outvolume
 if (k6 == 0) goto osc_7
 	printks "kosc_outvolume: %f \n", .001, kosc_outvolume
-gkoutput_1 = kosc_outvolume
+koutput_volume = kosc_outvolume
 kgoto osc_6
 osc_7:
 k7  OSClisten gihandle, "/1/push1", "f", kosc_push1val
 if (k7 == 0) goto osc_done
 	if (kosc_push1val == 1.0) then
 		printks "tap recvd: %f \n", .001, kosc_push1val
-if	gkcomptime1 > 0 	kgoto tap_tempo_compare
+if	ktap_tempo_comp_time > 0 	kgoto tap_tempo_compare
 ;if	gk_update_tap_1 == 0 kgoto done
-gkcomptime1 times
-		printks "gkcomptime: %f \n", .1, gkcomptime1
+ktap_tempo_comp_time times
+		printks "gkcomptime: %f \n", .1, ktap_tempo_comp_time
 kgoto tap_tempo_done
 tap_tempo_compare:
 ;if	gk_update_tap_1 == 1 kgoto done
 ktemptime times
-krate1 = ktemptime - gkcomptime1
+krate1 = ktemptime - ktap_tempo_comp_time
 ;FLsetVal	1, krate1, gihtap1
 		printks "krate: %f \n", .1, krate1
 		printks "gidelsize: %f \n", .1, gidelsize
 OSCsend (krate1 / gidelsize), "10.0.0.180", 9000, "/1/fader1", "f", (krate1 / gidelsize)
 		printks "fader set to : %f \n", .1, (krate1 / gidelsize)
-gkrate_in_1_temp = krate1
+kdelay_tap_point = krate1
 
-gkcomptime1 = 0
+ktap_tempo_comp_time = 0
 ;kgoto tap_tempo_done
 tap_tempo_done:
 	endif
 
 osc_done:
 
-if	gkloop_1 = 0 kgoto noread
+if	kinput_on_off = 0 kgoto noread
 
 
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
 
 ainputsig 		inch kchan
-ainputsig = ainputsig * gkinput_1
+ainputsig = ainputsig * kinput_volume
 
 noread:
 
-asig = ainputsig +  (garegensig1_1 * gkregen_1)
+asig = ainputsig +  (aregenerated_signal * kregeneration_scalar)
 
 kactive active k(icrossinstr)
 ;if kactive > 0 then
 ;printk .1, kactive
 ;	printks "setting\n", .01
-;	FLsetVal	1, gkcrossfade_after_1, gihtap1
-;	gkrate_in_1 = gkcrossfade_after_1
+;	FLsetVal	1, kcrossfade_after, gihtap1
+;	gkrate_in_1 = kcrossfade_after
 ;endif
 
 ; so - you're basically trying to get the thing to ignore the ui when change is 
 ; in progress, but it ain't workin so far...
-if  ((gkcrossfade_before_1 != gkrate_in_1_temp && kactive == 0.0) || kactive > 0) then
+if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) then
 	printks "checking....", .01
-	if (gkchange_1 == 1 && kactive == 0.0) then
+	if (kcrossfade_in_progress == 1 && kactive == 0.0) then
 		printks "event is ended\n", .01
-        gkchange_1 = 0
+        kcrossfade_in_progress = 0
         gafadein_1 = 1.0
         gafadeout_1 = 0
-        gkcrossfade_before_1 = gkcrossfade_after_1
-		;OSCsend 1, "10.0.0.180", 9000, "/1/fader1", "f", gkcrossfade_after_1 / gkmaxdel
-    elseif (gkchange_1 == 1 && kactive > 0) then
+        kcrossfade_before = kcrossfade_after
+		;OSCsend 1, "10.0.0.180", 9000, "/1/fader1", "f", kcrossfade_after / gkmaxdel
+    elseif (kcrossfade_in_progress == 1 && kactive > 0) then
 		printks "crossfading, keeping state....\n", .01
 		; don't update the tap time until we're done x-fading
-		;gkrate_in_1_temp = gkcrossfade_before_1
-    elseif (gkchange_1 == 0) then
+		;kdelay_tap_point = kcrossfade_before
+    elseif (kcrossfade_in_progress == 0) then
 		printks "starting event....\n", .01
-        gkcrossfade_after_1 = gkrate_in_1_temp
-        gkchange_1 = 1
+        kcrossfade_after = kdelay_tap_point
+        kcrossfade_in_progress = 1
         gafadein_1 = 0
         gafadeout_1 = 1.0
         event "i", icrossinstr, 0, gicrossfadetime
@@ -204,26 +198,26 @@ if  ((gkcrossfade_before_1 != gkrate_in_1_temp && kactive == 0.0) || kactive > 0
 endif
 
 aout_total  delayr     gidelsize
-aoutnew   	deltapi     gkcrossfade_after_1
-aoutold   	deltapi     gkcrossfade_before_1
+aoutnew   	deltapi     kcrossfade_after
+aoutold   	deltapi     kcrossfade_before
 			delayw      asig
 aout = (aoutnew * gafadein_1) + (aoutold * gafadeout_1)
 
-printks "gkcrossfade_before_1: %f, gkcrossfade_after_1: %f\n", 1, gkcrossfade_before_1, gkcrossfade_after_1
+printks "kcrossfade_before: %f, kcrossfade_after: %f\n", 1, kcrossfade_before, kcrossfade_after
 ;
 ;	send out to regensig's for optional addition if sus pedal is pressed
 ;
-garegensig1_1 = aout
+aregenerated_signal = aout
 readquery:
-if 	gkloopread_1 = 0	kgoto off
+if 	koutput_on_off = 0	kgoto off
 
 read:
-out	aout*gkoutput_1
-gaout1_1 = aout
+out	aout*koutput_volume
+aout = aout
 kgoto out
 off:
 ;turnoffk	gkturnoff
-gaout1_1 = 0
+aout = 0
 out:
 
 	endin
