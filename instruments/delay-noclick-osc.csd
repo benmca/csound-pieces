@@ -21,7 +21,7 @@ nchnls=1
 ;***********************************************************
 ;	THIS IS THE MAXIMUM DELAY TIME
 ;***********************************************************
-#define	totalDelayLineTime	#32#
+#define	totalDelayLineTime	#8#
 ;***********************************************************
 ;	THIS IS THE IO Base channel - stereo output 
 ;	goes in and out from IOBaseChannel and 
@@ -31,6 +31,7 @@ nchnls=1
 
 gkmaxdel	init $totalDelayLineTime
 gidelsize init i(gkmaxdel)
+gimin 	init 	.001
 gicrossfadetime init .05
 
 gkcrossfade_before_1 init 0
@@ -55,18 +56,23 @@ gkloop_1 init 1 	; input on/off
 gkloopread_1 init 1 	; output on/off
 
 garegensig1_1 init 0	; regenerated signal - added to delay output * regen setting 
-gkregen_1 init .8 	; regenerated signal scalar (see garegensig1_1)
+gkregen_1 init 0 	; regenerated signal scalar (see garegensig1_1)
 
 
-gkrate_in_1_temp init 1	; delay point in line - update w/osc 
+gkrate_in_1_temp init 0	; delay point in line - update w/osc 
 
+gkcomptime1 init 0 ; used in tap tempo
 
 gihandle OSCinit 8000
+
+
+
 
 	instr 1	;track 1
 icrossinstr = 101
 
 ainputsig = 0
+kstarted = 0
 
 kosc_delaytime init 0
 kosc_regentime init 0
@@ -74,39 +80,84 @@ kosc_input_on init 0
 kosc_output_on init 0
 kosc_involume init 0
 kosc_outvolume init 0
+kosc_push1val init 0
 
+if kstarted == 0 then
+OSCsend 1, "10.0.0.180", 9000, "/1/fader1", "f", (gkrate_in_1_temp / (gkmaxdel - gimin)) + gimin
+OSCsend 1, "10.0.0.180", 9000, "/1/rotary1", "f", gkregen_1
+OSCsend 1, "10.0.0.180", 9000, "/1/toggle1", "f", gkloop_1
+OSCsend 1, "10.0.0.180", 9000, "/1/toggle2", "f", gkloopread_1
+OSCsend 1, "10.0.0.180", 9000, "/1/rotary2", "f", gkinput_1
+OSCsend 1, "10.0.0.180", 9000, "/1/rotary3", "f", gkoutput_1
+kstarted = 1
+endif
+
+osc_1:
 k1  OSClisten gihandle, "/1/fader1", "f", kosc_delaytime
-k2  OSClisten gihandle, "/1/rotary1", "f", kosc_regentime
-k3  OSClisten gihandle, "/1/toggle1", "f", kosc_input_on
-k4  OSClisten gihandle, "/1/toggle2", "f", kosc_output_on
-k5  OSClisten gihandle, "/1/rotary2", "f", kosc_involume
-k6  OSClisten gihandle, "/1/rotary3", "f", kosc_outvolume
 if (k1 == 0) goto osc_2
-	printks "kosc_delaytime: %f \n", .1, kosc_delaytime
-gkrate_in_1_temp = kosc_delaytime * gkmaxdel
+	printks "kosc_delaytime: %f \n", .001, kosc_delaytime
+gkrate_in_1_temp = (kosc_delaytime * (gkmaxdel - gimin)) + gimin
+kgoto osc_1
 osc_2:
+k2  OSClisten gihandle, "/1/rotary1", "f", kosc_regentime
 if (k2 == 0) goto osc_3
-	printks "kosc_regentime: %f \n", .1, kosc_regentime
+	printks "kosc_regentime: %f \n", .001, kosc_regentime
 gkregen_1 = kosc_regentime
+kgoto osc_2
 osc_3:
+k3  OSClisten gihandle, "/1/toggle1", "f", kosc_input_on
 if (k3 == 0) goto osc_4
-	printks "kosc_input_on: %f \n", .1, kosc_input_on
+	printks "kosc_input_on: %f \n", .001, kosc_input_on
 gkloop_1 = kosc_input_on
+kgoto osc_3
 osc_4:
+k4  OSClisten gihandle, "/1/toggle2", "f", kosc_output_on
 if (k4 == 0) goto osc_5
-	printks "kosc_output_on: %f \n", .1, kosc_output_on
+	printks "kosc_output_on: %f \n", .001, kosc_output_on
 gkloopread_1 = kosc_output_on
+kgoto osc_4
 osc_5:
+k5  OSClisten gihandle, "/1/rotary2", "f", kosc_involume
 if (k5 == 0) goto osc_6
-	printks "kosc_involume: %f \n", .1, kosc_involume
+	printks "kosc_involume: %f \n", .001, kosc_involume
 gkinput_1 = kosc_involume
+kgoto osc_5
 osc_6:
-if (k6 == 0) goto osc_done
-	printks "kosc_outvolume: %f \n", .1, kosc_outvolume
+k6  OSClisten gihandle, "/1/rotary3", "f", kosc_outvolume
+if (k6 == 0) goto osc_7
+	printks "kosc_outvolume: %f \n", .001, kosc_outvolume
 gkoutput_1 = kosc_outvolume
+kgoto osc_6
+osc_7:
+k7  OSClisten gihandle, "/1/push1", "f", kosc_push1val
+if (k7 == 0) goto osc_done
+	if (kosc_push1val == 1.0) then
+		printks "tap recvd: %f \n", .001, kosc_push1val
+if	gkcomptime1 > 0 	kgoto tap_tempo_compare
+;if	gk_update_tap_1 == 0 kgoto done
+gkcomptime1 times
+		printks "gkcomptime: %f \n", .1, gkcomptime1
+kgoto tap_tempo_done
+tap_tempo_compare:
+;if	gk_update_tap_1 == 1 kgoto done
+ktemptime times
+krate1 = ktemptime - gkcomptime1
+;FLsetVal	1, krate1, gihtap1
+		printks "krate: %f \n", .1, krate1
+		printks "gidelsize: %f \n", .1, gidelsize
+OSCsend (krate1 / gidelsize), "10.0.0.180", 9000, "/1/fader1", "f", (krate1 / gidelsize)
+		printks "fader set to : %f \n", .1, (krate1 / gidelsize)
+gkrate_in_1_temp = krate1
+
+gkcomptime1 = 0
+;kgoto tap_tempo_done
+tap_tempo_done:
+	endif
+
 osc_done:
 
 if	gkloop_1 = 0 kgoto noread
+
 
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
@@ -136,6 +187,7 @@ if  ((gkcrossfade_before_1 != gkrate_in_1_temp && kactive == 0.0) || kactive > 0
         gafadein_1 = 1.0
         gafadeout_1 = 0
         gkcrossfade_before_1 = gkcrossfade_after_1
+		;OSCsend 1, "10.0.0.180", 9000, "/1/fader1", "f", gkcrossfade_after_1 / gkmaxdel
     elseif (gkchange_1 == 1 && kactive > 0) then
 		printks "crossfading, keeping state....\n", .01
 		; don't update the tap time until we're done x-fading
@@ -151,12 +203,13 @@ if  ((gkcrossfade_before_1 != gkrate_in_1_temp && kactive == 0.0) || kactive > 0
 
 endif
 
-aout_total   delayr     gidelsize
-aoutnew   deltapi     gkcrossfade_after_1
-aoutold   deltapi     gkcrossfade_before_1
-delayw      asig
+aout_total  delayr     gidelsize
+aoutnew   	deltapi     gkcrossfade_after_1
+aoutold   	deltapi     gkcrossfade_before_1
+			delayw      asig
 aout = (aoutnew * gafadein_1) + (aoutold * gafadeout_1)
 
+printks "gkcrossfade_before_1: %f, gkcrossfade_after_1: %f\n", 1, gkcrossfade_before_1, gkcrossfade_after_1
 ;
 ;	send out to regensig's for optional addition if sus pedal is pressed
 ;

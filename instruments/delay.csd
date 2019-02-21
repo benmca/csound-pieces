@@ -390,34 +390,26 @@ kactive active k(icrossinstr)
 
 printk .01, kactive
 
-;if kactive > 0 then
-;	printks "setting", .01
-;	FLsetVal	1, gkcrossfade_after_1, gihtap1
-;	gkrate_in_1 = gkcrossfade_after_1
-;endif
-
-; so - you're basically trying to get the thing to ignore the ui when change is 
-; in progress, but it ain't workin so far...
-if  gkcrossfade_before_1 != gkrate_in_1_temp && kactive == 0 then
-	printks "checking....", .001
-    if (gkchange_1 == 0) then
+if  ((gkcrossfade_before_1 != gkrate_in_1_temp && kactive == 0.0) || kactive > 0) then
+	printks "checking....", .01
+	if (gkchange_1 == 1 && kactive == 0.0) then
+		printks "event is ended\n", .01
+        gkchange_1 = 0
+        gafadein_1 = 1.0
+        gafadeout_1 = 0
+        gkcrossfade_before_1 = gkcrossfade_after_1
+		;OSCsend 1, "10.0.0.180", 9000, "/1/fader1", "f", gkcrossfade_after_1 / gkmaxdel
+    elseif (gkchange_1 == 1 && kactive > 0) then
+		printks "crossfading, keeping state....\n", .01
+		; don't update the tap time until we're done x-fading
+		;gkrate_in_1_temp = gkcrossfade_before_1
+    elseif (gkchange_1 == 0) then
+		printks "starting event....\n", .01
         gkcrossfade_after_1 = gkrate_in_1_temp
         gkchange_1 = 1
         gafadein_1 = 0
         gafadeout_1 = 1.0
         event "i", icrossinstr, 0, gicrossfadetime
-    endif
-
-    ; this is why we line -> 1.01, remember:
-	if (gkchange_1 == 1) then
-        gkchange_1 = 0
-        gafadein_1 = 1.0
-        gafadeout_1 = 0
-        gkcrossfade_before_1 = gkcrossfade_after_1
-
-    	FLsetVal	1, gkcrossfade_before_1, gihtap1
-
-        ; try sending to an 'done state instr' and be done in .05 seconds... 
     endif
 endif
 
