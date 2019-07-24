@@ -77,12 +77,12 @@ kosc_outvolume init 0
 kosc_push1val init 0
 
 if kstarted == 0 then
-OSCsend 1, "10.0.0.180", 9000, "/1/fader1", "f", (kdelay_tap_point / (gkmaxdel - gimin)) + gimin
-OSCsend 1, "10.0.0.180", 9000, "/1/rotary1", "f", kregeneration_scalar
-OSCsend 1, "10.0.0.180", 9000, "/1/toggle1", "f", kinput_on_off
-OSCsend 1, "10.0.0.180", 9000, "/1/toggle2", "f", koutput_on_off
-OSCsend 1, "10.0.0.180", 9000, "/1/rotary2", "f", kinput_volume
-OSCsend 1, "10.0.0.180", 9000, "/1/rotary3", "f", koutput_volume
+OSCsend 1, "10.10.0.135", 9000, "/1/fader1", "f", (kdelay_tap_point / (gkmaxdel - gimin)) + gimin
+OSCsend 1, "10.10.0.135", 9000, "/1/rotary1", "f", kregeneration_scalar
+OSCsend 1, "10.10.0.135", 9000, "/1/toggle1", "f", kinput_on_off
+OSCsend 1, "10.10.0.135", 9000, "/1/toggle2", "f", koutput_on_off
+OSCsend 1, "10.10.0.135", 9000, "/1/rotary2", "f", kinput_volume
+OSCsend 1, "10.10.0.135", 9000, "/1/rotary3", "f", koutput_volume
 kstarted = 1
 endif
 
@@ -150,7 +150,7 @@ tap_tempo_done:
 
 osc_done:
 
-if	kinput_on_off = 0 kgoto noread
+if	kinput_on_off == 0 kgoto noread
 
 
 kchan = $IOBaseChannel
@@ -201,7 +201,7 @@ printks "kcrossfade_before: %f, kcrossfade_after: %f\n", 1, kcrossfade_before, k
 ;
 aregenerated_signal = aout
 readquery:
-if 	koutput_on_off = 0	kgoto off
+if 	koutput_on_off == 0	kgoto off
 
 read:
 out	aout*koutput_volume
