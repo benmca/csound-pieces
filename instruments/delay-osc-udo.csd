@@ -172,13 +172,14 @@ out:
 	endop
 
 	instr 1	;track 1
-aout 	GlitchDelay		16, .001, .05, giosc_handle, 101, gafadein_101, gafadeout_101, "10.0.0.43", 
+; todo - factor out control signals from separate osc-routing instrument
+aout 	GlitchDelay		8, .001, .05, giosc_handle, 101, gafadein_101, gafadeout_101, "10.0.0.180", 
 						"/1/fader1", "/1/rotary1", "/1/toggle1", "/1/toggle2", "/1/rotary2", "/1/rotary3", "/1/push1"
 	out aout
 	endin
 
 	instr 2	;track 1
-aout 	GlitchDelay		16, .001, .05, giosc_handle, 102, gafadein_102, gafadeout_102, "10.0.0.43", 
+aout 	GlitchDelay		8, .001, .05, giosc_handle, 102, gafadein_102, gafadeout_102, "10.0.0.180", 
 						"/1/fader2", "/1/rotary4", "/1/toggle3", "/1/toggle4", "/1/rotary5", "/1/rotary6", "/1/push3"
 	out aout
 	endin
@@ -201,7 +202,7 @@ gafadeout_102   linseg   1.0, p3, 0.0
 
 <CsScore>
 i1 0 3600
-i2 0 3600
+;i2 0 3600
 e
 
 </CsScore>
