@@ -375,8 +375,6 @@ printks "kcrossfade_before: %f, kcrossfade_after: %f\n", 1, kcrossfade_before, k
 ;	send out to regensig's for optional addition if sus pedal is pressed
 ;
 aregenerated_signal = aout
-readquery:
-if 	koutput_on_off == 0	kgoto off
 
 read:
 out	aout*koutput_volume
