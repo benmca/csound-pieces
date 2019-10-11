@@ -5,10 +5,12 @@ kr=44100
 nchnls=1
 
 giosc_handle OSCinit 8000
-gafadein_101 init 0
-gafadeout_101 init 1
-gafadein_102 init 0
-gafadeout_102 init 1
+gafadein_101 init 1
+gafadeout_101 init 0
+gafadein_102 init 1
+gafadeout_102 init 0
+gSControllerIP init "10.10.0.135"
+
 
 	opcode GlitchDelay, a, iiiiiaaSSSSSSSS
 idelsize, imin_tap_point, icrossfadetime, ioschandle, icrossfade_instrument, afadein, afadeout, SControllerIP, 
@@ -129,8 +131,8 @@ if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) t
 	if (kcrossfade_in_progress == 1 && kactive == 0.0) then
 		printks "event is ended\n", .01
         kcrossfade_in_progress = 0
-        afadein = 1.0
-        afadeout = 0
+;        afadein = 1.0
+;        afadeout = 0
         kcrossfade_before = kcrossfade_after
 		;OSCsend 1, SControllerIP, 9000, STapPointCtrl, "f", kcrossfade_after / gkmaxdel
     elseif (kcrossfade_in_progress == 1 && kactive > 0) then
@@ -141,8 +143,8 @@ if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) t
 		printks "starting event....\n", .01
         kcrossfade_after = kdelay_tap_point
         kcrossfade_in_progress = 1
-        afadein = 0
-        afadeout = 1.0
+;        afadein = 0
+;        afadeout = 1.0
         event "i", icrossfade_instrument, 0, icrossfadetime
     endif
 
@@ -160,7 +162,7 @@ printks "kcrossfade_before: %f, kcrossfade_after: %f\n", 1, kcrossfade_before, k
 ;
 aregenerated_signal = aout
 readquery:
-if 	koutput_on_off = 0	kgoto off
+if 	koutput_on_off == 0	kgoto off
 
 read:
 xout	aout*koutput_volume
@@ -172,13 +174,13 @@ out:
 	endop
 
 	instr 1	;track 1
-aout 	GlitchDelay		16, .001, .05, giosc_handle, 101, gafadein_101, gafadeout_101, "10.0.0.43", 
+aout 	GlitchDelay		8, .001, .1, giosc_handle, 101, gafadein_101, gafadeout_101, gSControllerIP, 
 						"/1/fader1", "/1/rotary1", "/1/toggle1", "/1/toggle2", "/1/rotary2", "/1/rotary3", "/1/push1"
 	out aout
 	endin
 
 	instr 2	;track 1
-aout 	GlitchDelay		16, .001, .05, giosc_handle, 102, gafadein_102, gafadeout_102, "10.0.0.43", 
+aout 	GlitchDelay		8, .001, .1, giosc_handle, 102, gafadein_102, gafadeout_102, gSControllerIP, 
 						"/1/fader2", "/1/rotary4", "/1/toggle3", "/1/toggle4", "/1/rotary5", "/1/rotary6", "/1/push3"
 	out aout
 	endin
