@@ -203,7 +203,7 @@ gafadeout_102   linseg   1.0, p3, 0.0
 
 <CsScore>
 i1 0 3600
-i2 0 3600
+;i2 0 3600
 e
 
 </CsScore>
