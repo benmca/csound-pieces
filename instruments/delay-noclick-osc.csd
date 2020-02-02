@@ -170,9 +170,7 @@ ainputsig 		inch kchan
 ainputsig = ainputsig * kinput_volume
 
 noread:
-
-asig = ainputsig +  (aregenerated_signal * kregeneration_scalar)
-
+asig_for_delayline = (ainputsig + aregenerated_signal) * kregeneration_scalar
 kactive active k(icrossinstr)
 
 if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) then
@@ -202,8 +200,8 @@ endif
 aout_total  delayr     gidelsize
 aoutnew   	deltapi     kcrossfade_after
 aoutold   	deltapi     kcrossfade_before
-			delayw      asig
-aout = (aoutnew * gafadein_1) + (aoutold * gafadeout_1)
+			delayw      asig_for_delayline
+aout = ainputsig + (aoutnew * gafadein_1) + (aoutold * gafadeout_1)
 
 printks "kcrossfade_before: %f, kcrossfade_after: %f\n", 1, kcrossfade_before, kcrossfade_after
 ;
@@ -344,8 +342,7 @@ ainputsig = ainputsig * kinput_volume
 
 noread:
 
-asig = ainputsig +  (aregenerated_signal * kregeneration_scalar)
-
+asig_for_delayline = (ainputsig + aregenerated_signal) * kregeneration_scalar
 kactive active k(icrossinstr)
 
 if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) then
@@ -375,8 +372,8 @@ endif
 aout_total  delayr     gidelsize
 aoutnew   	deltapi     kcrossfade_after
 aoutold   	deltapi     kcrossfade_before
-			delayw      asig
-aout = (aoutnew * gafadein_2) + (aoutold * gafadeout_2)
+			delayw      asig_for_delayline
+aout = ainputsig + (aoutnew * gafadein_2) + (aoutold * gafadeout_2)
 
 printks "kcrossfade_before: %f, kcrossfade_after: %f\n", 1, kcrossfade_before, kcrossfade_after
 ;
