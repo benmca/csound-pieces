@@ -100,7 +100,10 @@ osc_1:
 k1  OSClisten gihandle, "/1/fader1", "f", kosc_delaytime
 if (k1 == 0) goto osc_2
 	printks "kosc_delaytime: %f \n", .001, kosc_delaytime
+kdelay_tap_point_without_min = (kosc_delaytime * (gkmaxdel - gimin))
 kdelay_tap_point = (kosc_delaytime * (gkmaxdel - gimin)) + gimin
+	printks "kdelay_tap_point: %f \n", .001, kdelay_tap_point
+	
 kgoto osc_1
 osc_2:
 k2  OSClisten gihandle, "/1/rotary1", "f", kosc_regentime
@@ -161,7 +164,7 @@ tap_tempo_done:
 osc_done:
 
 if	kinput_on_off == 0 kgoto noread
-if (kosc_delaytime < gimin) kgoto noread
+if kdelay_tap_point_without_min  < gimin kgoto noread
 
 
 kchan = $IOBaseChannel
@@ -272,6 +275,7 @@ osc_1:
 k1  OSClisten gihandle, "/1/fader2", "f", kosc_delaytime
 if (k1 == 0) goto osc_2
 	printks "2 kosc_delaytime: %f \n", .001, kosc_delaytime
+kdelay_tap_point_without_min = (kosc_delaytime * (gkmaxdel - gimin))
 kdelay_tap_point = (kosc_delaytime * (gkmaxdel - gimin)) + gimin
 kgoto osc_1
 osc_2:
@@ -332,8 +336,8 @@ tap_tempo_done:
 
 osc_done:
 
-if	kinput_on_off == 0 kgoto noread
-if (kosc_delaytime < gimin) kgoto noread
+if kinput_on_off == 0 kgoto noread
+if kdelay_tap_point_without_min  < gimin kgoto noread
 
 
 kchan = $IOBaseChannel
