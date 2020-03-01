@@ -34,7 +34,7 @@ nchnls=1
 ;#define	DestIP	#169.254.36.241#
 gkmaxdel	init $totalDelayLineTime
 gidelsize init i(gkmaxdel)
-gimin 	init 	.001
+gimin 	init 	.01
 gicrossfadetime init .05
 
 gafadein_1 init 0
@@ -161,6 +161,7 @@ tap_tempo_done:
 osc_done:
 
 if	kinput_on_off == 0 kgoto noread
+if (kosc_delaytime < gimin) kgoto noread
 
 
 kchan = $IOBaseChannel
@@ -270,48 +271,48 @@ endif
 osc_1:
 k1  OSClisten gihandle, "/1/fader2", "f", kosc_delaytime
 if (k1 == 0) goto osc_2
-	printks "kosc_delaytime: %f \n", .001, kosc_delaytime
+	printks "2 kosc_delaytime: %f \n", .001, kosc_delaytime
 kdelay_tap_point = (kosc_delaytime * (gkmaxdel - gimin)) + gimin
 kgoto osc_1
 osc_2:
 k2  OSClisten gihandle, "/1/rotary4", "f", kosc_regentime
 if (k2 == 0) goto osc_3
-	printks "kosc_regentime: %f \n", .001, kosc_regentime
+	printks "2 kosc_regentime: %f \n", .001, kosc_regentime
 kregeneration_scalar = kosc_regentime
 kgoto osc_2
 osc_3:
 k3  OSClisten gihandle, "/1/toggle3", "f", kosc_input_on
 if (k3 == 0) goto osc_4
-	printks "kosc_input_on: %f \n", .001, kosc_input_on
+	printks "2 kosc_input_on: %f \n", .001, kosc_input_on
 kinput_on_off = kosc_input_on
 kgoto osc_3
 osc_4:
 k4  OSClisten gihandle, "/1/toggle4", "f", kosc_output_on
 if (k4 == 0) goto osc_5
-	printks "kosc_output_on: %f \n", .001, kosc_output_on
+	printks "2 kosc_output_on: %f \n", .001, kosc_output_on
 koutput_on_off = kosc_output_on
 kgoto osc_4
 osc_5:
 k5  OSClisten gihandle, "/1/rotary5", "f", kosc_involume
 if (k5 == 0) goto osc_6
-	printks "kosc_involume: %f \n", .001, kosc_involume
+	printks "2 kosc_involume: %f \n", .001, kosc_involume
 kinput_volume = kosc_involume
 kgoto osc_5
 osc_6:
 k6  OSClisten gihandle, "/1/rotary6", "f", kosc_outvolume
 if (k6 == 0) goto osc_7
-	printks "kosc_outvolume: %f \n", .001, kosc_outvolume
+	printks "2 kosc_outvolume: %f \n", .001, kosc_outvolume
 koutput_volume = kosc_outvolume
 kgoto osc_6
 osc_7:
 k7  OSClisten gihandle, "/1/push3", "f", kosc_push1val
 if (k7 == 0) goto osc_done
 	if (kosc_push1val == 1.0) then
-		printks "tap recvd: %f \n", .001, kosc_push1val
+		printks "2 tap recvd: %f \n", .001, kosc_push1val
 if	ktap_tempo_comp_time > 0 	kgoto tap_tempo_compare
 ;if	gk_update_tap_1 == 0 kgoto done
 ktap_tempo_comp_time times
-		printks "gkcomptime: %f \n", .1, ktap_tempo_comp_time
+		printks "2 gkcomptime: %f \n", .1, ktap_tempo_comp_time
 kgoto tap_tempo_done
 tap_tempo_compare:
 ;if	gk_update_tap_1 == 1 kgoto done
@@ -332,6 +333,7 @@ tap_tempo_done:
 osc_done:
 
 if	kinput_on_off == 0 kgoto noread
+if (kosc_delaytime < gimin) kgoto noread
 
 
 kchan = $IOBaseChannel
@@ -401,7 +403,6 @@ gafadeout_1   linseg   1.0, p3, 0.0
 gafadein_2   linseg    0.0, p3, 1.0
 gafadeout_2   linseg   1.0, p3, 0.0
     endin
-
 
 
 </CsInstruments>
