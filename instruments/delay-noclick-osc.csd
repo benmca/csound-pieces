@@ -34,7 +34,7 @@ nchnls=1
 ;#define	DestIP	#169.254.36.241#
 gkmaxdel	init $totalDelayLineTime
 gidelsize init i(gkmaxdel)
-gimin 	init 	0
+gimin 	init 	.01
 gicrossfadetime init .05
 
 gafadein_1 init 0
@@ -162,6 +162,7 @@ tap_tempo_done:
 osc_done:
 
 if	kinput_on_off == 0 kgoto noread
+;if kcrossfade_after == 0.0 kgoto noread
 
 
 kchan = $IOBaseChannel
@@ -211,6 +212,7 @@ printks "kcrossfade_before: %f, kcrossfade_after: %f\n", 1, kcrossfade_before, k
 aregenerated_signal = aout
 readquery:
 if 	koutput_on_off == 0	kgoto off
+;if kcrossfade_after == 0.0 && kcrossfade_before == 0.0 kgoto off
 
 read:
 out	aout*koutput_volume
@@ -333,6 +335,7 @@ tap_tempo_done:
 osc_done:
 
 if kinput_on_off == 0 kgoto noread
+;if kcrossfade_after == 0.0 kgoto noread
 
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
@@ -369,6 +372,8 @@ if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) t
 
 endif
 
+
+
 aout_total  delayr     gidelsize
 aoutnew   	deltapi     kcrossfade_after
 aoutold   	deltapi     kcrossfade_before
@@ -380,6 +385,10 @@ printks "kcrossfade_before: %f, kcrossfade_after: %f\n", 1, kcrossfade_before, k
 ;	send out to regensig's for optional addition if sus pedal is pressed
 ;
 aregenerated_signal = aout
+
+readquery:
+if 	koutput_on_off == 0	kgoto off
+;if kcrossfade_after == 0.0 kgoto off
 
 read:
 out	aout*koutput_volume
