@@ -35,7 +35,7 @@ nchnls=1
 gkmaxdel	init $totalDelayLineTime
 gidelsize init i(gkmaxdel)
 gimin 	init 	.01
-gicrossfadetime init 2
+gicrossfadetime init .05
 
 gafadein_1 init 0
 gafadeout_1 init 1
@@ -44,6 +44,8 @@ gafadein_2 init 0
 gafadeout_2 init 1
 
 gihandle OSCinit 8000
+
+gacross_1 init 0
 
 
 
@@ -93,6 +95,8 @@ kosc_output_on init 0
 kosc_involume init 0
 kosc_outvolume init 0
 kosc_push1val init 0
+
+kcf init 0
 
 if kstarted == 0 then
 OSCsend 1, SDestIP, iOscPort, SdelayPointOscAddress, "f", (kdelay_tap_point / (gkmaxdel - gimin)) + gimin
@@ -185,23 +189,12 @@ asig_for_delayline = (ainputsig + aregenerated_signal) * kregeneration_scalar
 kactive = 0
 kactive_time times
 ;printks "kactive_time: %f, kcrossfade_in_progress_time: %f\n",.1, kactive_time, kcrossfade_in_progress_time
-;kcf = 1.0
+
 ; is there a timer UDO WE CAN USE?
 ; this whole cf chunnk could be factored out...
 if kcrossfade_in_progress_time > 0 && kactive_time < (kcrossfade_in_progress_time + gicrossfadetime ) then
 	kactive = 1
-	kbegin = kcrossfade_in_progress_time
-	kend = (kcrossfade_in_progress_time + gicrossfadetime )-.01
-	kcf = (kactive_time-kbegin) / (kend-kbegin)
-	if kcf >= 1.0 then
-		kcf = 1.0
-	endif
-	printks "kactive is 1, kcf is %f\n",.01, kcf 	
-else
-;	printks "kactive is 0\n",.1
 endif 
-acf =a(kcf)	
-printks "acf %f\n", .001, acf
 ;
 ;kcf sc_phasor kactive, 1/(k(gicrossfadetime)*sr), 0, 1
 ;printks "kactive is %f, kcf: %f\n", .1, kactive, kcf
@@ -209,16 +202,25 @@ printks "acf %f\n", .001, acf
 if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) then;
 	printks "checking....", .01
 	if (kcrossfade_in_progress == 1 && kactive == 0.0) then
-		printks "event is ended %f\n", .01, acf
+		printks "event is ended %f\n", .01, kcf
         kcrossfade_in_progress = 0
         kcrossfade_before = kcrossfade_after
         kcrossfade_in_progress_time = 0
+        kcf = 1.0
     elseif (kcrossfade_in_progress == 1 && kactive > 0) then
 		printks "crossfading, keeping state....\n", .01
+		kbegin = kcrossfade_in_progress_time
+		kend = kcrossfade_in_progress_time + gicrossfadetime
+		kcf = (kactive_time-kbegin) / (kend-kbegin)
+		if kcf > 1.0 then
+		kcf = 1.0
+		endif
+		printks "kactive is 1, kcf is %f\n",.01, kcf 	
     elseif (kcrossfade_in_progress == 0) then
 		printks "starting event....\n", .01
         kcrossfade_after = kdelay_tap_point
         kcrossfade_in_progress = 1
+        kcf = 0
 ;        gafadein_1 = 0
 ;        gafadeout_1 = 1.0
         ktemp times
@@ -226,13 +228,15 @@ if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) t
 ;        event "i", icrossinstr, 0, gicrossfadetime
     endif
 endif
+;acf =a(kcf)	
+;printks "acf %f\n", .001, acf
 
 aout_total  delayr     gidelsize
 aoutnew   	deltapi     kcrossfade_after
 aoutold   	deltapi     kcrossfade_before
 			delayw      asig_for_delayline
 ;aout = ainputsig + (aoutnew * gafadein_1) + (aoutold * gafadeout_1)
-	aout = ainputsig + (aoutnew *  acf) + (aoutold * (1.0-acf))
+	aout = ainputsig + (aoutnew * kcf) + (aoutold * (1.0-kcf))
 ;if kactive == 1 then
 ;	aout = ainputsig + (aoutnew * kcf) + (aoutold * (1-kcf))
 ;	printks "kcf applied\n", .1
