@@ -96,7 +96,8 @@ kosc_involume init 0
 kosc_outvolume init 0
 kosc_push1val init 0
 
-kcf init 0
+;kcf init 0
+acf init 0
 
 if kstarted == 0 then
 OSCsend 1, SDestIP, iOscPort, SdelayPointOscAddress, "f", (kdelay_tap_point / (gkmaxdel - gimin)) + gimin
@@ -188,6 +189,7 @@ asig_for_delayline = (ainputsig + aregenerated_signal) * kregeneration_scalar
 ;kactive active k(icrossinstr)
 kactive = 0
 kactive_time times
+aactive_time interp kactive_time, 0, 1
 ;printks "kactive_time: %f, kcrossfade_in_progress_time: %f\n",.1, kactive_time, kcrossfade_in_progress_time
 
 ; is there a timer UDO WE CAN USE?
@@ -202,25 +204,23 @@ endif
 if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) then;
 	printks "checking....", .01
 	if (kcrossfade_in_progress == 1 && kactive == 0.0) then
-		printks "event is ended %f\n", .01, kcf
+		printks "event is ended %f\n", .01, acf
         kcrossfade_in_progress = 0
         kcrossfade_before = kcrossfade_after
         kcrossfade_in_progress_time = 0
-        kcf = 1.0
+        acf = 1.0
     elseif (kcrossfade_in_progress == 1 && kactive > 0) then
 		printks "crossfading, keeping state....\n", .01
 		kbegin = kcrossfade_in_progress_time
 		kend = kcrossfade_in_progress_time + gicrossfadetime
-		kcf = (kactive_time-kbegin) / (kend-kbegin)
-		if kcf > 1.0 then
-		kcf = 1.0
-		endif
-		printks "kactive is 1, kcf is %f\n",.01, kcf 	
+		acf = (aactive_time-kbegin) / (kend-kbegin)
+		acf limit acf, 0.0, 1.0
+		printks "kactive is 1, acf is %f\n",.01, acf 	
     elseif (kcrossfade_in_progress == 0) then
 		printks "starting event....\n", .01
         kcrossfade_after = kdelay_tap_point
         kcrossfade_in_progress = 1
-        kcf = 0
+        acf = 0
 ;        gafadein_1 = 0
 ;        gafadeout_1 = 1.0
         ktemp times
@@ -236,7 +236,7 @@ aoutnew   	deltapi     kcrossfade_after
 aoutold   	deltapi     kcrossfade_before
 			delayw      asig_for_delayline
 ;aout = ainputsig + (aoutnew * gafadein_1) + (aoutold * gafadeout_1)
-	aout = ainputsig + (aoutnew * kcf) + (aoutold * (1.0-kcf))
+	aout = ainputsig + (aoutnew * acf) + (aoutold * (1.0-acf))
 ;if kactive == 1 then
 ;	aout = ainputsig + (aoutnew * kcf) + (aoutold * (1-kcf))
 ;	printks "kcf applied\n", .1
