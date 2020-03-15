@@ -13,8 +13,8 @@
 <CsoundSynthesizer>
 
 <CsInstruments>
-sr=44100
-kr=44100
+sr=96000
+kr=96000
 ksmps=1
 nchnls=1
 
@@ -65,7 +65,7 @@ aout	init 0
 kinput_volume init 1	; input volume
 koutput_volume init 1	; output volume
 
-kinput_on_off init 1 	; input on/off
+kinput_on_off init p14 	; input on/off
 koutput_on_off init 1 	; output on/off
 
 aregenerated_signal init 0	; regenerated signal - added to delay output * regen setting 
@@ -84,8 +84,6 @@ kosc_outvolume init 0
 kosc_push1val init 0
 kosc_push2val init 0
 kosc_push3val init 0
-
-acf init 0
 
 if kstarted == 0 then
 OSCsend 1, SDestIP, iOscPort, SdelayPointOscAddress, "f", (kdelay_tap_point / (gkmaxdel - gimin)) + gimin
@@ -164,15 +162,17 @@ k8  OSClisten gihandle, SsaveOscAddress, "f", kosc_push2val
 if (k8 == 0) goto osc_9
 ksaved_delay_tap_point = kdelay_tap_point
 		;printks "save: saved value: %f \n", .1, (ksaved_delay_tap_point / gidelsize)
-printks "save: kdelay_tap_point: %f \n", .001, kdelay_tap_point
+printks "save: ksaved_delay_tap_point: %f \n", .001, ksaved_delay_tap_point
 osc_9:
 k9  OSClisten gihandle, SrecallOscAddress, "f", kosc_push3val
 if (k9 == 0) goto osc_done
 printks "recall: ksaved_delay_tap_point: %f \n", .001, ksaved_delay_tap_point
 ktrig times
 OSCsend ktrig, SDestIP, 9000, SdelayPointOscAddress, "f", (ksaved_delay_tap_point / gidelsize)
-ksaved_delay_tap_point = ksaved_delay_tap_point
+;ksaved_delay_tap_point = ksaved_delay_tap_point
+kdelay_tap_point = ksaved_delay_tap_point
 printks "recall: kdelay_tap_point: %f \n", .001, kdelay_tap_point
+printks "recall: ksaved_delay_tap_point: %f \n", .001, ksaved_delay_tap_point
 ;kgoto osc_done
 
 osc_done:
@@ -189,7 +189,8 @@ noread:
 asig_for_delayline = (ainputsig + aregenerated_signal) * kregeneration_scalar
 kactive = 0
 kactive_time times
-aactive_time interp kactive_time, 0, 1
+
+kcf = 1.0
 
 if kcrossfade_in_progress_time > 0 && kactive_time < (kcrossfade_in_progress_time + gicrossfadetime ) then
 	kactive = 1
@@ -202,19 +203,21 @@ if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) t
         kcrossfade_in_progress = 0
         kcrossfade_before = kcrossfade_after
         kcrossfade_in_progress_time = 0
-        acf = 1.0
+        kcf = 1.0
     elseif (kcrossfade_in_progress == 1 && kactive > 0) then
 ;		printks "crossfading, keeping state....\n", .01
 		kbegin = kcrossfade_in_progress_time
 		kend = kcrossfade_in_progress_time + gicrossfadetime
-		acf = (aactive_time-kbegin) / (kend-kbegin)
-		acf limit acf, 0.0, 1.0
+		kcf = (kactive_time-kbegin) / (kend-kbegin)
+		if kcf > 1.0 then
+			kcf = 1.0
+		endif
 ;		printks "kactive is 1, acf is %f\n",.01, acf 	
     elseif (kcrossfade_in_progress == 0) then
 		;printks "starting event....\n", .01
         kcrossfade_after = kdelay_tap_point
         kcrossfade_in_progress = 1
-        acf = 0
+        kcf = 0.0
         ktemp times
         kcrossfade_in_progress_time = ktemp
     endif
@@ -225,7 +228,7 @@ aoutnew   	deltapi     kcrossfade_after
 aoutold   	deltapi     kcrossfade_before
 			delayw      asig_for_delayline
 
-aout = ainputsig + (aoutnew * acf) + (aoutold * (1.0-acf))
+aout = ainputsig + (aoutnew * kcf) + (aoutold * (1.0-kcf))
 aregenerated_signal = aout
 
 readquery:
@@ -241,7 +244,10 @@ out:
 </CsInstruments>
 
 <CsScore>
-i1 0 3600  "/1/fader1"  "/1/fader2"   "/1/toggle1"  "/1/toggle2"   "/1/fader3"  "/1/fader4"  "/1/push1" "/1/push2" "/1/push3"  9000 
+i1 0 3600  "/1/fader1"  "/1/fader2"   "/1/toggle1"  "/1/toggle2"   "/1/fader3"  "/1/fader4"  "/1/push1" "/1/push2" "/1/push3"  9000 1
+i1 0 3600  "/2/fader1"  "/2/fader2"   "/2/toggle1"  "/2/toggle2"   "/2/fader3"  "/2/fader4"  "/2/push1" "/2/push2" "/2/push3"  9000 0
+i1 0 3600  "/3/fader1"  "/3/fader2"   "/3/toggle1"  "/3/toggle2"   "/3/fader3"  "/3/fader4"  "/3/push1" "/3/push2" "/3/push3"  9000 0
+i1 0 3600  "/4/fader1"  "/4/fader2"   "/4/toggle1"  "/4/toggle2"   "/4/fader3"  "/4/fader4"  "/4/push1" "/4/push2" "/4/push3"  9000 0
 ;i1 0 3600  "/1/fader2"  "/1/rotary4"   "/1/toggle3"  "/1/toggle4"   "/1/rotary5"  "/1/rotary6"  "/1/push2"  9000
 e
 </CsScore>
