@@ -207,7 +207,7 @@ if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) t
     elseif (kcrossfade_in_progress == 1 && kactive > 0) then
 ;		printks "crossfading, keeping state....\n", .01
 		kbegin = kcrossfade_in_progress_time
-		kend = kcrossfade_in_progress_time + gicrossfadetime
+		kend = kcrossfade_in_progress_time + gicrossfadetime - .01
 		kcf = (kactive_time-kbegin) / (kend-kbegin)
 		if kcf > 1.0 then
 			kcf = 1.0
