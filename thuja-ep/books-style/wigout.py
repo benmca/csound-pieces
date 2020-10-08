@@ -15,9 +15,9 @@ import time
 
 seed = int(time.time())
 # seed = 1594358315
-seed = 1594358933
+#seed = 1594358933
 random.seed(seed)
-filelen = 30
+filelen = 2
 tempo = 120
 
 pitches_to_files = {
@@ -36,8 +36,8 @@ pitches_to_files = {
 }
 
 
-def cleanup_strings_gtrs(note, context):
-    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
+def cleanup_strings_vox(note, context):
+    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_wigoutvox/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
 
 def cleanup_strings_ebows(note, context):
@@ -64,13 +64,13 @@ g = Generator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.duration, lambda note:note.pfields['orig_rhythm']),
-        (keys.amplitude, Itemstream([1])),
+        (keys.amplitude, Itemstream([1, 0], streammode=streammodes.random)),
         (keys.frequency, Itemstream([1])),
         (keys.pan, Itemstream([45])),
         (keys.distance, Itemstream([10])),
         (keys.percent, Itemstream([.01])),
         ('output_prefix', Itemstream([1])),
-        ('filepitch', Itemstream(('c '*8 + 'e '*8 + 'g '*8).split())),
+        ('filepitch', Itemstream(['a', 'as', 'b', 'c', 'cs'])),
         ('stretch', Itemstream(['1'])),
     ]),
     pfields=[
@@ -88,21 +88,21 @@ g = Generator(
         'output_prefix'
     ],
     note_limit=300,
-    post_processes=[parse_rhythms_from_tuplestream,cleanup_strings_gtrs,break_into_phrases]
+    post_processes=[parse_rhythms_from_tuplestream,cleanup_strings_vox,break_into_phrases]
 )
 
 
 def gen_rhythms(gen, l, opt=1):
     if opt == 1:
         rhystrings = ['s']
-    if opt == 2:
-        rhystrings = 'e q q q q e e e e e e e e e e e'.split()
-    if opt == 3:
+    elif opt == 2:
+        rhystrings = 'q q e'.split()
+    elif opt == 3:
         rhystrings = 'e e q'.split()
-    if opt == 4:
-        rhystrings = ['w+w'] + ['s']*16
+    elif opt == 4:
+        rhystrings = 's s e'.split()
     else:
-        rhystrings = sum([['32']*8, ['s']*4, ['e']*4, ['e.']*2, ['h']], [])
+        rhystrings = '32 32 s'.split()
     gen.context['rhythms'] = []
     gen.context['indexes'] = []
     for x in range(l):
@@ -110,7 +110,7 @@ def gen_rhythms(gen, l, opt=1):
             gen.context['rhythms'].append(rhystrings[x % len(rhystrings)])
         else:
             gen.context['rhythms'].append(rhystrings[random.randint(0, len(rhystrings)-1)])
-        gen.context['indexes'].append(random.random()*filelen)
+        gen.context['indexes'].append(random.random()*filelen+.5)
         gen.context['orig_rhythms'] = gen.context['rhythms']
 
 
@@ -129,7 +129,7 @@ g.gen_lines = [';sine\n',
                'f 2 0 256 7 0 128 1 0 -1 128 0\n',
                ';pulse\n',
                'f 3 0 256 7 1 128 1 0 -1 128 -1\n']
-g.streams[keys.amplitude] = Itemstream([1])
+# g.streams[keys.amplitude] = Itemstream([1])
 g.time_limit = 48
 #g.generate_notes()
 
@@ -167,52 +167,6 @@ metronome = Generator(
     post_processes=[cleanup_strings_ebows]
 )
 
-# random.seed(1541470791)
-second_line = copy.deepcopy(g)
-second_line.streams[keys.pan] = Itemstream([90])
-second_line.streams[keys.amplitude] = Itemstream([1])
-second_line.streams[keys.frequency] = Itemstream([1])
-second_line.streams['filepitch'] = Itemstream(['c'])
-gen_rhythms(second_line, 4, 2)
-second_line.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
-                                      mapping_lists=[second_line.context['rhythms'],
-                                                     second_line.context['indexes']],
-                                      tempo=60,
-                                      # streammode=streammodes.random,
-                                      seed=1541470791)
-second_line.start_time = 4
-second_line.time_limit = 12
-
-random.seed(1584747196)
-third_line = copy.deepcopy(g)
-third_line.streams[keys.pan] = Itemstream([0])
-third_line.streams[keys.amplitude] = Itemstream([1])
-second_line.streams[keys.frequency] = Itemstream([1])
-third_line.streams['filepitch'] = Itemstream(['c'])
-gen_rhythms(third_line, 4, 2)
-third_line.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
-                                      mapping_lists=[third_line.context['rhythms'],
-                                                     third_line.context['indexes']],
-                                      tempo=60,
-                                      # streammode=streammodes.random,
-                                      seed=1584747196)
-third_line.start_time = 8
-third_line.time_limit = 12
-
-g.add_generator(second_line)
-g.add_generator(third_line)
-
-second_line_2 = copy.deepcopy(second_line)
-third_line_2 = copy.deepcopy(third_line)
-
-second_line_2.start_time = 20
-second_line_2.time_limit = second_line_2.start_time + 16
-
-third_line_2.start_time = 20
-third_line_2.time_limit = third_line_2.start_time + 16
-
-g.add_generator(second_line_2)
-g.add_generator(third_line_2)
 
 g.generate_notes()
 
@@ -228,7 +182,7 @@ print("g.context['rhythms'] =", x.context['rhythms'])
 print("g.context['indexes'] =", x.context['indexes'])
 print(x.context['tuplestream'].seed)
 
-cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-ogtrs.wav', '-W'])
+cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-owigout-altsse.wav', '-W'])
 
 # lilsten to the repeatign ds here -
 #        ('filepitch', Itemstream(('b '*8 + 'ds '*8 + 'fs '*8).split())),

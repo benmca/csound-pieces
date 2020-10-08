@@ -48,7 +48,7 @@ def parse_rhythms_from_tuplestream(note, context):
 
 
 def calc_dur_l(note, context):
-    steps = 16.0
+    steps = 32.0
     dur = .2
     if (context['durdx']%steps) < steps*.5:
         note.pfields[keys.duration] = ((context['durdx']%steps)/steps) * dur
@@ -58,7 +58,7 @@ def calc_dur_l(note, context):
 
 
 def calc_dur_r(note, context):
-    steps = 9.0
+    steps = 32.0
     dur = .2
     if (context['durdx']%steps) < steps*.5:
         note.pfields[keys.duration] = ((context['durdx']%steps)/steps) * dur
@@ -84,13 +84,15 @@ def slide_start_r(note, context):
     else:
         note.pfields[keys.index] = note.pfields[keys.index] - (((context['durdx']%steps)/steps) * window_size)
 
+def pitch_to_tempo(note, context):
+    note.pfields[keys.frequency] = 1 * (context['tempo']/240)
 
 pulse_l = Generator(
     streams=[
         (keys.instrument, 1),
         (keys.duration, .1),
-        (keys.rhythm, Itemstream('s', notetype=notetypes.rhythm)),
-        (keys.amplitude, 3),
+        (keys.rhythm, Itemstream('h', notetype=notetypes.rhythm)),
+        (keys.amplitude, .001),
         (keys.frequency, Itemstream([1])),
         (keys.pan, 10),
         (keys.distance, 10),
@@ -115,67 +117,37 @@ pulse_l = Generator(
         'inst_file',
         'output_prefix'
     ],
-    post_processes=[cleanup_strings, calc_dur_l, slide_start_l],
-    init_context={'durdx': 0}
+    post_processes=[cleanup_strings, pitch_to_tempo],# calc_dur_l, slide_start_l],
+    init_context={'tempo': 240}
 )
-
-
-def texture1_fadein(note, context):
-    fade_time = 60.0
-    diff = note.pfields[keys.start_time] - context['texture_start']
-    if diff < fade_time:
-        note.pfields[keys.amplitude] = note.pfields[keys.amplitude] * (diff/fade_time)
-    pass
-
-
-def texture3_fadeout(note, context):
-    fade_time = context['texture_end'] - context['texture_start']
-    diff = note.pfields[keys.start_time] - context['texture_start']
-    note.pfields[keys.amplitude] = note.pfields[keys.amplitude] * (1-(diff/fade_time))
-    pass
 
 # pulse_l.note_limit = utils.rhythm_to_duration('q', pulse_l.tempo()) * 4 * (1 + 128)
 pulse_l.time_limit = 120
-
+pulse_l.streams[keys.rhythm].tempo = 240
 pulse_r = copy.deepcopy(pulse_l)
 pulse_r.notes = []
 pulse_r.streams[keys.pan] = 80
-pulse_r.post_processes = [cleanup_strings, calc_dur_r, slide_start_r]
+pulse_r.post_processes = [cleanup_strings, pitch_to_tempo]
+
+t = 220
+for x in range(10):
+    t = t-10
+    l = copy.deepcopy(pulse_l)
+    l.streams[keys.rhythm].tempo = t
+    l.context['tempo'] = t
+    r = copy.deepcopy(pulse_r)
+    r.streams[keys.rhythm].tempo = t
+    r.context['tempo'] = t
+
+    pulse_l.add_generator(l)
+    pulse_l.add_generator(r)
 
 
-texture1 = copy.deepcopy(pulse_l)
-texture1.streams[keys.pan] = 45
-texture1.start_time = utils.rhythm_to_duration('q', texture1.tempo()) * 4 * (4)
-texture1.streams[keys.index] = Itemstream([18.394266363423284, 29.986405701944328, 2.3787051284598992, 30.06279737830769,
-                        18.511066510650128, 42.11027927574142, 41.84313592235877, 53.576331546688465])
-texture1.streams[keys.rhythm] = Itemstream("q e s h".split(), notetype=notetypes.rhythm, streammode=streammodes.heap)
-texture1.streams[keys.duration] = lambda note: note.rhythm
-texture1.streams[keys.amplitude] = 1.0
-texture1.post_processes = [cleanup_strings, texture1_fadein]
-texture1.context['texture_start'] = texture1.start_time
-texture1.time_limit = 75
-
-texture2 = copy.deepcopy(texture1)
-texture2.start_time = 60
-texture2.streams[keys.index].streammode = streammodes.heap
-texture2.streams[keys.rhythm] = Itemstream("q e e. s s s s s s".split(), notetype=notetypes.rhythm, streammode=streammodes.sequence)
-texture2.post_processes = [cleanup_strings]
-texture2.time_limit = 90
-
-
-texture3 = copy.deepcopy(texture2)
-texture3.start_time = 90
-texture3.streams[keys.rhythm] = Itemstream("w+w w h q s s s s s s s s".split(), notetype=notetypes.rhythm, streammode=streammodes.sequence)
-texture3.post_processes = [cleanup_strings, texture3_fadeout]
-texture3.time_limit = 120
-texture3.context['texture_start'] = texture3.start_time
-texture3.context['texture_end'] = texture3.time_limit
-
-pulse_l.add_generator(texture1)
+# pulse_l.add_generator(texture1)
 # pulse_l.add_generator(texture2)
 # pulse_l.add_generator(texture3)
-# pulse_l.add_generator(pulse_r)
 
+pulse_l.add_generator(pulse_r)
 pulse_l.generate_notes()
 
 pulse_l.end_lines = ['i99 0 ' + str(pulse_l.score_dur+10) + ' 5\n']

@@ -1,4 +1,4 @@
-sr=96000
+sr=48000
 ksmps=10
 nchnls=2
 
@@ -26,7 +26,7 @@ itrack = p12
 
 iendx = indx + iorigdur
 
-kamp	linen	iamp, .001, idur, .001
+kamp	linen	iamp, .01, idur, .01
 ktime   line    indx, idur , iendx
 al	diskin	Spath, ipitch, indx
 al=al*kamp
@@ -53,8 +53,8 @@ endin
 instr 99
 klin 	linseg  p4, p3, p4
 kamp	linseg	1, p3, 1
-a1	reverb2	ga1, klin, 0
-a2	reverb2	ga2, klin, 0
+a1	reverb2	ga1, klin, .5
+a2	reverb2	ga2, klin, .5
 	outs	a1*kamp,a2*kamp
 ga1=0
 ga2=0
