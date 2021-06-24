@@ -62,6 +62,11 @@ kcrossfade_in_progress_time init 0 ; to time crossfade instr
 
 aout	init 0
 
+kinput_volume_trigger init 0 ;
+kinput_volume_triggered init 0 ;
+kinput_volume_scalar init 1	; input volume
+kinput_volume_mod init 1
+
 kinput_volume init 1	; input volume
 koutput_volume init 1	; output volume
 
@@ -112,6 +117,8 @@ osc_3:
 k3  OSClisten gihandle, SinputToggleOscAddress, "f", kosc_input_on
 if (k3 == 0) goto osc_4
 	printks "kosc_input_on: %f \n", .001, kosc_input_on
+	;you are here - these should be different and generate your trigger
+	printks "kinput_on_off before: %f \n", .001, kinput_on_off
 kinput_on_off = kosc_input_on
 kgoto osc_3
 osc_4:
@@ -177,15 +184,17 @@ printks "recall: ksaved_delay_tap_point: %f \n", .001, ksaved_delay_tap_point
 
 osc_done:
 
-if	kinput_on_off == 0 kgoto noread
+
+kinput_volume_scalar portk  kinput_on_off, .001
+koutput_volume_scalar portk  koutput_on_off, .001
+
 
 kchan = $IOBaseChannel
 kchanout = $IOBaseChannel
 
 ainputsig 		inch kchan
-ainputsig = ainputsig * kinput_volume
+ainputsig = ainputsig * kinput_volume * kinput_volume_scalar
 
-noread:
 asig_for_delayline = (ainputsig + aregenerated_signal) * kregeneration_scalar
 kactive = 0
 kactive_time times
@@ -223,6 +232,7 @@ if  ((kcrossfade_before != kdelay_tap_point && kactive == 0.0) || kactive > 0) t
     endif
 endif
 
+
 aout_total  delayr     gidelsize
 aoutnew   	deltapi     kcrossfade_after
 aoutold   	deltapi     kcrossfade_before
@@ -231,14 +241,7 @@ aoutold   	deltapi     kcrossfade_before
 aout = ainputsig + (aoutnew * kcf) + (aoutold * (1.0-kcf))
 aregenerated_signal = aout
 
-readquery:
-if 	koutput_on_off == 0	kgoto off
-read:
-out	aout*koutput_volume
-aout = aout
-kgoto out
-off:
-aout = 0
+out	aout*koutput_volume*koutput_volume_scalar
 out:
 	endin
 </CsInstruments>

@@ -1,17 +1,17 @@
 
-import csnd6
+import ctcsound
 #from Tkinter import *
 #from ttk import *
 
 
 
 # create & compile instance
-cs = csnd6.Csound()
-cs.Compile("laurie2.csd")
+cs = ctcsound.Csound()
+cs.compileCsd("laurie2.csd")
+cs.st
 
 # create the thread object
-perf = csnd6.CsoundPerformanceThread(cs)
-
+perf = ctcsound.CsoundPerformanceThread(cs)
 # set the callback
 #perf.SetProcessCallback(tes.callb, None)
 
