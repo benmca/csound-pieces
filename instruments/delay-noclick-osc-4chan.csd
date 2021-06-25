@@ -13,8 +13,8 @@
 <CsoundSynthesizer>
 
 <CsInstruments>
-sr=96000
-kr=96000
+sr=48000
+kr=48000
 ksmps=1
 nchnls=4
 
@@ -24,7 +24,7 @@ nchnls=4
 ;***********************************************************
 ;	THIS IS THE MAXIMUM DELAY TIME
 ;***********************************************************
-#define	totalDelayLineTime	#8#
+#define	totalDelayLineTime	#16#
 ;***********************************************************
 ;	THIS IS THE IO Base channel - stereo output 
 ;	goes in and out from IOBaseChannel and 
@@ -40,6 +40,29 @@ gihandle OSCinit 8000
 	instr 1	;track 1
 SDestIP strget 1
 prints SDestIP
+
+SWrite strget 2
+iWrite strcmp "true", SWrite
+prints SWrite
+
+
+;
+; yes, all this work to get a timestamp
+;
+itim     date
+Stim     dates     itim
+Syear    strsub    Stim, 20, 24
+Smonth   strsub    Stim, 4, 7
+Sday     strsub    Stim, 8, 10
+iday     strtod    Sday
+Shor     strsub    Stim, 11, 13
+Smin     strsub    Stim, 14, 16
+Ssec     strsub    Stim, 17, 19
+Sfilnam  sprintf  "%s_%s_%02d_%s_%s_%s_track_%d.wav", Syear, Smonth, iday, Shor,Smin, Ssec, p15
+;prints Sfilnam
+
+
+
 
 SdelayPointOscAddress = p4
 SregenerationOscAddress = p5
@@ -245,16 +268,29 @@ aregenerated_signal = aout
 
 ;out	aout*koutput_volume*koutput_volume_scalar
 afinal_out = aout*koutput_volume*koutput_volume_scalar
+
 if (iChannel = 1) then
+    if (iWrite = 0) then
+        fout Sfilnam, 8, aout*koutput_volume_scalar
+    endif
     outq afinal_out, a(0), a(0), a(0)
 endif
 if (iChannel = 2) then
+    if (iWrite = 0) then
+        fout Sfilnam, 8, aout*koutput_volume_scalar
+    endif
     outq a(0), afinal_out, a(0), a(0)
 endif
 if (iChannel = 3) then
+    if (iWrite = 0) then
+        fout Sfilnam, 8, aout*koutput_volume_scalar
+    endif
     outq a(0), a(0), afinal_out, a(0)
 endif
 if (iChannel = 4) then
+    if (iWrite = 0) then
+        fout Sfilnam, 8, aout*koutput_volume_scalar
+    endif
     outq a(0), a(0), a(0), afinal_out
 endif
 
