@@ -1,4 +1,4 @@
-sr=48000
+sr=44100
 ksmps=10
 nchnls=2
 
@@ -23,10 +23,17 @@ iorigdur = p10
 Spath = p11
 itrack = p12
 ;inumchannels = p12
-
+ifadein = p13
+ifadeout = p14
+if (ifadein == 0) then
+    ifadein = .01
+endif
+if (ifadeout == 0) then
+    ifadeout = .01
+endif
 iendx = indx + iorigdur
 
-kamp	linen	iamp, .01, idur, .01
+kamp	linen	iamp, ifadein, idur, ifadeout
 ktime   line    indx, idur , iendx
 al	diskin	Spath, ipitch, indx
 al=al*kamp

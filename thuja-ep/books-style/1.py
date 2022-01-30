@@ -182,4 +182,4 @@ pulse_l.end_lines = ['i99 0 ' + str(pulse_l.score_dur+10) + ' 5\n']
 print(pulse_l.generate_score_string())
 
 
-cs_utils.play_csound("generic-index.orc", pulse_l, silent=True, args_list=['-odac2'])
+cs_utils.play_csound("generic-index.orc", pulse_l, silent=True, args_list=['-odac','-W','-+rtaudio=CoreAudio'])
