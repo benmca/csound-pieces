@@ -7,7 +7,7 @@
 ; -o oscils.wav -W ;;; for file output any platform
 </CsOptions>
 <CsInstruments>
-sr=48000
+sr=96000
 ksmps=10
 nchnls=2
 
@@ -81,5 +81,11 @@ gatrack4 = 0
 endin
 
 </CsInstruments>
+<CsScore>
+;f 1  0  256  -17   0  0
+f0 3600
+f1 0 16384 10 1
+e
+</CsScore>
 
 </CsoundSynthesizer>

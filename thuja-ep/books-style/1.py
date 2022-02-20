@@ -35,7 +35,7 @@ pitches_to_files = {
 
 
 def cleanup_strings(note, context):
-    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/admin/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
 
 

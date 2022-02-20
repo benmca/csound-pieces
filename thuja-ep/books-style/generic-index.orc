@@ -1,4 +1,4 @@
-sr=44100
+sr=96000
 ksmps=10
 nchnls=2
 

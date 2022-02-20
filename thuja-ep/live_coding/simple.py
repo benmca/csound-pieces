@@ -1,4 +1,7 @@
 from __future__ import print_function
+
+import ctcsound
+
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
 from thuja.generator import keys
@@ -12,7 +15,6 @@ import copy
 import random
 import time
 import socket
-
 
 seed = int(time.time())
 random.seed(seed)
@@ -35,11 +37,10 @@ pitches_to_files = {
 }
 
 
-
-
 def cleanup_strings(note, context):
-    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/admin/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
+
 
 def parse_rhythms_from_tuplestream(note, context):
     item = context['tuplestream'].get_next_value()
@@ -47,22 +48,21 @@ def parse_rhythms_from_tuplestream(note, context):
     orig_rhythm = context['orig_rhythms'][indx]
     note.rhythm = utils.rhythm_to_duration(item[keys.rhythm], context['tuplestream'].tempo)
     note.pfields[keys.index] = item[keys.index]
-    note.pfields['orig_rhythm'] = utils.rhythm_to_duration(orig_rhythm, context['tuplestream'].tempo)
-
-
+    note.pfields['orig_rhythm'] = utils.rhythm_to_duration(orig_rhythm,
+                                                           context['tuplestream'].tempo)
 
 
 g = Generator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
-        (keys.duration, lambda note:note.pfields['orig_rhythm']),
+        (keys.duration, lambda note: note.pfields['orig_rhythm']),
         (keys.amplitude, Itemstream([3])),
         (keys.frequency, Itemstream([1])),
         (keys.pan, Itemstream([45])),
         (keys.distance, Itemstream([10])),
         (keys.percent, Itemstream([.01])),
         ('output_prefix', Itemstream([1])),
-        ('filepitch', Itemstream(('f '*32).split())),
+        ('filepitch', Itemstream(('f ' * 32).split())),
         ('stretch', Itemstream(['1'])),
     ]),
     pfields=[
@@ -79,7 +79,7 @@ g = Generator(
         'inst_file',
         'output_prefix'
     ],
-    note_limit=100,
+    note_limit=0,
     post_processes=[parse_rhythms_from_tuplestream,
                     cleanup_strings]
 )
@@ -90,8 +90,8 @@ def gen_rhythms(gen, l):
     gen.context['rhythms'] = []
     gen.context['indexes'] = []
     for x in range(l):
-        gen.context['rhythms'].append(rhystrings[random.randint(0, len(rhystrings)-1)])
-        gen.context['indexes'].append(random.random()*filelen)
+        gen.context['rhythms'].append(rhystrings[random.randint(0, len(rhystrings) - 1)])
+        gen.context['indexes'].append(random.random() * filelen)
         gen.context['orig_rhythms'] = gen.context['rhythms']
 
 
@@ -104,10 +104,29 @@ g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       streammode=streammodes.random,
                                       seed=seed)
 
-g.generate_notes()
+sock = socket.socket(socket.AF_INET,  # Internet
+                     socket.SOCK_DGRAM)  # UDP
+
+cs = cs_utils.init_csound_with_orc(['-odac', '-W', '-+rtaudio=CoreAudio'],
+                          "/Users/admin/src/csound-pieces/thuja-ep/books-style/generic-index.orc",
+                          False,
+                           None)
+cs.readScore("f0 3600\ne\n")
+cs.start()
+cpt = ctcsound.CsoundPerformanceThread(cs.csound())
+cpt.play()
+scoreTime = 0
 
 
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-
-g.send_notes_to_udp(sock)
+for x in range(0, 200000):
+    scoreTime = cs.scoreTime()
+    if scoreTime > g.cur_time:
+        g.time_limit = scoreTime
+        g.generate_notes()
+        for note in g.notes:
+            cs.inputMessage(str(note))
+        g.notes = []
+        g.cur_time = scoreTime
+cpt.stop()
+cpt.join()
+cs.reset()
