@@ -3,7 +3,7 @@ from __future__ import print_function
 import ctcsound
 
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
+from thuja.generator import Generator, GeneratorThread
 from thuja.generator import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -14,7 +14,7 @@ import numpy as np
 import copy
 import random
 import time
-import socket
+import threading
 
 seed = int(time.time())
 random.seed(seed)
@@ -56,7 +56,7 @@ g = Generator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.duration, lambda note: note.pfields['orig_rhythm']),
-        (keys.amplitude, Itemstream([3])),
+        (keys.amplitude, Itemstream([3, 0])),
         (keys.frequency, Itemstream([1])),
         (keys.pan, Itemstream([45])),
         (keys.distance, Itemstream([10])),
@@ -86,16 +86,17 @@ g = Generator(
 
 
 def gen_rhythms(gen, l):
-    rhystrings = ['s']
+    rhystrings = ['q']
     gen.context['rhythms'] = []
     gen.context['indexes'] = []
     for x in range(l):
         gen.context['rhythms'].append(rhystrings[random.randint(0, len(rhystrings) - 1)])
-        gen.context['indexes'].append(random.random() * filelen)
+        # gen.context['indexes'].append(random.random() * filelen)
+        gen.context['indexes'].append(.5)
         gen.context['orig_rhythms'] = gen.context['rhythms']
 
 
-gen_rhythms(g, 32)
+gen_rhythms(g, 1)
 
 g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[g.context['rhythms'],
@@ -104,29 +105,22 @@ g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       streammode=streammodes.random,
                                       seed=seed)
 
-sock = socket.socket(socket.AF_INET,  # Internet
-                     socket.SOCK_DGRAM)  # UDP
-
 cs = cs_utils.init_csound_with_orc(['-odac', '-W', '-+rtaudio=CoreAudio'],
-                          "/Users/admin/src/csound-pieces/thuja-ep/books-style/generic-index.orc",
-                          False,
-                           None)
+                                   "/Users/admin/src/csound-pieces/thuja-ep/books-style/generic-index.orc",
+                                   True,
+                                   None)
 cs.readScore("f0 3600\ne\n")
 cs.start()
 cpt = ctcsound.CsoundPerformanceThread(cs.csound())
 cpt.play()
-scoreTime = 0
 
+t = GeneratorThread(g, cs)
+t.daemon = True
+t.start()
+time.sleep(5)
+t.stop_event.set()
+t.join()
 
-for x in range(0, 200000):
-    scoreTime = cs.scoreTime()
-    if scoreTime > g.cur_time:
-        g.time_limit = scoreTime
-        g.generate_notes()
-        for note in g.notes:
-            cs.inputMessage(str(note))
-        g.notes = []
-        g.cur_time = scoreTime
 cpt.stop()
 cpt.join()
 cs.reset()
