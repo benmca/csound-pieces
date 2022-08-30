@@ -24,7 +24,7 @@ nchnls=1
 ;***********************************************************
 ;	THIS IS THE MAXIMUM DELAY TIME
 ;***********************************************************
-#define	totalDelayLineTime	#8#
+#define	totalDelayLineTime	#16#
 ;***********************************************************
 ;	THIS IS THE IO Base channel - stereo output 
 ;	goes in and out from IOBaseChannel and 
@@ -185,8 +185,8 @@ printks "recall: ksaved_delay_tap_point: %f \n", .001, ksaved_delay_tap_point
 osc_done:
 
 
-kinput_volume_scalar portk  kinput_on_off, .001
-koutput_volume_scalar portk  koutput_on_off, .001
+kinput_volume_scalar portk  kinput_on_off, .0005
+koutput_volume_scalar portk  koutput_on_off, .0005
 
 
 kchan = $IOBaseChannel
