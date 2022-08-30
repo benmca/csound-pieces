@@ -106,13 +106,13 @@ if (k1 == 0) goto osc_2
 	printks "kosc_delaytime: %f \n", .001, kosc_delaytime
 kdelay_tap_point = (kosc_delaytime * (gkmaxdel - gimin)) + gimin
 	printks "kdelay_tap_point: %f \n", .001, kdelay_tap_point
-kgoto osc_1
+;kgoto osc_1
 osc_2:
 k2  OSClisten gihandle, SregenerationOscAddress, "f", kosc_regentime
 if (k2 == 0) goto osc_3
 	printks "kosc_regentime: %f \n", .001, kosc_regentime
 kregeneration_scalar = kosc_regentime
-kgoto osc_2
+;kgoto osc_2
 osc_3:
 k3  OSClisten gihandle, SinputToggleOscAddress, "f", kosc_input_on
 if (k3 == 0) goto osc_4
@@ -120,25 +120,25 @@ if (k3 == 0) goto osc_4
 	;you are here - these should be different and generate your trigger
 	printks "kinput_on_off before: %f \n", .001, kinput_on_off
 kinput_on_off = kosc_input_on
-kgoto osc_3
+;kgoto osc_3
 osc_4:
 k4  OSClisten gihandle, SoutputToggleOscAddress, "f", kosc_output_on
 if (k4 == 0) goto osc_5
 	printks "kosc_output_on: %f \n", .001, kosc_output_on
 koutput_on_off = kosc_output_on
-kgoto osc_4
+;kgoto osc_4
 osc_5:
 k5  OSClisten gihandle, SinputVolumeOscAddress, "f", kosc_involume
 if (k5 == 0) goto osc_6
 	printks "kosc_involume: %f \n", .001, kosc_involume
 kinput_volume = kosc_involume
-kgoto osc_5
+;kgoto osc_5
 osc_6:
 k6  OSClisten gihandle, SoutputVolumeOscAddress, "f", kosc_outvolume
 if (k6 == 0) goto osc_7
 	printks "kosc_outvolume: %f \n", .001, kosc_outvolume
 koutput_volume = kosc_outvolume
-kgoto osc_6
+;kgoto osc_6
 osc_7:
 k7  OSClisten gihandle, StapTempoOscAddress, "f", kosc_push1val
 if (k7 == 0) goto osc_8
