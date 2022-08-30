@@ -1,19 +1,18 @@
-from thuja.itemstream import notetypes
-from thuja.itemstream import streammodes
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
 from thuja.generator import keys
+from thuja.itemstream import streammodes
+from thuja.itemstream import notetypes
+import thuja.utils as utils
+import thuja.csound_utils as cs_utils
 from collections import OrderedDict
-from thuja import utils
-import copy
-import csnd6
 
 import random
 
 
 rhythms = Itemstream(['s']*8,
     streammode=streammodes.sequence,
-    tempo=120,
+    tempo=60,
     notetype=notetypes.rhythm)
 amps = Itemstream([1])
 
@@ -28,13 +27,13 @@ g = Generator(
         (keys.rhythm, rhythms),
         (keys.duration, Itemstream([.1])),
         (keys.amplitude, 1),
-        (keys.frequency, pitches),
-        (keys.pan, 45),
-        (keys.distance, 10),
-        (keys.percent, .1)
+        (keys.frequency, pitches)
+        # (keys.pan, 45),
+        # (keys.distance, 10),
+        # (keys.percent, .1)
     ]),
     pfields=None,
-    note_limit=(len(pitches.values)*1024),
+    note_limit=(len(pitches.values)),
     gen_lines = [';sine\n',
                'f 1 0 16384 10 1\n',
                ';saw',
@@ -113,19 +112,17 @@ def post_processs_rhythm(note):
     pass
 
 
-g.post_processes = [post_processs, post_processs_rhythm]
+# g.post_processes = [post_processs, post_processs_rhythm]
 
 g.generate_notes()
 
-g.end_lines = ['i99 0 ' + str(g.score_dur+10) + '\n']
+# g.end_lines = ['i99 0 ' + str(g.score_dur+10) + '\n']
 
-with open ("sine.orc", "r") as f:
-    orc_string=f.read()
-score_string = g.generate_score_string()
-cs = csnd6.Csound()
-cs.CompileOrc(orc_string)
-cs.ReadScore(score_string)
-cs.SetOption('-odac0')
-cs.Start()
-cs.Perform()
-cs.Stop()
+# with open ("sine.orc", "r") as f:
+#     orc_string=f.read()
+# score_string = g.generate_score_string()
+with open ("test.sco", "w") as f:
+    for x in range(len(g.notes)):
+        f.writelines(g.notes[x])
+
+cs_utils.play_csound("../../_archive/2014/midiout.orc", g, silent=True, args_list=['-odac', '-Q0'])

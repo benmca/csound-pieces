@@ -22,6 +22,7 @@ inotenum = int(isolution)
 ;convert scalar 0 > 1 to velocity value 0 > 127
 iamp = p4
 ivelocity = int(127*iamp)
+print inotenum
 
 noteondur2   1, inotenum, ivelocity, p3-.1
 endin
