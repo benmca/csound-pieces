@@ -40,7 +40,7 @@ def get_random_index(note, context):
     note.pfields[keys.index] = random.randrange(20.0)
 
 def cleanup_strings(note, context):
-    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_ebows/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
 
 
@@ -54,11 +54,11 @@ def parse_rhythms_from_tuplestream(note, context):
 
 def calc_dur_l(note, context):
     steps = 16.0
-    dur = .2
+    dur = .1
     if (context['durdx']%steps) < steps*.5:
-        note.pfields[keys.duration] = ((context['durdx']%steps)/steps) * dur
+        note.pfields[keys.duration] = ((context['durdx']%steps)/steps) * dur + .1
     else:
-        note.pfields[keys.duration] = (1-(context['durdx']%steps)/steps) * dur
+        note.pfields[keys.duration] = (1-(context['durdx']%steps)/steps) * dur + .1
     context['durdx'] = context['durdx']+1
 
 
@@ -66,9 +66,9 @@ def calc_dur_r(note, context):
     steps = 9.0
     dur = .2
     if (context['durdx']%steps) < steps*.5:
-        note.pfields[keys.duration] = ((context['durdx']%steps)/steps) * dur
+        note.pfields[keys.duration] = ((context['durdx']%steps)/steps) * dur + .1
     else:
-        note.pfields[keys.duration] = (1-(context['durdx']%steps)/steps) * dur
+        note.pfields[keys.duration] = (1-(context['durdx']%steps)/steps) * dur + .1
     context['durdx'] = context['durdx']+1
 
 
@@ -104,7 +104,9 @@ pulse_l = Generator(
         ('output_prefix', 1),
         ('filepitch', Itemstream(['b', 'd', 'fs'])),
         ('stretch', "1"),
-        ('orig_rhythm', 1)
+        ('orig_rhythm', 1),
+        ('fade_in', .1),
+        ('fade_out', .1)
     ],
     pfields=[
         keys.instrument,
@@ -118,7 +120,9 @@ pulse_l = Generator(
         keys.index,
         'orig_rhythm',
         'inst_file',
-        'output_prefix'
+        'output_prefix',
+        'fade_in',
+        'fade_out'
     ],
     post_processes=[cleanup_strings, calc_dur_l, slide_start_l, get_random_index],
     init_context={'durdx': 0}
