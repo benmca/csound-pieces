@@ -1,4 +1,7 @@
 from __future__ import print_function
+
+import random
+
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
 from thuja.generator import keys
@@ -33,6 +36,8 @@ pitches_to_files = {
     'gs': 'gs.wav'
 }
 
+def get_random_index(note, context):
+    note.pfields[keys.index] = random.randrange(20.0)
 
 def cleanup_strings(note, context):
     note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
@@ -90,14 +95,14 @@ pulse_l = Generator(
         (keys.instrument, 1),
         (keys.duration, .1),
         (keys.rhythm, Itemstream('s', notetype=notetypes.rhythm)),
-        (keys.amplitude, 3),
+        (keys.amplitude, .5),
         (keys.frequency, Itemstream([1])),
         (keys.pan, 10),
         (keys.distance, 10),
         (keys.percent, .01),
         (keys.index, 18.075),
         ('output_prefix', 1),
-        ('filepitch', "b"),
+        ('filepitch', Itemstream(['b', 'd', 'fs'])),
         ('stretch', "1"),
         ('orig_rhythm', 1)
     ],
@@ -115,7 +120,7 @@ pulse_l = Generator(
         'inst_file',
         'output_prefix'
     ],
-    post_processes=[cleanup_strings, calc_dur_l, slide_start_l],
+    post_processes=[cleanup_strings, calc_dur_l, slide_start_l, get_random_index],
     init_context={'durdx': 0}
 )
 
@@ -140,7 +145,7 @@ pulse_l.time_limit = 120
 pulse_r = copy.deepcopy(pulse_l)
 pulse_r.notes = []
 pulse_r.streams[keys.pan] = 80
-pulse_r.post_processes = [cleanup_strings, calc_dur_r, slide_start_r]
+pulse_r.post_processes = [cleanup_strings, calc_dur_r, slide_start_r, get_random_index]
 
 
 texture1 = copy.deepcopy(pulse_l)
@@ -150,7 +155,7 @@ texture1.streams[keys.index] = Itemstream([18.394266363423284, 29.98640570194432
                         18.511066510650128, 42.11027927574142, 41.84313592235877, 53.576331546688465])
 texture1.streams[keys.rhythm] = Itemstream("q e s h".split(), notetype=notetypes.rhythm, streammode=streammodes.heap)
 texture1.streams[keys.duration] = lambda note: note.rhythm
-texture1.streams[keys.amplitude] = 1.0
+texture1.streams[keys.amplitude] = 2.0
 texture1.post_processes = [cleanup_strings, texture1_fadein]
 texture1.context['texture_start'] = texture1.start_time
 texture1.time_limit = 75
@@ -172,9 +177,9 @@ texture3.context['texture_start'] = texture3.start_time
 texture3.context['texture_end'] = texture3.time_limit
 
 pulse_l.add_generator(texture1)
-# pulse_l.add_generator(texture2)
-# pulse_l.add_generator(texture3)
-# pulse_l.add_generator(pulse_r)
+pulse_l.add_generator(texture2)
+pulse_l.add_generator(texture3)
+pulse_l.add_generator(pulse_r)
 
 pulse_l.generate_notes()
 
@@ -182,4 +187,4 @@ pulse_l.end_lines = ['i99 0 ' + str(pulse_l.score_dur+10) + ' 5\n']
 print(pulse_l.generate_score_string())
 
 
-cs_utils.play_csound("generic-index.orc", pulse_l, silent=True, args_list=['-odac2','-W','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("../books-style/generic-index.orc", pulse_l, silent=True, args_list=['-odac0', '-W', '-+rtaudio=CoreAudio'])

@@ -199,4 +199,4 @@ print(opening_l.generate_score_string())
 # cs_utils.play_csound("generic-index.orc", opening_l, silent=True, args_list=['-o/Users/ben/Music/Portfolio/_csound/index-study-2.wav', '-W'])
 #cs_utils.play_csound("generic-index.orc", opening_l, silent=True)
 
-cs_utils.play_csound("generic-index.orc", opening_l, silent=True, args_list=['-odac1', '-W'])
+cs_utils.play_csound("generic-index.orc", opening_l, silent=True, args_list=['-odac2', '-W'])
