@@ -7,7 +7,6 @@ import thuja.csound_utils as cs_utils
 
 from collections import OrderedDict
 import numpy as np
-import csnd6
 import copy
 
 import numpy.random as nprnd
@@ -31,7 +30,7 @@ filedur = (float(len(f)) / float(f.samplerate))
 g = Generator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
-        (keys.rhythm,  Itemstream([args.delta*nprnd.random() for i in xrange(args.numtapes)], 'sequence', tempo=60)),
+        (keys.rhythm,  Itemstream([args.delta*nprnd.random() for i in range(args.numtapes)], 'sequence', tempo=60)),
         (keys.duration, Itemstream([filedur])),
         (keys.amplitude, Itemstream([.25])),
         (keys.frequency, Itemstream([1])),

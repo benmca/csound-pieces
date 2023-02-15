@@ -15,7 +15,7 @@ import time
 
 seed = int(time.time())
 # seed = 1594358315
-seed = 1594358933
+# seed = 1594358933
 random.seed(seed)
 filelen = 30
 tempo = 120
@@ -35,6 +35,11 @@ pitches_to_files = {
     'gs': 'gs.wav'
 }
 
+
+
+def cleanup_strings_chapel(note, context):
+    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_chapel/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
 
 def cleanup_strings_gtrs(note, context):
     note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
@@ -71,7 +76,7 @@ g = Generator(
         (keys.pan, Itemstream([45])),
         (keys.distance, Itemstream([10])),
         (keys.percent, Itemstream([.01])),
-        ('filepitch', Itemstream([['c','e','g'],['f','a','c'],['g','b','d'],['d', 'f', 'a'],['a','c','e'],['e','g','b'],['b','d','f']])),
+        ('filepitch', Itemstream([['c','e','g'],['f','a','c'],['g','b','d'],['d', 'f', 'a'],['a','c','e'],['e','g','b'],['b','d','f'],['c','e','g', 'b'],['c','e','g', 'b'],['c','e','g', 'b'],['f','a','c', 'e'],['f','a','c', 'e'],['f','a','c', 'e']])),
         ('output_prefix', Itemstream([1])),
         ('ifadein', Itemstream(['3'])),
         ('ifadeout', Itemstream(['3']))
@@ -93,7 +98,7 @@ g = Generator(
         'ifadeout'
     ],
     note_limit=3,
-    post_processes=[parse_rhythms_from_tuplestream,cleanup_strings_ebows,break_into_phrases]
+    post_processes=[parse_rhythms_from_tuplestream,cleanup_strings_chapel,break_into_phrases]
 )
 
 
@@ -112,15 +117,14 @@ def gen_material(gen, l, opt=1):
         gen.context['orig_rhythms'] = gen.context['rhythms']
 
 
-# random.seed(1584747722)
-gen_material(g, 12*4)
+gen_material(g, 21*4)
 
 g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[g.context['rhythms'],
                                                      g.context['indexes']],
                                       tempo=tempo,
                                       # streammode=streammodes.random,
-                                      seed=1584747722)
+                                      seed=seed)
 g.gen_lines = [';sine\n',
                'f 1 0 16384 10 1\n',
                ';saw',
@@ -128,7 +132,7 @@ g.gen_lines = [';sine\n',
                ';pulse\n',
                'f 3 0 256 7 1 128 1 0 -1 128 -1\n']
 g.streams[keys.amplitude] = Itemstream([1])
-g.time_limit = 64
+g.time_limit = 180
 
 metronome = Generator(
     streams=OrderedDict([
@@ -161,7 +165,7 @@ metronome = Generator(
                   'output_prefix'
               ],
     note_limit=16,
-    post_processes=[cleanup_strings_ebows]
+    post_processes=[cleanup_strings_chapel]
 )
 
 # g.add_generator(metronome)
@@ -179,7 +183,7 @@ print("g.context['rhythms'] =", x.context['rhythms'])
 print("g.context['indexes'] =", x.context['indexes'])
 print(x.context['tuplestream'].seed)
 
-cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-odac0','-W','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-o/Users/ben/Desktop/ChapelOctober2022.chorale.' + str(seed) + '.wav','-W','-+rtaudio=CoreAudio'])
 
 # lilsten to the repeatign ds here -
 #        ('filepitch', Itemstream(('b '*8 + 'ds '*8 + 'fs '*8).split())),

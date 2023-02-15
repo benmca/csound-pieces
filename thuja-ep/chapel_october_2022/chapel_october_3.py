@@ -36,6 +36,10 @@ pitches_to_files = {
 }
 
 
+def cleanup_strings_chapel(note, context):
+    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_chapel/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
+
 def cleanup_strings_gtrs(note, context):
     note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
@@ -88,7 +92,7 @@ g = Generator(
         'output_prefix'
     ],
     note_limit=300,
-    post_processes=[parse_rhythms_from_tuplestream,cleanup_strings_gtrs,break_into_phrases]
+    post_processes=[parse_rhythms_from_tuplestream, cleanup_strings_chapel, break_into_phrases]
 )
 
 
@@ -164,7 +168,7 @@ metronome = Generator(
                   'output_prefix'
               ],
     note_limit=300,
-    post_processes=[cleanup_strings_ebows]
+    post_processes=[cleanup_strings_chapel]
 )
 
 # random.seed(1541470791)
@@ -228,7 +232,7 @@ print("g.context['rhythms'] =", x.context['rhythms'])
 print("g.context['indexes'] =", x.context['indexes'])
 print(x.context['tuplestream'].seed)
 
-cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-odac0','-W','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-o/Users/ben/Desktop/ChapelOctober2022.3.wav','-W','-+rtaudio=CoreAudio'])
 
 # lilsten to the repeatign ds here -
 #        ('filepitch', Itemstream(('b '*8 + 'ds '*8 + 'fs '*8).split())),

@@ -11,6 +11,7 @@ import random
 import time
 
 tempo = 120
+seed = int(time.time())
 
 pitches_to_files = {
     'a': 'a.wav',
@@ -34,7 +35,7 @@ def post_process(note, context):
     note.rhythm = utils.rhythm_to_duration(item[keys.rhythm], context['tuplestream'].tempo)
     note.pfields[keys.index] = item[keys.index]
     note.pfields['orig_rhythm'] = utils.rhythm_to_duration(orig_rhythm, context['tuplestream'].tempo)
-    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_ebows/' + note.pfields[keys.frequency] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_chapel/' + note.pfields[keys.frequency] + '.wav' + '"'
     note.pfields[keys.frequency] = 1
 
 
@@ -91,7 +92,7 @@ sec1.generators = []
 opening_l.add_generator(opening_r)
 
 
-for x in range(10):
+for x in range(2):
     sec = sec1.deepcopy()
     sec.start_time = 8
     sec.time_limit = 24
@@ -107,13 +108,33 @@ for x in range(10):
                                                                  sec.context['indexes']],
                                                   tempo=tempo,
                                                   streammode=streammodes.random,
-                                            seed=int(time.time())*x)
+                                            seed=seed*x)
     opening_l.add_generator(sec)
+
+
+for x in range(7):
+    sec = sec1.deepcopy()
+    sec.start_time = 24
+    sec.time_limit = 60
+    sec.streams[keys.pan] = x*10
+    sec.streams[keys.amplitude] = Itemstream('.5'.split(), streammode=streammodes.sequence)
+    sec.streams[keys.frequency] = Itemstream('a b c d e', streammode=streammodes.random)
+    sec.context['rhythms'] = ['s', 's', 's', 's', 'e.', 's', 'e.', 's']
+    sec.context['indexes'] = [random.uniform(0, 30.00) for x in range(len(sec.context['rhythms']))]
+    sec.context['orig_rhythms'] = sec.context['rhythms']
+    sec.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
+                                                  mapping_lists=[sec.context['rhythms'],
+                                                                 sec.context['indexes']],
+                                                  tempo=tempo,
+                                                  streammode=streammodes.random,
+                                            seed=seed*x)
+    opening_l.add_generator(sec)
+
 
 for x in range(12):
     end = sec1.deepcopy()
-    end.start_time = 24
-    end.time_limit = 28
+    end.start_time = 60
+    end.time_limit = 64
     pans = [0, 45, 90]
     end.streams[keys.pan] = pans[x % 3]
     end.streams[keys.amplitude] = Itemstream('1 1 1 0 1 0 0 0'.split(), streammode=streammodes.heap)
@@ -128,11 +149,11 @@ for x in range(12):
                                                                  end.context['indexes']],
                                                   tempo=tempo,
                                                   streammode=streammodes.random,
-                                            seed=int(time.time()) * x)
+                                            seed=seed * x)
     opening_l.add_generator(end)
 
 opening_l.generate_notes()
 opening_l.end_lines = ['i99 0 ' + str(opening_l.score_dur+10) + ' 10\n']
 # print(opening_l.generate_score_string())
 
-cs_utils.play_csound("generic-index.orc", opening_l, silent=True, args_list=['-odac2', '-W'])
+cs_utils.play_csound("generic-index.orc", opening_l, silent=True, args_list=['-o/Users/ben/Desktop/ChapelOctober2022.2.' + str(seed) + '.wav', '-W'])

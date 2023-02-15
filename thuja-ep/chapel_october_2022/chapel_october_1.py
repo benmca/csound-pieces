@@ -40,7 +40,7 @@ def get_random_index(note, context):
     note.pfields[keys.index] = random.randrange(20.0)
 
 def cleanup_strings(note, context):
-    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_ebows/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_chapel/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
 
 
@@ -102,10 +102,10 @@ pulse_l = Generator(
         (keys.percent, .01),
         (keys.index, 18.075),
         ('output_prefix', 1),
-        ('filepitch', Itemstream(['b', 'd', 'fs'])),
+        ('filepitch', Itemstream(['a', 'c', 'e']*32 + ['a']*64 + ['e']*64)),
         ('stretch', "1"),
         ('orig_rhythm', 1),
-        ('fade_in', .1),
+        ('fade_in', .01),
         ('fade_out', .1)
     ],
     pfields=[
@@ -154,19 +154,20 @@ pulse_r.post_processes = [cleanup_strings, calc_dur_r, slide_start_r, get_random
 
 texture1 = copy.deepcopy(pulse_l)
 texture1.streams[keys.pan] = 45
-texture1.start_time = utils.rhythm_to_duration('q', texture1.tempo()) * 4 * (4)
-texture1.streams[keys.index] = Itemstream([18.394266363423284, 29.986405701944328, 2.3787051284598992, 30.06279737830769,
-                        18.511066510650128, 42.11027927574142, 41.84313592235877, 53.576331546688465])
+texture1.start_time = utils.rhythm_to_duration('q', texture1.tempo()) * 4 * 8
+texture1.streams[keys.index] = Itemstream([random.uniform(0,30.00) for x in range(30)])
 texture1.streams[keys.rhythm] = Itemstream("q e s h".split(), notetype=notetypes.rhythm, streammode=streammodes.heap)
 texture1.streams[keys.duration] = lambda note: note.rhythm
 texture1.streams[keys.amplitude] = 2.0
 texture1.post_processes = [cleanup_strings, texture1_fadein]
 texture1.context['texture_start'] = texture1.start_time
-texture1.time_limit = 75
+texture1.time_limit = 60
 
 texture2 = copy.deepcopy(texture1)
 texture2.start_time = 60
+texture2.streams[keys.amplitude] = 1.5
 texture2.streams[keys.index].streammode = streammodes.heap
+texture2.streams['filepitch'] = Itemstream(['b', 'c', 'd', 'e', 'f', 'f', 'f', 'f', 'f', 'a', 'a', 'a', 'a'], streammode=streammodes.sequence)
 texture2.streams[keys.rhythm] = Itemstream("q e e. s s s s s s".split(), notetype=notetypes.rhythm, streammode=streammodes.sequence)
 texture2.post_processes = [cleanup_strings]
 texture2.time_limit = 90
@@ -176,9 +177,10 @@ texture3 = copy.deepcopy(texture2)
 texture3.start_time = 90
 texture3.streams[keys.rhythm] = Itemstream("w+w w h q s s s s s s s s".split(), notetype=notetypes.rhythm, streammode=streammodes.sequence)
 texture3.post_processes = [cleanup_strings, texture3_fadeout]
-texture3.time_limit = 120
+texture3.time_limit = 130
 texture3.context['texture_start'] = texture3.start_time
 texture3.context['texture_end'] = texture3.time_limit
+texture3.streams['filepitch'] = Itemstream(['a', 'b', 'c', 'd', 'e', 'f', 'g'], streammode=streammodes.sequence)
 
 pulse_l.add_generator(texture1)
 pulse_l.add_generator(texture2)
@@ -188,7 +190,7 @@ pulse_l.add_generator(pulse_r)
 pulse_l.generate_notes()
 
 pulse_l.end_lines = ['i99 0 ' + str(pulse_l.score_dur+10) + ' 5\n']
-print(pulse_l.generate_score_string())
+# print(pulse_l.generate_score_string())
+print(seed)
 
-
-cs_utils.play_csound("../books-style/generic-index.orc", pulse_l, silent=True, args_list=['-odac0', '-W', '-+rtaudio=CoreAudio'])
+cs_utils.play_csound("../books-style/generic-index.orc", pulse_l, silent=True, args_list=['-o/Users/ben/Desktop/ChapelOctober2022.1.' + str(seed) + '.wav', '-W', '-+rtaudio=CoreAudio'])
