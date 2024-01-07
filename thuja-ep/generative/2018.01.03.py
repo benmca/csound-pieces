@@ -24,13 +24,13 @@ pitches = Itemstream('a4 c e r a4 a a c a4 g r a4 a a a r'.split(),
 
 g = Generator(
     streams=OrderedDict([
-        (keys.instrument, 1),
+        (keys.instrument, 3),
         (keys.rhythm, rhythms),
         (keys.duration, Itemstream([.1])),
-        (keys.amplitude, 1),
+        (keys.amplitude, .5),
         (keys.frequency, pitches),
         (keys.pan, 45),
-        (keys.distance, 10),
+        (keys.distance, 3),
         (keys.percent, .1),
         ("channel", 1)
     ]),
@@ -50,7 +50,7 @@ g2.streams[keys.frequency] = Itemstream(['a3']*8+'a3 c d e r r r r'.split(), not
 g2.streams[keys.pan] = Itemstream([0,90], 'sequence')
 g2.streams[keys.distance] = Itemstream([1], 'sequence')
 g2.streams[keys.percent] = Itemstream([0], 'sequence')
-g2.streams[keys.amplitude] = Itemstream([.25])
+g2.streams[keys.amplitude] = Itemstream([.1])
 g.add_generator(g2)
 
 
@@ -58,20 +58,20 @@ g.generate_notes()
 
 g.end_lines = ['i99 0 ' + str(g.score_dur+10) + '\n']
 
-with open ("sine+midiout+channelparam-pulse.orc", "r") as f:
+with open ("sine+midiout+channelparam.orc", "r") as f:
     orc_string=f.read()
 score_string = g.generate_score_string()
 with open ("test.sco", "w") as sco:
     sco.write(score_string)
 cs = ctcsound.Csound()
 # cs.SetMIDIOutput('0')
-cs.setOption('-odac')
+cs.setOption('-odac1')
 # cs.SetOption('-v')
 # cs.SetOption('-M0'    )
-cs.setOption('-Q1')
-cs.setOption('--midi-devices=out')
-cs.setOption('-b64')
-cs.setOption('-B64')
+# cs.setOption('-Q1')
+# cs.setOption('--midi-devices=out')
+# cs.setOption('-b256')
+# cs.setOption('-B256')
 cs.compileOrc(orc_string)
 cs.readScore(score_string)
 

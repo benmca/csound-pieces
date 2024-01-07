@@ -12,7 +12,7 @@ import random
 
 rhythms = Itemstream(['s']*8,
     streammode=streammodes.sequence,
-    tempo=60,
+    tempo=220,
     notetype=notetypes.rhythm)
 amps = Itemstream([1])
 
@@ -27,13 +27,13 @@ g = Generator(
         (keys.rhythm, rhythms),
         (keys.duration, Itemstream([.1])),
         (keys.amplitude, 1),
-        (keys.frequency, pitches)
-        # (keys.pan, 45),
-        # (keys.distance, 10),
-        # (keys.percent, .1)
+        (keys.frequency, pitches),
+        (keys.pan, 45),
+        (keys.distance, 10),
+        (keys.percent, .1)
     ]),
     pfields=None,
-    note_limit=(len(pitches.values)),
+    note_limit=(1000),
     gen_lines = [';sine\n',
                'f 1 0 16384 10 1\n',
                ';saw',
@@ -112,7 +112,7 @@ def post_processs_rhythm(note):
     pass
 
 
-# g.post_processes = [post_processs, post_processs_rhythm]
+g.post_processes = [post_processs, post_processs_rhythm]
 
 g.generate_notes()
 
@@ -121,8 +121,8 @@ g.generate_notes()
 # with open ("sine.orc", "r") as f:
 #     orc_string=f.read()
 # score_string = g.generate_score_string()
-with open ("test.sco", "w") as f:
-    for x in range(len(g.notes)):
-        f.writelines(g.notes[x])
+# with open ("test.sco", "w") as f:
+#     for x in range(len(g.notes)):
+#         f.writelines(g.notes[x])
 
-cs_utils.play_csound("../../_archive/2014/midiout.orc", g, silent=True, args_list=['-odac', '-Q0'])
+cs_utils.play_csound("sine+midiout+channelparam.orc", g, silent=True, args_list=['-odac1'])

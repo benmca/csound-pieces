@@ -179,8 +179,7 @@ print("g.context['rhythms'] =", x.context['rhythms'])
 print("g.context['indexes'] =", x.context['indexes'])
 print(x.context['tuplestream'].seed)
 
-cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-odac1'])
-# ,'-W','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-odac0','-W','-+rtaudio=CoreAudio'])
 
 # lilsten to the repeatign ds here -
 #        ('filepitch', Itemstream(('b '*8 + 'ds '*8 + 'fs '*8).split())),

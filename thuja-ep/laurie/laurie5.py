@@ -1,6 +1,4 @@
-import csnd6
-from Tkinter import *
-from ttk import *
+import ctcsound
 import random
 from thuja.itemstream import Itemstream
 
@@ -115,14 +113,14 @@ i2 0 1
 
 
 # create & compile instance
-cs = csnd6.Csound()
-cs.SetOption("-odac0")
-cs.SetOption("-b128")
-cs.SetOption("-B1024")
-cs.SetOption("-M")
-cs.SetOption("--m-amps=0")
-cs.CompileOrc(orc)
-cs.ReadScore(sco)
-cs.Start()
-cs.Perform()
-cs.Stop()
+cs = ctcsound.Csound()
+cs.setOption("-odac0")
+cs.setOption("-b128")
+cs.setOption("-B1024")
+# cs.setOption("-M")
+cs.setOption("--m-amps=0")
+cs.compileOrc(orc)
+cs.readScore(sco)
+cs.start()
+cs.perform()
+cs.stop()

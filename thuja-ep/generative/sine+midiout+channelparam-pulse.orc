@@ -34,7 +34,7 @@ ichannel = p9
 iamp_midi = p4
 ivelocity = int(127*iamp_midi)
 
-noteondur2   ichannel, inotenum, ivelocity, p3-.1
+;noteondur2   ichannel, inotenum, ivelocity, p3-.1
 
 
 kamp    linseg   0, .001, iamp, idur*.5, iamp, .001, 0, (idur*.5)-.002, 0
