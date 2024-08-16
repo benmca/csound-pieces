@@ -7,3 +7,8 @@ CsoundBridge/bin/
 .idea/
 .project/
 *.sco
+*.wav
+*.pyc
+*.asd
+
+

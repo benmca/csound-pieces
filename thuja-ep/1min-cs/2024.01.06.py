@@ -30,6 +30,9 @@ files = [
     ["b2.wav", 7]
 ]
 
+path_to_1min = '/Volumes/T7 Shield/1min/'
+
+
 def update_index(note, context):
     # note.pfields[keys.duration] = ((context['durdx']%steps)/steps) * dur
     if context['pointer'] < starting_point:
@@ -44,7 +47,7 @@ def update_index(note, context):
 
     context['pointer'] += note.pfields[keys.duration]
     # note.pfields[keys.duration] = note.pfields[keys.duration]*10
-    note.pfields['inst_file'] = '\"/Users/ben/Desktop/1min/6/sources/' + files[note.pfields['filedx']][0] + '\"'
+    note.pfields['inst_file'] = '\"' + path_to_1min + '6/sources/' + files[note.pfields['filedx']][0] + '\"'
     if note.pfields['indx'] > files[note.pfields['filedx']][1]:
         note.pfields['indx'] = starting_point
         context['pointer'] = starting_point
@@ -60,7 +63,7 @@ container = (
         .with_percent(.02)
 )
 
-container.set_stream('inst_file', '\"/Users/ben/Desktop/1min/6/sources/c0.wav\"')
+container.set_stream('inst_file', '\"' + path_to_1min +  '6/sources/c0.wav\"')
 container.set_stream('orig_rhythm', .01)
 container.set_stream('output_prefix', 0)
 container.set_stream('ifadein', 0)
@@ -89,7 +92,7 @@ c_swell = (
         .with_dist(20)
         .with_percent(.02)
 )
-c_swell.set_stream('inst_file', '\"/Users/ben/Desktop/1min/6/sources/c0.wav\"')
+c_swell.set_stream('inst_file', '\"' + path_to_1min +  '6/sources/c0.wav\"')
 c_swell.set_stream('orig_rhythm', .01)
 c_swell.set_stream('output_prefix', 0)
 c_swell.set_stream('ifadein', 0)
@@ -385,6 +388,6 @@ reverb_time = 10
 container.gen.end_lines = ['i99 0 ' + str(container.gen.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(container.gen.generate_score_string())
 
-cs_utils.play_csound("../books-style/generic-index.orc", container.gen, silent=True, args_list=['-o6.wav', '-W'])
+cs_utils.play_csound("../books-style/generic-index.orc", container.gen, silent=True, args_list=['-odac1'])
 # ,'-+rtaudio=CoreAudio'])
 
