@@ -70,8 +70,8 @@ container.set_stream('fade_out', .01)
 container.set_stream('index', Itemstream(0, notetype=notetypes.number, streammode=streammodes.random))
 # container.set_stream('file_pitch', Itemstream("a c e g a".split()*8, streammode=streammodes.heap))
 # container.set_stream('filepitch', Itemstream('\"b\"'))
-container.gen.pfields += [keys.index, 'orig_rhythm', 'inst_file', 'fade_in','fade_out']
-container.gen.note_limit = 1
+container.pfields += [keys.index, 'orig_rhythm', 'inst_file', 'fade_in','fade_out']
+container.note_limit = 1
 
 
 first_phrase = copy.deepcopy(container)
@@ -99,48 +99,48 @@ def gen_rhythms(gen, l, opt=1):
         gen.context['orig_rhythms'] = gen.context['rhythms']
     return rhythms
 
-first_phrase.rhythms(gen_rhythms(first_phrase.gen, 4).split())
+first_phrase.rhythms(gen_rhythms(first_phrase, 4).split())
 first_phrase.amps(1)
 first_phrase.set_stream('filepitch', Itemstream("a c e g a a".split()*8, streammode=streammodes.heap))
-gen_rhythms(first_phrase.gen, 4)
-first_phrase.gen.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
-                                                  mapping_lists=[first_phrase.gen.context['rhythms'],
-                                                                 first_phrase.gen.context['indexes']],
+gen_rhythms(first_phrase, 4)
+first_phrase.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
+                                                  mapping_lists=[first_phrase.context['rhythms'],
+                                                                 first_phrase.context['indexes']],
                                                   tempo=tempo,
                                                   streammode=streammodes.sequence)
-first_phrase.gen.post_processes = [cleanup_strings, post_process]
-first_phrase.gen.note_limit = 6*8
+first_phrase.post_processes = [cleanup_strings, post_process]
+first_phrase.note_limit = 6*8
 
 
-second_phrase.rhythms(gen_rhythms(second_phrase.gen, 1, 2).split() +
-                      gen_rhythms(second_phrase.gen, 1, 3).split() +
-                      gen_rhythms(second_phrase.gen, 1, 4).split() +
-                      gen_rhythms(second_phrase.gen, 1, 1).split())
+second_phrase.rhythms(gen_rhythms(second_phrase, 1, 2).split() +
+                      gen_rhythms(second_phrase, 1, 3).split() +
+                      gen_rhythms(second_phrase, 1, 4).split() +
+                      gen_rhythms(second_phrase, 1, 1).split())
 second_phrase.amps(1)
 second_phrase.set_stream('filepitch', Itemstream("d f a".split()+"f a c f".split()+"f a c e f".split()+"a c e g a a".split(), streammode=streammodes.heap))
-second_phrase.gen.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
-                                                  mapping_lists=[second_phrase.gen.context['rhythms'],
-                                                                 second_phrase.gen.context['indexes']],
+second_phrase.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
+                                                  mapping_lists=[second_phrase.context['rhythms'],
+                                                                 second_phrase.context['indexes']],
                                                   tempo=tempo,
                                                   streammode=streammodes.sequence)
-second_phrase.gen.post_processes = [cleanup_strings, post_process]
-second_phrase.gen.note_limit = 18
-second_phrase.gen.start_time = 22.65
+second_phrase.post_processes = [cleanup_strings, post_process]
+second_phrase.note_limit = 18
+second_phrase.start_time = 22.65
 
 
-third_phrase.rhythms(gen_rhythms(third_phrase.gen, 4).split())
+third_phrase.rhythms(gen_rhythms(third_phrase, 4).split())
 third_phrase.amps(1)
 third_phrase.freqs(2)
 third_phrase.set_stream('filepitch', Itemstream("a c e g a a".split()*8, streammode=streammodes.heap))
-gen_rhythms(third_phrase.gen, 4)
-third_phrase.gen.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
-                                                  mapping_lists=[third_phrase.gen.context['rhythms'],
-                                                                 third_phrase.gen.context['indexes']],
+gen_rhythms(third_phrase, 4)
+third_phrase.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
+                                                  mapping_lists=[third_phrase.context['rhythms'],
+                                                                 third_phrase.context['indexes']],
                                                   tempo=tempo,
                                                   streammode=streammodes.sequence)
-third_phrase.gen.post_processes = [cleanup_strings, post_process]
-third_phrase.gen.note_limit = 6*8
-third_phrase.gen.start_time = 32.8
+third_phrase.post_processes = [cleanup_strings, post_process]
+third_phrase.note_limit = 6*8
+third_phrase.start_time = 32.8
 
 # gen_rhythms(g, 30)
 # g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
@@ -167,23 +167,23 @@ third_phrase.gen.start_time = 32.8
 #                                       tempo=tempo*.5)
 #
 
-container.gen.add_generator(first_phrase.gen)
-container.gen.add_generator(second_phrase.gen)
-container.gen.add_generator(third_phrase.gen)
+container.add_generator(first_phrase)
+container.add_generator(second_phrase)
+container.add_generator(third_phrase)
 
-container.gen.gen_lines = [';sine\n',
+container.gen_lines = [';sine\n',
                'f 1 0 16384 10 1\n',
                ';saw',
                'f 2 0 256 7 0 128 1 0 -1 128 0\n',
                ';pulse\n',
                'f 3 0 256 7 1 128 1 0 -1 128 -1\n']
-# g.gen.time_limit = 60
+# g.time_limit = 60
 
-container.gen.generate_notes()
+container.generate_notes()
 
 reverb_time = 10
-# container.gen.end_lines = ['i99 0 ' + str(container.gen.score_dur+10) + ' ' + str(reverb_time) + '\n']
-print(container.gen.generate_score_string())
+# container.end_lines = ['i99 0 ' + str(container.score_dur+10) + ' ' + str(reverb_time) + '\n']
+print(container.generate_score_string())
 
-cs_utils.play_csound("simple-index.orc", container.gen, silent=True, args_list=['-o9_gtrs.wav', "-W"])
+cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
 # ,'-+rtaudio=CoreAudio'])

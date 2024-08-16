@@ -44,19 +44,19 @@ pulse = (
     setup_index_params_with_file(filename)
 )
 
-pulse.gen.post_processes = [calc_dur]
-pulse.gen.context['durdx'] = 0
-pulse.gen.time_limit = 60
+pulse.post_processes = [calc_dur]
+pulse.context['durdx'] = 0
+pulse.time_limit = 60
 
 pulse2 = copy.deepcopy(pulse).with_pan(10).randomize()
 pulse3 = copy.deepcopy(pulse).with_pan(80).randomize()
 
-container.gen.add_generator(pulse.gen)
-container.gen.add_generator(pulse2.gen)
-container.gen.add_generator(pulse3.gen)
-container.gen.end_lines = ['i99 0 ' + str(pulse.gen.score_dur+10) + ' 5\n']
-container.gen.generate_notes()
+container.add_generator(pulse)
+container.add_generator(pulse2)
+container.add_generator(pulse3)
+container.end_lines = ['i99 0 ' + str(pulse.score_dur+10) + ' 5\n']
+container.generate_notes()
 
-# print(container.gen.generate_score_string())
+# print(container.generate_score_string())
 
-cs_utils.play_csound("simple-index.orc", container.gen, silent=False, args_list=['-odac1','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("simple-index.orc", container, silent=False, args_list=['-odac0','-+rtaudio=CoreAudio'])

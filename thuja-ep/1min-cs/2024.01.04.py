@@ -46,55 +46,55 @@ g = BasicLine()
 g.with_rhythm(Itemstream('q. e. e. e s s s s q'.split(),notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120)).with_duration(.05).with_amps(Itemstream([1]*8 + [0])).with_freqs(1).with_pan(45).with_dist(30).with_percent(.01)
 
 g.set_stream('orig_rhythm', .25)
-g.set_stream('inst_file', '\"/Volumes/Jim/Music/Portfolio/_Foley/ClaraStoryM.wav\"')
+g.set_stream('inst_file', '\"/Users/ben/Library/CloudStorage/Dropbox/Portfolio/_Foley/ClaraStoryM.wav\"')
 g.set_stream('output_prefix', 0)
 g.set_stream('ifadein', 0)
 g.set_stream('ifadeout', 0)
-g.gen.pfields += [keys.index, 'orig_rhythm', 'inst_file', 'output_prefix', 'ifadein', 'ifadeout']
-g.gen.note_limit = 100
-g.gen.post_processes = [update_index]
-g.gen.context = {'pointer': 0, 'note_count': 0}
+g.pfields += [keys.index, 'orig_rhythm', 'inst_file', 'output_prefix', 'ifadein', 'ifadeout']
+g.note_limit = 100
+g.post_processes = [update_index]
+g.context = {'pointer': 0, 'note_count': 0}
 
 
 g2 = copy.deepcopy(g)
-g2.gen.streams[keys.pan] = 10
-g2.gen.streams[keys.rhythm] = Itemstream('s'.split(), notetype=notetypes.rhythm,  streammode=streammodes.sequence, tempo=120)
-g2.gen.start_time = 5
-g.gen.add_generator(g2.gen)
+g2.streams[keys.pan] = 10
+g2.streams[keys.rhythm] = Itemstream('s'.split(), notetype=notetypes.rhythm,  streammode=streammodes.sequence, tempo=120)
+g2.start_time = 5
+g.add_generator(g2)
 
 g3 = copy.deepcopy(g)
-g3.gen.streams[keys.pan] = 80
-g3.gen.streams[keys.rhythm] = Itemstream('s s s e e q'.split(), notetype=notetypes.rhythm,  streammode=streammodes.heap, tempo=120)
-g3.gen.start_time = 10
-g.gen.add_generator(g3.gen)
+g3.streams[keys.pan] = 80
+g3.streams[keys.rhythm] = Itemstream('s s s e e q'.split(), notetype=notetypes.rhythm,  streammode=streammodes.heap, tempo=120)
+g3.start_time = 10
+g.add_generator(g3)
 
 
 flutes = copy.deepcopy(g)
-flutes.gen.streams[keys.distance] = 5
-flutes.gen.streams[keys.amplitude] = 1
-flutes.gen.streams[keys.pan] = 45
-flutes.gen.streams[keys.percent] = .1
-flutes.gen.streams['inst_file'] = Itemstream(['\"/Volumes/Jim/Music/Portfolio/_Foley/Cinque Terre Flute.aiff\"'])
-flutes.gen.streams[keys.rhythm] = Itemstream('q q q q q'.split(), notetype=notetypes.rhythm,  streammode=streammodes.heap, tempo=60)
-flutes.gen.post_processes = [process_flutes]
-flutes.gen.start_time = 15
-g.gen.add_generator(flutes.gen)
+flutes.streams[keys.distance] = 5
+flutes.streams[keys.amplitude] = 1
+flutes.streams[keys.pan] = 45
+flutes.streams[keys.percent] = .1
+flutes.streams['inst_file'] = Itemstream(['\"/Volumes/Jim/Music/Portfolio/_Foley/Cinque Terre Flute.aiff\"'])
+flutes.streams[keys.rhythm] = Itemstream('q q q q q'.split(), notetype=notetypes.rhythm,  streammode=streammodes.heap, tempo=60)
+flutes.post_processes = [process_flutes]
+flutes.start_time = 15
+g.add_generator(flutes)
 
-g.gen.gen_lines = [';sine\n',
+g.gen_lines = [';sine\n',
                'f 1 0 16384 10 1\n',
                ';saw',
                'f 2 0 256 7 0 128 1 0 -1 128 0\n',
                ';pulse\n',
                'f 3 0 256 7 1 128 1 0 -1 128 -1\n']
-g.gen.time_limit = 60
+g.time_limit = 60
 
-g.gen.generate_notes()
+g.generate_notes()
 
 reverb_time = 10
-g.gen.end_lines = ['i99 0 ' + str(g.gen.score_dur+10) + ' ' + str(reverb_time) + '\n']
-print(g.gen.generate_score_string())
+g.end_lines = ['i99 0 ' + str(g.score_dur+10) + ' ' + str(reverb_time) + '\n']
+print(g.generate_score_string())
 
-cs_utils.play_csound("../books-style/generic-index.orc", g.gen, silent=True, args_list=['-odac1'])
+cs_utils.play_csound("../books-style/generic-index.orc", g, silent=True, args_list=['-odac0'])
 # ,'-+rtaudio=CoreAudio'])
 
 # lilsten to the repeatign ds here -

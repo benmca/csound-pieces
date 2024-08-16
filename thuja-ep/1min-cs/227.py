@@ -36,19 +36,19 @@ container = (
 
 add_env_streams(container)
 
-container.gen.time_limit = 60
+container.time_limit = 60
 container.with_amps(.25)
 
 a = copy.deepcopy(container).with_pan(10).with_tempo(120).randomize()
 
 
-container.gen.add_generator(a.gen)
+container.add_generator(a)
 
-container.gen.generate_notes()
+container.generate_notes()
 
 reverb_time = 10
-container.gen.end_lines = ['i99 0 ' + str(container.gen.score_dur+10) + ' ' + str(reverb_time) + '\n']
-print(container.gen.generate_score_string())
+container.end_lines = ['i99 0 ' + str(container.score_dur+10) + ' ' + str(reverb_time) + '\n']
+print(container.generate_score_string())
 
-# cs_utils.play_csound("simple-index.orc", container.gen, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("226.orc", container.gen, silent=True, args_list=['-odac0', '-W'])
+# cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
+cs_utils.play_csound("226.orc", container, silent=True, args_list=['-odac0', '-W'])

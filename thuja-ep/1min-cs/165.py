@@ -35,31 +35,31 @@ container.set_stream('inst_file', ['\"' + filename + '\"'])
 container.set_stream('fade_in', .001)
 container.set_stream('fade_out', .01)
 
-container.gen.time_limit = 4
-container.gen.end_lines = ['i99 0 ' + str(container.gen.score_dur+10) + ' 5\n']
-container.gen.post_processes = [calc_dur]
+container.time_limit = 4
+container.end_lines = ['i99 0 ' + str(container.score_dur+10) + ' 5\n']
+container.post_processes = [calc_dur]
 
 for x in range(0, 2):
     pans = [10, 80]
     pulse = copy.deepcopy(container).with_pan(pans[x]).randomize()
-    pulse.gen.streams[keys.rhythm].tempo = 240
-    pulse.gen.start_time = 4
-    pulse.gen.time_limit = 12
-    container.gen.add_generator(pulse.gen)
+    pulse.streams[keys.rhythm].tempo = 240
+    pulse.start_time = 4
+    pulse.time_limit = 12
+    container.add_generator(pulse)
 
 for x in range(0, 2):
     pans = [10, 80]
     pulse = copy.deepcopy(container).with_pan(pans[x]).randomize().with_rhythm(Itemstream("s s. e e.", streammode=streammodes.random, tempo=180))
      # pulse = copy.deepcopy(container).with_pan(pans[x]).randomize()
-    pulse.gen.streams[keys.rhythm].tempo = 240
-    pulse.gen.start_time = 12
-    pulse.gen.time_limit = 18
-    container.gen.add_generator(pulse.gen)
+    pulse.streams[keys.rhythm].tempo = 240
+    pulse.start_time = 12
+    pulse.time_limit = 18
+    container.add_generator(pulse)
 # pulse = copy.deepcopy(container).with_pan(pans[x]).randomize().with_rhythm(Itemstream("s s. e e.", tempo=240))
-container.gen.generate_notes()
+container.generate_notes()
 
-print(container.gen.generate_score_string())
+print(container.generate_score_string())
 
-# cs_utils.play_csound("simple-index.orc", container.gen, silent=False, args_list=['-odac1','-+rtaudio=CoreAudio'])
-cs_utils.play_csound("simple-index.orc", container.gen, silent=True, args_list=["-o165.wav", "-W"])
+# cs_utils.play_csound("simple-index.orc", container, silent=False, args_list=['-odac1','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=["-odac0", "-W"])
 
