@@ -7,7 +7,6 @@ from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
-import copy
 import random
 import time
 
@@ -41,7 +40,7 @@ container.post_processes = [calc_dur]
 
 for x in range(0, 2):
     pans = [10, 80]
-    pulse = copy.deepcopy(container).with_pan(pans[x]).randomize()
+    pulse = container.deepcopy().with_pan(pans[x]).randomize()
     pulse.streams[keys.rhythm].tempo = 240
     pulse.start_time = 4
     pulse.time_limit = 12
@@ -49,13 +48,13 @@ for x in range(0, 2):
 
 for x in range(0, 2):
     pans = [10, 80]
-    pulse = copy.deepcopy(container).with_pan(pans[x]).randomize().with_rhythm(Itemstream("s s. e e.", streammode=streammodes.random, tempo=180))
-     # pulse = copy.deepcopy(container).with_pan(pans[x]).randomize()
+    pulse = container.deepcopy().with_pan(pans[x]).randomize().with_rhythm(Itemstream("s s. e e.", streammode=streammodes.random, tempo=180))
+     # pulse = container.deepcopy().with_pan(pans[x]).randomize()
     pulse.streams[keys.rhythm].tempo = 240
     pulse.start_time = 12
     pulse.time_limit = 18
     container.add_generator(pulse)
-# pulse = copy.deepcopy(container).with_pan(pans[x]).randomize().with_rhythm(Itemstream("s s. e e.", tempo=240))
+# pulse = container.deepcopy().with_pan(pans[x]).randomize().with_rhythm(Itemstream("s s. e e.", tempo=240))
 container.generate_notes()
 
 print(container.generate_score_string())

@@ -74,9 +74,9 @@ container.pfields += [keys.index, 'orig_rhythm', 'inst_file', 'fade_in','fade_ou
 container.note_limit = 1
 
 
-first_phrase = copy.deepcopy(container)
-second_phrase = copy.deepcopy(container)
-third_phrase = copy.deepcopy(container)
+first_phrase = container.deepcopy()
+second_phrase = container.deepcopy()
+third_phrase = container.deepcopy()
 
 
 def gen_rhythms(gen, l, opt=1):

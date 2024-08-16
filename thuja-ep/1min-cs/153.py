@@ -7,7 +7,6 @@ from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
-import copy
 import random
 import time
 
@@ -48,8 +47,8 @@ pulse.post_processes = [calc_dur]
 pulse.context['durdx'] = 0
 pulse.time_limit = 60
 
-pulse2 = copy.deepcopy(pulse).with_pan(10).randomize()
-pulse3 = copy.deepcopy(pulse).with_pan(80).randomize()
+pulse2 = pulse.deepcopy().with_pan(10).randomize()
+pulse3 = pulse.deepcopy().with_pan(80).randomize()
 
 container.add_generator(pulse)
 container.add_generator(pulse2)

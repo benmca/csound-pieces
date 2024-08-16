@@ -9,7 +9,6 @@ import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 from collections import OrderedDict
 import numpy as np
-import copy
 import random
 import time
 
@@ -56,20 +55,20 @@ g.post_processes = [update_index]
 g.context = {'pointer': 0, 'note_count': 0}
 
 
-g2 = copy.deepcopy(g)
+g2 = g.deepcopy()
 g2.streams[keys.pan] = 10
 g2.streams[keys.rhythm] = Itemstream('s'.split(), notetype=notetypes.rhythm,  streammode=streammodes.sequence, tempo=120)
 g2.start_time = 5
 g.add_generator(g2)
 
-g3 = copy.deepcopy(g)
+g3 = g.deepcopy()
 g3.streams[keys.pan] = 80
 g3.streams[keys.rhythm] = Itemstream('s s s e e q'.split(), notetype=notetypes.rhythm,  streammode=streammodes.heap, tempo=120)
 g3.start_time = 10
 g.add_generator(g3)
 
 
-flutes = copy.deepcopy(g)
+flutes = g.deepcopy()
 flutes.streams[keys.distance] = 5
 flutes.streams[keys.amplitude] = 1
 flutes.streams[keys.pan] = 45

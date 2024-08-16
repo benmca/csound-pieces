@@ -61,7 +61,7 @@ container.pfields += [keys.index, 'orig_rhythm', 'inst_file', 'fade_in','fade_ou
 container.note_limit = 1
 container.time_limit = 70
 
-first_phrase_1 = copy.deepcopy(container)
+first_phrase_1 = container.deepcopy()
 
 
 first_phrase_1.with_rhythm(Itemstream("s s e e e. e. q".split(), tempo=tempo))
@@ -72,11 +72,11 @@ first_phrase_1.note_limit = 300
 first_phrase_1.with_duration(Itemstream([.1,.1, .5, .5, 1], streammode=streammodes.random))
 first_phrase_1.with_pan([20])
 first_phrase_1.set_streams_to_seed(int(time.time()))
-first_phrase_2 = copy.deepcopy(first_phrase_1)
+first_phrase_2 = first_phrase_1.deepcopy()
 first_phrase_2.with_pan([70])
 first_phrase_2.set_streams_to_seed(int(time.time()) + 100)
 
-second_phrase = copy.deepcopy(first_phrase_1)
+second_phrase = first_phrase_1.deepcopy()
 second_phrase.with_pan(45).with_rhythm(['q']).with_duration([1])
 second_phrase.start_time = 16
 

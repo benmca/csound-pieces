@@ -7,7 +7,6 @@ import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 from collections import OrderedDict
 import numpy as np
-import copy
 import random
 import time
 
@@ -35,8 +34,8 @@ container.set_stream('rel', .01)
 container.time_limit = 60
 container.with_amps(.25)
 
-a = copy.deepcopy(container).with_pan(10).randomize()
-b = copy.deepcopy(container).with_pan(80).randomize()
+a = container.deepcopy().with_pan(10).randomize()
+b = container.deepcopy().with_pan(80).randomize()
 
 a.start_time = 4
 a.streams[keys.frequency].streammode = streammodes.random
@@ -46,7 +45,7 @@ b.start_time = 4
 b.streams[keys.frequency].streammode = streammodes.random
 b.streams[keys.rhythm].tempo = 240
 
-c = copy.deepcopy(container).with_pan(45).randomize()
+c = container.deepcopy().with_pan(45).randomize()
 c.start_time = 8
 c.with_rhythm(Itemstream("e s e s e e e e e e".split(), notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))
 c.streams[keys.frequency] = Itemstream("c6 b5 c6 b5 c6 b5 g e c5 b4".split(), notetype=notetypes.pitch, streammode=streammodes.sequence)
@@ -54,16 +53,16 @@ c.with_duration([.01]*5+[.05]*5)
 c.with_percent(.2)
 c.with_amps(.2)
 
-d = copy.deepcopy(c).with_pan(0)
+d = c.deepcopy().with_pan(0)
 d.streams[keys.rhythm].tempo = 240
 d.start_time = 16
 
 
-e = copy.deepcopy(c).with_pan(90)
+e = c.deepcopy().with_pan(90)
 e.streams[keys.rhythm].tempo = 240
 e.start_time = 16
 
-f = copy.deepcopy(c).with_pan(45)
+f = c.deepcopy().with_pan(45)
 f.streams[keys.rhythm].tempo = 60
 f.start_time = 24
 f.with_rhythm(Itemstream("e.".split(), notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))

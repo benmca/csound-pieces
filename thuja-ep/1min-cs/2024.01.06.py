@@ -74,10 +74,10 @@ container.note_limit = 1
 container.post_processes = [update_index]
 container.context = {'pointer': 0, 'note_count': 0}
 
-first_phrase = copy.deepcopy(container)
-second_phrase = copy.deepcopy(container)
-third_phrase = copy.deepcopy(container)
-fourth_phrase = copy.deepcopy(container)
+first_phrase = container.deepcopy()
+second_phrase = container.deepcopy()
+third_phrase = container.deepcopy()
+fourth_phrase = container.deepcopy()
 
 rhythm_stream = Itemstream(np.linspace(.01, .1, 100).tolist() + np.linspace(.1, .01, 100).tolist() , notetype=notetypes.number, streammode=streammodes.sequence, tempo=120)
 rhythm_stream_2 = Itemstream(np.linspace(.01, .2, 100).tolist() + np.linspace(.2, .01, 100).tolist() , notetype=notetypes.number, streammode=streammodes.sequence, tempo=120)
@@ -103,11 +103,11 @@ c_swell.note_limit = 200
 c_swell.post_processes = [update_index]
 c_swell.context = {'pointer': 0, 'note_count': 0, 'phrase': 1}
 
-c_swell2 = copy.deepcopy(c_swell)
+c_swell2 = c_swell.deepcopy()
 c_swell2.pan(10)
 c_swell2.set_stream('filedx', Itemstream(1, notetype=notetypes.number, streammode=streammodes.random))
 
-c_swell3 = copy.deepcopy(c_swell)
+c_swell3 = c_swell.deepcopy()
 c_swell3.pan(80)
 c_swell3.set_stream('filedx', Itemstream(2, notetype=notetypes.number, streammode=streammodes.random))
 
@@ -115,24 +115,24 @@ first_phrase.add_generator(c_swell)
 first_phrase.add_generator(c_swell2)
 first_phrase.add_generator(c_swell3)
 ########################################
-c_0 = copy.deepcopy(c_swell)
+c_0 = c_swell.deepcopy()
 c_0.context['phrase'] = 2
 c_1 = copy.deepcopy(c_swell2)
 c_1.context['phrase'] = 2
 c_2 = copy.deepcopy(c_swell3)
 c_2.context['phrase'] = 2
 
-g_0 = copy.deepcopy(c_swell)
+g_0 = c_swell.deepcopy()
 g_0.pan(45)
 g_0.context['phrase'] = 2
 g_0.set_stream('filedx', Itemstream(6, notetype=notetypes.number, streammode=streammodes.random))
 
-g_1 = copy.deepcopy(c_swell)
+g_1 = c_swell.deepcopy()
 g_1.pan(80)
 g_1.context['phrase'] = 2
 g_1.set_stream('filedx', Itemstream(7, notetype=notetypes.number, streammode=streammodes.random))
 
-g_2 = copy.deepcopy(c_swell)
+g_2 = c_swell.deepcopy()
 g_2.pan(10)
 g_2.context['phrase'] = 2
 g_2.set_stream('filedx', Itemstream(8, notetype=notetypes.number, streammode=streammodes.random))
@@ -158,22 +158,22 @@ g_2_p3 = copy.deepcopy(g_2)
 g_2_p3.context['phrase'] = 3
 
 
-b_0 = copy.deepcopy(c_swell)
+b_0 = c_swell.deepcopy()
 b_0.pan(45)
 b_0.context['phrase'] = 3
 b_0.set_stream('filedx', Itemstream(9, notetype=notetypes.number, streammode=streammodes.random))
 
-b_1 = copy.deepcopy(c_swell)
+b_1 = c_swell.deepcopy()
 b_1.pan(80)
 b_1.context['phrase'] = 3
 b_1.set_stream('filedx', Itemstream(10, notetype=notetypes.number, streammode=streammodes.random))
 
-b_2 = copy.deepcopy(c_swell)
+b_2 = c_swell.deepcopy()
 b_2.pan(10)
 b_2.context['phrase'] = 3
 b_2.set_stream('filedx', Itemstream(11, notetype=notetypes.number, streammode=streammodes.random))
 
-f_0 = copy.deepcopy(c_swell)
+f_0 = c_swell.deepcopy()
 f_0.pan(45)
 f_0.freqs(.75)
 f_0.dist(10)
@@ -181,35 +181,35 @@ f_0.context['phrase'] = 3
 f_0.set_stream('filedx', Itemstream(0, notetype=notetypes.number, streammode=streammodes.random))
 
 
-f_1 = copy.deepcopy(c_swell)
+f_1 = c_swell.deepcopy()
 f_1.pan(80)
 f_1.freqs(.75)
 f_1.dist(10)
 f_1.context['phrase'] = 3
 f_1.set_stream('filedx', Itemstream(1, notetype=notetypes.number, streammode=streammodes.random))
 
-f_2 = copy.deepcopy(c_swell)
+f_2 = c_swell.deepcopy()
 f_2.pan(10)
 f_2.freqs(.75)
 f_2.dist(10)
 f_2.context['phrase'] = 3
 f_2.set_stream('filedx', Itemstream(2, notetype=notetypes.number, streammode=streammodes.random))
 
-lowc_0 = copy.deepcopy(c_swell)
+lowc_0 = c_swell.deepcopy()
 lowc_0.pan(45)
 lowc_0.freqs(.75)
 lowc_0.dist(10)
 lowc_0.context['phrase'] = 3
 lowc_0.set_stream('filedx', Itemstream(6, notetype=notetypes.number, streammode=streammodes.random))
 
-lowc_1 = copy.deepcopy(c_swell)
+lowc_1 = c_swell.deepcopy()
 lowc_1.pan(80)
 lowc_1.freqs(.75)
 lowc_1.dist(10)
 lowc_1.context['phrase'] = 3
 lowc_1.set_stream('filedx', Itemstream(7, notetype=notetypes.number, streammode=streammodes.random))
 
-lowc_2 = copy.deepcopy(c_swell)
+lowc_2 = c_swell.deepcopy()
 lowc_2.pan(10)
 lowc_2.freqs(.75)
 lowc_1.dist(10)
@@ -267,7 +267,7 @@ lowc_1_p4.context['phrase'] = 4
 lowc_2_p4 = copy.deepcopy(lowc_2)
 lowc_2_p4.context['phrase'] = 4
 
-e_0 = copy.deepcopy(c_swell)
+e_0 = c_swell.deepcopy()
 e_0.pan(45)
 e_0.freqs(2)
 # e_0.dist(5)
@@ -275,7 +275,7 @@ e_0.freqs(2)
 e_0.context['phrase'] = 4
 e_0.set_stream('filedx', Itemstream(6, notetype=notetypes.number, streammode=streammodes.random))
 
-e_1 = copy.deepcopy(c_swell)
+e_1 = c_swell.deepcopy()
 e_1.pan(80)
 e_1.freqs(2)
 # e_1.dist(5)
@@ -283,7 +283,7 @@ e_1.freqs(2)
 e_1.context['phrase'] = 4
 e_1.set_stream('filedx', Itemstream(7, notetype=notetypes.number, streammode=streammodes.random))
 
-e_2 = copy.deepcopy(c_swell)
+e_2 = c_swell.deepcopy()
 e_2.pan(10)
 e_2.freqs(2)
 # e_2.dist(5)
@@ -291,7 +291,7 @@ e_2.freqs(2)
 e_2.context['phrase'] = 4
 e_2.set_stream('filedx', Itemstream(8, notetype=notetypes.number, streammode=streammodes.random))
 
-b_0 = copy.deepcopy(c_swell)
+b_0 = c_swell.deepcopy()
 b_0.pan(45)
 b_0.freqs(2.5)
 # b_0.dist(5)
@@ -299,7 +299,7 @@ b_0.freqs(2.5)
 b_0.context['phrase'] = 4
 b_0.set_stream('filedx', Itemstream(6, notetype=notetypes.number, streammode=streammodes.random))
 
-b_1 = copy.deepcopy(c_swell)
+b_1 = c_swell.deepcopy()
 b_1.pan(80)
 b_1.freqs(2.5)
 # b_1.dist(5)
@@ -307,7 +307,7 @@ b_1.freqs(2.5)
 b_1.context['phrase'] = 4
 b_1.set_stream('filedx', Itemstream(7, notetype=notetypes.number, streammode=streammodes.random))
 
-b_2 = copy.deepcopy(c_swell)
+b_2 = c_swell.deepcopy()
 b_2.pan(10)
 b_2.freqs(2.5)
 # b_2.with_percent(.03)
@@ -388,6 +388,6 @@ reverb_time = 10
 container.end_lines = ['i99 0 ' + str(container.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(container.generate_score_string())
 
-cs_utils.play_csound("../books-style/generic-index.orc", container, silent=True, args_list=['-odac1'])
+cs_utils.play_csound("../books-style/generic-index.orc", container, silent=True, args_list=['-odac0'])
 # ,'-+rtaudio=CoreAudio'])
 

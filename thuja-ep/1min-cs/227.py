@@ -39,7 +39,7 @@ add_env_streams(container)
 container.time_limit = 60
 container.with_amps(.25)
 
-a = copy.deepcopy(container).with_pan(10).with_tempo(120).randomize()
+a = container.deepcopy().with_pan(10).with_tempo(120).randomize()
 
 
 container.add_generator(a)
