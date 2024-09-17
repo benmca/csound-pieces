@@ -38,7 +38,7 @@ pitches_to_files = {
 
 
 def cleanup_strings(note, context):
-    note.pfields['inst_file'] = '"' + '/Users/admin/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
+    note.pfields['inst_file'] = '"' + '/Users/ben/Library/CloudStorage/Dropbox/_gtrs/' + note.pfields['filepitch'] + '.wav' + '"'
     note.pfields['filepitch'] = '"' + note.pfields['filepitch'] + '"'
 
 
@@ -106,7 +106,7 @@ g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       seed=seed)
 
 cs = cs_utils.init_csound_with_orc(['-odac', '-W', '-+rtaudio=CoreAudio'],
-                                   "/Users/admin/src/csound-pieces/thuja-ep/books-style/generic-index.orc",
+                                   "/Users/ben/src/csound-pieces/thuja-ep/books-style/generic-index.orc",
                                    True,
                                    None)
 cs.readScore("f0 3600\ne\n")
