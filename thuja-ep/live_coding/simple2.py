@@ -8,15 +8,7 @@ from thuja.generator import Generator, GeneratorThread
 from thuja.generator import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
-import thuja.utils as utils
 import thuja.csound_utils as cs_utils
-from collections import OrderedDict
-import numpy as np
-import copy
-import random
-import time
-import threading
-
 
 
 def add_env_streams(c, atck=.01, rel=.01):
@@ -25,7 +17,7 @@ def add_env_streams(c, atck=.01, rel=.01):
 
 
 container = (
-    BasicLine().with_rhythm(Itemstream(['q'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    BasicLine().with_rhythm(Itemstream(['q','e','e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(.25)
         .with_amps(1)
         .with_pitches(Itemstream(['g4'], notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -56,8 +48,10 @@ t = GeneratorThread(container, cs, cpt)
 t.daemon = True
 t.start()
 
-# container.with_rhythm(Itemstream(['q','e','e','e'], notetype=notetypes.rhythm, streammode=streammodes.sequence))
-#
+container.with_pitches(Itemstream('g1 g3 g4'.split(), notetype=notetypes.pitch, streammode=streammodes.random))
+container.with_rhythm(Itemstream(['s'], notetype=notetypes.rhythm, streammode=streammodes.random))
+container.generate_notes()
+
 # time.sleep(100)
 # t.stop_event.set()
 # t.join()

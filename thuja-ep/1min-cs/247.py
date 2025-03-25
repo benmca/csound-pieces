@@ -63,4 +63,4 @@ a.end_lines = ['i99 0 ' + str(a.score_dur+10) + ' ' + str(reverb_time) + '\n']
 # print(a.generate_score_string())
 
 # cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("simple-index-247.orc", a, silent=True, args_list=['-o247.wav', '-W'])
+cs_utils.play_csound("simple-index-247.orc", a, silent=True, args_list=['-odac3', '-W'])

@@ -10,5 +10,9 @@ CsoundBridge/bin/
 *.wav
 *.pyc
 *.asd
+*.pkf
+*.mp3
+*.pvoc
+
 
 

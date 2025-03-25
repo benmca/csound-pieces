@@ -58,4 +58,4 @@ container.generate_notes()
 
 # print(container.generate_score_string())
 
-cs_utils.play_csound("simple-index.orc", container, silent=False, args_list=['-odac0','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("simple-index.orc", container, silent=False, args_list=['-W','-o263.wav','-+rtaudio=CoreAudio'])

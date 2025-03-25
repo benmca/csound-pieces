@@ -1,12 +1,14 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine
-from thuja.itemstream import streammodes
-from thuja.itemstream import notetypes
+from thuja.generator import BasicLine, GeneratorThread
+from thuja.itemstream import streammodes, notetypes
 from thuja.generator import StreamKey as key
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 import numpy as np
 import random
+import time
+import ctcsound
+
 
 
 def freq_to_file(note, context):
@@ -54,6 +56,9 @@ def cycle_by_intervals(note, context):
 
     pass
 
+def set_dur(note, context):
+    note.pfields[key.duration] = note.pfields[key.rhythm]*.5
+
 a = (
     BasicLine().with_rhythm(Itemstream('e e e w+w w+w'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(2)
@@ -82,16 +87,17 @@ b = (
         .with_percent(.05)
 )
 
+
+
 b.post_processes = [freq_to_file]
 b.set_stream('inst_file', Itemstream([""], notetype=notetypes.path))
 b.set_stream('atck', .01)
 b.set_stream('rel', .01)
-b.time_limit = 45
-
+b.time_limit = 1000
 
 c = (
-    BasicLine().with_rhythm(Itemstream(['w+w'], notetype=notetypes.rhythm, streammode=streammodes.sequence))
-        .with_duration(2)
+    BasicLine().with_rhythm(Itemstream('12 12 24 24 32 32 48 48'.split(), notetype=notetypes.rhythm, streammode=streammodes.random))
+        .with_duration(lambda note: note.rhythm)
         .with_amps(.5)
         .with_pitches(Itemstream(['e2', 'fs3', 'gs4', 'as5'], notetype=notetypes.pitch, streammode=streammodes.sequence))
         .with_pan(45)
@@ -103,18 +109,55 @@ c.post_processes = [freq_to_file]
 c.set_stream('inst_file', Itemstream([""], notetype=notetypes.path))
 c.set_stream('atck', .01)
 c.set_stream('rel', .01)
-c.time_limit = 45
+c.time_limit = 120
 c.context["interval"] = 3
 
-
 a.add_generator(b)
-
-# a.add_generator(c)
+a.add_generator(c)
 a.generate_notes()
+b.generate_notes()
 
-reverb_time = 10
-a.end_lines = ['i99 0 ' + str(a.score_dur+10) + ' ' + str(reverb_time) + '\n']
-# print(a.generate_score_string())
+# reverb_time = 10
+# a.end_lines = ['i99 0 ' + str(a.score_dur+10) + ' ' + str(reverb_time) + '\n']
+print(c.generate_score_string())
 
-# cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("simple-index-247.orc", a, silent=True, args_list=['-o248.wav', '-W'])
+
+cs = cs_utils.init_csound_with_orc(['-odac4', '-W', '-+rtaudio=CoreAudio'],
+                                   "/Users/ben/src/csound-pieces/thuja-ep/1min-cs/simple-index-247.orc",
+                                   True,
+                                   None)
+
+cs.readScore("f1 0 513 10 1\ni99 0 3600 10\ne\n")
+cs.start()
+cpt = ctcsound.CsoundPerformanceThread(cs.csound())
+cpt.play()
+
+t = GeneratorThread(b, cs, cpt)
+t.daemon = True
+t.start()
+
+
+time.sleep(120)
+t.stop_event.set()
+t.join()
+
+cpt.stop()
+cpt.join()
+cs.reset()
+
+b.with_pitches(Itemstream([['e2', 'fs5', 'b4'], ['e3', 'fs3', 'a3', 'b3'], ['e2', 'g5', 'b4'], 'r'], notetype=notetypes.pitch, streammode=streammodes.sequence))
+b.streams[key.rhythm].tempo = 420
+b.with_rhythm(
+    Itemstream('q h q. q. q h+h.'.split(), notetype=notetypes.rhythm, streammode=streammodes.sequence,
+               tempo=240))
+
+b.generate_notes()
+
+c = b.deepcopy()
+c.with_rhythm(
+    Itemstream('s'.split(), notetype=notetypes.rhythm, streammode=streammodes.sequence,
+               tempo=120))
+b.add_generator(c)
+b.generate_notes()
+
+c.with_pitches(Itemstream([['e3', 'b3' ], 'e3'], notetype = notetypes.pitch, streammode = streammodes.sequence))
