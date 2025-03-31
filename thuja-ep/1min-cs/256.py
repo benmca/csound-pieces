@@ -1,7 +1,7 @@
 from thuja.itemstream import Itemstream
 from thuja.generator import BasicLine, GeneratorThread
 from thuja.itemstream import streammodes, notetypes
-from thuja.generator import StreamKey as key
+from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 import numpy as np
@@ -112,4 +112,4 @@ a.end_lines = ['i99 0 ' + str(a.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(a.generate_score_string())
 
 # cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("255.orc", a, silent=True, args_list=['-o256.wav', '-W'])
+cs_utils.play_csound("255.orc", a, silent=True, args_list=['-odac1', '-W'])

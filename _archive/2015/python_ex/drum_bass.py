@@ -1,5 +1,5 @@
 from thuja.generator import Generator
-from thuja.generator import keys
+from thuja.streamkeys import keys
 from thuja.itemstream import Itemstream
 from collections import OrderedDict
 from thuja import utils

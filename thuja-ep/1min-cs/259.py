@@ -1,7 +1,7 @@
 from thuja.itemstream import Itemstream
 from thuja.generator import BasicLine, GeneratorThread
 from thuja.itemstream import streammodes, notetypes
-from thuja.generator import StreamKey as key
+from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 import random

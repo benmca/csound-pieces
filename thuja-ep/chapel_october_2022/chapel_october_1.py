@@ -4,7 +4,7 @@ import random
 
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
-from thuja.generator import keys
+from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 import thuja.utils as utils

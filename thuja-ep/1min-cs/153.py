@@ -2,7 +2,7 @@ from __future__ import print_function
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
 from thuja.generator import BasicLine
-from thuja.generator import keys
+from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 import thuja.utils as utils
@@ -58,4 +58,4 @@ container.generate_notes()
 
 # print(container.generate_score_string())
 
-cs_utils.play_csound("simple-index.orc", container, silent=False, args_list=['-W','-o263.wav','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("simple-index.orc", container, silent=False, args_list=['-W','-odac0','-+rtaudio=CoreAudio'])

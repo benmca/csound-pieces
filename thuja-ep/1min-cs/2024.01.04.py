@@ -2,7 +2,7 @@ from __future__ import print_function
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
 from thuja.generator import BasicLine
-from thuja.generator import keys
+from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 import thuja.utils as utils
@@ -93,7 +93,7 @@ reverb_time = 10
 g.end_lines = ['i99 0 ' + str(g.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(g.generate_score_string())
 
-cs_utils.play_csound("../books-style/generic-index.orc", g, silent=True, args_list=['-odac0'])
+cs_utils.play_csound("../books-style/generic-index.orc", g, silent=True, args_list=['-odac1'])
 # ,'-+rtaudio=CoreAudio'])
 
 # lilsten to the repeatign ds here -

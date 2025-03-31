@@ -1,6 +1,6 @@
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
-from thuja.generator import keys
+from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 import thuja.utils as utils
@@ -33,7 +33,6 @@ g = Generator(
         (keys.percent, .1)
     ]),
     pfields=None,
-    note_limit=(1000),
     gen_lines = [';sine\n',
                'f 1 0 16384 10 1\n',
                ';saw',
@@ -42,7 +41,7 @@ g = Generator(
                'f 3 0 256 7 1 128 1 0 -1 128 -1\n']
 )
 
-
+g.time_limit = 60
 def post_processs(note):
     if random.random() > .5:
         i = random.randint(0, len(g.streams[keys.frequency].values)-1)

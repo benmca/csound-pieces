@@ -1,7 +1,7 @@
 from thuja.itemstream import Itemstream
 from thuja.generator import BasicLine, GeneratorThread
 from thuja.itemstream import streammodes, notetypes
-from thuja.generator import StreamKey as key
+from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 import numpy as np
@@ -122,7 +122,7 @@ b.generate_notes()
 print(c.generate_score_string())
 
 
-cs = cs_utils.init_csound_with_orc(['-odac4', '-W', '-+rtaudio=CoreAudio'],
+cs = cs_utils.init_csound_with_orc(['-odac1', '-W', '-+rtaudio=CoreAudio'],
                                    "/Users/ben/src/csound-pieces/thuja-ep/1min-cs/simple-index-247.orc",
                                    True,
                                    None)

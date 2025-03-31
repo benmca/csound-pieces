@@ -5,7 +5,7 @@ import ctcsound
 from thuja.itemstream import Itemstream
 from thuja.generator import BasicLine
 from thuja.generator import Generator, GeneratorThread
-from thuja.generator import keys
+from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 import thuja.csound_utils as cs_utils

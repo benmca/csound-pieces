@@ -1,8 +1,10 @@
 from __future__ import print_function
+
+from itemstream import notetypes
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
 from thuja.generator import BasicLine
-from thuja.generator import keys
+from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 import thuja.utils as utils
@@ -25,7 +27,7 @@ def calc_dur(note, context):
 
 container = (
     BasicLine().with_amps(Itemstream([1,0,1,0,1,0,1,0,1])).
-    with_rhythm(Itemstream("e e e e e e e e w", tempo=120))
+    with_rhythm(Itemstream("e e e e e e e e w".split(), tempo=120, notetype=notetypes.rhythm))
 )
 
 container.set_stream(keys.index, Itemstream([0.262, 0.638, 0.957, 1.272, 1.492, 1.768], streammode=streammodes.random))
@@ -48,7 +50,7 @@ for x in range(0, 2):
 
 for x in range(0, 2):
     pans = [10, 80]
-    pulse = container.deepcopy().with_pan(pans[x]).randomize().with_rhythm(Itemstream("s s. e e.", streammode=streammodes.random, tempo=180))
+    pulse = container.deepcopy().with_pan(pans[x]).randomize().with_rhythm(Itemstream("s s. e e.".split(), notetype=notetypes.rhythm, streammode=streammodes.random, tempo=180))
      # pulse = container.deepcopy().with_pan(pans[x]).randomize()
     pulse.streams[keys.rhythm].tempo = 240
     pulse.start_time = 12

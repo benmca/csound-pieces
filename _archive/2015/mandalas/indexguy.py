@@ -1,6 +1,6 @@
 from thuja.itemstream import Itemstream
 from thuja.generator import Generator
-from thuja.generator import keys
+from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
