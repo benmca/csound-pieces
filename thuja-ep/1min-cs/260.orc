@@ -24,7 +24,7 @@ ifadein = p10
 ifadeout = p11
 
 
-printf_i "hey: %s, %f\n", 1, Spath, ipitch
+;printf_i "hey: %s, %f\n", 1, Spath, ipitch
 
 if (ifadein == 0) then
     ifadein = .01
@@ -136,7 +136,7 @@ ifadeout = p11
 indx = p12
 ifilepitch = p13
 
-printf_i "hey: %s, %f\n", 1, Spath, ipitch
+;printf_i "hey: %s, %f\n", 1, Spath, ipitch
 
 if (ifadein == 0) then
     ifadein = .01

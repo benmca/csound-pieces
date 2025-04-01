@@ -115,7 +115,7 @@ turn2 = [['e', 'g', 'b', 'd']]*16 + [['c', 'e', 'g', 'b']]*48
 
 
 c = (
-    BasicLine().with_rhythm(Itemstream([['s']*16] + ['32']*16, notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    BasicLine().with_rhythm(Itemstream(['s']*16 + ['32']*16, notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(.2)
         .with_amps(.1)
         .with_pitches(Itemstream(line1 + turn1 + line2 + turn2, notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -142,4 +142,4 @@ a.end_lines = ['i99 0 ' + str(c.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(a.generate_score_string())
 
 # cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("260.orc", c , silent=True, args_list=['-odac0', '-W'])
+cs_utils.play_csound("260.orc", c , silent=True, args_list=['-odac1', '-W'])
