@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine, GeneratorThread
+from thuja.notegenerator import Line, GeneratorThread
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
@@ -60,7 +60,7 @@ def set_dur(note, context):
     note.pfields[key.duration] = note.pfields[key.rhythm]*.5
 
 a = (
-    BasicLine().with_rhythm(Itemstream('e e e w+w w+w'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream('e e e w+w w+w'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(2)
         .with_amps(.5)
         .with_pitches(Itemstream('e3 fs g a r'.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -76,7 +76,7 @@ a.set_stream('rel', .01)
 a.time_limit = 45
 
 b = (
-    BasicLine().with_rhythm(Itemstream('q h q. q. q h+h.'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=([120]*12+[180]*18+[60]*6)))
+    Line().with_rhythm(Itemstream('q h q. q. q h+h.'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=([120]*12+[180]*18+[60]*6)))
         .with_duration(2)
         .with_amps([.25]*3+[.6]*5)
         .with_pitches(Itemstream([['e2', 'e3', 'e4'], 'r', ['e2','g5','b4'], ['e2','d5','b4'], ['e2','fs5','b4'], 'r'] +
@@ -96,7 +96,7 @@ b.set_stream('rel', .01)
 b.time_limit = 1000
 
 c = (
-    BasicLine().with_rhythm(Itemstream('12 12 24 24 32 32 48 48'.split(), notetype=notetypes.rhythm, streammode=streammodes.random))
+    Line().with_rhythm(Itemstream('12 12 24 24 32 32 48 48'.split(), notetype=notetypes.rhythm, streammode=streammodes.random))
         .with_duration(lambda note: note.rhythm)
         .with_amps(.5)
         .with_pitches(Itemstream(['e2', 'fs3', 'gs4', 'as5'], notetype=notetypes.pitch, streammode=streammodes.sequence))

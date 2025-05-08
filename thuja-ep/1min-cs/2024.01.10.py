@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine
+from thuja.notegenerator import Line
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -54,7 +54,7 @@ def post_process(note, context):
 
 
 container = (
-    BasicLine().with_rhythm(Itemstream('q'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))
+    Line().with_rhythm(Itemstream('q'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))
         .with_duration(1)
         .with_amps(0)
         .with_freqs(1)

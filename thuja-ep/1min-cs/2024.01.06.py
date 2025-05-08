@@ -1,7 +1,7 @@
 from __future__ import print_function
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
-from thuja.generator import BasicLine
+from thuja.notegenerator import NoteGenerator
+from thuja.notegenerator import Line
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -54,7 +54,7 @@ def update_index(note, context):
     context['note_count'] += 1
 
 container = (
-    BasicLine().with_rhythm(Itemstream('q'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))
+    Line().with_rhythm(Itemstream('q'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))
         .with_duration(1)
         .with_amps(0)
         .with_freqs(1)
@@ -84,7 +84,7 @@ rhythm_stream_2 = Itemstream(np.linspace(.01, .2, 100).tolist() + np.linspace(.2
 rhythm_stream_3 = Itemstream(np.linspace(.01, .3, 75).tolist() + np.linspace(.3, .01, 75).tolist() , notetype=notetypes.number, streammode=streammodes.sequence, tempo=120)
 
 c_swell = (
-    BasicLine().with_rhythm(rhythm_stream)
+    Line().with_rhythm(rhythm_stream)
         .with_duration(1)
         .with_amps(1)
         .with_freqs(1)

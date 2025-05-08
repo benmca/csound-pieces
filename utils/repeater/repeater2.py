@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
+from thuja.notegenerator import NoteGenerator
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 import thuja.utils as utils
@@ -12,7 +12,7 @@ import copy
 
 import numpy.random as nprnd
 
-g = Generator(
+g = NoteGenerator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.rhythm,  Itemstream([.05*nprnd.random() for i in xrange(40)], 'sequence', tempo=60)),

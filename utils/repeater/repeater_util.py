@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
+from thuja.notegenerator import NoteGenerator
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 import thuja.utils as utils
@@ -27,7 +27,7 @@ print('sample rate = {}'.format(f.samplerate))
 print('seconds = {}'.format(len(f) / f.samplerate))
 filedur = (float(len(f)) / float(f.samplerate))
 
-g = Generator(
+g = NoteGenerator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.rhythm,  Itemstream([args.delta*nprnd.random() for i in range(args.numtapes)], 'sequence', tempo=60)),

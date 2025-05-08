@@ -1,7 +1,7 @@
 from __future__ import print_function
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
-from thuja.generator import BasicLine
+from thuja.notegenerator import NoteGenerator
+from thuja.notegenerator import Line
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -41,7 +41,7 @@ def process_flutes(note, context):
         note.pfields[keys.duration] = .5
         note.pfields[keys.percent] = .01
 
-g = BasicLine()
+g = Line()
 g.with_rhythm(Itemstream('q. e. e. e s s s s q'.split(),notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120)).with_duration(.05).with_amps(Itemstream([1]*8 + [0])).with_freqs(1).with_pan(45).with_dist(30).with_percent(.01)
 
 g.set_stream('orig_rhythm', .25)

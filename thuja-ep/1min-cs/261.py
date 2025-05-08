@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine, GeneratorThread
+from thuja.notegenerator import Line, GeneratorThread
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
@@ -70,7 +70,7 @@ def freq_to_file_5ths(note, context):
 
 
 a = (
-    BasicLine().with_rhythm(Itemstream(['e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream(['e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(0)
         .with_amps(0)
         .with_pitches(Itemstream(ost_1*2 + ost_2*2, notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -90,7 +90,7 @@ a.context["duration_step"] = 1
 a.context["duration_cycle"] = 1
 
 b = (
-    BasicLine().with_rhythm(Itemstream([['s']*16 + ['32']*16] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream([['s']*16 + ['32']*16] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(lambda note: note.rhythm*.75)
         .with_amps(1)
         .with_pitches(Itemstream(['e', 'd']*32 + ['c', 'd']*32 + ['r']*64 +  ['a', 'd', 'g']*32 + ['a', 'c', 'e']*32 + ['a', 'b', 'c']*32 , notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -115,7 +115,7 @@ turn2 = [['e', 'g', 'b', 'd']]*16 + [['c', 'e', 'g', 'b']]*48
 
 
 c = (
-    BasicLine().with_rhythm(Itemstream([['s']*16] + ['32']*16, notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream([['s']*16] + ['32']*16, notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(.2)
         .with_amps(.1)
         .with_pitches(Itemstream(line1 + turn1 + line2 + turn2, notetype=notetypes.pitch, streammode=streammodes.sequence))

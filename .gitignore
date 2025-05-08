@@ -6,6 +6,7 @@ CsoundBridge/.project
 CsoundBridge/bin/
 .idea/
 .project/
+*/.ipynb_checkpoints/
 *.sco
 *.wav
 *.pyc

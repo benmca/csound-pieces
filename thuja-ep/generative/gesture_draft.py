@@ -1,7 +1,7 @@
 from asyncio import create_subprocess_exec
 
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine
+from thuja.notegenerator import Line
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import keys
 import thuja.utils as utils
@@ -72,7 +72,7 @@ def freq_to_file_5ths(note, context):
 
 def spawn_gesture(note, context):
     spawn_bg = (
-        BasicLine().with_rhythm(
+        Line().with_rhythm(
             Itemstream(['s'] * 8 + ['32'] * 16, notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(.1)
         .with_amps(note.pfields['spawned_amps'])
@@ -101,7 +101,7 @@ def spawn_gesture(note, context):
 
 
 a = (
-    BasicLine().with_rhythm(Itemstream(['w+w'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream(['w+w'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(lambda note:note.rhythm * 1.5)
         .with_amps(0)
 # .with_pitches(Itemstream([['e4', 'g4', 'a4']], notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -129,7 +129,7 @@ a.context['self'] = a
 
 def melody_spawn(note, context):
     spawn_mel = (
-        BasicLine().with_rhythm(
+        Line().with_rhythm(
             Itemstream('s s e q s h'.split(), notetype=notetypes.rhythm, streammode=streammodes.random, tempo=60))
         .with_duration(lambda note:note.rhythm*.75)
         .with_amps(context['melself'].streams['spawned_amps'])
@@ -167,7 +167,7 @@ def melody_spawn(note, context):
 
 def create_melody():
     melody = (
-        BasicLine().with_rhythm(Itemstream(['w'], notetype=notetypes.rhythm, streammode=streammodes.sequence))
+        Line().with_rhythm(Itemstream(['w'], notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(lambda note: note.rhythm * 1.25)
         .with_amps(0)
         .with_pitches(

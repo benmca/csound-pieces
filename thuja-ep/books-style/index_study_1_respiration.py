@@ -1,6 +1,6 @@
 from __future__ import print_function
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
+from thuja.notegenerator import NoteGenerator
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -86,7 +86,7 @@ def slide_start_r(note, context):
         note.pfields[keys.index] = note.pfields[keys.index] - (((context['durdx']%steps)/steps) * window_size)
 
 
-pulse_l = Generator(
+pulse_l = NoteGenerator(
     streams=[
         (keys.instrument, 1),
         (keys.duration, .1),

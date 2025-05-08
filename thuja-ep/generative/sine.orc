@@ -31,7 +31,33 @@ ga2 = ga2+ar2
 
 endin
 
-instr 99 
+instr 2 ;moog
+idur = p3
+iamp = p4 * 16000
+ipitch = p5
+ipan = p6
+idist = p7
+ipct = p8
+
+kamp    linen   iamp, idur*.1, idur, idur*.4
+kfiltq = .85
+kfiltrate = 0.0002
+kvibf  = 5
+kvamp  = .01
+
+;low volume is needed
+asig moog .15, ipitch, kfiltq, kfiltrate, kvibf, kvamp, 1, 2, 3
+
+
+a1, a2  locsig  asig*kamp, ipan, idist, ipct
+ar1, ar2  locsend
+outs a1, a2
+ga1 = ga1+ar1
+ga2 = ga2+ar2
+
+endin
+
+instr 99
 a1  reverb  ga1, 1
 a2  reverb  ga2, 1
 outs  a1,a2

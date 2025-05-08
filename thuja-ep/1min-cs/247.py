@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine
+from thuja.notegenerator import Line
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 from thuja.streamkeys import StreamKey as key
@@ -23,7 +23,7 @@ def post_process(note, context):
 
 
 a = (
-    BasicLine().with_rhythm(Itemstream('e e e w+w w+w'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream('e e e w+w w+w'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(2)
         .with_amps(.8)
         .with_pitches(Itemstream('e3 fs g a r'.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -39,7 +39,7 @@ a.set_stream('rel', .01)
 a.time_limit = 45
 
 b = (
-    BasicLine().with_rhythm(Itemstream('q h q. q. q h+h.'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream('q h q. q. q h+h.'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(2)
         .with_amps([.6, .6, .6, .8, .8, .8, .8, .8])
         .with_pitches(Itemstream([['e2', 'e3', 'e4'], 'r', 'e2', 'e2', 'e2', 'r'], notetype=notetypes.pitch, streammode=streammodes.sequence))

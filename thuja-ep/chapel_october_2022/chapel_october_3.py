@@ -1,6 +1,6 @@
 from __future__ import print_function
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
+from thuja.notegenerator import NoteGenerator
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -64,7 +64,7 @@ def break_into_phrases(note, context):
     pass
 
 
-g = Generator(
+g = NoteGenerator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.duration, lambda note:note.pfields['orig_rhythm']),
@@ -137,7 +137,7 @@ g.streams[keys.amplitude] = Itemstream([1])
 g.time_limit = 48
 #g.generate_notes()
 
-metronome = Generator(
+metronome = NoteGenerator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.rhythm, Itemstream(['q'], 'sequence', tempo=tempo, notetype='rhythm')),

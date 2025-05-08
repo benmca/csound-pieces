@@ -1,7 +1,7 @@
 from __future__ import print_function
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
-from thuja.generator import BasicLine
+from thuja.notegenerator import NoteGenerator
+from thuja.notegenerator import Line
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -30,7 +30,7 @@ def calc_dur(note, context):
 # def smear_index(note, context):
 #
 
-container = BasicLine().with_amps(0)
+container = Line().with_amps(0)
 container.set_stream(keys.index, [1.272]*steps + [9.130]*steps + [24.250]*steps + [26.830]*steps)
 container.set_stream('orig_rhythm', .01)
 container.set_stream('inst_file', ['\"' + filename + '\"'])
@@ -38,7 +38,7 @@ container.set_stream('fade_in', .01)
 container.set_stream('fade_out', .01)
 
 pulse = (
-    BasicLine().with_rhythm(Itemstream(['s', 's', 's', 's','s.', 'e'], tempo=tempo, streammode=streammodes.random, notetype=notetypes.rhythm)).
+    Line().with_rhythm(Itemstream(['s', 's', 's', 's','s.', 'e'], tempo=tempo, streammode=streammodes.random, notetype=notetypes.rhythm)).
     with_percent(0).with_index([1.272]*steps + [9.130]*steps + [24.250]*steps + [26.830]*steps).
     setup_index_params_with_file(filename)
 )

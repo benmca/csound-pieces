@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
+from thuja.notegenerator import NoteGenerator
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -46,7 +46,7 @@ def post_process(note, context):
     pass
 
 
-g = Generator(
+g = NoteGenerator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.duration, lambda note:note.pfields['orig_rhythm']),

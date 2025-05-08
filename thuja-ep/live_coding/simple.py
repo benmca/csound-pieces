@@ -3,7 +3,7 @@ from __future__ import print_function
 import ctcsound
 
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator, GeneratorThread
+from thuja.notegenerator import NoteGenerator, GeneratorThread
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -52,7 +52,7 @@ def parse_rhythms_from_tuplestream(note, context):
                                                            context['tuplestream'].tempo)
 
 
-g = Generator(
+g = NoteGenerator(
     streams=OrderedDict([
         (keys.instrument, Itemstream([1])),
         (keys.duration, lambda note: note.pfields['orig_rhythm']),

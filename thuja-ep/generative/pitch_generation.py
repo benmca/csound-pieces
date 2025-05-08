@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
+from thuja.notegenerator import NoteGenerator
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -21,7 +21,7 @@ pitches = Itemstream('c5 g f g r c4 g f g r'.split(),
     notetype=notetypes.pitch
 )
 
-g = Generator(
+g = NoteGenerator(
     streams=OrderedDict([
         (keys.instrument, 1),
         (keys.rhythm, rhythms),

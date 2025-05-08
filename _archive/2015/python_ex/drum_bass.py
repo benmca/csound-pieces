@@ -1,4 +1,4 @@
-from thuja.generator import Generator
+from thuja.notegenerator import NoteGenerator
 from thuja.streamkeys import keys
 from thuja.itemstream import Itemstream
 from collections import OrderedDict
@@ -30,7 +30,7 @@ def calc_pitch(note):
     note.pfields[keys.frequency] = g.context['tuplestream'].tempo / origtem
 
 
-g = Generator(
+g = NoteGenerator(
     streams=OrderedDict([
         (keys.instrument, 1),
         (keys.duration, lambda note: note.rhythm),

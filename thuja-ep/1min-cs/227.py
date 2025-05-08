@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine
+from thuja.notegenerator import Line
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -25,7 +25,7 @@ def add_env_streams(c, atck=.01, rel=.01):
 
 
 container = (
-    BasicLine().with_rhythm(Itemstream(['q.', 'e', 'q.', 'e', 'q', 'h', 'q.', 'e', 'q.', 'e', 'q', 'h',
+    Line().with_rhythm(Itemstream(['q.', 'e', 'q.', 'e', 'q', 'h', 'q.', 'e', 'q.', 'e', 'q', 'h',
  'q.', 'e', 'q.', 'e', 'q', 'q+e', 'q', 'q.', 'e', 'q.', 'e', 'h'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(1)
         .with_amps(1)

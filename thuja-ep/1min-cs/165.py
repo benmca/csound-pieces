@@ -2,8 +2,8 @@ from __future__ import print_function
 
 from itemstream import notetypes
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
-from thuja.generator import BasicLine
+from thuja.notegenerator import NoteGenerator
+from thuja.notegenerator import Line
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -26,7 +26,7 @@ def calc_dur(note, context):
     note.pfields[keys.duration] = note.pfields['orig_rhythm']
 
 container = (
-    BasicLine().with_amps(Itemstream([1,0,1,0,1,0,1,0,1])).
+    Line().with_amps(Itemstream([1,0,1,0,1,0,1,0,1])).
     with_rhythm(Itemstream("e e e e e e e e w".split(), tempo=120, notetype=notetypes.rhythm))
 )
 

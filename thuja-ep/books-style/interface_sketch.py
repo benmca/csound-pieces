@@ -1,7 +1,7 @@
 from __future__ import print_function
 from thuja.itemstream import Itemstream
-from thuja.generator import Generator
-from thuja.generator import BasicLine
+from thuja.notegenerator import NoteGenerator
+from thuja.notegenerator import Line
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -42,7 +42,7 @@ pitches_to_files = {
 #
 #
 
-class GuitarLine(BasicLine):
+class GuitarLine(Line):
 
     def __init__(self):
         super(GuitarLine, self).__init__()

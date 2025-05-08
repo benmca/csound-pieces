@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine, GeneratorThread
+from thuja.notegenerator import Line, GeneratorThread
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import StreamKey as key, keys
 import thuja.utils as utils
@@ -156,7 +156,7 @@ def post_process_2(note, context):
 
 
 a = (
-    BasicLine().with_rhythm(Itemstream(['w+w']+['e']*12 , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream(['w+w']+['e']*12 , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(lambda note:note.rhythm*.5)
         .with_amps(1)
         .with_pitches(Itemstream([['e4', 'g4', 'a4']], notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -178,7 +178,7 @@ a.set_stream('filepitch',Itemstream([2, 3], notetype=notetypes.number, streammod
 
 
 b = (
-    BasicLine().with_rhythm(Itemstream(['w']+['s']*31 , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream(['w']+['s']*31 , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(lambda note:note.rhythm*.9)
         .with_amps(1)
         .with_pitches(Itemstream([['e2', 'b2']], notetype=notetypes.pitch, streammode=streammodes.sequence))

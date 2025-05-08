@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine, GeneratorThread
+from thuja.notegenerator import Line, GeneratorThread
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
@@ -66,7 +66,7 @@ def freq_to_file_5ths(note, context):
 
 
 a = (
-    BasicLine().with_rhythm(Itemstream(['e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream(['e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(0)
         .with_amps(0)
         .with_pitches(Itemstream(ost_1*2 + ost_2*2 + ost_3*2 + ost_2 + ost_1, notetype=notetypes.pitch, streammode=streammodes.sequence))

@@ -3,8 +3,8 @@ from __future__ import print_function
 import ctcsound
 
 from thuja.itemstream import Itemstream
-from thuja.generator import BasicLine
-from thuja.generator import Generator, GeneratorThread
+from thuja.notegenerator import Line
+from thuja.notegenerator import NoteGenerator, GeneratorThread
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -17,7 +17,7 @@ def add_env_streams(c, atck=.01, rel=.01):
 
 
 container = (
-    BasicLine().with_rhythm(Itemstream(['q','e','e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream(['q','e','e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(.25)
         .with_amps(1)
         .with_pitches(Itemstream(['g4'], notetype=notetypes.pitch, streammode=streammodes.sequence))
