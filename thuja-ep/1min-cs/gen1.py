@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.notegenerator import Line, GeneratorThread
+from thuja.notegenerator import Line
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import StreamKey as key, keys
 import thuja.utils as utils

@@ -99,4 +99,4 @@ reverb_time = 10
 print(container.generate_score_string())
 
 # cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o148-60.wav', '-W'])
+cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-odac', '-W'])
