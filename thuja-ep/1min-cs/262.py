@@ -6,10 +6,8 @@ import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 import random
 
-ost_1 = "a2 b c3 a2 d3 a2 d3 e3 a2 e3 a2".split()
-ost_2 = "f2 g a f b f b c3 f2 b f".split()
-ost_3 = "e2 f2 g a e2 b e2 b c3 e2 d2 f".split()
-
+gtr1 = ['r','as5', 'g4', 'as5', 'as5', 'g4', 'as5', 'as5', 'g4', 'as5', 'as5', 'g4', 'as5', 'as5', 'g4', 'as5', 'as5', 'g4', 'as5']
+gtr_rhythms = 'q+s h+s+e e+h+q+s e.+q+e. s+h+e e+h+q+s e.+q+e.
 def durations(note, context):
 
     note.pfields[key.duration] = 1 * ((context["duration_step"] % 22) / 22) + .1

@@ -4,7 +4,7 @@ import ctcsound
 
 from thuja.itemstream import Itemstream
 from thuja.notegenerator import Line
-from thuja.notegenerator import NoteGenerator, GeneratorThread
+from thuja.notegenerator import NoteGenerator, NoteGeneratorThread
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
@@ -17,10 +17,10 @@ def add_env_streams(c, atck=.01, rel=.01):
 
 
 container = (
-    Line().with_rhythm(Itemstream(['q','e','e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
-        .with_duration(.25)
+    Line().with_rhythm(Itemstream(['q'] , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))
+        .with_duration(lambda note:note.rhythm)
         .with_amps(1)
-        .with_pitches(Itemstream(['g4'], notetype=notetypes.pitch, streammode=streammodes.sequence))
+        .with_pitches(Itemstream(['g4', 'bf4', 'f'], notetype=notetypes.pitch, streammode=streammodes.sequence))
         .with_pan(45)
         .with_dist(10)
         .with_percent(.01)
@@ -35,7 +35,7 @@ container.generate_notes()
 # container.end_lines = ['i99 0 ' + str(container.score_dur+10) + ' ' + str(reverb_time) + '\n']
 
 
-cs = cs_utils.init_csound_with_orc(['-odac0', '-W', '-+rtaudio=CoreAudio'],
+cs = cs_utils.init_csound_with_orc(['-odac999', '-+rtaudio=CoreAudio'],
                                    "/Users/ben/src/csound-pieces/thuja-ep/1min-cs/226.orc",
                                    True,
                                    None)
@@ -44,15 +44,37 @@ cs.start()
 cpt = ctcsound.CsoundPerformanceThread(cs.csound())
 cpt.play()
 
-t = GeneratorThread(container, cs, cpt)
+t = NoteGeneratorThread(container, cs, cpt)
 t.daemon = True
 t.start()
 
-container.with_pitches(Itemstream('g1 g3 g4'.split(), notetype=notetypes.pitch, streammode=streammodes.random))
-container.with_rhythm(Itemstream(['s'], notetype=notetypes.rhythm, streammode=streammodes.random))
+# run to here in daemon more, then
+#
+# these bits. generate_notes has to be called to update the note queue.
+container.with_pitches(Itemstream('g3 bf4 f f f g3'.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
+container.with_rhythm(Itemstream(['8'], notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))
 container.generate_notes()
 
-# time.sleep(100)
+
+b = container.deepcopy()
+container.with_pan(Itemstream([10]))
+b.with_duration(lambda note:note.rhythm)
+b.with_pitches(Itemstream('g6 g7 g7'.split(), notetype=notetypes.pitch)).with_rhythm(Itemstream(['e'], notetype=notetypes.rhythm))
+b.with_pan(Itemstream([80]))
+container.add_generator(b)
+container.generate_notes()
+
+c = b.deepcopy()
+c.with_pan(Itemstream([45]))
+container.add_generator(c)
+container.generate_notes()
+
+container.with_amps(0)
+container.generate_notes()
+
+
+
+# time.sleep(120)
 # t.stop_event.set()
 # t.join()
 #

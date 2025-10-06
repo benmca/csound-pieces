@@ -1,24 +1,24 @@
 from thuja.itemstream import Itemstream
-from thuja.notegenerator import Line, GeneratorThread
+from thuja.notegenerator import Line
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 
-ost_1 = "a2 b c3 a2 d3 a2 d3 e3 a2 e3 a2".split()
-ost_2 = "f2 g a f b f b c3 f2 b f".split()
-ost_3 = "e2 f2 g a e2 b e2 b c3 e2 d3 f2".split()
 
-def durations(note, context):
+gtr1 = ['r','a3', 'g3', 'a3', 'a3', 'g3', 'a3', 'a3', 'g3', 'a3', 'a3', 'g3', 'a3', 'a3']
+gtr1_rhythms = 'q+s e.+q+e. s+h+e e+h+q+s e.+q+e. s+h+e e+h+q+s e.+q+e. s+h+e e+h+q+s e.+q+e. s+h+e e+h+q+s e.+q'.split()
 
-    note.pfields[key.duration] = 1 * ((context["duration_step"] % 22) / 22) + .1
-    context["duration_step"] = context["duration_step"] + 1
+gtr2 = 'b2 a2 b2 a2 b2 a2 b2 a2 b2 a2 b2 a2 b2 a2 b2 a2 b2 a2'.split()
+gtr2_rhythms = 'h+e e+h+s e.+q+e. s+q h+e e+h+s e.+q+e. s+q h+e e+h+s e.+q+e. s+q h+e e+h+s e.+q+e. s+q h+e e'.split()
 
-def amps(note, context):
+gtr3 = 'a2'.split()
+gtr3_rhythms = 'q'.split()
 
-    note.pfields[key.amplitude] = .75 * ((context["duration_step"] % 22) / 22) + .25
-    # context["duration_step"] = context["duration_step"] + 1
+gtr4 = 'a3 r a3 r a3 r a3'.split()
+gtr4_rhythms = 'q s e. e e e. s'.split()
 
+tempo = 120
 
 
 pitches_to_files = {
@@ -66,29 +66,33 @@ def freq_to_file_5ths(note, context):
 
 
 a = (
-    Line().with_rhythm(Itemstream(['e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
-        .with_duration(0)
-        .with_amps(0)
-        .with_pitches(Itemstream(ost_1*2 + ost_2*2 + ost_3*2 + ost_2 + ost_1, notetype=notetypes.pitch, streammode=streammodes.sequence))
-        .with_pan(Itemstream('45'.split(), notetype=notetypes.number))
+    Line().with_rhythm(Itemstream(gtr1_rhythms, notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=tempo))
+        .with_duration(lambda note:note.rhythm*.25)
+        .with_amps(1)
+        .with_pitches(Itemstream(gtr1, notetype=notetypes.pitch, streammode=streammodes.sequence))
+        .with_pan(Itemstream('10'.split(), notetype=notetypes.number))
         .with_dist(10)
         .with_percent(.05))
 
-a.post_processes = [freq_to_file, durations, amps]
+a.post_processes = [freq_to_file_5ths]
 a.set_stream('inst_file', Itemstream([""], notetype=notetypes.path))
 a.set_stream('atck', .01)
 a.set_stream('rel', .1)
-a.time_limit = 45
-a.context["duration_step"] = 1
-a.context["duration_cycle"] = 1
+a.time_limit = 120
 
+b = a.deepcopy().with_rhythm(Itemstream(gtr2_rhythms, notetype=notetypes.rhythm, tempo=tempo)).with_pitches(Itemstream(gtr2, notetype=notetypes.pitch)).with_pan(80)
+a.add_generator(b)
+c = a.deepcopy().with_rhythm(Itemstream(gtr3_rhythms, notetype=notetypes.rhythm, tempo=tempo)).with_pitches(Itemstream(gtr3, notetype=notetypes.pitch)).with_pan(45).with_amps(1.5).with_duration(lambda note:note.rhythm*.25)
+a.add_generator(c)
 
-# a.add_generator(b)
+d = a.deepcopy().with_rhythm(Itemstream(gtr4_rhythms, notetype=notetypes.rhythm, tempo=tempo)).with_pitches(Itemstream(gtr4, notetype=notetypes.pitch)).with_duration(lambda note:note.rhythm).with_pan(45).with_amps(1)
+a.add_generator(d)
+
 a.generate_notes()
 
-reverb_time = 10
+reverb_time = 0.1
 a.end_lines = ['i99 0 ' + str(a.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(a.generate_score_string())
 
 # cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("255.orc", a, silent=True, args_list=['-odac1', '-W'])
+cs_utils.play_csound("255.orc", a, silent=True, args_list=['-odac99', '-W'])
