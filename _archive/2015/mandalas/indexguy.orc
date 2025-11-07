@@ -1,5 +1,5 @@
 sr=44100
-ksmps=1000
+ksmps=100
 nchnls=2
 
 ga1 init 0
@@ -19,13 +19,13 @@ indx = p9
 iorigdur = p10
 iendx = indx + iorigdur
 
-kamp	linen	iamp, .01, idur, .01
+kamp	linen	iamp, .0001, idur, .01
 ktime   line    indx, idur , iendx
  
-al	diskin	"/Users/benmca/Music/Portfolio/snd/_LOOPS/JAM1_1.AIF", ipitch, indx
-;al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
-  
-al=al*kamp
+;al	diskin	"/Users/ben/src/csound-pieces/_archive/2015/jam/jam.aif", ipitch, indx
+al  sndwarp kamp, ktime, 1, 4, 0, 4410, 882, 15, 1, 1
+
+al=al*kamp*100
 
 al, ar  locsig	al, ipan, idist, ipct
 ar1, ar2	locsend
