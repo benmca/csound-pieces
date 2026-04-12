@@ -6,8 +6,6 @@ from thuja.itemstream import notetypes
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 from collections import OrderedDict
-import numpy as np
-import csnd6
 import copy
 import random
 
@@ -55,8 +53,8 @@ g = NoteGenerator(
         (keys.pan, Itemstream([45])),
         (keys.distance, Itemstream([10])),
         (keys.percent, Itemstream([.01])),
-        ('inst_file', Itemstream(["/Users/ben/Music/_toSort/2017.06.04.SlidesIdea.wav",
-                                  "/Users/ben/Music/_toSort/Ebow Tone Row.1_00.wav"], notetype=notetypes.path))
+        ('inst_file', Itemstream(["/Users/ben/Desktop/2017.06.04.SlidesIdea.wav",
+                                  "/Users/ben/Desktop/2020.06.24.Ebow Tone Row.1.wav"], notetype=notetypes.path))
     ]),
     pfields=[
         keys.instrument,

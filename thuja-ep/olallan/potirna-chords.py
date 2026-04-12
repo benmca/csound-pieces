@@ -1,5 +1,5 @@
 from thuja.itemstream import Itemstream
-from thuja.notegenerator import Line, NoteGeneratorThread
+from thuja.notegenerator import Line, NoteGeneratorThread, ko
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
 from thuja.streamkeys import StreamKey as key
@@ -9,6 +9,8 @@ import numpy as np
 import random
 import ctcsound
 
+
+tempo = 60
 
 def freq_to_file(note, context):
     if note.pfields[key.frequency] == 0:
@@ -56,9 +58,9 @@ def cycle_by_intervals(note, context):
     pass
 
 a = (
-    Line().with_rhythm(Itemstream('e e e w+w w+w'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream('e e e w+w w+w'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=tempo))
         .with_duration(2)
-        .with_amps(.5)
+        .with_amps(.25)
         .with_pitches(Itemstream('e3 fs g a r'.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
         .with_pan(Itemstream('10 30 60 80 80'.split(), notetype=notetypes.number))
         .with_dist(10)
@@ -69,12 +71,12 @@ a.post_processes = [cycle_by_intervals]
 a.set_stream('inst_file', Itemstream([""], notetype=notetypes.path))
 a.set_stream('atck', .01)
 a.set_stream('rel', .01)
-a.time_limit = 4500
+a.time_limit = 600
 
 b = (
-    Line().with_rhythm(Itemstream('q h q. q. q h+h.'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=([120]*12+[180]*18+[60]*6)))
+    Line().with_rhythm(Itemstream('q h q. q. q h+h.'.split() , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=([tempo]*12+[tempo*1.5]*18+[tempo*.5]*6)))
         .with_duration(2)
-        .with_amps([.25]*3+[.6]*5)
+        .with_amps([.1]*3+[.25]*5)
         .with_pitches(Itemstream([['e2', 'e3', 'e4'], 'r', ['e2','g5','b4'], ['e2','d5','b4'], ['e2','fs5','b4'], 'r'] +
                                  [['e2', 'e3', 'e4'], 'r', ['e2','fs5','b4'], ['e2','a5','b4'], ['e2','g5','b4'], 'r']
                                  , notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -91,9 +93,9 @@ b.time_limit = 4500
 
 
 c = (
-    Line().with_rhythm(Itemstream(['w+w'], notetype=notetypes.rhythm, streammode=streammodes.sequence))
+    Line().with_rhythm(Itemstream(['w+w'], notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=tempo))
         .with_duration(2)
-        .with_amps(.5)
+        .with_amps(.25)
         .with_pitches(Itemstream(['e2', 'fs3', 'gs4', 'as5'], notetype=notetypes.pitch, streammode=streammodes.sequence))
         .with_pan(45)
         .with_dist(10)
@@ -104,7 +106,7 @@ c.post_processes = [freq_to_file]
 c.set_stream('inst_file', Itemstream([""], notetype=notetypes.path))
 c.set_stream('atck', .01)
 c.set_stream('rel', .01)
-c.time_limit = 4500
+c.time_limit = 600
 c.context["interval"] = 3
 
 
@@ -114,25 +116,12 @@ a.generate_notes()
 
 reverb_time = 10
 a.end_lines = ['i99 0 ' + str(a.score_dur+10) + ' ' + str(reverb_time) + '\n']
-# print(a.generate_score_string())
 
-# cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-# cs_utils.play_csound("simple-index-247.orc", a, silent=True, args_list=['-odac1', '-W'])
-
-cs = cs_utils.init_csound_with_orc(['-odac', '--devices', '-+rtaudio=CoreAudio'],
-                                   "simple-index-247.orc",
-                                   True,
-                                   None)
-cs.readScore("f1 0 513 10 1\ni99 0 3600 10\ne\n")
-cs.start()
-cpt = ctcsound.CsoundPerformanceThread(cs.csound())
-cpt.play()
-
-t = NoteGeneratorThread(a, cs, cpt)
-t.daemon = True
-t.start()
-
+t = ko(a, "potirna-chords.orc", device_string="dac6")
 #------------------------------------------------------------------
+
+c.amps(.25)
+t.gen()
 
 c.with_pitches(Itemstream(['e3', 'fs3', 'a3'], notetype=notetypes.pitch, streammode=streammodes.sequence))
 b.rhythms(Itemstream(['h'], notetype=notetypes.rhythm, streammode=streammodes.random))
@@ -147,10 +136,11 @@ t.gen()
 
 c.amps(0)
 b.amps(0)
+a2.amps(0)
 t.gen()
 
 a2 = a.deepcopy()
-a3.with_rhythm(Itemstream('q'.split(), notetype=notetypes.rhythm, streammode=streammodes.random, tempo=120))
+a2.with_rhythm(Itemstream('q'.split(), notetype=notetypes.rhythm, streammode=streammodes.random, tempo=120))
 a2.durs(lambda note: note.rhythm*1.25)
 a2.with_pitches(Itemstream(['e4'], notetype=notetypes.pitch, streammode=streammodes.sequence))
 a2.post_processes = [freq_to_file]
@@ -169,7 +159,7 @@ a.tempo(60)
 a2.amps(0)
 a3.amps(0)
 a2.post_processes = [freq_to_file_disperse_octaves]
-a3.post_processes = [freq_to_file_disperse_octaves]
+a.post_processes = [freq_to_file_disperse_octaves]
 b.amps(.25)
 a2.generators = []
 a.pan(10)

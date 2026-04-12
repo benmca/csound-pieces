@@ -194,7 +194,7 @@ b.set_stream('atck', .01)
 b.set_stream('rel', .1)
 b.start_time = 0
 b.time_limit = 60
-b.tempo(120)
+b.tempo(40)
 b.with_index(0)
 b.set_stream('filepitch',Itemstream([2, 3], notetype=notetypes.number, streammode=streammodes.sequence))
 

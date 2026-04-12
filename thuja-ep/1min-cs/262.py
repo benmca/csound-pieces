@@ -71,7 +71,7 @@ a = (
     Line().with_rhythm(Itemstream(['e'] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
         .with_duration(0)
         .with_amps(0)
-        .with_pitches(Itemstream(ost_1*2 + ost_2*2, notetype=notetypes.pitch, streammode=streammodes.sequence))
+        .with_pitches(Itemstream(gtr1*2, notetype=notetypes.pitch, streammode=streammodes.sequence))
         .with_pan(Itemstream('45'.split(), notetype=notetypes.number))
         .with_dist(10)
         .with_percent(.05))

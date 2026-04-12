@@ -1,6 +1,5 @@
 from __future__ import print_function
 import ctcsound
-from itemstream import notetypes, streammodes
 from thuja.notegenerator import Line, NoteGenerator, NoteGeneratorThread
 from thuja.itemstream import streammodes, notetypes, Itemstream
 import thuja.csound_utils as cs_utils
@@ -71,18 +70,18 @@ def freq_to_file_5ths(note, context):
 top = (
     Line().with_rhythm(Itemstream('w+w+w+w', notetype=notetypes.rhythm ))
         .with_duration(1000)
-        .with_amps(0)
+        .with_amps(1)
         .with_pitches(Itemstream('g3 f'.split()))
         .with_pan(45)
         .with_dist(10)
         .with_percent(.01)
 )
 
-top.note_limit = 1
+top.note_limit = 10
 top.generate_notes()
 # print(top.generate_score_string())
 
-cs = cs_utils.init_csound_with_orc(['-odac1', '-+rtaudio=CoreAudio'],
+cs = cs_utils.init_csound_with_orc(['-odac', '-+rtaudio=CoreAudio'],
                                    "/Users/ben/src/csound-pieces/thuja-ep/live_coding/gtr-indexes.orc",
                                    True,
                                    None)

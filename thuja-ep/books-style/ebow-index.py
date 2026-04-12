@@ -5,8 +5,6 @@ from thuja.itemstream import streammodes
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 from collections import OrderedDict
-import numpy as np
-import csnd6
 import copy
 import random
 

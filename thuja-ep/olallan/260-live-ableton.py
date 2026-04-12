@@ -1,10 +1,12 @@
 from thuja.itemstream import Itemstream
-from thuja.notegenerator import Line
+from thuja.link_follower import LinkFollower
+from thuja.notegenerator import Line, NoteGeneratorThread, ko
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 import random
+import ctcsound
 
 ost_1 = "a2 b c3 a2 d3 a2 d3 e3 a2 e3 a2".split()
 ost_2 = "f2 g a f b f b c3 f2 b f".split()
@@ -48,6 +50,8 @@ def cleanup_strings_ebows(note, context):
 
 
 def random_indexes(note, context):
+    if note.pfields[key.frequency] == 0:
+         note.pfields[key.amplitude] = 0
     note.pfields[key.index] = random.random()*20
 
 def freq_to_file(note, context):
@@ -83,8 +87,6 @@ a.post_processes = [freq_to_file, durations]
 a.set_stream('inst_file', Itemstream([""], notetype=notetypes.path))
 a.set_stream('atck', .01)
 a.set_stream('rel', .1)
-a.start_time = 32
-a.time_limit = 60
 a.tempo([240]*18+[120]*4)
 a.context["duration_step"] = 1
 a.context["duration_cycle"] = 1
@@ -105,8 +107,6 @@ b.set_stream('atck', .001)
 b.set_stream('rel', .1)
 b.with_index(0)
 b.set_stream('filepitch',Itemstream([2, 3], notetype=notetypes.number, streammode=streammodes.sequence))
-b.start_time = 12
-b.time_limit = 60
 
 line1 = [['e', 'g', 'b', 'd']]*16 + [['d', 'fs', 'a', 'cs']]*16 + [['e', 'g', 'b', 'd']]*16 + [['d', 'fs', 'a', 'cs']]*16
 turn1 = [['e', 'g', 'b', 'd']]*16 + [['c', 'e', 'g', 'b']]*48
@@ -130,16 +130,62 @@ c.set_stream('atck', .001)
 c.set_stream('rel', .1)
 c.with_index(0)
 c.set_stream('filepitch', Itemstream([1]*32 + [1, 2]*16 + [1, 2]*16 + [2, 3]*16 + [2, 3]*16 + [3, 4]*16 + [3, 4]*16 ))
-c.start_time = 0
-c.time_limit = 630
 
 c.add_generator(b)
 c.add_generator(a)
-c.generate_notes()
+# c.generate_notes()
 
 reverb_time = 10
-a.end_lines = ['i99 0 ' + str(c.score_dur+10) + ' ' + str(reverb_time) + '\n']
-print(a.generate_score_string())
+c.end_lines = ['i99 0 ' + str(c.score_dur+10) + ' ' + str(reverb_time) + '\n']
 
-# cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("260.orc", c , silent=True, args_list=['-odac', '-W'])
+lf = LinkFollower(host='localhost', port=17000, quantum=4,
+                  latency_offset_secs=0.15)
+lf.connect()
+
+t = ko(c, "260-live.orc", "dac7", streaming=True, link_follower=lf)
+
+#-------------------------------------------------------------
+#-------------------------------------------------------------
+#-------------------------------------------------------------
+line1 = ['e']
+
+line1 = ['e', 'd']*32 + ['c', 'd']*32 + ['r']*64 +  ['a', 'd', 'g']*32 + ['a', 'c', 'e']*32 + ['a', 'b', 'c']*32 + ['r']*64
+
+line1 = ['e','b', 'c']
+
+a.pitches(Itemstream(line1, notetype=notetypes.pitch, streammode=streammodes.sequence))
+b.pitches(Itemstream(line1, notetype=notetypes.pitch, streammode=streammodes.sequence))
+c.pitches(Itemstream(line1, notetype=notetypes.pitch, streammode=streammodes.sequence))
+
+c.amps(.5)
+c.pitches(Itemstream(line1, notetype=notetypes.pitch, streammode=streammodes.sequence))
+c.rhythms(Itemstream('s e'.split(), notetype=notetypes.rhythm, streammode=streammodes.random))
+
+line1 = ['e', 'g', 'b', 'a']
+
+b.pitches(Itemstream(line1, notetype=notetypes.pitch, streammode=streammodes.sequence))
+
+t.gen()
+
+b.amps(0)
+a.amps(0)
+
+
+b = (
+    Line().with_rhythm(Itemstream([['s']*16 + ['32']*16] , notetype=notetypes.rhythm, streammode=streammodes.sequence))
+        .with_duration(lambda note: note.rhythm*.75)
+        .with_amps(1)
+        .with_pitches(Itemstream(['e', 'd']*32 + ['c', 'd']*32 + ['r']*64 +  ['a', 'd', 'g']*32 + ['a', 'c', 'e']*32 + ['a', 'b', 'c']*32 , notetype=notetypes.pitch, streammode=streammodes.sequence))
+        .with_pan(Itemstream('0 10 20 30 40 45 50 60 70 80 90'.split(), notetype=notetypes.number, streammode=streammodes.heap))
+        .with_dist(10)
+        .with_percent(lambda note: random.random()*.04 + .01)
+        .with_instr(4))
+
+b.post_processes = [cleanup_strings_ebows, random_indexes]
+b.set_stream('inst_file', Itemstream([""], notetype=notetypes.path))
+b.set_stream('atck', .001)
+b.set_stream('rel', .1)
+b.with_index(0)
+b.set_stream('filepitch',Itemstream([2, 3], notetype=notetypes.number, streammode=streammodes.sequence))
+b.start_time = 12
+b.time_limit = 60

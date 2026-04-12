@@ -146,7 +146,7 @@ pulse_r.post_processes = [cleanup_strings, calc_dur_r, slide_start_r]
 
 texture1 = copy.deepcopy(pulse_l)
 texture1.streams[keys.pan] = 45
-texture1.start_time = utils.rhythm_to_duration('q', texture1.tempo()) * 4 * (4)
+texture1.start_time = utils.rhythm_to_duration('q', texture1.get_tempo()) * 4 * (4)
 texture1.streams[keys.index] = Itemstream([18.394266363423284, 29.986405701944328, 2.3787051284598992, 30.06279737830769,
                         18.511066510650128, 42.11027927574142, 41.84313592235877, 53.576331546688465])
 texture1.streams[keys.rhythm] = Itemstream("q e s h".split(), notetype=notetypes.rhythm, streammode=streammodes.heap)
@@ -183,4 +183,4 @@ pulse_l.end_lines = ['i99 0 ' + str(pulse_l.score_dur+10) + ' 5\n']
 print(pulse_l.generate_score_string())
 
 
-cs_utils.play_csound("generic-index.orc", pulse_l, silent=True, args_list=['-odac1','-W','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("../books-style/generic-index.orc", pulse_l, silent=True, args_list=['-odac99','-W','-+rtaudio=CoreAudio'])

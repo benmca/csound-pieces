@@ -208,4 +208,4 @@ reverb_time = 10
 a.end_lines = ['i99 0 ' + str(a.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(a.generate_score_string())
 
-cs_utils.play_csound("../1min-cs/260.orc", a, silent=True, args_list=['-o456.wav', '-W'])
+cs_utils.play_csound("../1min-cs/260.orc", a, silent=True, args_list=['-odac', '-W'])

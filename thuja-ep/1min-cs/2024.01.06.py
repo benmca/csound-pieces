@@ -30,7 +30,7 @@ files = [
     ["b2.wav", 7]
 ]
 
-path_to_1min = '/Volumes/T7 Shield/1min/'
+path_to_1min = '/Volumes/Main One/1min/_ready to archive/'
 
 
 def update_index(note, context):
@@ -86,7 +86,7 @@ rhythm_stream_3 = Itemstream(np.linspace(.01, .3, 75).tolist() + np.linspace(.3,
 c_swell = (
     Line().with_rhythm(rhythm_stream)
         .with_duration(1)
-        .with_amps(1)
+        .with_amps(.5)
         .with_freqs(1)
         .with_pan(45)
         .with_dist(20)
@@ -238,7 +238,7 @@ third_phrase.add_generator(lowc_2)
 
 for x in third_phrase.generators:
     x.streams[keys.rhythm] = rhythm_stream_2
-    x.streams[keys.amplitude] = Itemstream(.6)
+    x.streams[keys.amplitude] = Itemstream(.3)
 
 
 c_0_p4 = copy.deepcopy(c_0)
@@ -360,7 +360,7 @@ fourth_phrase.add_generator(superlowc_2)
 for x in fourth_phrase.generators:
     x.streams[keys.rhythm] = rhythm_stream_3
     x.note_limit = 150
-    x.streams[keys.amplitude] = Itemstream(.4)
+    x.streams[keys.amplitude] = Itemstream(.2)
 
 
 
@@ -388,6 +388,6 @@ reverb_time = 10
 container.end_lines = ['i99 0 ' + str(container.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(container.generate_score_string())
 
-cs_utils.play_csound("../books-style/generic-index.orc", container, silent=True, args_list=['-odac0'])
+cs_utils.play_csound("../books-style/generic-index.orc", container, silent=True, args_list=['-odac1'])
 # ,'-+rtaudio=CoreAudio'])
 

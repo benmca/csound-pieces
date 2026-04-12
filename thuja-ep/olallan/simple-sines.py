@@ -3,11 +3,12 @@ from __future__ import print_function
 import random
 
 import ctcsound
-from thuja.notegenerator import Line, NoteGenerator, NoteGeneratorThread
+from thuja.notegenerator import Line, NoteGenerator, NoteGeneratorThread, ko
 from thuja.itemstream import streammodes, notetypes, Itemstream
 import thuja.csound_utils as cs_utils
 import thuja.streamkeys as keys
 
+tempo=120
 
 def add_env_streams(c, atck=.01, rel=.01):
     c.set_stream('atck', atck)
@@ -15,7 +16,7 @@ def add_env_streams(c, atck=.01, rel=.01):
 
 
 a = (
-    Line().with_rhythm(Itemstream(['q'] , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=120))
+    Line().with_rhythm(Itemstream(['q'] , notetype=notetypes.rhythm, streammode=streammodes.sequence, tempo=tempo))
         .with_duration(lambda note:note.rhythm)
         .with_amps(1)
         .with_pitches(Itemstream(['g4', 'bf4', 'f'], notetype=notetypes.pitch, streammode=streammodes.sequence))
@@ -26,50 +27,58 @@ a = (
 
 add_env_streams(a)
 
-a.time_limit = 1000
+a.time_limit = 600
 a.generate_notes()
 
 reverb_time = 10
 a.end_lines = ['i99 0 ' + str(a.score_dur+10) + ' ' + str(reverb_time) + '\n']
 
-
-cs = cs_utils.init_csound_with_orc(['-odac0', '-+rtaudio=CoreAudio', '--devices'],
-                                   "/Users/ben/src/csound-pieces/thuja-ep/1min-cs/226.orc",
-                                   True,
-                                   None)
-cs.readScore("f1 0 513 10 1\ni99 0 3600 10\ne\n")
-cs.start()
-cpt = ctcsound.CsoundPerformanceThread(cs.csound())
-cpt.play()
-
-t = NoteGeneratorThread(a, cs, cpt)
-t.daemon = True
-t.start()
-
+t = ko(a, 'simple-sines.orc', device_string='dac6')
 #--------------------------------------------------------------------------------------------------------------------
+a.with_pitches(Itemstream('c3 g a b'.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
+a2.with_pitches(Itemstream('c3 g a b'.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
 
 a.tempo(260)
+a.rhythms(Itemstream('q s s s'.split(), streammode=streammodes.heap, notetype=notetypes.rhythm, tempo=120))
+
 t.gen()
 
-a.with_pitches(Itemstream('a3 c e g a5 g f e d d r d d [r*20]['.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
+a.with_pitches(Itemstream('a3 c e g a4 g f e d d r d d '.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
+a2.with_pitches(Itemstream('a3 c e g a4 g f e d d r d d'.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
+
 a.rhythms(Itemstream('q 32 32 s e s s'.split(), streammode=streammodes.heap, notetype=notetypes.rhythm, tempo=120))
 a2 = a.deepcopy()
 a.pan(10)
 a2.pan(80)
+a2.randomize()
 a.add_generator(a2)
-a.rhythms(Itemstream('q 32 32 s e s s'.split(), streammode=streammodes.heap, notetype=notetypes.rhythm, tempo=120))
-a2.rhythms(Itemstream('q 32 32 s e s s'.split(), streammode=streammodes.heap, notetype=notetypes.rhythm, tempo=120))
+t.gen()
+
+a.tempo(120)
+a2.tempo(120)
+a.with_pitches(Itemstream('a5 g f e d d r d d '.split()+('r '*4).split(), notetype=notetypes.pitch, streammode=streammodes.random))
+a2.with_pitches(Itemstream('a5 g f e d d r d d '.split()+('r '*4).split(), notetype=notetypes.pitch, streammode=streammodes.random))
+
+a.rhythms(Itemstream('q s e s s'.split(), streammode=streammodes.heap, notetype=notetypes.rhythm, tempo=120))
+a2.rhythms(Itemstream('q s e s s'.split(), streammode=streammodes.heap, notetype=notetypes.rhythm, tempo=60))
 import random
 a2.set_streams_to_seed(random.seed())
 a.g()
 
+
+
 a3 = a2.deepcopy()
-a3.with_pitches(Itemstream('e4 f g a5 r'.split(), notetype=notetypes.pitch, streammode=streammodes.sequence))
-a3.rhythms(Itemstream('q e e'.split(), streammode=streammodes.heap, notetype=notetypes.rhythm, tempo=120))
+a3.with_pitches(Itemstream('e4 f g a r r r '.split(), notetype=notetypes.pitch, streammode=streammodes.random))
+a3.rhythms(Itemstream('s s. e.'.split(), streammode=streammodes.heap, notetype=notetypes.rhythm, tempo=120))
 a.add_generator(a3)
 t.gen()
 
-a.amps(0)
+a.amps(.5)
+a2.amps(.5)
+a3.amps(1)
+t.gen()
+
+a.amps(1)
 b.rhythms(('e. e. e e e e e'.split()))
 a.amps(.5)
 # run to here in daemon more, then

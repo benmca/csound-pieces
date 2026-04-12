@@ -1,10 +1,11 @@
 from thuja.itemstream import Itemstream
-from thuja.notegenerator import Line
+from thuja.notegenerator import Line, NoteGenerator, NoteGeneratorThread
 from thuja.itemstream import streammodes, notetypes
 from thuja.streamkeys import StreamKey as key
 import thuja.utils as utils
 import thuja.csound_utils as cs_utils
 import random
+import ctcsound
 
 ost_1 = "a2 b c3 a2 d3 a2 d3 e3 a2 e3 a2".split()
 ost_2 = "f2 g a f b f b c3 f2 b f".split()
@@ -142,4 +143,18 @@ a.end_lines = ['i99 0 ' + str(c.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(a.generate_score_string())
 
 # cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("260.orc", c , silent=True, args_list=['-odac', '-W'])
+# cs_utils.play_csound("260.orc", c , silent=True, args_list=['-odac6', '-W'])
+
+
+cs = cs_utils.init_csound_with_orc(['-odac6', '-+rtaudio=CoreAudio', '--devices'],
+                                   "/Users/ben/src/csound-pieces/thuja-ep/1min-cs/226.orc",
+                                   True,
+                                   None)
+cs.readScore("f1 0 513 10 1\ni99 0 3600 10\ne\n")
+cs.start()
+cpt = ctcsound.CsoundPerformanceThread(cs.csound())
+cpt.play()
+
+t = NoteGeneratorThread(c, cs, cpt)
+t.daemon = True
+t.start()

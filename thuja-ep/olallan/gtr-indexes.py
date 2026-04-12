@@ -1,6 +1,6 @@
 from __future__ import print_function
 from thuja.itemstream import Itemstream
-from thuja.notegenerator import NoteGenerator
+from thuja.notegenerator import NoteGenerator, NoteGeneratorThread, ko
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 import thuja.utils as utils
@@ -9,7 +9,7 @@ from collections import OrderedDict
 import copy
 import random
 import time
-
+import ctcsound
 
 seed = int(time.time())
 #voivod machine
@@ -25,7 +25,7 @@ seed = int(time.time())
 # seed = 1528952907
 random.seed(seed)
 filelen = 60
-tempo = 60
+tempo = 120
 
 pitches_to_files = {
     'a': 'a.wav',
@@ -50,10 +50,10 @@ def post_process(note, context):
     note.pfields[keys.index] = item[keys.index]
     note.pfields['orig_rhythm'] = utils.rhythm_to_duration(orig_rhythm, context['tuplestream'].tempo)
 
-    note.pfields[keys.duration] = note.rhythm*2
+    note.pfields[keys.duration] = note.rhythm
     # note.pfields[keys.frequency] = context['tuplestream'].tempo / utils.quarter_duration_to_tempo(.697-.018)
     note.pfields['inst_file'] = '"' + '/Users/ben/Dropbox/_gtrs/' + note.pfields[keys.frequency] + '.wav' + '"'
-    note.pfields[keys.frequency] = .5
+    note.pfields[keys.frequency] = 1
     pass
 
 
@@ -89,6 +89,7 @@ g = NoteGenerator(
 
 def gen_rhythms(gen, l, opt=1):
     if opt == 1:
+        # rhystrings = ('q h 32 32').split()
         rhystrings = ('q ' + 's ' * 5 + 'e e. h').split()
     else:
         rhystrings = ('32 ' + 's ' * 4 + 'e ' * 4 + 'e. h').split()
@@ -134,25 +135,38 @@ g3.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
 
 g.add_generator(g2)
 g.add_generator(g3)
-g.gen_lines = [';sine\n',
-               'f 1 0 16384 10 1\n',
-               ';saw',
-               'f 2 0 256 7 0 128 1 0 -1 128 0\n',
-               ';pulse\n',
-               'f 3 0 256 7 1 128 1 0 -1 128 -1\n']
+
 g.streams[keys.amplitude] = Itemstream([.5])
 g.generate_notes()
 
 g.end_lines = ['i99 0 ' + str(g.score_dur+10) + '\n']
 
 
-print(g.generate_score_string())
+# print(g.generate_score_string())
+#
+# print('seed:', seed)
+# for x in [g, g2, g3]:
+#     print(x.streams[keys.frequency].values)
+#     print("g.context['rhythms'] =", x.context['rhythms'])
+#     print("g.context['indexes'] =", x.context['indexes'])
+#     print(x.context['tuplestream'].seed)
+#
+# cs_utils.play_csound("generic-index.orc", g, silent=True)
 
-print('seed:', seed)
-for x in [g, g2, g3]:
-    print(x.streams[keys.frequency].values)
-    print("g.context['rhythms'] =", x.context['rhythms'])
-    print("g.context['indexes'] =", x.context['indexes'])
-    print(x.context['tuplestream'].seed)
+cs = cs_utils.init_csound_with_orc(['-odac', '--devices', '-+rtaudio=CoreAudio'],
+                                   "gtr-indexes.orc",
+                                   True,
+                                   None)
+cs.readScore("f1 0 513 10 1\ni99 0 3600 10\ne\n")
+cs.start()
+cpt = ctcsound.CsoundPerformanceThread(cs.csound())
+cpt.play()
 
-cs_utils.play_csound("gtr-indexes.orc", g, silent=True)
+t = NoteGeneratorThread(g, cs, cpt)
+t.daemon = True
+t.start()
+
+t = ko(g, "gtr-indexes.orc", "dac6")
+
+#-----------------------------------------------------------
+t.gen()

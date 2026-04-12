@@ -39,9 +39,9 @@ container.set_stream('fade_out', .01)
 
 pulse = (
     Line().with_rhythm(Itemstream(['s', 's', 's', 's','s.', 'e'], tempo=tempo, streammode=streammodes.random, notetype=notetypes.rhythm)).
-    with_percent(0).with_index([1.272]*steps + [9.130]*steps + [24.250]*steps + [26.830]*steps).
-    setup_index_params_with_file(filename)
+    with_percent(0).with_index([1.272]*steps + [9.130]*steps + [24.250]*steps + [26.830]*steps)
 )
+utils.setup_index_params(pulse, filename)
 
 pulse.post_processes = [calc_dur]
 pulse.context['durdx'] = 0

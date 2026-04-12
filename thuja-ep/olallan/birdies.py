@@ -1,24 +1,20 @@
 from thuja.itemstream import Itemstream
-from thuja.notegenerator import Line
+from thuja.notegenerator import Line, NoteGeneratorThread, NoteGenerator, ko
 from thuja.streamkeys import keys
 from thuja.itemstream import streammodes
 from thuja.itemstream import notetypes
-import thuja.utils as utils
 import thuja.csound_utils as cs_utils
-from collections import OrderedDict
-import numpy as np
-import copy
-import random
 import time
-
+import ctcsound
+import random
 # random.seed(12)
 # random.seed(11)
 
-tempo = 60
-# seed = int(time.time())
+tempo = 120
+seed = int(time.time())
 # # seed = 1594358315
 # seed = 1594358933
-# random.seed(seed)
+random.seed(seed)
 
 pitches_to_files = {
     'a': '1.wav',
@@ -98,5 +94,19 @@ reverb_time = 10
 container.end_lines = ['i99 0 ' + str(container.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(container.generate_score_string())
 
-# cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-o9_gtrs.wav', "-W"])
-cs_utils.play_csound("simple-index.orc", container, silent=True, args_list=['-odac', '-W'])
+t = ko(container, "birdies.orc", "dac6")
+
+
+#-------------------------------------------------
+container.tempo(240)
+
+
+first_phrase_1.tempo(60)
+first_phrase_2.tempo(60)
+second_phrase.tempo(60)
+
+first_phrase_1.durs(1)
+first_phrase_2.durs(1)
+second_phrase.durs(1)
+
+t.gen()

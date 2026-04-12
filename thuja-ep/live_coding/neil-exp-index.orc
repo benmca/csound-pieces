@@ -1,5 +1,5 @@
 sr=44100
-ksmps=10
+ksmps=100
 nchnls=2
 
 ga1 init 0
@@ -8,9 +8,9 @@ ga2 init 0
 
 
 
-instr 1
+instr 1 
 idur = p3
-iamp = p4*100
+iamp = p4
 ipitch = p5
 ipan = p6
 idist = p7
@@ -19,13 +19,13 @@ indx = p9
 iorigdur = p10
 iendx = indx + iorigdur
 
-kamp	linen	iamp, .001, idur, .001
+kamp	linen	iamp, .0001, idur, .01
 ktime   line    indx, idur , iendx
-al, ar	diskin	"/Users/ben/Desktop/2020.06.24.Ebow Tone Row.1.wav", ipitch, indx
-;al	diskin	"/Users/ben/Music/_toSort/2017.06.04.SlidesIdea.wav", ipitch, indx
-;al  sndwarp kamp, ktime, 1, 3, 0, 4410, 882, 15, 1, 1
+ 
+al, ar	diskin	"/Volumes/NO NAME/2025.11.08.Neil First New House Play.WAV", ipitch, indx
+;al  sndwarp kamp, ktime, 1, 4, 0, 4410, 882, 15, 1, 1
 
-al=al*kamp
+al=al*kamp*100
 
 al, ar  locsig	al, ipan, idist, ipct
 ar1, ar2	locsend
@@ -37,7 +37,7 @@ endin
 
 
 instr 99
-klin 	linseg  p4, p3, p4
+klin linseg  p4, p3, p4
 kamp	linseg	1, p3, 1
 a1	reverb2	ga1, klin, 1
 a2	reverb2	ga2, klin, 1

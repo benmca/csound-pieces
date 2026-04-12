@@ -1,4 +1,6 @@
-from thuja.notegenerator import Line, NoteGenerator, NoteGeneratorThread, ko
+import time
+
+from thuja.notegenerator import Line, NoteGenerator, NoteGeneratorThread
 from thuja.itemstream import streammodes, notetypes, Itemstream
 import thuja.csound_utils as cs_utils
 from thuja.streamkeys import keys
@@ -8,7 +10,7 @@ import thuja.utils as utils
 from collections import OrderedDict
 import copy
 import ctcsound
-
+import time
 
 
 def post_process(note, context):
@@ -23,7 +25,7 @@ def post_process(note, context):
     note.pfields['orig_rhythm'] = utils.rhythm_to_duration(orig_rhythm, context['tuplestream'].tempo)
     # note.pfields[keys.duration] = note.pfields['orig_rhythm']
     note.pfields[keys.duration] = note.rhythm
-    note.pfields[keys.frequency] = context['tuplestream'].tempo / utils.quarter_duration_to_tempo(.697-.018)
+    note.pfields[keys.frequency] = context['tuplestream'].tempo / utils.quarter_duration_to_tempo((2.417348-0.826528)/2)
     pass
 
 g = (
@@ -34,15 +36,15 @@ g.set_stream('orig_rhythm', None)
 g.note_limit = 3000
 g.post_processes = [post_process]
 
-# g.context['rhythms'] = 'q q e e'.split()
-g.context['rhythms'] = ['q', 'q', 's', 'e', 's', 's', 'e', 's', 'q', 'e.', 'e', 'q', 'e', 's']
-g.context['indexes'] = [.018, .697, 1.376, 1.538, 1.869, 2.032, 2.2, 2.543, 2.705, 3.373, 3.895, 4.232, 4.894, 5.231]
-g.context['orig_rhythms'] = ['q', 'q', 's', 'e', 's', 's', 'e', 's', 'q', 'e.', 'e', 'q', 'e', 's']
+g.context['rhythms'] = 'h q. q. q e. q h h'.split()
+# g.context['rhythms'] = ['q', 'q', 's', 'e', 's', 's', 'e', 's', 'q', 'e.', 'e', 'q', 'e', 's']
+g.context['indexes'] = ['0.826528', '2.417348', '3.654652', '4.891957', '5.952503', '6.600615', '7.454944', '8.721708']
+g.context['orig_rhythms'] = ['h', 'q.', 'q.', 'q', 'e.', 'q', 'h', 'h']
 g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[g.context['rhythms'],
                                                      g.context['indexes']],
                                       tempo=80,
-                                      streammode=streammodes.random)
+                                      streammode=streammodes.sequence)
 
 
 # g2 = copy.deepcopy(g)
@@ -80,26 +82,46 @@ print(g.generate_score_string())
 
 g.end_lines = ['i99 0 ' + str(g.score_dur+10) + '\n']
 
-#
-
-t = ko(g,"jam-index.orc", device_string="dac6" )
-#----------------------------
-
 
 #
+
+# cs_utils.play_csound("tp-index.orc", g, silent=True, args_list=['-odac1'])
+
+cs = cs_utils.init_csound_with_orc(['-odac0', '-+rtaudio=CoreAudio'],
+                                   "tp-index.orc",
+                                   True,
+                                   None)
+cs.readScore(''.join(g.gen_lines)+"\ni99 0 3600 10\ne\n")
+
+cs.start()
+cpt = ctcsound.CsoundPerformanceThread(cs.csound())
+cpt.play()
+
+t = NoteGeneratorThread(g, cs, cpt)
+t.daemon = True
+t.start()
+
+g.add_generator(h)
+
+h = g.deepcopy()
+g.pan(20)
+h.pan(80)
+h.set_streams_to_seed(time.time())
+
+
+t.gen()
 #
-g.context['rhythms'] = 's'.split()
+#
+g.context['rhythms'] = 'h'.split()
 g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[g.context['rhythms'],
                                                      g.context['indexes']],
-                                      tempo=60,
+                                      tempo=80,
                                       streammode=streammodes.random)
-
-g.amps([1]*4+[0]*4)
-t.gen()
 #
 # g.post_processes = [post_process]
-g.amps(1)
+# g.amps([1, 0])
+g.pitches(Itemstream([['c4', 'd', 'e']], streammode=streammodes.sequence, notetype=notetypes.number))
 t.gen()
 #
 g.pan(10)
@@ -110,6 +132,44 @@ g.add_generator(b)
 b.randomize()
 t.gen()
 
+
+g.context['rhythms'] = 'h q. q. q e. q h h'.split()
+# g.context['rhythms'] = ['q', 'q', 's', 'e', 's', 's', 'e', 's', 'q', 'e.', 'e', 'q', 'e', 's']
+g.context['indexes'] = ['0.826528', '2.417348', '3.654652', '4.891957', '5.952503', '6.600615', '7.454944', '8.721708']
+g.context['orig_rhythms'] = ['h', 'q.', 'q.', 'q', 'e.', 'q', 'h', 'h']
+g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
+                                      mapping_lists=[g.context['rhythms'],
+                                                     g.context['indexes']],
+                                      tempo=60,
+                                      streammode=streammodes.heap)
+
+h.context['rhythms'] = 'h q. q. q e. q h h'.split()
+# g.context['rhythms'] = ['q', 'q', 's', 'e', 's', 's', 'e', 's', 'q', 'e.', 'e', 'q', 'e', 's']
+h.context['indexes'] = ['0.826528', '2.417348', '3.654652', '4.891957', '5.952503', '6.600615', '7.454944', '8.721708']
+h.context['orig_rhythms'] = ['h', 'q.', 'q.', 'q', 'e.', 'q', 'h', 'h']
+h.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
+                                      mapping_lists=[g.context['rhythms'],
+                                                     g.context['indexes']],
+                                      tempo=80,
+                                      streammode=streammodes.heap)
+
+
+i = h.deepcopy()
+h.pan(20)
+g.pan(45)
+i.pan(80)
+
+g.context['tuplestream'].tempo = 160
+
+g.randomize()
+h.randomize()
+i.randomize()
+t.gen()
+
+h.amps(.2)
+i.amps(.2)
+g.amps(.2)
+t.gen()
 
 g.context['rhythms'] = 'q'.split()
 g.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
@@ -138,20 +198,15 @@ g.add_generator(c)
 c.pan(45)
 c.randomize()
 c.context['rhythms'] = 'q s s e'.split()
-c.context['indexes'] = [g.context['indexes'][9], g.context['indexes'][2], g.context['indexes'][1], g.context['indexes'][0]]
-
-g.context['rhythms'] = ['q', 'q', 's', 'e', 's', 's', 'e', 's', 'q', 'e.', 'e', 'q', 'e', 's']
-g.context['indexes'] = [.018, .697, 1.376, 1.538, 1.869, 2.032, 2.2, 2.543, 2.705, 3.373, 3.895, 4.232, 4.894, 5.231]
-g.context['orig_rhythms'] = ['q', 'q', 's', 'e', 's', 's', 'e', 's', 'q', 'e.', 'e', 'q', 'e', 's']
-
+c.context['indexes'] = [b.context['indexes'][9], b.context['indexes'][2], b.context['indexes'][1], b.context['indexes'][0]]
 c.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[c.context['rhythms'],
                                                      c.context['indexes']],
-                                      tempo= 30,
-                                      streammode=streammodes.random)
-c.amps(1)
+                                      tempo= 120,
+                                      streammode=streammodes.heap)
+c.amps(0)
 # g.add_generator(c)
 t.gen()
 
-b.amps(1)
-g.amps(1)
+b.amps(0)
+g.amps(0)

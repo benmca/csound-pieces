@@ -18,7 +18,7 @@ seed = int(time.time())
 seed = 1594358933
 random.seed(seed)
 filelen = 30
-tempo = 120
+tempo = 30
 
 pitches_to_files = {
     'a': 'a.wav',
@@ -177,7 +177,7 @@ gen_rhythms(second_line, 4, 2)
 second_line.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[second_line.context['rhythms'],
                                                      second_line.context['indexes']],
-                                      tempo=60,
+                                      tempo=tempo,
                                       # streammode=streammodes.random,
                                       seed=1541470791)
 second_line.start_time = 4
@@ -193,7 +193,7 @@ gen_rhythms(third_line, 4, 2)
 third_line.context['tuplestream'] = Itemstream(mapping_keys=[keys.rhythm, keys.index],
                                       mapping_lists=[third_line.context['rhythms'],
                                                      third_line.context['indexes']],
-                                      tempo=60,
+                                      tempo=tempo,
                                       # streammode=streammodes.random,
                                       seed=1584747196)
 third_line.start_time = 8
@@ -217,7 +217,7 @@ g.add_generator(third_line_2)
 g.generate_notes()
 
 reverb_time = 10
-# g.end_lines = ['i99 0 ' + str(g.score_dur+10) + ' ' + str(reverb_time) + '\n']
+g.end_lines = ['i99 0 ' + str(g.score_dur+10) + ' ' + str(reverb_time) + '\n']
 print(g.generate_score_string())
 
 print('seed:', seed)
@@ -228,7 +228,7 @@ print("g.context['rhythms'] =", x.context['rhythms'])
 print("g.context['indexes'] =", x.context['indexes'])
 print(x.context['tuplestream'].seed)
 
-cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-odac1','-W','-+rtaudio=CoreAudio'])
+cs_utils.play_csound("generic-index.orc", g, silent=True, args_list=['-odac','-W','-+rtaudio=CoreAudio'])
 
 # lilsten to the repeatign ds here -
 #        ('filepitch', Itemstream(('b '*8 + 'ds '*8 + 'fs '*8).split())),
